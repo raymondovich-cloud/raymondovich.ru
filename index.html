@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 1.0 -->
+<!-- version 1.1 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -9,9 +9,6 @@
   <style>
     :root {
       color-scheme: dark;
-      --black: #050505;
-      --orange: #ff6a00;
-      --orange-soft: #ff9a3d;
       --text: #ffffff;
     }
 
@@ -32,22 +29,23 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 78% 18%, rgba(255, 106, 0, 0.48), transparent 34%),
-        radial-gradient(circle at 20% 82%, rgba(255, 106, 0, 0.22), transparent 38%),
-        linear-gradient(135deg, #050505 0%, #130a05 45%, #ff6a00 150%);
+        radial-gradient(ellipse 85% 48% at 100% 100%, rgba(255, 106, 0, 0.58), transparent 72%),
+        radial-gradient(ellipse 72% 42% at 0% 0%, rgba(255, 106, 0, 0.18), transparent 70%),
+        linear-gradient(160deg, #030303 0%, #0b0705 48%, #170a03 76%, #050505 100%);
+      background-attachment: fixed;
     }
 
     .site-header {
       position: fixed;
       inset: 0 0 auto 0;
       z-index: 10;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       padding: 28px 36px;
     }
 
     .project-link {
-      justify-self: start;
       color: var(--text);
       font-size: 13px;
       font-weight: 600;
@@ -61,10 +59,6 @@
       cursor: pointer;
       opacity: 0.92;
       transition: opacity 180ms ease, transform 180ms ease;
-    }
-
-    .project-link.developing {
-      justify-self: center;
     }
 
     .project-link:hover,
@@ -94,12 +88,14 @@
 
     @media (max-width: 600px) {
       .site-header {
-        padding: 24px 20px;
+        padding: max(24px, env(safe-area-inset-top)) 20px 24px;
       }
 
       .project-link {
+        max-width: 42%;
         font-size: 10px;
-        letter-spacing: 0.11em;
+        letter-spacing: 0.09em;
+        line-height: 1.25;
       }
 
       .brand {
@@ -108,6 +104,13 @@
 
       .brand-title {
         font-size: clamp(38px, 13vw, 72px);
+      }
+
+      body {
+        background:
+          radial-gradient(ellipse 125% 38% at 100% 100%, rgba(255, 106, 0, 0.62), transparent 72%),
+          radial-gradient(ellipse 110% 32% at 0% 0%, rgba(255, 106, 0, 0.16), transparent 70%),
+          linear-gradient(165deg, #030303 0%, #090605 52%, #180a03 82%, #050505 100%);
       }
     }
   </style>
@@ -118,7 +121,7 @@
       Действующие проекты
     </button>
 
-    <a class="project-link developing" href="https://lifegame.site/">
+    <a class="project-link" href="https://lifegame.site/">
       Разрабатываемые проекты
     </a>
   </header>
