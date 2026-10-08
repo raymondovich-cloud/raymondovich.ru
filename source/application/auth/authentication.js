@@ -1,7 +1,8 @@
-// version 1.1
+// version 1.2
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 const AUTH_CALLBACK_URL = "https://raymondovich.ru/auth-callback.html";
+const PASSWORD_RESET_URL = "https://raymondovich.ru/update-password.html";
 
 function normalizeError(error) {
   if (!error) return null;
@@ -29,6 +30,20 @@ export async function register({ email, password, displayName }) {
   if (error) throw normalizeError(error);
   if (data.session?.user) await ensureProfile(data.session.user, displayName);
   return data;
+}
+
+export async function requestPasswordReset(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: PASSWORD_RESET_URL,
+  });
+
+  if (error) throw normalizeError(error);
+}
+
+export async function updatePassword(password) {
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) throw normalizeError(error);
 }
 
 export async function login({ email, password }) {
