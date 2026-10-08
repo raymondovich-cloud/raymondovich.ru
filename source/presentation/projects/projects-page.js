@@ -1,12 +1,13 @@
-// version 1.7
+// version 1.8
 import { getSession, getRole } from "../../application/auth/authentication.js";
-import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
+import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
 const listView = document.querySelector("#project-list-view");
 const detailView = document.querySelector("#project-detail-view");
 const projectList = document.querySelector("#project-list");
 const backButton = document.querySelector("#back-button");
 const detail = document.querySelector("#project-detail");
+let currentProjects = [];
 
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
@@ -16,41 +17,139 @@ function progressHtml(progress) {
   return '<div class="project-progress"><div class="project-progress-track"><span style="width:' + progress + '%"></span></div><strong>' + progress + '%</strong></div>';
 }
 
+function formatDate(value) {
+  if (!value) return "Не указано";
+  return new Intl.DateTimeFormat("ru-RU", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
 function renderList(projects) {
   projectList.innerHTML = projects.length
     ? projects.map((p) =>
-        '<div class="project-list-row"><button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
+        '<div class="project-list-row" data-row-project-id="' + p.id + '">' +
+        '<button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
         esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") +
-        '</small></div></button><button class="project-delete" data-delete-project-id="' + p.id + '" type="button" aria-label="Удалить проект">Удалить</button></div>'
+        '</small></div></button>' +
+        '</div>'
       ).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
   projectList.querySelectorAll("[data-project-id]").forEach((button) => {
-    button.addEventListener("click", () => openProject(button.dataset.projectId));
-  });
+    let timer = null;
+    let longPressed = false;
 
-  projectList.querySelectorAll("[data-delete-project-id]").forEach((button) => {
-    button.addEventListener("click", async (event) => {
-      event.stopPropagation();
-      const projectId = button.dataset.deleteProjectId;
-      const row = button.closest(".project-list-row");
-      const name = row?.querySelector(".project-list-item strong")?.textContent || "этот проект";
-
-      if (!window.confirm("Удалить проект «" + name + "»?\n\nБудут удалены его этапы, задачи и история. Отменить действие будет нельзя.")) return;
-
-      button.disabled = true;
-      button.textContent = "Удаление...";
-
-      try {
-        await deleteProject(projectId);
-        renderList(await listProjects());
-      } catch (error) {
-        button.disabled = false;
-        button.textContent = "Удалить";
-        alert(error.message || "Не удалось удалить проект.");
+    const open = () => {
+      if (longPressed) {
+        longPressed = false;
+        return;
       }
-    });
+      openProject(button.dataset.projectId);
+    };
+
+    const startLongPress = (event) => {
+      if (event.type === "mousedown" && event.button !== 0) return;
+      longPressed = false;
+      timer = window.setTimeout(() => {
+        longPressed = true;
+        if (navigator.vibrate) navigator.vibrate(18);
+        showProjectMenu(button.dataset.projectId);
+      }, 550);
+    };
+
+    const cancelLongPress = () => {
+      if (timer) {
+        window.clearTimeout(timer);
+        timer = null;
+      }
+    };
+
+    button.addEventListener("click", open);
+    button.addEventListener("touchstart", startLongPress, { passive: true });
+    button.addEventListener("touchend", cancelLongPress);
+    button.addEventListener("touchcancel", cancelLongPress);
+    button.addEventListener("mousedown", startLongPress);
+    button.addEventListener("mouseup", cancelLongPress);
+    button.addEventListener("mouseleave", cancelLongPress);
   });
+}
+
+function closeProjectMenus() {
+  projectList.querySelectorAll(".project-context-menu").forEach((menu) => menu.remove());
+  projectList.querySelectorAll(".project-list-item.is-selected").forEach((item) => item.classList.remove("is-selected"));
+}
+
+function showProjectMenu(projectId) {
+  closeProjectMenus();
+
+  const row = projectList.querySelector('[data-row-project-id="' + projectId + '"]');
+  const button = row?.querySelector("[data-project-id]");
+  if (!row || !button) return;
+
+  button.classList.add("is-selected");
+
+  const project = currentProjects.find((item) => String(item.id) === String(projectId));
+  if (!project) return;
+
+  const menu = document.createElement("div");
+  menu.className = "project-context-menu";
+  menu.innerHTML =
+    '<div class="project-context-info"><span>Информация</span><strong>Добавлен: ' + esc(formatDate(project.created_at)) +
+    '</strong><small>Кем: ' + esc(project.owner_name || project.owner_id || "Неизвестно") + '</small></div>' +
+    '<div class="project-context-actions">' +
+    '<button class="project-context-action" data-project-edit type="button">Изменить</button>' +
+    '<button class="project-context-action danger" data-project-delete type="button">Удалить</button>' +
+    '<button class="project-context-close" data-project-close type="button">Закрыть</button>' +
+    '</div>';
+
+  row.appendChild(menu);
+
+  menu.querySelector("[data-project-close]").addEventListener("click", closeProjectMenus);
+  menu.querySelector("[data-project-edit]").addEventListener("click", () => editProjectName(project));
+  menu.querySelector("[data-project-delete]").addEventListener("click", () => removeProject(project));
+}
+
+async function editProjectName(project) {
+  const row = projectList.querySelector('[data-row-project-id="' + project.id + '"]');
+  const menu = row?.querySelector(".project-context-menu");
+  if (!menu) return;
+
+  menu.innerHTML =
+    '<div class="project-context-info"><span>Изменить</span>' +
+    '<input class="project-context-input" data-project-name-input type="text" maxlength="120" value="' + esc(project.name) + '">' +
+    '</div><div class="project-context-actions">' +
+    '<button class="project-context-action primary" data-project-save type="button">Сохранить</button>' +
+    '<button class="project-context-close" data-project-cancel type="button">Отмена</button></div>';
+
+  const input = menu.querySelector("[data-project-name-input]");
+  input.focus();
+  input.select();
+
+  menu.querySelector("[data-project-cancel]").addEventListener("click", closeProjectMenus);
+  menu.querySelector("[data-project-save]").addEventListener("click", async () => {
+    const value = input.value.trim();
+    try {
+      await updateProjectName(project.id, value);
+      closeProjectMenus();
+      currentProjects = await listProjects();
+      renderList(currentProjects);
+    } catch (error) {
+      alert(error.message || "Не удалось изменить название проекта.");
+    }
+  });
+}
+
+async function removeProject(project) {
+  if (!window.confirm("Удалить проект «" + project.name + "»?\n\nБудут удалены его этапы, задачи и история. Отменить действие будет нельзя.")) return;
+
+  try {
+    await deleteProject(project.id);
+    currentProjects = await listProjects();
+    renderList(currentProjects);
+  } catch (error) {
+    alert(error.message || "Не удалось удалить проект.");
+  }
 }
 
 function renderDetail(project) {
@@ -163,12 +262,14 @@ async function init() {
     return;
   }
 
-  renderList(await listProjects());
+  currentProjects = await listProjects();
+  renderList(currentProjects);
 
   backButton.addEventListener("click", async () => {
     detailView.hidden = true;
     listView.hidden = false;
-    renderList(await listProjects());
+    currentProjects = await listProjects();
+    renderList(currentProjects);
   });
 }
 
