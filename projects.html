@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- version 1.6 -->
+<!-- version 1.7 -->
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAYMONDOVICH — Projects</title>
-<link rel="stylesheet" href="./source/design/projects.css?v=1.5">
+<link rel="stylesheet" href="./source/design/projects.css?v=1.6">
 </head>
 <body>
 <main class="projects-shell">
@@ -30,7 +30,7 @@
 <textarea id="create-plan-input" rows="12" placeholder="Вставь JSON из ChatGPT..."></textarea>
 <button class="project-action primary" id="fix-plan-button" type="button">Зафиксировать план</button>
 </section>
-<button class="project-action primary" type="button">Создать проект</button>
+<button class="project-action primary" id="create-project-button" type="button">Создать проект</button>
 <p class="project-status" id="create-status"></p>
 </div>
 </div>
@@ -40,7 +40,7 @@
 <div id="project-detail"></div>
 </section>
 </main>
-<script type="module" src="./source/presentation/projects/projects-page.js?v=1.8"></script>
+<script type="module" src="./source/presentation/projects/projects-page.js?v=1.9"></script>
 <script type="module" src="./source/presentation/projects/create-project.js?v=1.2"></script>
 <script type="module" src="./source/presentation/projects/open-created-project.js?v=1.0"></script>
 </body>
