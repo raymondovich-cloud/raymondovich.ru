@@ -1,13 +1,29 @@
-// version 1.3
+// version 1.4
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
-import { supabase } from "../../infrastructure/supabase/client.js";
 
 const accessLabel = document.querySelector("#access-label");
 const appTitle = document.querySelector("#app-title");
 const blocks = document.querySelector("#blocks");
+const settingsButton = document.querySelector("#settings-button");
+const accountPanelBackdrop = document.querySelector("#account-panel-backdrop");
+const accountPanelClose = document.querySelector("#account-panel-close");
+const accountName = document.querySelector("#account-name");
+const accountEmail = document.querySelector("#account-email");
+const accountCreatedAt = document.querySelector("#account-created-at");
+const accountStatus = document.querySelector("#account-status");
 const logoutButton = document.querySelector("#logout-button");
 
-function render(role, email) {
+function formatRegistrationDate(value) {
+  if (!value) return "—";
+
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function render(role, user) {
   const admin = role === "admin";
 
   accessLabel.textContent = admin ? "ADMINISTRATOR" : "USER";
@@ -25,7 +41,20 @@ function render(role, email) {
     blocks.appendChild(item);
   }
 
-  document.querySelector("#account-email").textContent = email;
+  accountName.textContent = user.user_metadata?.display_name || "Не указано";
+  accountEmail.textContent = user.email || "—";
+  accountCreatedAt.textContent = formatRegistrationDate(user.created_at);
+  accountStatus.textContent = "Активен";
+}
+
+function openAccountPanel() {
+  accountPanelBackdrop.hidden = false;
+  settingsButton.setAttribute("aria-expanded", "true");
+}
+
+function closeAccountPanel() {
+  accountPanelBackdrop.hidden = true;
+  settingsButton.setAttribute("aria-expanded", "false");
 }
 
 async function init() {
@@ -37,8 +66,21 @@ async function init() {
   }
 
   const role = getRole(session);
-  render(role, session.user.email || "");
+  render(role, session.user);
 }
+
+settingsButton.addEventListener("click", openAccountPanel);
+accountPanelClose.addEventListener("click", closeAccountPanel);
+
+accountPanelBackdrop.addEventListener("click", (event) => {
+  if (event.target === accountPanelBackdrop) closeAccountPanel();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !accountPanelBackdrop.hidden) {
+    closeAccountPanel();
+  }
+});
 
 logoutButton.addEventListener("click", async () => {
   await logout();
