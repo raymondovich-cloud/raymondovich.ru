@@ -1,4 +1,4 @@
-// version 1.5
+// version 1.6
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 
 const accessLabel = document.querySelector("#access-label");
@@ -25,7 +25,7 @@ function render(role, user) {
   blocks.innerHTML = "";
 
   const names = admin
-    ? ["Аналитика продуктов", "Документация", "Проекты", "Маркетинг", "Стратегия", "Продукты", "Идеи"]
+    ? ["Аналитика продуктов", "Документация", "Проекты", "Маркетинг", "Стратегия", "Идеи"]
     : ["Мои продукты", "Мой профиль", "Мои данные"];
 
   for (const name of names) {
