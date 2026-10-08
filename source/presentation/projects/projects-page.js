@@ -93,7 +93,10 @@ async function init() {
       createStatus.textContent = "Проект создан.";
       renderList(await listProjects());
       await openProject(project.id);
-    } catch (error) {\n      console.error("project-create", error);\n      createStatus.textContent = error?.message || error?.details || error?.hint || "Не удалось создать проект.";\n    }
+    } catch (error) {
+      console.error("project-create", error);
+      createStatus.textContent = error?.message || error?.details || error?.hint || "Не удалось создать проект.";
+    }
   });
   backButton.addEventListener("click", () => { detailView.hidden = true; listView.hidden = false; renderList(await listProjects()); });
 }
