@@ -1,4 +1,4 @@
-// version 1.4
+// version 1.5
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
@@ -97,7 +97,7 @@ function renderDetail(project) {
     '<button class="project-action" id="prompt-button" type="button">Сформировать запрос для ChatGPT</button>' +
     '<textarea id="prompt-output" rows="10" placeholder="Готовый запрос появится здесь..."></textarea>' +
     '<textarea id="plan-input" rows="12" placeholder="Вставь JSON из ChatGPT..."></textarea>' +
-    '<button class="project-action primary" id="import-plan-button" type="button">Импортировать план</button>' +
+    '<button class="project-action primary" id="import-plan-button" type="button">Заменить карту проекта</button>' +
     '<p class="project-status" id="plan-status"></p></section>';
 
   detail.innerHTML = html;
@@ -124,7 +124,7 @@ function renderDetail(project) {
   detail.querySelector("#import-plan-button").addEventListener("click", async () => {
     const status = detail.querySelector("#plan-status");
     try {
-      status.textContent = "Импорт...";
+      status.textContent = "Заменяем карту проекта...";
       await importPlan(project.id, JSON.parse(detail.querySelector("#plan-input").value));
       await openProject(project.id);
     } catch (error) {
