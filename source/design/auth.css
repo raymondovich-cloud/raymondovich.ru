@@ -1,4 +1,4 @@
-/* version 1.0 */
+/* version 1.1 */
 :root {
   --auth-bg: #050505;
   --auth-panel: rgba(17, 17, 17, 0.82);
@@ -108,13 +108,15 @@ body {
 }
 
 .auth-switch {
+  display: block;
   width: 100%;
-  margin-top: 16px;
+  margin-top: 24px;
   border: 0;
   padding: 8px;
   color: var(--auth-muted);
   background: transparent;
   font: inherit;
+  text-align: center;
   cursor: pointer;
 }
 
