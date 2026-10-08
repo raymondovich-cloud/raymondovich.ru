@@ -1,4 +1,4 @@
-// version 1.8
+// version 1.9
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
@@ -222,23 +222,6 @@ function renderDetail(project) {
     });
   });
 
-  detail.querySelector("#prompt-button").addEventListener("click", async () => {
-    const prompt = createChatGptPrompt(project);
-    detail.querySelector("#prompt-output").value = prompt;
-    try { await navigator.clipboard.writeText(prompt); } catch {}
-    detail.querySelector("#prompt-button").textContent = "Запрос скопирован";
-  });
-
-  detail.querySelector("#import-plan-button").addEventListener("click", async () => {
-    const status = detail.querySelector("#plan-status");
-    try {
-      status.textContent = "Заменяем карту проекта...";
-      await importPlan(project.id, JSON.parse(detail.querySelector("#plan-input").value));
-      await openProject(project.id);
-    } catch (error) {
-      status.textContent = error.message || "Не удалось импортировать план.";
-    }
-  });
 }
 
 async function openProject(id) {
