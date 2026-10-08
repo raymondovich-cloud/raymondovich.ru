@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, createProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
@@ -78,18 +78,16 @@ async function init() {
     return;
   }
   renderList(await listProjects());
-  createForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  createForm.querySelector("button[type=\"button\"]").addEventListener("click", async () => {
     try {
       createStatus.textContent = "Создание...";
-      const data = new FormData(createForm);
       const project = await createProject({
-        name: data.get("name"),
-        description: data.get("description"),
-        goal: data.get("goal"),
-        completionCriteria: data.get("completionCriteria"),
+        name: createForm.querySelector('[name="name"]').value,
+        description: createForm.querySelector('[name="description"]').value,
+        goal: createForm.querySelector('[name="goal"]').value,
+        completionCriteria: createForm.querySelector('[name="completionCriteria"]').value,
       });
-      createForm.reset();
+      createForm.querySelectorAll("input, textarea").forEach((field) => { field.value = ""; });
       createStatus.textContent = "Проект создан.";
       renderList(await listProjects());
       await openProject(project.id);
