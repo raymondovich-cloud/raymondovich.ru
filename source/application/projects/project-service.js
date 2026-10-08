@@ -1,10 +1,26 @@
-// version 1.3
+// version 1.4
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 export async function listProjects() {
   const { data, error } = await supabase.from("projects").select("*").order("updated_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+
+  const projects = data ?? [];
+  const ownerIds = [...new Set(projects.map((project) => project.owner_id).filter(Boolean))];
+  if (!ownerIds.length) return projects;
+
+  const { data: profiles, error: profileError } = await supabase
+    .from("user_profiles")
+    .select("user_id, display_name")
+    .in("user_id", ownerIds);
+
+  if (profileError) throw profileError;
+
+  const names = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name]));
+  return projects.map((project) => ({
+    ...project,
+    owner_name: names.get(project.owner_id) || project.owner_id || "Неизвестно",
+  }));
 }
 
 export async function getProject(projectId) {
@@ -164,6 +180,21 @@ export async function createProject(values) {
   }
 
   return data;
+}
+
+export async function updateProjectName(projectId, name) {
+  const id = String(projectId || "").trim();
+  const value = String(name || "").trim();
+  if (!id) throw new Error("Проект не указан.");
+  if (!value) throw new Error("Название проекта не может быть пустым.");
+  if (value.length > 120) throw new Error("Название проекта слишком длинное.");
+
+  const { error } = await supabase.from("projects").update({
+    name: value,
+    updated_at: new Date().toISOString(),
+  }).eq("id", id);
+
+  if (error) throw error;
 }
 
 export async function deleteProject(projectId) {
