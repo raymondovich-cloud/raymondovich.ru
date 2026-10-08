@@ -1,4 +1,4 @@
-// version 1.0
+// version 1.1
 import { getSession, login, register, getRole } from "../../application/auth/authentication.js";
 
 const form = document.querySelector("#auth-form");
@@ -53,7 +53,7 @@ form.addEventListener("submit", async (event) => {
 
   const email = emailInput.value.trim();
   const password = passwordInput.value;
-  const displayName = displayNameInput.value.trim();
+  const displayName = mode === "register" ? displayNameInput.value.trim() : "";
 
   submitButton.disabled = true;
 
