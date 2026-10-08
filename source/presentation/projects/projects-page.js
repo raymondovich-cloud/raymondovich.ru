@@ -1,4 +1,4 @@
-// version 1.0
+// version 1.1
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, createProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
@@ -93,7 +93,7 @@ async function init() {
       createStatus.textContent = "Проект создан.";
       renderList(await listProjects());
       await openProject(project.id);
-    } catch (error) { createStatus.textContent = error.message || "Не удалось создать проект."; }
+    } catch (error) {\n      console.error("project-create", error);\n      createStatus.textContent = error?.message || error?.details || error?.hint || "Не удалось создать проект.";\n    }
   });
   backButton.addEventListener("click", () => { detailView.hidden = true; listView.hidden = false; renderList(await listProjects()); });
 }
