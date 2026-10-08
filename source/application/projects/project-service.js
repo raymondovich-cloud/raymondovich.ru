@@ -1,4 +1,4 @@
-// version 1.1
+// version 1.2
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 export async function listProjects() {
@@ -164,6 +164,14 @@ export async function createProject(values) {
   }
 
   return data;
+}
+
+export async function deleteProject(projectId) {
+  const id = String(projectId || "").trim();
+  if (!id) throw new Error("Проект не указан.");
+
+  const { error } = await supabase.from("projects").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function updateTask(taskId, completed) {
