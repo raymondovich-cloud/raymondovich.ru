@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 export async function listProjects() {
@@ -184,40 +184,83 @@ export async function updateTask(taskId, completed) {
 }
 
 export async function importPlan(projectId, plan) {
+  const id = String(projectId || "").trim();
+  if (!id) throw new Error("Проект не указан.");
   if (!plan || !Array.isArray(plan.milestones) || !plan.milestones.length) {
     throw new Error("План должен содержать milestones.");
   }
 
-  const totalWeight = plan.milestones.reduce((s, m) => s + Number(m.weight || 0), 0);
+  const normalizedMilestones = plan.milestones.map((milestone, milestoneIndex) => {
+    const title = String(milestone.title || "").trim();
+    const weight = Number(milestone.weight);
+    const tasks = Array.isArray(milestone.tasks) ? milestone.tasks : [];
+
+    if (!title) throw new Error("У каждого этапа должно быть название.");
+    if (!Number.isFinite(weight) || weight <= 0) {
+      throw new Error("Вес каждого этапа должен быть положительным числом.");
+    }
+    if (!tasks.length) {
+      throw new Error("У этапа «" + title + "» должна быть хотя бы одна задача.");
+    }
+
+    const normalizedTasks = tasks.map((task, taskIndex) => {
+      const taskTitle = String(task.title || "").trim();
+      const taskWeight = Number(task.weight ?? 1);
+      if (!taskTitle) throw new Error("У каждой задачи должно быть название.");
+      if (!Number.isFinite(taskWeight) || taskWeight <= 0) {
+        throw new Error("Вес каждой задачи должен быть положительным числом.");
+      }
+      return {
+        title: taskTitle,
+        description: String(task.description || "").trim(),
+        weight: taskWeight,
+        position: taskIndex,
+      };
+    });
+
+    return {
+      title,
+      description: String(milestone.description || "").trim(),
+      weight,
+      position: milestoneIndex,
+      tasks: normalizedTasks,
+    };
+  });
+
+  const totalWeight = normalizedMilestones.reduce((s, m) => s + m.weight, 0);
   if (Math.round(totalWeight * 100) / 100 !== 100) {
     throw new Error("Сумма весов этапов должна быть ровно 100.");
   }
 
-  for (const [i, milestone] of plan.milestones.entries()) {
-    const title = String(milestone.title || "").trim();
-    if (!title) throw new Error("У каждого этапа должно быть название.");
+  const { error: deleteError } = await supabase
+    .from("project_milestones")
+    .delete()
+    .eq("project_id", id);
 
+  if (deleteError) throw deleteError;
+
+  for (const milestone of normalizedMilestones) {
     const { data: created, error } = await supabase.from("project_milestones").insert({
-      project_id: projectId,
-      title,
-      description: String(milestone.description || "").trim(),
-      weight: Number(milestone.weight),
-      position: i,
+      project_id: id,
+      title: milestone.title,
+      description: milestone.description,
+      weight: milestone.weight,
+      position: milestone.position,
     }).select().single();
 
     if (error) throw error;
 
-    const tasks = Array.isArray(milestone.tasks) ? milestone.tasks : [];
-    if (tasks.length) {
-      const { error: taskError } = await supabase.from("project_tasks").insert(tasks.map((task, index) => ({
+    const { error: taskError } = await supabase.from("project_tasks").insert(
+      milestone.tasks.map((task) => ({
         milestone_id: created.id,
-        title: String(task.title || "").trim(),
-        description: String(task.description || "").trim(),
-        weight: Number(task.weight || 1),
-        position: index,
-      })));
-      if (taskError) throw taskError;
-    }
+        title: task.title,
+        description: task.description,
+        weight: task.weight,
+        position: task.position,
+      }))
+    );
+
+    if (taskError) throw taskError;
   }
 }
 
