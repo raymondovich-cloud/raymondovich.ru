@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!-- version 1.0 -->
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAYMONDOVICH — Projects</title>
+<link rel="stylesheet" href="./source/design/projects.css?v=1.0">
+</head>
+<body>
+<main class="projects-shell">
+<header class="projects-header">
+<a class="projects-back" href="./app.html">← Control</a>
+<div><p class="project-kicker">PROJECTS</p><h1>Проекты</h1></div>
+</header>
+<section id="project-list-view">
+<form class="project-create" id="create-project-form">
+<p class="project-kicker">NEW PROJECT</p><h2>Добавить проект</h2>
+<input name="name" required maxlength="120" placeholder="Название проекта">
+<textarea name="description" rows="3" placeholder="Идея проекта"></textarea>
+<textarea name="goal" rows="3" placeholder="Цель проекта"></textarea>
+<textarea name="completionCriteria" rows="3" placeholder="Что должно быть правдой при 100%"></textarea>
+<button class="project-action primary" type="submit">Создать проект</button>
+<p class="project-status" id="create-status"></p>
+</form>
+<section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ACTIVE</p><h2>Мои проекты</h2></div></div><div id="project-list"></div></section>
+</section>
+<section id="project-detail-view" hidden>
+<button class="projects-back project-detail-back" id="back-button" type="button">← Все проекты</button>
+<div id="project-detail"></div>
+</section>
+</main>
+<script type="module" src="./source/presentation/projects/projects-page.js?v=1.0"></script>
+</body>
+</html>
