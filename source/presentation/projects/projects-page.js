@@ -198,14 +198,7 @@ function renderDetail(project) {
       }).join("")
     : '<div class="project-empty">Пока нет этапов.</div>';
 
-  html +=
-    '</section><section class="project-section ai-section"><div class="project-section-header"><div><p class="project-kicker">AI PROJECT MANAGER</p><h3>Зафиксировать план</h3></div></div>' +
-    '<p class="project-help">Сформируй план в ChatGPT по готовому запросу, затем вставь возвращённый JSON.</p>' +
-    '<button class="project-action" id="prompt-button" type="button">Сформировать запрос для ChatGPT</button>' +
-    '<textarea id="prompt-output" rows="10" placeholder="Готовый запрос появится здесь..."></textarea>' +
-    '<textarea id="plan-input" rows="12" placeholder="Вставь JSON из ChatGPT..."></textarea>' +
-    '<button class="project-action primary" id="import-plan-button" type="button">Заменить карту проекта</button>' +
-    '<p class="project-status" id="plan-status"></p></section>';
+  html += '</section>';
 
   detail.innerHTML = html;
 
