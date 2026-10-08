@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- version 1.3 -->
+<!-- version 1.4 -->
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAYMONDOVICH — Projects</title>
-<link rel="stylesheet" href="./source/design/projects.css?v=1.2">
+<link rel="stylesheet" href="./source/design/projects.css?v=1.4">
 </head>
 <body>
 <main class="projects-shell">
@@ -15,13 +15,15 @@
 </header>
 <section id="project-list-view">
 <div class="project-create" id="create-project-form">
-<p class="project-kicker">NEW PROJECT</p><h2>Добавить проект</h2>
+<button class="project-create-toggle" id="create-project-toggle" type="button" aria-expanded="false" aria-controls="create-project-content"><span><p class="project-kicker">NEW PROJECT</p><strong>Добавить проект</strong></span><span class="project-create-chevron" aria-hidden="true">⌄</span></button>
+<div class="project-create-content" id="create-project-content" hidden>
 <input name="name" required maxlength="120" placeholder="Название проекта">
 <textarea name="description" rows="3" placeholder="Идея проекта"></textarea>
 <textarea name="goal" rows="3" placeholder="Цель проекта"></textarea>
 <textarea name="completionCriteria" rows="8" maxlength="30000" placeholder="Что должно быть правдой при 100%"></textarea>
 <button class="project-action primary" type="button">Создать проект</button>
 <p class="project-status" id="create-status"></p>
+</div>
 </div>
 <section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ACTIVE</p><h2>Мои проекты</h2></div></div><div id="project-list"></div></section>
 </section>
