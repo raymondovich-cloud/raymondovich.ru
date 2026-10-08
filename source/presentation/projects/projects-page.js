@@ -1,12 +1,10 @@
-// version 1.3
+// version 1.4
 import { getSession, getRole } from "../../application/auth/authentication.js";
-import { calculateProgress, createChatGptPrompt, createProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
+import { calculateProgress, createChatGptPrompt, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
 const listView = document.querySelector("#project-list-view");
 const detailView = document.querySelector("#project-detail-view");
 const projectList = document.querySelector("#project-list");
-const createForm = document.querySelector("#create-project-form");
-const createStatus = document.querySelector("#create-status");
 const backButton = document.querySelector("#back-button");
 const detail = document.querySelector("#project-detail");
 
@@ -19,36 +17,83 @@ function progressHtml(progress) {
 }
 
 function renderList(projects) {
-  projectList.innerHTML = projects.length ? projects.map((p) =>
-    '<button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' + esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") + '</small></div><span>Открыть →</span></button>'
-  ).join("") : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
-  projectList.querySelectorAll("[data-project-id]").forEach((b) => b.addEventListener("click", () => openProject(b.dataset.projectId)));
+  projectList.innerHTML = projects.length
+    ? projects.map((p) =>
+        '<button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
+        esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") +
+        '</small></div><span>Открыть →</span></button>'
+      ).join("")
+    : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
+
+  projectList.querySelectorAll("[data-project-id]").forEach((button) => {
+    button.addEventListener("click", () => openProject(button.dataset.projectId));
+  });
 }
 
 function renderDetail(project) {
   const progress = calculateProgress(project);
   const milestones = project.milestones || [];
-  let html = '<section class="project-hero"><p class="project-kicker">PROJECT</p><h2>' + esc(project.name) + '</h2><p>' + esc(project.description || "Описание не задано.") + '</p>' + progressHtml(progress) + '<div class="project-progress-meta"><span>Готовность проекта</span><strong>' + progress + ' / 100</strong></div></section>';
-  html += '<section class="project-definition"><div><span>Цель</span><strong>' + esc(project.goal || "Не задана") + '</strong></div><div><span>100% означает</span><strong>' + esc(project.completion_criteria || "Критерии не зафиксированы") + '</strong></div></section>';
-  html += '<section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ROADMAP</p><h3>Карта проекта</h3></div><strong>' + milestones.length + ' этапов</strong></div>';
-  html += milestones.length ? milestones.map((m) => {
-    const tasks = m.tasks || [];
-    return '<article class="milestone"><div class="milestone-header"><div><span class="milestone-weight">' + Number(m.weight) + '%</span><h4>' + esc(m.title) + '</h4><p>' + esc(m.description || "") + '</p></div><span>' + tasks.filter((t) => t.completed).length + '/' + tasks.length + '</span></div><div class="task-list">' +
-      tasks.map((t) => '<label class="task-row"><input type="checkbox" data-task-id="' + t.id + '" ' + (t.completed ? "checked" : "") + '><span>' + esc(t.title) + '</span></label>').join("") +
-      '</div></article>';
-  }).join("") : '<div class="project-empty">Пока нет этапов. Сформируй план через ChatGPT ниже.</div>';
-  html += '</section><section class="project-section ai-section"><div class="project-section-header"><div><p class="project-kicker">AI PROJECT MANAGER</p><h3>Зафиксировать план</h3></div></div><p class="project-help">Сформируй план в ChatGPT по готовому запросу, затем вставь возвращённый JSON. Система сохранит этапы и будет считать готовность автоматически.</p><button class="project-action" id="prompt-button" type="button">Сформировать запрос для ChatGPT</button><textarea id="prompt-output" rows="10" placeholder="Готовый запрос появится здесь..."></textarea><textarea id="plan-input" rows="12" placeholder="Вставь JSON из ChatGPT..."></textarea><button class="project-action primary" id="import-plan-button" type="button">Импортировать план</button><p class="project-status" id="plan-status"></p></section>';
+
+  let html =
+    '<section class="project-hero"><p class="project-kicker">PROJECT</p><h2>' +
+    esc(project.name) + '</h2><p>' + esc(project.description || "Описание не задано.") +
+    '</p>' + progressHtml(progress) +
+    '<div class="project-progress-meta"><span>Готовность проекта</span><strong>' +
+    progress + ' / 100</strong></div></section>';
+
+  html +=
+    '<section class="project-definition"><div><span>Цель</span><strong>' +
+    esc(project.goal || "Не задана") +
+    '</strong></div><div><span>100% означает</span><strong>' +
+    esc(project.completion_criteria || "Критерии не зафиксированы") +
+    '</strong></div></section>';
+
+  html +=
+    '<section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ROADMAP</p><h3>Карта проекта</h3></div><strong>' +
+    milestones.length + ' этапов</strong></div>';
+
+  html += milestones.length
+    ? milestones.map((milestone) => {
+        const tasks = milestone.tasks || [];
+        return '<article class="milestone"><div class="milestone-header"><div><span class="milestone-weight">' +
+          Number(milestone.weight) + '%</span><h4>' + esc(milestone.title) +
+          '</h4><p>' + esc(milestone.description || "") +
+          '</p></div><span>' + tasks.filter((task) => task.completed).length +
+          '/' + tasks.length + '</span></div><div class="task-list">' +
+          tasks.map((task) =>
+            '<label class="task-row"><input type="checkbox" data-task-id="' + task.id +
+            '" ' + (task.completed ? "checked" : "") + '><span>' + esc(task.title) +
+            '</span></label>'
+          ).join("") + '</div></article>';
+      }).join("")
+    : '<div class="project-empty">Пока нет этапов.</div>';
+
+  html +=
+    '</section><section class="project-section ai-section"><div class="project-section-header"><div><p class="project-kicker">AI PROJECT MANAGER</p><h3>Зафиксировать план</h3></div></div>' +
+    '<p class="project-help">Сформируй план в ChatGPT по готовому запросу, затем вставь возвращённый JSON.</p>' +
+    '<button class="project-action" id="prompt-button" type="button">Сформировать запрос для ChatGPT</button>' +
+    '<textarea id="prompt-output" rows="10" placeholder="Готовый запрос появится здесь..."></textarea>' +
+    '<textarea id="plan-input" rows="12" placeholder="Вставь JSON из ChatGPT..."></textarea>' +
+    '<button class="project-action primary" id="import-plan-button" type="button">Импортировать план</button>' +
+    '<p class="project-status" id="plan-status"></p></section>';
+
   detail.innerHTML = html;
 
-  detail.querySelectorAll("[data-task-id]").forEach((input) => input.addEventListener("change", async () => {
-    try { await updateTask(input.dataset.taskId, input.checked); await openProject(project.id); }
-    catch (error) { alert(error.message); input.checked = !input.checked; }
-  }));
+  detail.querySelectorAll("[data-task-id]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      try {
+        await updateTask(input.dataset.taskId, input.checked);
+        await openProject(project.id);
+      } catch (error) {
+        alert(error.message);
+        input.checked = !input.checked;
+      }
+    });
+  });
 
   detail.querySelector("#prompt-button").addEventListener("click", async () => {
     const prompt = createChatGptPrompt(project);
-    const output = detail.querySelector("#prompt-output");
-    output.value = prompt;
+    detail.querySelector("#prompt-output").value = prompt;
     try { await navigator.clipboard.writeText(prompt); } catch {}
     detail.querySelector("#prompt-button").textContent = "Запрос скопирован";
   });
@@ -58,9 +103,10 @@ function renderDetail(project) {
     try {
       status.textContent = "Импорт...";
       await importPlan(project.id, JSON.parse(detail.querySelector("#plan-input").value));
-      status.textContent = "План сохранён.";
       await openProject(project.id);
-    } catch (error) { status.textContent = error.message || "Не удалось импортировать план."; }
+    } catch (error) {
+      status.textContent = error.message || "Не удалось импортировать план.";
+    }
   });
 }
 
@@ -77,25 +123,16 @@ async function init() {
     window.location.replace("./auth.html");
     return;
   }
+
   renderList(await listProjects());
-  createForm.querySelector("button[type=\"button\"]").addEventListener("click", async () => {
-    try {
-      createStatus.textContent = "Создание...";
-      const project = await createProject({
-        name: createForm.querySelector('[name="name"]').value,
-        description: createForm.querySelector('[name="description"]').value,
-        goal: createForm.querySelector('[name="goal"]').value,
-        completionCriteria: createForm.querySelector('[name="completionCriteria"]').value,
-      });
-      createForm.querySelectorAll("input, textarea").forEach((field) => { field.value = ""; });
-      createStatus.textContent = "Проект создан.";
-      renderList(await listProjects());
-      await openProject(project.id);
-    } catch (error) {
-      console.error("project-create", error);
-      createStatus.textContent = error?.message || error?.details || error?.hint || "Не удалось создать проект.";
-    }
+
+  backButton.addEventListener("click", async () => {
+    detailView.hidden = true;
+    listView.hidden = false;
+    renderList(await listProjects());
   });
-  backButton.addEventListener("click", () => { detailView.hidden = true; listView.hidden = false; renderList(await listProjects()); });
 }
-init().catch((error) => { projectList.innerHTML = '<div class="project-empty">' + esc(error.message) + '</div>'; });
+
+init().catch((error) => {
+  projectList.innerHTML = '<div class="project-empty">' + esc(error.message) + '</div>';
+});
