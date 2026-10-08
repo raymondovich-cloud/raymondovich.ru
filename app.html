@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 1.0 -->
+<!-- version 1.1 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -16,12 +16,47 @@
         <h1 class="app-title" id="app-title"></h1>
       </div>
       <div class="app-account">
-        <div id="account-email"></div>
-        <button class="app-logout" id="logout-button" type="button">Выйти</button>
+        <button class="app-settings" id="settings-button" type="button" aria-label="Открыть профиль пользователя" aria-expanded="false">⚙</button>
+        <span class="app-account-label">Пользователь</span>
       </div>
     </header>
+
     <div class="app-blocks" id="blocks"></div>
   </main>
+
+  <div class="account-panel-backdrop" id="account-panel-backdrop" hidden>
+    <section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-panel-title">
+      <div class="account-panel-header">
+        <div>
+          <p class="app-kicker">ACCOUNT</p>
+          <h2 id="account-panel-title">Пользователь</h2>
+        </div>
+        <button class="account-panel-close" id="account-panel-close" type="button" aria-label="Закрыть">×</button>
+      </div>
+
+      <div class="account-details">
+        <div class="account-detail">
+          <span>Имя</span>
+          <strong id="account-name">—</strong>
+        </div>
+        <div class="account-detail">
+          <span>Email</span>
+          <strong id="account-email">—</strong>
+        </div>
+        <div class="account-detail">
+          <span>Дата регистрации</span>
+          <strong id="account-created-at">—</strong>
+        </div>
+        <div class="account-detail">
+          <span>Состояние аккаунта</span>
+          <strong id="account-status">—</strong>
+        </div>
+      </div>
+
+      <button class="app-logout" id="logout-button" type="button">Выйти</button>
+    </section>
+  </div>
+
   <script type="module" src="./source/presentation/app/app-page.js"></script>
 </body>
 </html>
