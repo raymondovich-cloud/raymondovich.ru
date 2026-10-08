@@ -1,4 +1,4 @@
-// version 1.6
+// version 1.7
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
@@ -21,7 +21,7 @@ function renderList(projects) {
     ? projects.map((p) =>
         '<div class="project-list-row"><button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
         esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") +
-        '</small></div><span>Открыть →</span></button><button class="project-delete" data-delete-project-id="' + p.id + '" type="button" aria-label="Удалить проект">Удалить</button></div>'
+        '</small></div></button><button class="project-delete" data-delete-project-id="' + p.id + '" type="button" aria-label="Удалить проект">Удалить</button></div>'
       ).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
