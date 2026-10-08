@@ -1,4 +1,4 @@
-// version 1.5
+// version 1.6
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
@@ -65,11 +65,19 @@ function renderDetail(project) {
     progress + ' / 100</strong></div></section>';
 
   html +=
-    '<section class="project-definition"><div><span>Цель</span><strong>' +
+    '<section class="project-definition">' +
+    '<div class="project-definition-row"><span>Цель</span><strong>' +
     esc(project.goal || "Не задана") +
-    '</strong></div><div><span>100% означает</span><strong>' +
+    '</strong></div>' +
+    '<div class="project-definition-collapsible">' +
+    '<button class="project-definition-toggle" id="completion-toggle" type="button" aria-expanded="false" aria-controls="completion-criteria-content">' +
+    '<span>100% означает</span><span class="project-definition-chevron" aria-hidden="true">⌄</span>' +
+    '</button>' +
+    '<div class="project-definition-content" id="completion-criteria-content" hidden><strong>' +
     esc(project.completion_criteria || "Критерии не зафиксированы") +
-    '</strong></div></section>';
+    '</strong></div>' +
+    '</div>' +
+    '</section>';
 
   html +=
     '<section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ROADMAP</p><h3>Карта проекта</h3></div><strong>' +
@@ -101,6 +109,14 @@ function renderDetail(project) {
     '<p class="project-status" id="plan-status"></p></section>';
 
   detail.innerHTML = html;
+
+  const completionToggle = detail.querySelector("#completion-toggle");
+  const completionContent = detail.querySelector("#completion-criteria-content");
+  completionToggle.addEventListener("click", () => {
+    const expanded = completionToggle.getAttribute("aria-expanded") === "true";
+    completionToggle.setAttribute("aria-expanded", String(!expanded));
+    completionContent.hidden = expanded;
+  });
 
   detail.querySelectorAll("[data-task-id]").forEach((input) => {
     input.addEventListener("change", async () => {
