@@ -1,9 +1,9 @@
-// version 1.1
+// version 1.2
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { createChatGptPrompt, createProject, importPlan } from "../../application/projects/project-service.js";
 
 const form = document.querySelector("#create-project-form");
-const button = form?.querySelector(".project-action.primary");
+const button = document.querySelector("#create-project-button");
 const status = document.querySelector("#create-status");
 const promptButton = document.querySelector("#create-prompt-button");
 const promptOutput = document.querySelector("#create-prompt-output");
