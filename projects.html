@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 1.1 -->
+<!-- version 1.2 -->
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -14,7 +14,7 @@
 <div><p class="project-kicker">PROJECTS</p><h1>Проекты</h1></div>
 </header>
 <section id="project-list-view">
-<form class="project-create" id="create-project-form" method="post" action="./projects.html">
+<div class="project-create" id="create-project-form">
 <p class="project-kicker">NEW PROJECT</p><h2>Добавить проект</h2>
 <input name="name" required maxlength="120" placeholder="Название проекта">
 <textarea name="description" rows="3" placeholder="Идея проекта"></textarea>
@@ -22,7 +22,7 @@
 <textarea name="completionCriteria" rows="8" maxlength="30000" placeholder="Что должно быть правдой при 100%"></textarea>
 <button class="project-action primary" type="submit">Создать проект</button>
 <p class="project-status" id="create-status"></p>
-</form>
+</div>
 <section class="project-section"><div class="project-section-header"><div><p class="project-kicker">ACTIVE</p><h2>Мои проекты</h2></div></div><div id="project-list"></div></section>
 </section>
 <section id="project-detail-view" hidden>
