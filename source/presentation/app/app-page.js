@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { supabase } from "../../infrastructure/supabase/client.js";
 
@@ -15,7 +15,7 @@ function render(role, email) {
   blocks.innerHTML = "";
 
   const names = admin
-    ? ["Продукты", "Маркетинг", "Стратегия", "Идеи", "Аналитика продуктов", "Документация"]
+    ? ["Аналитика продуктов", "Документация", "Маркетинг", "Стратегия", "Продукты", "Идеи"]
     : ["Мои продукты", "Мой профиль", "Мои данные"];
 
   for (const name of names) {
