@@ -1,4 +1,4 @@
-// version 1.0
+// version 1.1
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { createProject } from "../../application/projects/project-service.js";
 
@@ -37,4 +37,16 @@ if (button) {
       button.disabled = false;
     }
   }, true);
+}
+
+
+const createToggle = document.querySelector("#create-project-toggle");
+const createContent = document.querySelector("#create-project-content");
+
+if (createToggle && createContent) {
+  createToggle.addEventListener("click", () => {
+    const expanded = createToggle.getAttribute("aria-expanded") === "true";
+    createToggle.setAttribute("aria-expanded", String(!expanded));
+    createContent.hidden = expanded;
+  });
 }
