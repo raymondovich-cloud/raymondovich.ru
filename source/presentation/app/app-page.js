@@ -1,4 +1,4 @@
-// version 1.4
+// version 1.5
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 
 const accessLabel = document.querySelector("#access-label");
@@ -15,29 +15,31 @@ const logoutButton = document.querySelector("#logout-button");
 
 function formatRegistrationDate(value) {
   if (!value) return "—";
-
-  return new Intl.DateTimeFormat("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
+  return new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
 }
 
 function render(role, user) {
   const admin = role === "admin";
-
   accessLabel.textContent = admin ? "ADMINISTRATOR" : "USER";
   appTitle.textContent = admin ? "Raymondovich Control" : "Raymondovich";
   blocks.innerHTML = "";
 
   const names = admin
-    ? ["Аналитика продуктов", "Документация", "Маркетинг", "Стратегия", "Продукты", "Идеи"]
+    ? ["Аналитика продуктов", "Документация", "Проекты", "Маркетинг", "Стратегия", "Продукты", "Идеи"]
     : ["Мои продукты", "Мой профиль", "Мои данные"];
 
   for (const name of names) {
     const item = document.createElement("section");
     item.className = "app-block";
-    item.innerHTML = `<span>${name}</span><small>${admin ? "ADMIN BLOCK" : "USER BLOCK"}</small>`;
+    item.innerHTML = "<span>" + name + "</span><small>" + (admin ? "ADMIN BLOCK" : "USER BLOCK") + "</small>";
+    if (admin && name === "Проекты") {
+      item.setAttribute("role", "button");
+      item.tabIndex = 0;
+      item.addEventListener("click", () => window.location.href = "./projects.html");
+      item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") window.location.href = "./projects.html";
+      });
+    }
     blocks.appendChild(item);
   }
 
@@ -59,32 +61,13 @@ function closeAccountPanel() {
 
 async function init() {
   const session = await getSession();
-
-  if (!session) {
-    window.location.replace("./auth.html");
-    return;
-  }
-
-  const role = getRole(session);
-  render(role, session.user);
+  if (!session) { window.location.replace("./auth.html"); return; }
+  render(getRole(session), session.user);
 }
 
 settingsButton.addEventListener("click", openAccountPanel);
 accountPanelClose.addEventListener("click", closeAccountPanel);
-
-accountPanelBackdrop.addEventListener("click", (event) => {
-  if (event.target === accountPanelBackdrop) closeAccountPanel();
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !accountPanelBackdrop.hidden) {
-    closeAccountPanel();
-  }
-});
-
-logoutButton.addEventListener("click", async () => {
-  await logout();
-  window.location.replace("./auth.html");
-});
-
+accountPanelBackdrop.addEventListener("click", (event) => { if (event.target === accountPanelBackdrop) closeAccountPanel(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !accountPanelBackdrop.hidden) closeAccountPanel(); });
+logoutButton.addEventListener("click", async () => { await logout(); window.location.replace("./auth.html"); });
 init();
