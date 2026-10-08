@@ -3,7 +3,7 @@ import { getSession, getRole } from "../../application/auth/authentication.js";
 import { createProject } from "../../application/projects/project-service.js";
 
 const form = document.querySelector("#create-project-form");
-const button = form?.querySelector("button[type=\"button\"]");
+const button = form?.querySelector(".project-action.primary");
 const status = document.querySelector("#create-status");
 
 if (button) {
