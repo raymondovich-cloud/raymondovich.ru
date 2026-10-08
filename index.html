@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 1.4 -->
+<!-- version 1.5 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -77,6 +77,31 @@
       padding: 80px 24px;
     }
 
+    .site-footer {
+      position: fixed;
+      inset: auto 0 28px 0;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    .site-footer-link {
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      opacity: 0.62;
+      transition: opacity 180ms ease;
+    }
+
+    .site-footer-link:hover,
+    .site-footer-link:focus-visible {
+      opacity: 1;
+      outline: none;
+    }
+
     .brand-title {
       margin: 0;
       width: 100%;
@@ -99,6 +124,10 @@
         font-size: 10px;
         letter-spacing: 0.09em;
         line-height: 1.25;
+      }
+
+      .site-footer {
+        inset: auto 0 max(20px, env(safe-area-inset-bottom)) 0;
       }
 
       .brand {
@@ -132,6 +161,12 @@
   <main class="brand">
     <h1 class="brand-title">RAYMONDOVICH</h1>
   </main>
+
+  <footer class="site-footer">
+    <a class="site-footer-link" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">
+      Developed by Raymondovich
+    </a>
+  </footer>
 
   <script>
     function showSoon() {
