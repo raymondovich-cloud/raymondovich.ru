@@ -1,6 +1,6 @@
 // version 1.4
 import { getSession, getRole } from "../../application/auth/authentication.js";
-import { calculateProgress, createChatGptPrompt, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
+import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateTask } from "../../application/projects/project-service.js";
 
 const listView = document.querySelector("#project-list-view");
 const detailView = document.querySelector("#project-detail-view");
@@ -19,14 +19,37 @@ function progressHtml(progress) {
 function renderList(projects) {
   projectList.innerHTML = projects.length
     ? projects.map((p) =>
-        '<button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
+        '<div class="project-list-row"><button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
         esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") +
-        '</small></div><span>Открыть →</span></button>'
+        '</small></div><span>Открыть →</span></button><button class="project-delete" data-delete-project-id="' + p.id + '" type="button" aria-label="Удалить проект">Удалить</button></div>'
       ).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
   projectList.querySelectorAll("[data-project-id]").forEach((button) => {
     button.addEventListener("click", () => openProject(button.dataset.projectId));
+  });
+
+  projectList.querySelectorAll("[data-delete-project-id]").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.stopPropagation();
+      const projectId = button.dataset.deleteProjectId;
+      const row = button.closest(".project-list-row");
+      const name = row?.querySelector(".project-list-item strong")?.textContent || "этот проект";
+
+      if (!window.confirm("Удалить проект «" + name + "»?\n\nБудут удалены его этапы, задачи и история. Отменить действие будет нельзя.")) return;
+
+      button.disabled = true;
+      button.textContent = "Удаление...";
+
+      try {
+        await deleteProject(projectId);
+        renderList(await listProjects());
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Удалить";
+        alert(error.message || "Не удалось удалить проект.");
+      }
+    });
   });
 }
 
