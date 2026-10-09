@@ -3,7 +3,7 @@ import { getSession, getRole } from "../../application/auth/authentication.js";
 import {
   loadToolsInventory, saveTool, deleteTool, saveResource, deleteResource,
   saveToolRelation, deleteToolRelation, saveResourceRelation, deleteResourceRelation,
-} from "../../application/tools/tools-service.js";
+} from "../../application/tools/tools-service.js?v=1.1";
 
 const $ = (selector) => document.querySelector(selector);
 const message = $("#page-message");
