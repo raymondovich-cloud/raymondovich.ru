@@ -1,4 +1,4 @@
-// version 2.8
+// version 2.9
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
@@ -14,7 +14,8 @@ function esc(value) {
 }
 
 function progressHtml(progress) {
-  return '<div class="project-progress"><div class="project-progress-track"><span style="width:' + progress + '%"></span></div><strong>' + progress + '%</strong></div>';
+  const value = Math.max(0, Math.min(100, Math.round(Number(progress) || 0)));
+  return '<div class="project-progress" role="group" aria-label="Готовность проекта ' + value + '%"><div class="project-progress-track" role="progressbar" aria-label="Готовность проекта" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + value + '"><span class="project-progress-fill" style="--progress:' + value + '%"></span></div><strong>' + value + '%</strong></div>';
 }
 
 function formatDate(value) {
@@ -32,7 +33,7 @@ function renderList(projects) {
         const pinBadge = p.is_pinned ? '<span class="project-pin-badge">ЗАКРЕПЛЁН</span>' : '';
         return '<div class="project-list-row" data-row-project-id="' + p.id + '">' +
           '<button class="project-list-item" data-project-id="' + p.id + '" type="button">' +
-          '<div class="project-list-copy"><div class="project-list-title-line"><strong>' + esc(p.name) + pinBadge + '</div>' +
+          '<div class="project-list-copy"><div class="project-list-title-line"><strong>' + esc(p.name) + '</strong>' + pinBadge + '</div>' +
           '<small>' + esc(p.description || "Без описания") + '</small></div>' +
           '<div class="project-list-progress" aria-label="Готовность проекта ' + progress + '%">' +
           '<div class="project-list-progress-heading"><span>Готовность</span></div>' +
