@@ -1,4 +1,4 @@
-// version 2.7
+// version 2.8
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
@@ -35,9 +35,8 @@ function renderList(projects) {
           '<div class="project-list-copy"><div class="project-list-title-line"><strong>' + esc(p.name) + pinBadge + '</div>' +
           '<small>' + esc(p.description || "Без описания") + '</small></div>' +
           '<div class="project-list-progress" aria-label="Готовность проекта ' + progress + '%">' +
-          '<div class="project-list-progress-heading"><span>Готовность</span><strong>' + progress + '%</strong></div>' +
-          '<div class="project-progress-track project-list-progress-track" role="progressbar" aria-label="Готовность проекта" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '" style="display:block;width:100%;height:10px;flex:none;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.1)">' +
-          '<span style="display:block!important;width:100%;height:100%;background:#ff6a00;border-radius:999px;transform:scaleX(' + (Math.max(0, Math.min(100, Number(progress) || 0)) / 100) + ');transform-origin:left center"></span></div></div></button></div>';
+          '<div class="project-list-progress-heading"><span>Готовность</span></div>' +
+          progressHtml(progress) + '</div></button></div>';
       }).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
