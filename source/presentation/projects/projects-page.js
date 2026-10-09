@@ -1,4 +1,4 @@
-// version 2.0
+// version 2.1
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
@@ -36,8 +36,8 @@ function renderList(projects) {
           '<small>' + esc(p.description || "Без описания") + '</small></div>' +
           '<div class="project-list-progress" aria-label="Готовность проекта ' + progress + '%">' +
           '<div class="project-list-progress-heading"><span>Готовность</span><strong>' + progress + '%</strong></div>' +
-          '<div class="project-list-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '">' +
-          '<span style="width:' + progress + '%"></span></div></div></button></div>';
+          '<div class="project-list-progress-track" role="progressbar" aria-label="Готовность проекта" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '">' +
+          '<span class="project-list-progress-fill" style="--progress-width:' + progress + '%"></span></div></div></button></div>';
       }).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
