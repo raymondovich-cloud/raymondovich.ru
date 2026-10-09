@@ -60,6 +60,25 @@
             <div class="form-actions"><button class="button primary" type="submit">Сохранить</button><button class="button quiet" type="button" data-reset="tool-form">Отмена</button></div>
           </form>
         </details>
+        <details class="editor" id="resource-editor">
+          <summary id="resource-form-summary">Добавить ресурс</summary>
+          <form id="resource-form" class="form-stack">
+            <input type="hidden" name="id">
+            <label>Сервис-владелец<select name="tool_id" required></select></label>
+            <label>Название ресурса<input name="name" maxlength="160" required></label>
+            <label>Тип ресурса<select name="resource_type" required>
+              <option value="repository">Репозиторий</option><option value="domain">Домен</option><option value="database">База данных</option>
+              <option value="server">Сервер</option><option value="api">API</option><option value="deployment">Развёртывание</option>
+              <option value="dns_zone">DNS-зона</option><option value="supabase_project">Проект Supabase</option><option value="other">Другое</option>
+            </select></label>
+            <label>Ссылка<input name="resource_url" type="url" placeholder="https://…"></label>
+            <label>Внешний ID<input name="external_id" maxlength="300"></label>
+            <label>Среда<select name="environment"><option value="">Не указана</option><option value="production">Production</option><option value="staging">Staging</option><option value="development">Development</option></select></label>
+            <label>Статус<select name="status"><option value="active">Активен</option><option value="testing">Тестируется</option><option value="paused">Приостановлен</option><option value="retired">Выведен из использования</option><option value="unknown">Неизвестен</option><option value="needs_verification">Требует проверки</option></select></label>
+            <label>Назначение<textarea name="description" rows="3"></textarea></label>
+            <div class="form-actions"><button class="button primary" type="submit">Сохранить ресурс</button><button class="button quiet" type="button" data-reset="resource-form">Отмена</button></div>
+          </form>
+        </details>
       </aside>
 
       <section class="tools-detail" id="tool-detail" aria-live="polite">
