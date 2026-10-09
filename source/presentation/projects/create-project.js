@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { createChatGptPrompt, createProject, importPlan } from "../../application/projects/project-service.js";
 
@@ -61,7 +61,7 @@ if (button) {
 
       form.querySelectorAll("input, textarea").forEach((field) => { field.value = ""; });
       status.textContent = "Проект создан. Автоматическая карта готова.";
-      window.location.href = "./projects.html?project=" + encodeURIComponent(project.id);
+      window.location.href = "./projects.html?project=" + encodeURIComponent(project.id) + "&release=20261009-1549";
     } catch (error) {
       status.textContent = error?.message || error?.details || error?.hint || "Не удалось создать проект.";
     } finally {
@@ -105,7 +105,7 @@ fixPlanButton?.addEventListener("click", async () => {
 
     form.querySelectorAll("input, textarea").forEach((field) => { field.value = ""; });
     status.textContent = "План зафиксирован. Проект создан.";
-    window.location.href = "./projects.html?project=" + encodeURIComponent(project.id);
+    window.location.href = "./projects.html?project=" + encodeURIComponent(project.id) + "&release=20261009-1549";
   } catch (error) {
     status.textContent = error?.message || "Не удалось зафиксировать план.";
     fixPlanButton.disabled = false;
