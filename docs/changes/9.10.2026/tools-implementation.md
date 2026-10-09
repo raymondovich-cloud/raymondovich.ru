@@ -1,0 +1,32 @@
+# Изменения — 09.10.2026
+
+## Время
+Московское время: около 16:40.
+
+## Реализовано
+- Созданы четыре таблицы Supabase: ecosystem_tools, tool_resources, project_tool_relations, project_resource_relations.
+- Применены три миграции: схема, начальное наполнение, ограничение grants и индексы.
+- Добавлены RLS-политики с проверкой admin-роли из app_metadata, owner_id и принадлежности связанного проекта/ресурса тому же владельцу.
+- Отозваны все табличные grants anon и authenticated на новые таблицы; authenticated получил только SELECT/INSERT/UPDATE/DELETE. TRUNCATE/REFERENCES/TRIGGER не выдаются.
+- Минимизированы права на user_profiles: anon без доступа, authenticated только SELECT/INSERT/UPDATE.
+- Создан начальный реестр: 4 сервиса, 7 ресурсов, 11 связей проект–сервис и 7 связей проект–ресурс.
+- В реестр проектов добавлены Raymondovich.ru и Raymondovich.online.
+- Созданы tools.html, source/design/tools.css, source/presentation/tools/tools-page.js, source/application/tools/tools-service.js.
+- Реализованы поиск и фильтр, просмотр сервиса, добавление/редактирование/удаление сервиса и ресурса, управление связями с проектами и ресурсами.
+- Раздел «Инструменты» добавлен в административную панель.
+- Добавлены CSP meta-политики и noindex/nofollow на административные HTML-маршруты и страницы авторизации.
+- Создан docs/security/admin-security.md и обновлена архитектурная документация.
+
+## Проверки
+- SQL-проверка подтвердила наличие четырёх новых таблиц с включённым RLS.
+- PostgreSQL grants проверены: anon не имеет SELECT на новых таблицах; authenticated не имеет TRUNCATE.
+- Симуляция сессии authenticated без роли admin вернула 0 сервисов.
+- Симуляция сессии admin вернула 4 сервиса.
+- Статический синтаксис tools-page.js, tools-service.js и app-page.js проверен.
+- Supabase Security Advisor всё ещё сообщает, что защита от скомпрометированных паролей отключена.
+
+## Ограничения
+- Браузерный smoke-test реального интерфейса ещё не выполнен.
+- Текущие DNS-настройки доменов и фактические deployment-связи оставлены в статусе needs_verification.
+- Внешние AI API-интеграции LifeGame и AI Sistem не подтверждались и не помечены как реализованные.
+- MFA администратора и защита от скомпрометированных паролей требуют настройки в Supabase Auth Dashboard.
