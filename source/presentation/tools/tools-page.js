@@ -1,4 +1,4 @@
-// version 1.3
+// version 1.4
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import {
   loadToolsInventory, saveTool, deleteTool, saveResource, deleteResource,
@@ -158,6 +158,9 @@ function renderToolList() {
       renderToolList();
       renderDetail();
       updateSelects();
+      if (window.matchMedia("(max-width: 780px)").matches) {
+        detail.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     });
     toolList.append(item);
   }
@@ -193,12 +196,9 @@ function renderToolConnection(relation) {
 function renderDetail() {
   const tool = getTool(selectedToolId);
   detail.replaceChildren();
-  if (!tool) {
-    const empty = node("div", "detail-empty");
-    empty.append(node("p", "tools-kicker", "SYSTEM OVERVIEW"), node("h2", "", "Карта взаимодействий"), node("p", "", "Выберите сервис слева, чтобы увидеть его ресурсы, проекты и подтверждённость связей."));
-    detail.append(empty);
-    return;
-  }
+  detail.hidden = !tool;
+  $("#tools-layout").classList.toggle("has-selection", Boolean(tool));
+  if (!tool) return;
   const resources = inventory.resources.filter((r) => r.tool_id === tool.id);
   const relations = inventory.toolRelations.filter((r) => r.tool_id === tool.id);
   const top = node("div", "detail-top");
@@ -224,26 +224,27 @@ function renderDetail() {
   metaGrid.append(urlMeta, meta("Ресурсов", resources.length), meta("Связанных проектов", projectCount));
   detail.append(metaGrid);
 
-  const resourceSection = node("section", "detail-section");
-  resourceSection.append(node("h3", "", "Ресурсы"));
-  const resourceList = node("div", "resource-list");
+  const resourceSection = node("details", "detail-section detail-accordion");
+  resourceSection.append(node("summary", "", tool.category === "domains_dns" ? "Домены и DNS" : tool.category === "database" ? "Проекты баз данных и ресурсы" : "Ресурсы"));
+  const resourceList = node("div", "resource-list accordion-content");
   if (!resources.length) resourceList.append(node("p", "muted", "Ресурсы ещё не добавлены."));
   resources.forEach((resource) => resourceList.append(renderResourceRow(resource)));
   resourceSection.append(resourceList);
   detail.append(resourceSection);
 
-  const relationSection = node("section", "detail-section");
-  relationSection.append(node("h3", "", "Связи с проектами"));
-  const connectionList = node("div", "connection-list");
+  const relationSection = node("details", "detail-section detail-accordion");
+  relationSection.append(node("summary", "", "Связи с проектами (" + new Set(relations.map((relation) => relation.project_id)).size + ")"));
+  const connectionList = node("div", "connection-list accordion-content");
   if (!relations.length) connectionList.append(node("p", "muted", "Связи с проектами ещё не зафиксированы."));
   relations.forEach((relation) => connectionList.append(renderToolConnection(relation)));
-  detail.append(relationSection, connectionList);
+  relationSection.append(connectionList);
+  detail.append(relationSection);
 
   const resourceRelations = inventory.resourceRelations.filter((relation) => resources.some((r) => r.id === relation.resource_id));
   if (resourceRelations.length) {
-    const section = node("section", "detail-section");
-    section.append(node("h3", "", "Связи конкретных ресурсов"));
-    const list = node("div", "connection-list");
+    const section = node("details", "detail-section detail-accordion");
+    section.append(node("summary", "", "Связи конкретных ресурсов (" + resourceRelations.length + ")"));
+    const list = node("div", "connection-list accordion-content");
     resourceRelations.forEach((relation) => {
       const resource = getResource(relation.resource_id);
       const project = getProject(relation.project_id);
@@ -298,8 +299,8 @@ function render() {
 async function reload({ keepSelection = true } = {}) {
   const previous = selectedToolId;
   inventory = await loadToolsInventory();
-  if (!keepSelection || !inventory.tools.some((tool) => tool.id === previous)) selectedToolId = inventory.tools[0]?.id || null;
-  else selectedToolId = previous;
+  if (!keepSelection) selectedToolId = null;
+  else selectedToolId = inventory.tools.some((tool) => tool.id === previous) ? previous : null;
   render();
 }
 
