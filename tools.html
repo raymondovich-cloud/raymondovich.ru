@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- version 1.0 -->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Закрытый реестр сервисов, ресурсов и связей экосистемы Raymondovich.">
+  <meta name="robots" content="noindex,nofollow">
+  <title>RAYMONDOVICH — Инструменты</title>
+  <link rel="stylesheet" href="./source/design/tools.css?v=1.0">
+</head>
+<body>
+  <main class="tools-shell">
+    <header class="tools-header">
+      <a class="tools-back" href="./app.html">← Control</a>
+      <div class="tools-heading">
+        <p class="tools-kicker">PRIVATE ECOSYSTEM MAP</p>
+        <h1>Инструменты</h1>
+        <p class="tools-intro">Сервисы, ресурсы и реальные связи между проектами.</p>
+      </div>
+      <button class="tools-refresh" id="refresh-button" type="button">Обновить</button>
+    </header>
+
+    <section class="tools-stats" id="stats" aria-live="polite">
+      <div><span>Сервисы</span><strong id="stat-tools">—</strong></div>
+      <div><span>Ресурсы</span><strong id="stat-resources">—</strong></div>
+      <div><span>Связи требуют проверки</span><strong id="stat-review">—</strong></div>
+    </section>
+
+    <p class="tools-message" id="page-message" role="status"></p>
+
+    <section class="tools-layout">
+      <aside class="tools-sidebar">
+        <div class="section-heading"><div><p class="tools-kicker">REGISTRY</p><h2>Сервисы</h2></div></div>
+        <label class="field-label" for="search-tools">Поиск</label>
+        <input id="search-tools" type="search" placeholder="Название, категория, ресурс">
+        <label class="field-label" for="filter-category">Категория</label>
+        <select id="filter-category">
+          <option value="">Все категории</option>
+          <option value="ai">AI</option><option value="development">Разработка</option>
+          <option value="domains_dns">Домены и DNS</option><option value="database">Базы данных</option>
+          <option value="hosting">Хостинг и серверы</option><option value="analytics">Аналитика</option>
+          <option value="payments">Платежи</option><option value="communication">Коммуникации</option><option value="other">Другое</option>
+        </select>
+        <div id="tool-list" class="tool-list"><p class="muted">Загрузка реестра…</p></div>
+        <details class="editor">
+          <summary id="tool-form-summary">Добавить сервис</summary>
+          <form id="tool-form" class="form-stack">
+            <input type="hidden" name="id">
+            <label>Название<input name="name" maxlength="120" required></label>
+            <label>Slug<input name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" required></label>
+            <label>Категория<select name="category" required>
+              <option value="ai">AI</option><option value="development">Разработка</option><option value="domains_dns">Домены и DNS</option>
+              <option value="database">Базы данных</option><option value="hosting">Хостинг и серверы</option><option value="analytics">Аналитика</option>
+              <option value="payments">Платежи</option><option value="communication">Коммуникации</option><option value="other">Другое</option>
+            </select></label>
+            <label>Официальная ссылка<input name="official_url" type="url" placeholder="https://…"></label>
+            <label>Статус<select name="status"><option value="active">Активен</option><option value="testing">Тестируется</option><option value="paused">Приостановлен</option><option value="retired">Выведен из использования</option><option value="needs_verification">Требует проверки</option></select></label>
+            <label>Назначение<textarea name="description" rows="3"></textarea></label>
+            <div class="form-actions"><button class="button primary" type="submit">Сохранить</button><button class="button quiet" type="button" data-reset="tool-form">Отмена</button></div>
+          </form>
+        </details>
+      </aside>
+
+      <section class="tools-detail" id="tool-detail" aria-live="polite">
+        <div class="detail-empty"><p class="tools-kicker">SYSTEM OVERVIEW</p><h2>Карта взаимодействий</h2><p>Выберите сервис слева, чтобы увидеть его ресурсы, проекты и подтверждённость связей.</p></div>
+      </section>
+    </section>
+
+    <section class="relation-workspace">
+      <div class="section-heading"><div><p class="tools-kicker">CONNECTIONS</p><h2>Связи проектов</h2></div></div>
+      <div class="relation-grid">
+        <details class="editor" open>
+          <summary>Связать проект с сервисом</summary>
+          <form id="tool-relation-form" class="form-stack">
+            <label>Проект<select name="project_id" required></select></label>
+            <label>Сервис<select name="tool_id" required></select></label>
+            <label>Тип связи<select name="relationship_type"><option value="manual_use">Ручное использование</option><option value="technical_integration">Техническая интеграция</option><option value="infrastructure_dependency">Инфраструктурная зависимость</option><option value="other">Другое</option></select></label>
+            <label>Назначение<input name="purpose" maxlength="500" required></label>
+            <label>Статус<select name="status"><option value="active">Активна / подтверждена</option><option value="planned">Запланирована</option><option value="paused">Приостановлена</option><option value="retired">Больше не используется</option><option value="needs_verification">Требует проверки</option></select></label>
+            <label>Основание / примечание<textarea name="evidence_note" rows="3" placeholder="Что подтверждает эту связь?"></textarea></label>
+            <button class="button primary" type="submit">Сохранить связь</button>
+          </form>
+        </details>
+        <details class="editor" open>
+          <summary>Связать проект с ресурсом</summary>
+          <form id="resource-relation-form" class="form-stack">
+            <label>Проект<select name="project_id" required></select></label>
+            <label>Ресурс<select name="resource_id" required></select></label>
+            <label>Роль ресурса<input name="role" maxlength="500" required placeholder="Например, исходный код"></label>
+            <label>Статус<select name="status"><option value="active">Активен / подтверждён</option><option value="planned">Запланирован</option><option value="paused">Приостановлен</option><option value="retired">Больше не используется</option><option value="needs_verification">Требует проверки</option></select></label>
+            <label>Основание / примечание<textarea name="evidence_note" rows="3"></textarea></label>
+            <button class="button primary" type="submit">Сохранить связь</button>
+          </form>
+        </details>
+      </div>
+      <div id="all-relations" class="all-relations"></div>
+    </section>
+  </main>
+  <script type="module" src="./source/presentation/tools/tools-page.js?v=1.0"></script>
+</body>
+</html>
