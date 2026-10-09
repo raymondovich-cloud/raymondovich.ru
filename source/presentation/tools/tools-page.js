@@ -225,6 +225,7 @@ function renderDetail() {
   detail.append(metaGrid);
 
   const resourceSection = node("details", "detail-section detail-accordion");
+  resourceSection.open = tool.category === "domains_dns";
   resourceSection.append(node("summary", "", tool.category === "domains_dns" ? "Домены и DNS" : tool.category === "database" ? "Проекты баз данных и ресурсы" : "Ресурсы"));
   const resourceList = node("div", "resource-list accordion-content");
   if (!resources.length) resourceList.append(node("p", "muted", "Ресурсы ещё не добавлены."));
@@ -316,6 +317,7 @@ function resetForm(formId) {
   }
 }
 function openResourceForm(toolId) {
+  $(".management-editor").open = true;
   resetForm("resource-form");
   if (toolId) resourceForm.elements.tool_id.value = toolId;
   $("#resource-editor").open = true;
@@ -323,6 +325,7 @@ function openResourceForm(toolId) {
   $("#resource-form").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function editTool(tool) {
+  $(".management-editor").open = true;
   toolForm.elements.id.value = tool.id;
   for (const key of ["name", "slug", "category", "official_url", "status", "description"]) toolForm.elements[key].value = tool[key] ?? "";
   $("#tool-form-summary").textContent = "Редактировать сервис";
@@ -330,6 +333,7 @@ function editTool(tool) {
   toolForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function editResource(resource) {
+  $(".management-editor").open = true;
   resourceForm.elements.id.value = resource.id;
   for (const key of ["tool_id", "name", "resource_type", "resource_url", "external_id", "environment", "status", "description"]) resourceForm.elements[key].value = resource[key] ?? "";
   $("#resource-form-summary").textContent = "Редактировать ресурс";
