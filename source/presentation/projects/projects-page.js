@@ -1,4 +1,4 @@
-// version 3.0
+// version 3.1
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
@@ -81,8 +81,9 @@ function renderList(projects) {
 }
 
 function closeProjectMenus() {
-  projectList.querySelectorAll(".project-context-menu").forEach((menu) => menu.remove());
+  document.querySelectorAll(".project-context-backdrop").forEach((backdrop) => backdrop.remove());
   projectList.querySelectorAll(".project-list-item.is-selected").forEach((item) => item.classList.remove("is-selected"));
+  document.body.classList.remove("project-menu-open");
 }
 
 function showProjectMenu(projectId) {
@@ -92,58 +93,78 @@ function showProjectMenu(projectId) {
   const button = row?.querySelector("[data-project-id]");
   if (!row || !button) return;
 
-  button.classList.add("is-selected");
-
   const project = currentProjects.find((item) => String(item.id) === String(projectId));
   if (!project) return;
 
-  const menu = document.createElement("div");
+  button.classList.add("is-selected");
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "project-context-backdrop";
+  backdrop.setAttribute("role", "presentation");
+
+  const menu = document.createElement("section");
   menu.className = "project-context-menu";
+  menu.setAttribute("role", "dialog");
+  menu.setAttribute("aria-modal", "true");
+  menu.setAttribute("aria-labelledby", "project-context-title");
+  menu.dataset.projectId = String(project.id);
   menu.innerHTML =
-    '<div class="project-context-info"><span>Информация</span><strong>Добавлен: ' + esc(formatDate(project.created_at)) +
+    '<div class="project-context-header"><div class="project-context-info"><span>ВЗАИМОДЕЙСТВИЕ С ПРОЕКТОМ</span><h2 id="project-context-title">' + esc(project.name) + '</h2></div>' +
+    '<button class="project-context-x" data-project-close type="button" aria-label="Закрыть окно">×</button></div>' +
+    '<div class="project-context-info project-context-meta"><strong>Добавлен: ' + esc(formatDate(project.created_at)) +
     '</strong><small>Кем: ' + esc(project.owner_name || project.owner_id || "Неизвестно") + '</small></div>' +
     '<div class="project-context-actions">' +
     '<button class="project-context-action primary" data-project-pin type="button">' + (project.is_pinned ? "Открепить проект" : "Закрепить проект") + '</button>' +
-    '<button class="project-context-action" data-project-edit type="button">Изменить</button>' +
-    '<button class="project-context-action danger" data-project-delete type="button">Удалить</button>' +
-    '<button class="project-context-close" data-project-close type="button">Закрыть</button>' +
+    '<button class="project-context-action" data-project-edit type="button">Изменить название</button>' +
+    '<button class="project-context-action danger" data-project-delete type="button">Удалить проект</button>' +
     '</div>';
 
-  row.appendChild(menu);
+  backdrop.appendChild(menu);
+  document.body.appendChild(backdrop);
+  document.body.classList.add("project-menu-open");
+  requestAnimationFrame(() => backdrop.classList.add("is-visible"));
+  menu.querySelector("[data-project-close]").focus();
 
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) closeProjectMenus();
+  });
+  menu.querySelector("[data-project-close]").addEventListener("click", closeProjectMenus);
   menu.querySelector("[data-project-pin]").addEventListener("click", async () => {
     try {
       await setProjectPinned(project.id, !project.is_pinned);
+      closeProjectMenus();
       currentProjects = await listProjects();
       renderList(currentProjects);
     } catch (error) {
       alert(error.message || "Не удалось изменить приоритет проекта.");
     }
   });
-  menu.querySelector("[data-project-close]").addEventListener("click", closeProjectMenus);
   menu.querySelector("[data-project-edit]").addEventListener("click", () => editProjectName(project));
   menu.querySelector("[data-project-delete]").addEventListener("click", () => removeProject(project));
 }
-
 async function editProjectName(project) {
-  const row = projectList.querySelector('[data-row-project-id="' + project.id + '"]');
-  const menu = row?.querySelector(".project-context-menu");
+  const menu = document.querySelector('.project-context-menu[data-project-id="' + project.id + '"]');
   if (!menu) return;
 
   menu.innerHTML =
-    '<div class="project-context-info"><span>Изменить</span>' +
-    '<input class="project-context-input" data-project-name-input type="text" maxlength="120" value="' + esc(project.name) + '">' +
-    '</div><div class="project-context-actions">' +
+    '<div class="project-context-header"><div class="project-context-info"><span>ИЗМЕНИТЬ ПРОЕКТ</span><h2 id="project-context-title">Название проекта</h2></div>' +
+    '<button class="project-context-x" data-project-cancel type="button" aria-label="Закрыть окно">×</button></div>' +
+    '<input class="project-context-input" data-project-name-input type="text" maxlength="120" value="' + esc(project.name) + '" aria-label="Название проекта">' +
+    '<div class="project-context-actions">' +
     '<button class="project-context-action primary" data-project-save type="button">Сохранить</button>' +
-    '<button class="project-context-close" data-project-cancel type="button">Отмена</button></div>';
+    '<button class="project-context-action" data-project-cancel type="button">Отмена</button></div>';
 
   const input = menu.querySelector("[data-project-name-input]");
   input.focus();
   input.select();
 
-  menu.querySelector("[data-project-cancel]").addEventListener("click", closeProjectMenus);
+  menu.querySelectorAll("[data-project-cancel]").forEach((button) => button.addEventListener("click", closeProjectMenus));
   menu.querySelector("[data-project-save]").addEventListener("click", async () => {
     const value = input.value.trim();
+    if (!value) {
+      input.focus();
+      return;
+    }
     try {
       await updateProjectName(project.id, value);
       closeProjectMenus();
@@ -160,6 +181,7 @@ async function removeProject(project) {
 
   try {
     await deleteProject(project.id);
+    closeProjectMenus();
     currentProjects = await listProjects();
     renderList(currentProjects);
   } catch (error) {
@@ -261,6 +283,12 @@ async function init() {
     listView.hidden = false;
     currentProjects = await listProjects();
     renderList(currentProjects);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && document.querySelector(".project-context-backdrop")) {
+      closeProjectMenus();
+    }
   });
 }
 
