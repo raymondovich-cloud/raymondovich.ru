@@ -1,4 +1,4 @@
-// version 1.8
+// version 1.9
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 
 const accessLabel = document.querySelector("#access-label");
@@ -43,9 +43,9 @@ function render(role, user) {
     if (admin && name === "Проекты") {
       item.setAttribute("role", "button");
       item.tabIndex = 0;
-      item.addEventListener("click", () => window.location.href = "./projects.html");
+      item.addEventListener("click", () => window.location.href = "./projects.html?release=20261009-1549");
       item.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") window.location.href = "./projects.html";
+        if (event.key === "Enter" || event.key === " ") window.location.href = "./projects.html?release=20261009-1549";
       });
     }
     blocks.appendChild(item);
