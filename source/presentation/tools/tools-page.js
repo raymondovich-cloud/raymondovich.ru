@@ -1,4 +1,4 @@
-// version 1.0
+// version 1.1
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import {
   loadToolsInventory, saveTool, deleteTool, saveResource, deleteResource,
