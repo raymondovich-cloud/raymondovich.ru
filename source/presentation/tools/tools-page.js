@@ -1,9 +1,9 @@
-// version 1.1
+// version 1.2
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import {
   loadToolsInventory, saveTool, deleteTool, saveResource, deleteResource,
   saveToolRelation, deleteToolRelation, saveResourceRelation, deleteResourceRelation,
-} from "../../application/tools/tools-service.js?v=1.1";
+} from "../../application/tools/tools-service.js?v=1.2";
 
 const $ = (selector) => document.querySelector(selector);
 const message = $("#page-message");
