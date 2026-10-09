@@ -1,4 +1,4 @@
-// version 1.1
+// version 1.2
 import { supabase } from "../../infrastructure/supabase/client.js";
 import { getRole, getSession } from "../auth/authentication.js";
 
@@ -42,6 +42,7 @@ export async function saveTool(input, id = null) {
     description: input.description.trim(),
     official_url: input.official_url.trim() || null,
     status: input.status,
+    last_verified_at: input.status === "needs_verification" ? null : new Date().toISOString(),
   };
   const query = id
     ? supabase.from("ecosystem_tools").update(payload).eq("id", id)
@@ -67,6 +68,7 @@ export async function saveResource(input, id = null) {
     environment: input.environment || null,
     status: input.status,
     description: input.description.trim(),
+    last_verified_at: input.status === "needs_verification" || input.status === "unknown" ? null : new Date().toISOString(),
   };
   const query = id
     ? supabase.from("tool_resources").update(payload).eq("id", id)
