@@ -1,4 +1,4 @@
-// version 1.2
+// version 1.3
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import {
   loadToolsInventory, saveTool, deleteTool, saveResource, deleteResource,
@@ -130,7 +130,9 @@ function renderToolList() {
   const category = $("#filter-category").value;
   const tools = inventory.tools.filter((tool) => {
     const resources = inventory.resources.filter((r) => r.tool_id === tool.id);
-    const text = [tool.name, tool.slug, tool.description, categoryLabels[tool.category], ...resources.map((r) => r.name)].join(" ").toLowerCase();
+    const relations = inventory.toolRelations.filter((r) => r.tool_id === tool.id);
+    const projectNames = relations.map((relation) => getProject(relation.project_id)?.name || "");
+    const text = [tool.name, tool.slug, tool.description, categoryLabels[tool.category], ...resources.map((r) => r.name), ...projectNames].join(" ").toLowerCase();
     return (!query || text.includes(query)) && (!category || tool.category === category);
   });
   toolList.replaceChildren();
@@ -140,12 +142,17 @@ function renderToolList() {
   }
   for (const tool of tools) {
     const resourcesCount = inventory.resources.filter((r) => r.tool_id === tool.id).length;
+    const relations = inventory.toolRelations.filter((relation) => relation.tool_id === tool.id);
+    const projectsCount = new Set(relations.map((relation) => relation.project_id)).size;
     const item = node("button", "tool-item");
     item.type = "button";
     item.setAttribute("aria-current", tool.id === selectedToolId ? "true" : "false");
     const info = node("span");
     info.append(node("strong", "", tool.name), node("small", "", categoryLabels[tool.category] || tool.category));
-    item.append(info, node("span", "tool-count", String(resourcesCount)));
+    const count = node("span", "tool-count", projectsCount + " пр.");
+    count.title = projectsCount + " связанных проекта · " + resourcesCount + " ресурсов";
+    count.setAttribute("aria-label", count.title);
+    item.append(info, count);
     item.addEventListener("click", () => {
       selectedToolId = tool.id;
       renderToolList();
@@ -213,7 +220,8 @@ function renderDetail() {
     anchor.href = url; anchor.target = "_blank"; anchor.rel = "noopener noreferrer";
     urlMeta.append(anchor);
   } else urlMeta.append(node("strong", "", "Не указан"));
-  metaGrid.append(urlMeta, meta("Ресурсов", resources.length));
+  const projectCount = new Set(relations.map((relation) => relation.project_id)).size;
+  metaGrid.append(urlMeta, meta("Ресурсов", resources.length), meta("Связанных проектов", projectCount));
   detail.append(metaGrid);
 
   const resourceSection = node("section", "detail-section");
