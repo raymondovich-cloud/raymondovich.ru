@@ -32,7 +32,15 @@ function render(role, user) {
     const item = document.createElement("section");
     item.className = "app-block";
     item.innerHTML = "<span>" + name + "</span><small>" + (admin ? "ADMIN BLOCK" : "USER BLOCK") + "</small>";
-    if (admin && name === "Инструменты") {\n      item.setAttribute("role", "button");\n      item.tabIndex = 0;\n      item.addEventListener("click", () => window.location.href = "./tools.html");\n      item.addEventListener("keydown", (event) => {\n        if (event.key === "Enter" || event.key === " ") window.location.href = "./tools.html";\n      });\n    }\n    if (admin && name === "Проекты") {
+    if (admin && name === "Инструменты") {
+      item.setAttribute("role", "button");
+      item.tabIndex = 0;
+      item.addEventListener("click", () => window.location.href = "./tools.html");
+      item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") window.location.href = "./tools.html";
+      });
+    }
+    if (admin && name === "Проекты") {
       item.setAttribute("role", "button");
       item.tabIndex = 0;
       item.addEventListener("click", () => window.location.href = "./projects.html");
