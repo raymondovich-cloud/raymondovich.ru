@@ -1,26 +1,60 @@
-// version 1.4
+// version 1.5
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 export async function listProjects() {
-  const { data, error } = await supabase.from("projects").select("*").order("updated_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .order("is_pinned", { ascending: false })
+    .order("pin_order", { ascending: true, nullsFirst: false })
+    .order("updated_at", { ascending: false });
   if (error) throw error;
 
   const projects = data ?? [];
+  if (!projects.length) return [];
+
+  const projectIds = projects.map((project) => project.id);
   const ownerIds = [...new Set(projects.map((project) => project.owner_id).filter(Boolean))];
-  if (!ownerIds.length) return projects;
 
-  const { data: profiles, error: profileError } = await supabase
-    .from("user_profiles")
-    .select("user_id, display_name")
-    .in("user_id", ownerIds);
+  const [milestoneResult, profileResult] = await Promise.all([
+    supabase.from("project_milestones").select("*").in("project_id", projectIds).order("position"),
+    ownerIds.length
+      ? supabase.from("user_profiles").select("user_id, display_name").in("user_id", ownerIds)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
 
-  if (profileError) throw profileError;
+  if (milestoneResult.error) throw milestoneResult.error;
+  if (profileResult.error) throw profileResult.error;
 
-  const names = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name]));
-  return projects.map((project) => ({
-    ...project,
-    owner_name: names.get(project.owner_id) || project.owner_id || "Неизвестно",
-  }));
+  const milestones = milestoneResult.data ?? [];
+  const milestoneIds = milestones.map((milestone) => milestone.id);
+  let tasks = [];
+
+  if (milestoneIds.length) {
+    const { data: taskData, error: taskError } = await supabase
+      .from("project_tasks")
+      .select("*")
+      .in("milestone_id", milestoneIds)
+      .order("position");
+    if (taskError) throw taskError;
+    tasks = taskData ?? [];
+  }
+
+  const names = new Map((profileResult.data ?? []).map((profile) => [profile.user_id, profile.display_name]));
+  return projects.map((project) => {
+    const projectMilestones = milestones
+      .filter((milestone) => milestone.project_id === project.id)
+      .map((milestone) => ({
+        ...milestone,
+        tasks: tasks.filter((task) => task.milestone_id === milestone.id),
+      }));
+    const enrichedProject = {
+      ...project,
+      milestones: projectMilestones,
+      owner_name: names.get(project.owner_id) || project.owner_id || "Неизвестно",
+    };
+    return { ...enrichedProject, progress: calculateProgress(enrichedProject) };
+  });
 }
 
 export async function getProject(projectId) {
@@ -180,6 +214,29 @@ export async function createProject(values) {
   }
 
   return data;
+}
+
+export async function setProjectPinned(projectId, pinned) {
+  const id = String(projectId || "").trim();
+  if (!id) throw new Error("Проект не указан.");
+
+  let pinOrder = null;
+  if (pinned) {
+    const { data, error } = await supabase
+      .from("projects")
+      .select("pin_order")
+      .eq("is_pinned", true)
+      .order("pin_order", { ascending: false, nullsFirst: false })
+      .limit(1);
+    if (error) throw error;
+    pinOrder = Number(data?.[0]?.pin_order || 0) + 1;
+  }
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ is_pinned: Boolean(pinned), pin_order: pinOrder })
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function updateProjectName(projectId, name) {
