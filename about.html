@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- version 1.0 -->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Как устроен RAYMONDOVICH: подход к разработке цифровых продуктов и AI-систем.">
+  <meta name="theme-color" content="#080706">
+  <title>Подход к разработке — RAYMONDOVICH</title>
+  <style>
+    :root { color-scheme: dark; --bg:#080706; --text:#f7f5f2; --muted:#aaa39b; --accent:#ff7900; --line:rgba(255,121,0,.28); --content:960px; }
+    * { box-sizing:border-box; }
+    html { background:var(--bg); }
+    body { margin:0; min-width:320px; color:var(--text); background:radial-gradient(ellipse 75% 35% at 95% 0%,rgba(255,106,0,.14),transparent 70%),var(--bg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.65; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; }
+    .header { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:22px max(24px,calc((100vw - var(--content))/2)); border-bottom:1px solid rgba(255,255,255,.08); }
+    .brand { font-size:12px; font-weight:750; letter-spacing:.16em; text-decoration:none; }
+    .back { color:var(--muted); font-size:12px; text-decoration:none; }
+    .back:hover { color:var(--text); }
+    main { width:min(var(--content),calc(100% - 48px)); margin:0 auto; padding:clamp(76px,12vw,140px) 0 110px; }
+    .eyebrow { margin:0 0 24px; color:var(--accent); font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; }
+    h1 { max-width:800px; margin:0 0 28px; font-size:clamp(42px,8vw,82px); font-weight:680; letter-spacing:-.065em; line-height:1.02; }
+    .intro { max-width:690px; margin:0; color:var(--muted); font-size:clamp(16px,2.3vw,20px); line-height:1.8; }
+    .divider { height:1px; margin:64px 0 34px; background:linear-gradient(90deg,var(--line),transparent); }
+    .principles { display:grid; grid-template-columns:1fr; }
+    .principle { display:grid; grid-template-columns:80px 1fr; gap:22px; padding:30px 0; border-bottom:1px solid rgba(255,255,255,.09); }
+    .number { color:var(--accent); font-size:12px; letter-spacing:.12em; }
+    h2 { margin:0 0 9px; font-size:clamp(20px,3vw,27px); font-weight:620; letter-spacing:-.035em; }
+    .principle p { max-width:650px; margin:0; color:var(--muted); font-size:15px; }
+    .closing { margin-top:58px; padding:28px; border:1px solid var(--line); border-radius:8px; background:linear-gradient(120deg,rgba(255,121,0,.075),rgba(255,255,255,.012)); }
+    .closing p { margin:0; color:var(--muted); font-size:14px; }
+    .closing strong { color:var(--text); font-weight:600; }
+    footer { display:flex; justify-content:space-between; gap:20px; padding:24px max(24px,calc((100vw - var(--content))/2)); border-top:1px solid rgba(255,255,255,.08); color:var(--muted); font-size:11px; }
+    @media(max-width:540px) { .header { padding:18px 20px; } main { width:calc(100% - 40px); padding-top:78px; } .principle { grid-template-columns:42px 1fr; gap:12px; } .closing { padding:22px; } footer { flex-direction:column; padding:22px 20px; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="./index.html">RAYMONDOVICH</a>
+    <a class="back" href="./index.html">← Главная</a>
+  </header>
+  <main>
+    <p class="eyebrow">02 / Подход</p>
+    <h1>Не просто идеи.<br>Работающие системы.</h1>
+    <p class="intro">RAYMONDOVICH — пространство самостоятельной разработки цифровых продуктов и AI-систем. Мы рассматриваем идею как отправную точку: дальше нужно определить задачу, спроектировать решение, проверить его и последовательно развивать.</p>
+    <div class="divider"></div>
+    <section class="principles" aria-label="Принципы разработки">
+      <article class="principle">
+        <span class="number">01</span>
+        <div><h2>Системный подход</h2><p>Продумываем архитектуру, ответственность компонентов и связи между ними. Цель — чтобы продукт развивался без хаоса и ненужного усложнения.</p></div>
+      </article>
+      <article class="principle">
+        <span class="number">02</span>
+        <div><h2>Практическая польза</h2><p>Отталкиваемся от задачи пользователя. Функция имеет смысл, когда помогает решить конкретную проблему, а не просто увеличивает список возможностей.</p></div>
+      </article>
+      <article class="principle">
+        <span class="number">03</span>
+        <div><h2>Постепенное развитие</h2><p>Разрабатываем продукт итерациями: уточняем требования, реализуем изменения и проверяем результат перед дальнейшим расширением.</p></div>
+      </article>
+      <article class="principle">
+        <span class="number">04</span>
+        <div><h2>Честный статус</h2><p>Отделяем реализованные функции от того, что находится в разработке или только запланировано. Демонстрация не должна обещать больше, чем умеет продукт.</p></div>
+      </article>
+    </section>
+    <div class="closing"><p><strong>Что это означает для посетителя?</strong> На публичной странице можно узнать, для чего создаётся каждый продукт и на какой он стадии. Возможности и доступность будут описываться по мере фактической реализации.</p></div>
+  </main>
+  <footer><span>RAYMONDOVICH</span><span>Независимая разработка цифровых продуктов</span></footer>
+</body>
+</html>
