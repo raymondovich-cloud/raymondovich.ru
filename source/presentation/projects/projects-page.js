@@ -1,4 +1,4 @@
-// version 2.2
+// version 2.3
 import { getSession, getRole } from "../../application/auth/authentication.js";
 import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
