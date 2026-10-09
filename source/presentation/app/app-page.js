@@ -1,4 +1,4 @@
-// version 1.7
+// version 1.8
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 
 const accessLabel = document.querySelector("#access-label");
