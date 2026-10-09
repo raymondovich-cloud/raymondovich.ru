@@ -1,4 +1,4 @@
-// version 1.0
+// version 1.1
 import { supabase } from "../../infrastructure/supabase/client.js";
 import { getRole, getSession } from "../auth/authentication.js";
 
