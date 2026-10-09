@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 1.8 -->
+<!-- version 1.9 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -305,48 +305,6 @@
     .text-link span { color: var(--accent); transition: transform 160ms ease; }
     .text-link:hover span { transform: translateX(4px); }
 
-    .ecosystem {
-      display: grid;
-      grid-template-columns: 0.8fr 1.2fr;
-      gap: clamp(32px, 8vw, 110px);
-      padding: 50px;
-      border: 1px solid rgba(255, 121, 0, 0.18);
-      border-radius: 10px;
-      background: linear-gradient(120deg, rgba(255, 121, 0, 0.075), rgba(255, 255, 255, 0.015) 58%);
-    }
-
-    .ecosystem h2 { max-width: 360px; }
-
-    .ecosystem-copy {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.85;
-    }
-
-    .principles {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-      margin-top: 35px;
-    }
-
-    .principle {
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-    }
-
-    .principle-number {
-      display: block;
-      margin-bottom: 20px;
-      color: var(--accent);
-      font-size: 11px;
-      letter-spacing: 0.12em;
-    }
-
-    .principle h3 { margin-bottom: 8px; font-size: 16px; }
-    .principle p { margin: 0; color: var(--muted); font-size: 13px; }
-
     .commercial {
       display: flex;
       align-items: center;
@@ -394,9 +352,6 @@
       .product-grid { grid-template-columns: 1fr; }
       .product { min-height: 290px; }
       .product-top { margin-bottom: 32px; }
-      .ecosystem { grid-template-columns: 1fr; gap: 22px; padding: 28px; }
-      .principles { grid-template-columns: 1fr; gap: 24px; }
-      .principle-number { margin-bottom: 10px; }
       .commercial { align-items: flex-start; flex-direction: column; }
       .footer-inner { align-items: flex-start; flex-direction: column; }
     }
@@ -476,38 +431,10 @@
       </div>
     </section>
 
-    <section class="section container" id="about" aria-labelledby="about-title">
-      <div class="ecosystem">
-        <div>
-          <p class="section-kicker">02 / Подход</p>
-          <h2 id="about-title">Не просто идеи. Работающие системы.</h2>
-        </div>
-        <p class="ecosystem-copy">RAYMONDOVICH объединяет самостоятельные проекты, которые разрабатываются и совершенствуются постепенно. На этой странице мы показываем их назначение и текущее состояние — без подмены планов готовыми результатами.</p>
-      </div>
-
-      <div class="principles" aria-label="Принципы разработки">
-        <article class="principle">
-          <span class="principle-number">01</span>
-          <h3>Системный подход</h3>
-          <p>Продумываем структуру продукта и связи между его частями до того, как наращивать функции.</p>
-        </article>
-        <article class="principle">
-          <span class="principle-number">02</span>
-          <h3>Практическая польза</h3>
-          <p>Начинаем с задачи пользователя и оцениваем решение по тому, насколько оно помогает её решить.</p>
-        </article>
-        <article class="principle">
-          <span class="principle-number">03</span>
-          <h3>Честный статус</h3>
-          <p>Различаем то, что уже реализовано, то, что разрабатывается, и то, что пока остаётся планом.</p>
-        </article>
-      </div>
-    </section>
-
     <section class="section container" aria-labelledby="commercial-title">
       <div class="commercial">
         <div>
-          <p class="section-kicker">03 / Каталог</p>
+          <p class="section-kicker">02 / Каталог</p>
           <h2 id="commercial-title">Продукты и предложения — в одном месте.</h2>
           <p>Перейдите на коммерческую площадку, чтобы знакомиться с продуктами и их доступностью по мере запуска.</p>
         </div>
