@@ -1,6 +1,6 @@
-// version 1.9
+// version 2.0
 import { getSession, getRole } from "../../application/auth/authentication.js";
-import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, updateProjectName, updateTask } from "../../application/projects/project-service.js";
+import { calculateProgress, createChatGptPrompt, deleteProject, getProject, importPlan, listProjects, setProjectPinned, updateProjectName, updateTask } from "../../application/projects/project-service.js";
 
 const listView = document.querySelector("#project-list-view");
 const detailView = document.querySelector("#project-detail-view");
@@ -27,13 +27,18 @@ function formatDate(value) {
 
 function renderList(projects) {
   projectList.innerHTML = projects.length
-    ? projects.map((p) =>
-        '<div class="project-list-row" data-row-project-id="' + p.id + '">' +
-        '<button class="project-list-item" data-project-id="' + p.id + '" type="button"><div><strong>' +
-        esc(p.name) + '</strong><small>' + esc(p.description || "Без описания") +
-        '</small></div></button>' +
-        '</div>'
-      ).join("")
+    ? projects.map((p) => {
+        const progress = Number.isFinite(Number(p.progress)) ? Number(p.progress) : calculateProgress(p);
+        const pinBadge = p.is_pinned ? '<span class="project-pin-badge">ЗАКРЕПЛЁН</span>' : '';
+        return '<div class="project-list-row" data-row-project-id="' + p.id + '">' +
+          '<button class="project-list-item" data-project-id="' + p.id + '" type="button">' +
+          '<div class="project-list-copy"><div class="project-list-title-line"><strong>' + esc(p.name) + pinBadge + '</div>' +
+          '<small>' + esc(p.description || "Без описания") + '</small></div>' +
+          '<div class="project-list-progress" aria-label="Готовность проекта ' + progress + '%">' +
+          '<div class="project-list-progress-heading"><span>Готовность</span><strong>' + progress + '%</strong></div>' +
+          '<div class="project-list-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '">' +
+          '<span style="width:' + progress + '%"></span></div></div></button></div>';
+      }).join("")
     : '<div class="project-empty">Проектов пока нет. Создай первый проект.</div>';
 
   projectList.querySelectorAll("[data-project-id]").forEach((button) => {
@@ -98,6 +103,7 @@ function showProjectMenu(projectId) {
     '<div class="project-context-info"><span>Информация</span><strong>Добавлен: ' + esc(formatDate(project.created_at)) +
     '</strong><small>Кем: ' + esc(project.owner_name || project.owner_id || "Неизвестно") + '</small></div>' +
     '<div class="project-context-actions">' +
+    '<button class="project-context-action primary" data-project-pin type="button">' + (project.is_pinned ? "Открепить проект" : "Закрепить проект") + '</button>' +
     '<button class="project-context-action" data-project-edit type="button">Изменить</button>' +
     '<button class="project-context-action danger" data-project-delete type="button">Удалить</button>' +
     '<button class="project-context-close" data-project-close type="button">Закрыть</button>' +
@@ -105,6 +111,15 @@ function showProjectMenu(projectId) {
 
   row.appendChild(menu);
 
+  menu.querySelector("[data-project-pin]").addEventListener("click", async () => {
+    try {
+      await setProjectPinned(project.id, !project.is_pinned);
+      currentProjects = await listProjects();
+      renderList(currentProjects);
+    } catch (error) {
+      alert(error.message || "Не удалось изменить приоритет проекта.");
+    }
+  });
   menu.querySelector("[data-project-close]").addEventListener("click", closeProjectMenus);
   menu.querySelector("[data-project-edit]").addEventListener("click", () => editProjectName(project));
   menu.querySelector("[data-project-delete]").addEventListener("click", () => removeProject(project));
