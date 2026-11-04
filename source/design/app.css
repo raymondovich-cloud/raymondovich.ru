@@ -204,3 +204,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   background: rgba(255,255,255,.08);
   font-size: 9px;
 }
+
+
+/* History group for ideas already converted into projects. */
+.idea-history-heading { margin-top: 26px; }
