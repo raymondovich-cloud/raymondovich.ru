@@ -1,81 +1,41 @@
-// version 1.9
+// version 2.0
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 
-const accessLabel = document.querySelector("#access-label");
-const appTitle = document.querySelector("#app-title");
-const blocks = document.querySelector("#blocks");
-const settingsButton = document.querySelector("#settings-button");
-const accountPanelBackdrop = document.querySelector("#account-panel-backdrop");
-const accountPanelClose = document.querySelector("#account-panel-close");
-const accountName = document.querySelector("#account-name");
-const accountEmail = document.querySelector("#account-email");
-const accountCreatedAt = document.querySelector("#account-created-at");
-const accountStatus = document.querySelector("#account-status");
 const logoutButton = document.querySelector("#logout-button");
+const status = document.querySelector("#control-status");
 
-function formatRegistrationDate(value) {
-  if (!value) return "—";
-  return new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
-}
-
-function render(role, user) {
-  const admin = role === "admin";
-  accessLabel.textContent = admin ? "ADMINISTRATOR" : "USER";
-  appTitle.textContent = admin ? "Raymondovich Control" : "Raymondovich";
-  blocks.innerHTML = "";
-
-  const names = admin
-    ? ["Аналитика продуктов", "Документация", "Проекты", "Инструменты", "Маркетинг", "Стратегия", "Идеи"]
-    : ["Мои продукты", "Мой профиль", "Мои данные"];
-
-  for (const name of names) {
-    const item = document.createElement("section");
-    item.className = "app-block";
-    item.innerHTML = "<span>" + name + "</span><small>" + (admin ? "ADMIN BLOCK" : "USER BLOCK") + "</small>";
-    if (admin && name === "Инструменты") {
-      item.setAttribute("role", "button");
-      item.tabIndex = 0;
-      item.addEventListener("click", () => window.location.href = "./tools.html");
-      item.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") window.location.href = "./tools.html";
-      });
-    }
-    if (admin && name === "Проекты") {
-      item.setAttribute("role", "button");
-      item.tabIndex = 0;
-      item.addEventListener("click", () => window.location.href = "./projects.html?release=20261009-1549");
-      item.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") window.location.href = "./projects.html?release=20261009-1549";
-      });
-    }
-    blocks.appendChild(item);
-  }
-
-  accountName.textContent = user.user_metadata?.display_name || "Не указано";
-  accountEmail.textContent = user.email || "—";
-  accountCreatedAt.textContent = formatRegistrationDate(user.created_at);
-  accountStatus.textContent = "Активен";
-}
-
-function openAccountPanel() {
-  accountPanelBackdrop.hidden = false;
-  settingsButton.setAttribute("aria-expanded", "true");
-}
-
-function closeAccountPanel() {
-  accountPanelBackdrop.hidden = true;
-  settingsButton.setAttribute("aria-expanded", "false");
+function showError(message) {
+  status.textContent = message;
+  status.dataset.state = "error";
 }
 
 async function init() {
-  const session = await getSession();
-  if (!session) { window.location.replace("./auth.html"); return; }
-  render(getRole(session), session.user);
+  try {
+    const session = await getSession();
+
+    if (!session) {
+      window.location.replace("./auth.html");
+      return;
+    }
+
+    if (getRole(session) !== "admin") {
+      window.location.replace("./auth.html");
+    }
+  } catch (error) {
+    showError(error.message || "Не удалось проверить доступ.");
+  }
 }
 
-settingsButton.addEventListener("click", openAccountPanel);
-accountPanelClose.addEventListener("click", closeAccountPanel);
-accountPanelBackdrop.addEventListener("click", (event) => { if (event.target === accountPanelBackdrop) closeAccountPanel(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !accountPanelBackdrop.hidden) closeAccountPanel(); });
-logoutButton.addEventListener("click", async () => { await logout(); window.location.replace("./auth.html"); });
+logoutButton.addEventListener("click", async () => {
+  logoutButton.disabled = true;
+
+  try {
+    await logout();
+    window.location.replace("./auth.html");
+  } catch (error) {
+    logoutButton.disabled = false;
+    showError(error.message || "Не удалось завершить сеанс.");
+  }
+});
+
 init();
