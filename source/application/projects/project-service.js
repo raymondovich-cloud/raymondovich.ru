@@ -1,4 +1,4 @@
-// version 2.0
+// version 2.1
 import { supabase } from "../../infrastructure/supabase/client.js";
 
 const PROJECT_FIELDS = "id, owner_id, source_idea_id, name, description, goal, status, priority, target_start_date, target_due_date, created_at, updated_at, is_pinned";
@@ -64,7 +64,7 @@ export async function createProjectFromIdea(idea, ownerId) {
 
 export async function updateProject(id, ownerId, changes) {
   const allowed = {};
-  for (const key of ["status", "priority"]) {
+  for (const key of ["status", "priority", "is_pinned"]) {
     if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
   }
   allowed.updated_at = new Date().toISOString();
