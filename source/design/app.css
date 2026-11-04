@@ -337,3 +337,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .ideas-heading-tools { gap:11px; }
   .ideas-add-icon { width:30px; height:30px; flex-basis:30px; }
 }
+
+
+/* version 4.10 — prevent iOS Safari focus zoom on form controls */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
