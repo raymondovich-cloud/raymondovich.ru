@@ -5,6 +5,11 @@ import { createIdea, deleteProject, listProjects, updateProject } from "../../ap
 const content = document.querySelector("#workspace-content");
 const status = document.querySelector("#control-status");
 const logoutButton = document.querySelector("#logout-button");
+const accountTrigger = document.querySelector("#account-trigger");
+const accountPanel = document.querySelector("#account-panel");
+const accountEmail = document.querySelector("#account-email");
+const menuToggle = document.querySelector("#menu-toggle");
+const sidebarBackdrop = document.querySelector("#sidebar-backdrop");
 const openIdeaButton = document.querySelector("#open-idea-dialog");
 const dialog = document.querySelector("#idea-dialog");
 const ideaForm = document.querySelector("#idea-form");
@@ -200,9 +205,17 @@ async function performAction(action, id) {
   finally { state.busy = false; }
 }
 
+function closeSidebar() { document.body.classList.remove("sidebar-open"); menuToggle?.setAttribute("aria-expanded", "false"); }
+function closeAccountPanel() { accountPanel.hidden = true; accountTrigger.setAttribute("aria-expanded", "false"); }
+menuToggle?.addEventListener("click", () => { const opened = document.body.classList.toggle("sidebar-open"); menuToggle.setAttribute("aria-expanded", String(opened)); });
+sidebarBackdrop?.addEventListener("click", closeSidebar);
+accountTrigger.addEventListener("click", (event) => { event.stopPropagation(); const opened = accountPanel.hidden; accountPanel.hidden = !opened; accountTrigger.setAttribute("aria-expanded", String(opened)); });
+document.addEventListener("click", (event) => { if (!event.target.closest(".account-wrap")) closeAccountPanel(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { closeAccountPanel(); closeSidebar(); } });
+
 document.addEventListener("click", async (event) => {
   const nav = event.target.closest("[data-view]");
-  if (nav) { state.view = nav.dataset.view; render(); return; }
+  if (nav) { state.view = nav.dataset.view; render(); closeSidebar(); return; }
 
   const go = event.target.closest("[data-go]");
   if (go) { state.view = go.dataset.go; render(); return; }
@@ -263,6 +276,7 @@ async function init() {
       return;
     }
     state.user = session.user;
+    accountEmail.textContent = session.user.email || "Email не указан";
     await refresh();
   } catch (error) {
     content.innerHTML = '<div class="empty-state"><div><strong>Не удалось открыть рабочее пространство</strong><p>Проверь подключение и попробуй обновить страницу.</p></div></div>';
