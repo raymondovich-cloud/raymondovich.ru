@@ -1,4 +1,4 @@
-// version 4.3
+// version 4.4
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -104,25 +104,100 @@ function emptyState(title, message, addIdea = false) {
 function renderOverview() {
   const ideas = openIdeas();
   const projects = activeProjects();
-  const activeCount = projects.filter((project) => project.status === "active").length;
-  const priorityCount = [...ideas, ...projects].filter((item) => ["high", "critical"].includes(item.priority)).length;
-  const recentIdeas = [...state.ideas].filter((idea) => idea.status !== "archived").slice(0, 3);
-  const recentProjects = [...state.projects].filter((project) => project.status !== "archived").slice(0, 3);
+  const runningProjects = projects.filter((project) => project.status === "active");
+  const pausedProjects = projects.filter((project) => project.status === "paused");
+  const priorityIdeas = ideas.filter((idea) => ["high", "critical"].includes(idea.priority));
+  const recentIdeas = [...state.ideas]
+    .filter((idea) => idea.status !== "archived" && idea.status !== "launched")
+    .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+    .slice(0, 4);
+  const recentProjects = [...runningProjects, ...pausedProjects]
+    .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+    .slice(0, 5);
+  const focusIdeas = [...priorityIdeas].sort(prioritySort).slice(0, 3);
+
+  const ideaRows = (items) => items.map((idea) => `
+    <article class="overview-row overview-idea-row">
+      <div class="overview-row-main">
+        <span class="overview-row-marker idea-marker" aria-hidden="true"></span>
+        <div class="overview-row-copy">
+          <strong>${escapeHtml(idea.name)}</strong>
+          <span>${ideaStatusLabel(idea.status)} · ${priorityLabel(idea.priority || "normal")}</span>
+        </div>
+      </div>
+      <div class="overview-row-actions">
+        <button class="overview-inline-action" type="button" data-entity="idea" data-action="launch" data-id="${idea.id}">Запустить проект</button>
+        <button class="overview-chevron" type="button" data-go="ideas" aria-label="Открыть идеи">↗</button>
+      </div>
+    </article>`).join("");
+
+  const projectRows = (items) => items.map((project) => `
+    <article class="overview-row">
+      <div class="overview-row-main">
+        <span class="overview-row-marker project-marker" aria-hidden="true"></span>
+        <div class="overview-row-copy">
+          <strong>${escapeHtml(project.name)}</strong>
+          <span>${projectStatusLabel(project.status)} · ${priorityLabel(project.priority || "normal")}</span>
+        </div>
+      </div>
+      <div class="overview-row-actions">
+        <button class="overview-inline-action" type="button" data-entity="project" data-action="pause" data-id="${project.id}">${project.status === "paused" ? "Возобновить" : "Пауза"}</button>
+        <button class="overview-chevron" type="button" data-go="projects" aria-label="Открыть проекты">↗</button>
+      </div>
+    </article>`).join("");
+
+  const recentIdeaRows = recentIdeas.map((idea) => `
+    <article class="overview-recent-row">
+      <div><strong>${escapeHtml(idea.name)}</strong><span>${ideaStatusLabel(idea.status)}</span></div>
+      <time>${dateLabel(idea.updated_at || idea.created_at)}</time>
+    </article>`).join("");
+
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">ECOSYSTEM / OVERVIEW</p><h1>Центр управления</h1><p>Идеи и проекты — отдельные этапы. Сначала фиксируй мысль, а в проект она перейдёт только после твоего решения.</p></div></div>
-    <div class="overview-grid">
-      <article class="metric-card"><div class="metric-label">Идеи на рассмотрении</div><div class="metric-value">${ideas.length}</div><div class="metric-note">Потенциальные направления</div></article>
-      <article class="metric-card"><div class="metric-label">Активные проекты</div><div class="metric-value">${activeCount}</div><div class="metric-note">Уже запущены в работу</div></article>
-      <article class="metric-card"><div class="metric-label">Приоритетные</div><div class="metric-value">${priorityCount}</div><div class="metric-note">Идеи и проекты с высоким приоритетом</div></article>
-    </div>
-    <div class="columns-two">
-      <section class="section-card"><div class="section-heading"><h2>Недавние идеи</h2><button class="text-action" type="button" data-go="ideas">Все идеи →</button></div>
-        <div class="list-stack">${recentIdeas.length ? recentIdeas.map(ideaCard).join("") : emptyState("Пока нет идей", "Добавь первую мысль — достаточно короткого названия.", true)}</div>
-      </section>
-      <section class="section-card"><div class="section-heading"><h2>Проекты в работе</h2><button class="text-action" type="button" data-go="projects">Все проекты →</button></div>
-        <div class="list-stack">${recentProjects.length ? recentProjects.map(projectCard).join("") : emptyState("Проектов пока нет", "Запусти одну из идей, когда примешь решение.", false)}</div>
-      </section>
-    </div>`;
+    <header class="overview-intro">
+      <div>
+        <p class="eyebrow">RAYMONDOVICH / CONTROL CENTER</p>
+        <h1>Центр управления</h1>
+        <p>Общая картина твоих направлений и текущих задач.</p>
+      </div>
+      <div class="overview-live"><span class="status-dot"></span>РАБОЧЕЕ ПРОСТРАНСТВО</div>
+    </header>
+
+    <section class="overview-summary" aria-label="Сводка рабочего пространства">
+      <div class="summary-item"><span>Идеи</span><strong>${ideas.length}</strong><small>ожидают решения</small></div>
+      <div class="summary-item"><span>Проекты</span><strong>${runningProjects.length}</strong><small>активно в работе</small></div>
+      <div class="summary-item"><span>На паузе</span><strong>${pausedProjects.length}</strong><small>приостановлено</small></div>
+      <div class="summary-item"><span>Приоритет</span><strong>${priorityIdeas.length + projects.filter((project) => ["high", "critical"].includes(project.priority)).length}</strong><small>направлений</small></div>
+    </section>
+
+    <section class="overview-focus">
+      <div class="overview-section-heading">
+        <div><p class="eyebrow">ATTENTION REQUIRED</p><h2>Требуют внимания</h2></div>
+        <button class="text-action" type="button" data-go="ideas">Все идеи <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="overview-list">
+        ${focusIdeas.length ? ideaRows(focusIdeas) : '<div class="overview-quiet-state">Нет приоритетных идей. Новые направления появятся здесь, когда ты отметишь их как приоритетные.</div>'}
+      </div>
+    </section>
+
+    <section class="overview-work">
+      <div class="overview-section-heading">
+        <div><p class="eyebrow">EXECUTION / IN PROGRESS</p><h2>Проекты в работе</h2></div>
+        <button class="text-action" type="button" data-go="projects">Все проекты <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="overview-list">
+        ${recentProjects.length ? projectRows(recentProjects) : '<div class="overview-quiet-state">Пока нет запущенных проектов. Когда идея будет готова к реализации, запусти её в разделе «Идеи».</div>'}
+      </div>
+    </section>
+
+    <section class="overview-recent">
+      <div class="overview-section-heading">
+        <div><p class="eyebrow">CAPTURE / LATEST UPDATES</p><h2>Недавние идеи</h2></div>
+        <button class="text-action" type="button" data-go="ideas">Открыть идеи <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="overview-recent-list">
+        ${recentIdeaRows || '<div class="overview-quiet-state">Здесь будут отображаться последние зафиксированные идеи.</div>'}
+      </div>
+    </section>`;
 }
 
 function renderIdeas() {
