@@ -29,7 +29,7 @@ export async function createProjectFromIdea(idea, ownerId) {
 
   if (existing) {
     const { error: syncError } = await supabase.from("ideas")
-      .update({ status: "launched", launched_at: idea.launched_at || new Date().toISOString() })
+      .update({ status: "launched", launched_at: idea.launched_at || new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq("id", idea.id).eq("owner_id", ownerId);
     if (syncError) throw normalizeError(syncError, "Проект найден, но не удалось обновить статус исходной идеи.");
     return existing;
@@ -52,7 +52,7 @@ export async function createProjectFromIdea(idea, ownerId) {
   if (error) throw normalizeError(error);
 
   const { error: ideaError } = await supabase.from("ideas")
-    .update({ status: "launched", launched_at: new Date().toISOString() })
+    .update({ status: "launched", launched_at: new Date().toISOString(), updated_at: new Date().toISOString() })
     .eq("id", idea.id)
     .eq("owner_id", ownerId);
   if (ideaError) {
@@ -67,6 +67,7 @@ export async function updateProject(id, ownerId, changes) {
   for (const key of ["status", "priority"]) {
     if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
   }
+  allowed.updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("projects")
     .update(allowed)
@@ -79,6 +80,22 @@ export async function updateProject(id, ownerId, changes) {
 }
 
 export async function deleteProject(id, ownerId) {
+  const { data: project, error: lookupError } = await supabase
+    .from("projects")
+    .select("source_idea_id")
+    .eq("id", id)
+    .eq("owner_id", ownerId)
+    .single();
+  if (lookupError) throw normalizeError(lookupError);
+
   const { error } = await supabase.from("projects").delete().eq("id", id).eq("owner_id", ownerId);
   if (error) throw normalizeError(error);
+
+  if (project.source_idea_id) {
+    const { error: restoreError } = await supabase.from("ideas")
+      .update({ status: "review", launched_at: null, updated_at: new Date().toISOString() })
+      .eq("id", project.source_idea_id)
+      .eq("owner_id", ownerId);
+    if (restoreError) throw normalizeError(restoreError, "Проект удалён, но исходную идею не удалось вернуть на рассмотрение.");
+  }
 }
