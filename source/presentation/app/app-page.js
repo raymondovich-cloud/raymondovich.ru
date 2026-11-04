@@ -1,4 +1,4 @@
-// version 4.8
+// version 4.9
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -249,7 +249,6 @@ function renderIdeas() {
         <h1>Идеи</h1>
         <p>Пространство для фиксации мыслей и направлений до их превращения в проекты.</p>
       </div>
-      <button class="button button-primary ideas-add-button" type="button" data-open-idea><span aria-hidden="true">＋</span> Новая идея</button>
     </header>
 
     <section class="overview-summary ideas-summary" aria-label="Сводка идей">
@@ -264,7 +263,8 @@ function renderIdeas() {
         <div><p class="eyebrow">CAPTURE / ORGANIZE</p><h2>${archived ? "Архив идей" : "Рабочий список"}</h2></div>
         <div class="ideas-heading-tools">
           <span class="ideas-total">${items.length} ${items.length === 1 ? "запись" : "записей"}</span>
-          <button class="text-action" type="button" data-idea-filter="${archived ? "open" : "archived"}">${archived ? "К входящим" : `Архив · ${archivedIdeas().length}`} <span aria-hidden="true">↗</span></button>
+          <button class="text-action ideas-archive-link" type="button" data-idea-filter="${archived ? "open" : "archived"}">${archived ? "К входящим" : `Архив · ${archivedIdeas().length}`} <span aria-hidden="true">↗</span></button>
+          <button class="ideas-add-icon" type="button" data-open-idea aria-label="Добавить новую идею" title="Новая идея">＋</button>
         </div>
       </div>
       <div class="overview-list ideas-list">
