@@ -1,4 +1,4 @@
-// version 4.12
+// version 4.13
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -28,6 +28,10 @@ const additionalInfoInput = document.querySelector("#idea-additional-info");
 const additionalParameters = document.querySelector("#idea-additional-parameters");
 const ideasCount = document.querySelector("#ideas-count");
 const projectsCount = document.querySelector("#projects-count");
+const ideaDetailDialog = document.createElement("dialog");
+ideaDetailDialog.className = "idea-detail-dialog";
+ideaDetailDialog.setAttribute("aria-label", "Подробности идеи");
+document.body.append(ideaDetailDialog);
 const projectActionDialog = document.createElement("dialog");
 projectActionDialog.className = "project-action-dialog";
 projectActionDialog.setAttribute("aria-label", "Действия с проектом");
@@ -247,31 +251,16 @@ function renderIdeas() {
 
   const ideaRows = (list) => list.map((idea) => {
     const priority = idea.priority || "normal";
-    const isLaunched = idea.status === "launched";
-    const rowActions = archived
-      ? `<button class="overview-inline-action" type="button" data-entity="idea" data-action="restore" data-id="${idea.id}">Восстановить</button>
-         <button class="idea-row-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`
-      : isLaunched
-        ? `<button class="idea-row-project-trigger" type="button" data-project-menu-idea="${idea.id}" aria-label="Удерживай, чтобы открыть действия с проектом">
-             <span class="idea-row-complete">Передана в проект</span>
-             <span class="idea-row-pin ${state.projects.find((project) => project.source_idea_id === idea.id)?.is_pinned ? "is-pinned" : ""}" aria-hidden="true">${state.projects.find((project) => project.source_idea_id === idea.id)?.is_pinned ? "◆" : "◇"}</span>
-           </button>`
-        : `<button class="overview-inline-action" type="button" data-entity="idea" data-action="launch" data-id="${idea.id}">Запустить проект</button>
-           <button class="idea-row-tool" type="button" data-entity="idea" data-action="review" data-id="${idea.id}" aria-label="${idea.status === "review" ? "Снять с рассмотрения" : "На рассмотрение"}">${idea.status === "review" ? "↶" : "◷"}</button>
-           <button class="idea-row-tool" type="button" data-entity="idea" data-action="priority" data-id="${idea.id}" aria-label="Изменить приоритет">${["high", "critical"].includes(priority) ? "★" : "☆"}</button>
-           <button class="idea-row-tool" type="button" data-entity="idea" data-action="archive" data-id="${idea.id}" aria-label="В архив">↓</button>
-           <button class="idea-row-tool is-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}" aria-label="Удалить">×</button>`;
-    return `<article class="overview-row idea-workspace-row">
+    return `<article class="overview-row idea-workspace-row idea-card-interactive" data-idea-card="${idea.id}" tabindex="0" role="button" aria-label="Открыть идею: ${escapeHtml(idea.name)}">
       <div class="overview-row-main">
         <span class="overview-row-marker idea-marker" aria-hidden="true"></span>
         <div class="overview-row-copy">
           <strong>${escapeHtml(idea.name)}</strong>
           <span>${ideaStatusLabel(idea.status)} · ${priorityLabel(priority)}${idea.updated_at || idea.created_at ? ` · ${dateLabel(idea.updated_at || idea.created_at)}` : ""}</span>
           ${idea.description ? `<p class="idea-row-description">${escapeHtml(idea.description)}</p>` : ""}
-          ${planningDetails(idea, "Показать план и экономику")}
         </div>
       </div>
-      <div class="overview-row-actions idea-row-actions">${rowActions}</div>
+      <span class="idea-card-open-indicator" aria-hidden="true">↗</span>
     </article>`;
   }).join("");
 
@@ -414,6 +403,22 @@ async function performAction(entity, action, id) {
   finally { state.busy = false; }
 }
 
+
+function openIdeaActionMenu(ideaId) {
+  const idea = state.ideas.find((entry) => entry.id === ideaId);
+  if (!idea) return;
+  if (idea.status === "launched") { openProjectActionMenu(ideaId); return; }
+  const archived = idea.status === "archived";
+  const priority = ["high", "critical"].includes(idea.priority);
+  const actions = archived
+    ? '<button type="button" data-entity="idea" data-action="restore" data-id="' + idea.id + '">↶ <span>Вернуть в рабочий список</span></button>'
+    : '<button type="button" data-entity="idea" data-action="launch" data-id="' + idea.id + '">↗ <span>Запустить проект</span></button>' +
+      '<button type="button" data-entity="idea" data-action="review" data-id="' + idea.id + '">◷ <span>' + (idea.status === "review" ? "Снять с рассмотрения" : "Отправить на рассмотрение") + '</span></button>' +
+      '<button type="button" data-entity="idea" data-action="priority" data-id="' + idea.id + '">★ <span>' + (priority ? "Снять приоритет" : "Присвоить приоритет") + '</span></button>' +
+      '<button type="button" data-entity="idea" data-action="archive" data-id="' + idea.id + '">↓ <span>Переместить в архив</span></button>';
+  projectActionDialog.innerHTML = '<div class="project-action-panel"><div class="project-action-heading"><div><p class="eyebrow">IDEA CONTROL</p><h2>' + escapeHtml(idea.name) + '</h2><span>' + ideaStatusLabel(idea.status) + ' · ' + priorityLabel(idea.priority || "normal") + '</span></div><button class="project-action-close" type="button" data-close-project-menu aria-label="Закрыть">×</button></div><div class="project-action-list">' + actions + '<button class="is-danger" type="button" data-entity="idea" data-action="delete" data-id="' + idea.id + '">× <span>Удалить идею</span></button></div><p class="project-action-hint">Удерживание открывает меню действий. Обычное нажатие показывает подробности.</p></div>';
+  if (!projectActionDialog.open) projectActionDialog.showModal();
+}
 function closeSidebar() {
   document.body.classList.remove("sidebar-open");
   menuToggle?.setAttribute("aria-expanded", "false");
@@ -445,6 +450,68 @@ let projectPressTimer = null;
 let projectPressTarget = null;
 let projectPressStart = null;
 function cancelProjectPress() { if (projectPressTimer) window.clearTimeout(projectPressTimer); projectPressTimer = null; projectPressTarget = null; projectPressStart = null; }
+function openIdeaDetails(ideaId) {
+  const idea = state.ideas.find((entry) => entry.id === ideaId);
+  if (!idea) return;
+  const fields = [
+    ["goal", "Цель проекта", "textarea"],
+    ["expected_revenue", "Желаемый доход, ₽", "number"],
+    ["estimated_cost", "Примерные расходы, ₽", "number"],
+    ["business_model", "Модель заработка", "textarea"],
+    ["concept", "Подробная концепция", "textarea"],
+    ["additional_info", "Дополнительная информация", "textarea"],
+  ];
+  const input = (key, label, type) => {
+    const value = idea[key] ?? "";
+    return type === "textarea"
+      ? `<label class="idea-detail-field"><span>${label}</span><textarea name="${key}" rows="${key === "concept" ? 5 : 3}" maxlength="8000">${escapeHtml(value)}</textarea></label>`
+      : `<label class="idea-detail-field"><span>${label}</span><input name="${key}" type="number" min="0" step="0.01" inputmode="decimal" value="${escapeHtml(value)}" placeholder="Не указано"></label>`;
+  };
+  ideaDetailDialog.dataset.ideaId = idea.id;
+  ideaDetailDialog.innerHTML = `<form class="idea-detail-form" id="idea-detail-form">
+    <header class="idea-detail-heading"><div><p class="eyebrow">IDEA / DETAILS</p><h2>Карточка идеи</h2><p>${escapeHtml(ideaStatusLabel(idea.status))} · ${priorityLabel(idea.priority || "normal")}</p></div><button class="project-action-close" type="button" data-close-idea-details aria-label="Закрыть">×</button></header>
+    <label class="idea-detail-field"><span>Название идеи</span><input name="name" maxlength="120" required value="${escapeHtml(idea.name)}"></label>
+    <label class="idea-detail-field"><span>Краткое описание</span><textarea name="description" rows="3" maxlength="3000">${escapeHtml(idea.description || "")}</textarea></label>
+    <div class="idea-detail-divider"><span>ПЛАНИРОВАНИЕ И ЭКОНОМИКА</span></div>
+    ${fields.map(([key,label,type]) => input(key,label,type)).join("")}
+    <footer class="idea-detail-actions"><button class="button button-quiet" type="button" data-close-idea-details>Отмена</button><button class="button button-primary" type="submit">Сохранить изменения</button></footer>
+  </form>`;
+  if (!ideaDetailDialog.open) ideaDetailDialog.showModal();
+  ideaDetailDialog.querySelector('[name="name"]').focus();
+}
+ideaDetailDialog.addEventListener("click", (event) => {
+  if (event.target === ideaDetailDialog || event.target.closest("[data-close-idea-details]")) ideaDetailDialog.close();
+});
+ideaDetailDialog.addEventListener("submit", async (event) => {
+  if (event.target.id !== "idea-detail-form") return;
+  event.preventDefault();
+  if (state.busy) return;
+  const form = event.target;
+  const data = new FormData(form);
+  const name = String(data.get("name") || "").trim();
+  if (!name) { showStatus("Укажи название идеи.", true); return; }
+  const changes = {
+    name,
+    description: String(data.get("description") || "").trim(),
+    goal: String(data.get("goal") || "").trim(),
+    expected_revenue: data.get("expected_revenue") === "" ? null : Number(data.get("expected_revenue")),
+    estimated_cost: data.get("estimated_cost") === "" ? null : Number(data.get("estimated_cost")),
+    business_model: String(data.get("business_model") || "").trim(),
+    concept: String(data.get("concept") || "").trim(),
+    additional_info: String(data.get("additional_info") || "").trim(),
+  };
+  state.busy = true;
+  const submit = form.querySelector('[type="submit"]');
+  submit.disabled = true;
+  try {
+    await updateIdea(ideaDetailDialog.dataset.ideaId, state.user.id, changes);
+    ideaDetailDialog.close();
+    await refresh();
+    showStatus("Изменения идеи сохранены.");
+  } catch (error) { showStatus(error.message, true); }
+  finally { state.busy = false; submit.disabled = false; }
+});
+
 function openProjectActionMenu(ideaId) {
   const project = state.projects.find((entry) => entry.source_idea_id === ideaId);
   if (!project) { showStatus("Связанный проект не найден. Обнови страницу.", true); return; }
@@ -454,10 +521,46 @@ function openProjectActionMenu(ideaId) {
   projectActionDialog.innerHTML = '<div class="project-action-panel"><div class="project-action-heading"><div><p class="eyebrow">PROJECT CONTROL</p><h2>' + escapeHtml(project.name) + '</h2><span>' + projectStatusLabel(project.status) + ' · ' + priorityLabel(project.priority || "normal") + '</span></div><button class="project-action-close" type="button" data-close-project-menu aria-label="Закрыть">×</button></div><div class="project-action-list">' + (archived ? restore : controls) + '<button class="is-danger" type="button" data-entity="project" data-action="delete" data-id="' + project.id + '">× <span>Удалить проект</span></button></div><p class="project-action-hint">Действия применяются к проекту, связанному с этой идеей.</p></div>';
   if (!projectActionDialog.open) projectActionDialog.showModal();
 }
-content.addEventListener("pointerdown", (event) => { const target = event.target.closest("[data-project-menu-idea]"); if (!target || event.button !== 0) return; cancelProjectPress(); projectPressTarget = target; projectPressStart = {x:event.clientX,y:event.clientY}; projectPressTimer = window.setTimeout(() => { const id = projectPressTarget?.dataset.projectMenuIdea; cancelProjectPress(); if (id) openProjectActionMenu(id); }, 550); });
-content.addEventListener("pointermove", (event) => { if (projectPressTimer && projectPressStart && Math.hypot(event.clientX-projectPressStart.x,event.clientY-projectPressStart.y)>12) cancelProjectPress(); });
+let projectPressTimer = null;
+let projectPressTarget = null;
+let projectPressStart = null;
+let suppressIdeaClickUntil = 0;
+function cancelProjectPress() { if (projectPressTimer) window.clearTimeout(projectPressTimer); projectPressTimer = null; projectPressTarget = null; projectPressStart = null; }
+content.addEventListener("pointerdown", (event) => {
+  const target = event.target.closest("[data-idea-card]");
+  if (!target || event.button !== 0) return;
+  cancelProjectPress();
+  projectPressTarget = target;
+  projectPressStart = { x: event.clientX, y: event.clientY };
+  projectPressTimer = window.setTimeout(() => {
+    const id = projectPressTarget?.dataset.ideaCard;
+    cancelProjectPress();
+    if (id) { suppressIdeaClickUntil = Date.now() + 850; openIdeaActionMenu(id); }
+  }, 550);
+});
+content.addEventListener("pointermove", (event) => {
+  if (projectPressTimer && projectPressStart && Math.hypot(event.clientX-projectPressStart.x,event.clientY-projectPressStart.y)>12) cancelProjectPress();
+});
 ["pointerup","pointercancel","pointerleave"].forEach((type) => content.addEventListener(type,cancelProjectPress));
-content.addEventListener("contextmenu", (event) => { const target=event.target.closest("[data-project-menu-idea]"); if (!target) return; event.preventDefault(); openProjectActionMenu(target.dataset.projectMenuIdea); });
+content.addEventListener("contextmenu", (event) => {
+  const target = event.target.closest("[data-idea-card]");
+  if (!target) return;
+  event.preventDefault();
+  suppressIdeaClickUntil = Date.now() + 850;
+  openIdeaActionMenu(target.dataset.ideaCard);
+});
+content.addEventListener("click", (event) => {
+  const target = event.target.closest("[data-idea-card]");
+  if (!target) return;
+  if (Date.now() < suppressIdeaClickUntil) { event.preventDefault(); return; }
+  openIdeaDetails(target.dataset.ideaCard);
+});
+content.addEventListener("keydown", (event) => {
+  const target = event.target.closest("[data-idea-card]");
+  if (!target || !["Enter"," "].includes(event.key)) return;
+  event.preventDefault();
+  openIdeaDetails(target.dataset.ideaCard);
+});
 projectActionDialog.addEventListener("click", async (event) => { if (event.target===projectActionDialog || event.target.closest("[data-close-project-menu]")) { projectActionDialog.close(); return; } const button=event.target.closest("[data-action]"); if (!button) return; projectActionDialog.close(); await performAction(button.dataset.entity,button.dataset.action,button.dataset.id); });
 document.addEventListener("click", async (event) => {
   const nav = event.target.closest("[data-view]");
