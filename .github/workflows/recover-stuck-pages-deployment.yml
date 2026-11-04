@@ -1,0 +1,53 @@
+name: recover-stuck-pages-deployment
+
+on:
+  workflow_run:
+    workflows:
+      - pages build and deployment
+    types:
+      - completed
+
+permissions:
+  actions: write
+  pages: write
+
+jobs:
+  recover:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt == 1 && github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clear the stale GitHub Pages deployment and retry deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PAGES_RUN_ID: ${{ github.event.workflow_run.id }}
+          STALE_DEPLOYMENT_ID: 437b90f22cf1f31445a36010c18bb5a611e2dc6f
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cancel_status="$(curl --silent --show-error --output /tmp/pages-cancel.json --write-out '%{http_code}' \
+            --request POST \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${REPOSITORY}/pages/deployments/${STALE_DEPLOYMENT_ID}/cancel")"
+
+          if [[ "${cancel_status}" == "204" ]]; then
+            echo "Cancelled stale Pages deployment ${STALE_DEPLOYMENT_ID}."
+          elif [[ "${cancel_status}" == "404" ]]; then
+            echo "Stale Pages deployment was already cleared or no longer exists."
+          else
+            cat /tmp/pages-cancel.json
+            echo "Could not clear stale Pages deployment (HTTP ${cancel_status})."
+            exit 1
+          fi
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${REPOSITORY}/actions/runs/${PAGES_RUN_ID}/rerun-failed-jobs"
+
+          echo "Requested a retry of failed GitHub Pages deployment jobs."
