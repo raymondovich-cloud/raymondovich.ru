@@ -1,36 +1,31 @@
 <!DOCTYPE html>
-<!-- version 1.6 -->
+<!-- version 2.0 -->
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://yajybgdorhxebbigwjgi.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://yajybgdorhxebbigwjgi.supabase.co; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="description" content="Закрытая область Raymondovich.">
+  <meta name="description" content="Закрытая административная область Raymondovich.">
   <meta name="robots" content="noindex,nofollow">
-<title>RAYMONDOVICH — App</title>
-<link rel="stylesheet" href="./source/design/app.css?v=1.1">
+  <title>RAYMONDOVICH — Control</title>
+  <link rel="stylesheet" href="./source/design/app.css?v=2.0">
 </head>
 <body>
-<main class="app-shell">
-<header class="app-header">
-<div><p class="app-kicker" id="access-label"></p><h1 class="app-title" id="app-title"></h1></div>
-<div class="app-account"><button class="app-settings" id="settings-button" type="button" aria-label="Открыть профиль пользователя" aria-expanded="false">⚙</button><span class="app-account-label">Пользователь</span></div>
-</header>
-<div class="app-blocks" id="blocks"></div>
-</main>
-<div class="account-panel-backdrop" id="account-panel-backdrop" hidden>
-<section class="account-panel" role="dialog" aria-modal="true" aria-labelledby="account-panel-title">
-<div class="account-panel-header"><div><p class="app-kicker">ACCOUNT</p><h2 id="account-panel-title">Пользователь</h2></div><button class="account-panel-close" id="account-panel-close" type="button" aria-label="Закрыть">×</button></div>
-<div class="account-details">
-<div class="account-detail"><span>Имя</span><strong id="account-name">—</strong></div>
-<div class="account-detail"><span>Email</span><strong id="account-email">—</strong></div>
-<div class="account-detail"><span>Дата регистрации</span><strong id="account-created-at">—</strong></div>
-<div class="account-detail"><span>Состояние аккаунта</span><strong id="account-status">—</strong></div>
-</div>
-<button class="app-logout" id="logout-button" type="button">Выйти</button>
-</section>
-</div>
-<script type="module" src="./source/presentation/app/app-page.js?v=1.9"></script>
+  <main class="control-shell">
+    <header class="control-header">
+      <div>
+        <p class="control-kicker">PRIVATE WORKSPACE</p>
+        <h1>Raymondovich Control</h1>
+      </div>
+      <button class="control-logout" id="logout-button" type="button">Выйти</button>
+    </header>
+    <section class="control-workspace" aria-label="Рабочее пространство">
+      <p class="control-kicker">WORKSPACE</p>
+      <p class="control-empty">Рабочее пространство готово к новой архитектуре.</p>
+    </section>
+    <p class="control-status" id="control-status" role="status" aria-live="polite"></p>
+  </main>
+  <script type="module" src="./source/presentation/app/app-page.js?v=2.0"></script>
 </body>
 </html>
