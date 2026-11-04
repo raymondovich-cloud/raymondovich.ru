@@ -134,7 +134,7 @@ function renderIdeas() {
         <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
       </div>
       <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(ideaCard).join("") : emptyState(archived ? "Архив идей пуст" : "Идей пока нет", archived ? "Архивированные идеи появятся здесь." : "Добавь первую мысль. Её не нужно сразу превращать в проект.", !archived)}</div>
-      ${launched.length ? `<div class="section-heading" style="margin-top:26px"><h2>Переданы в проекты</h2><span class="badge">${launched.length}</span></div><div class="list-stack">${launched.sort(prioritySort).map(ideaCard).join("")}</div>` : ""}
+      ${launched.length ? `<div class="section-heading idea-history-heading"><h2>Переданы в проекты</h2><span class="badge">${launched.length}</span></div><div class="list-stack">${launched.sort(prioritySort).map(ideaCard).join("")}</div>` : ""}
     </section>`;
 }
 
