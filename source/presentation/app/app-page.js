@@ -1,6 +1,7 @@
-// version 3.0
+// version 4.0
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
-import { createIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
+import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
+import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
 
 const content = document.querySelector("#workspace-content");
 const status = document.querySelector("#control-status");
@@ -19,7 +20,7 @@ const descriptionInput = document.querySelector("#idea-description");
 const ideasCount = document.querySelector("#ideas-count");
 const projectsCount = document.querySelector("#projects-count");
 
-const state = { user: null, projects: [], view: "overview", projectFilter: "active", busy: false };
+const state = { user: null, ideas: [], projects: [], view: "overview", ideaFilter: "open", projectFilter: "active", busy: false };
 
 function showStatus(message, isError = false) {
   status.textContent = message || "";
@@ -42,127 +43,128 @@ function dateLabel(value) {
 function priorityLabel(priority) {
   return ({ critical: "Критический", high: "Высокий приоритет", normal: "Обычный приоритет", low: "Низкий приоритет" })[priority] || "Обычный приоритет";
 }
+function ideaStatusLabel(value) {
+  return ({ new: "Новая идея", review: "На рассмотрении", launched: "Передана в проект", archived: "Архив" })[value] || value;
+}
+function projectStatusLabel(value) {
+  return ({ active: "В работе", paused: "На паузе", completed: "Завершён", archived: "Архив" })[value] || value;
+}
+function openIdeas() { return state.ideas.filter((idea) => ["new", "review"].includes(idea.status)); }
+function launchedIdeas() { return state.ideas.filter((idea) => idea.status === "launched"); }
+function archivedIdeas() { return state.ideas.filter((idea) => idea.status === "archived"); }
+function activeProjects() { return state.projects.filter((project) => ["active", "paused", "completed"].includes(project.status)); }
+function archivedProjects() { return state.projects.filter((project) => project.status === "archived"); }
 
-function statusLabel(value) {
-  return ({ idea: "Новая идея", review: "На рассмотрении", active: "В работе", paused: "На паузе", completed: "Завершён", archived: "Архив" })[value] || value;
+function prioritySort(a, b) {
+  const rank = (value) => ({ critical: 3, high: 2, normal: 1, low: 0 })[value] ?? 1;
+  return rank(b.priority) - rank(a.priority) || new Date(b.updated_at) - new Date(a.updated_at);
 }
 
-function visibleIdeas() {
-  return state.projects.filter((project) => project.status === "idea" || project.status === "review");
+function ideaCard(idea) {
+  const priority = idea.priority || "normal";
+  const actions = idea.status === "launched"
+    ? '<span class="badge badge-status">Проект создан</span>'
+    : idea.status === "archived"
+      ? `<button class="action-button" type="button" data-entity="idea" data-action="restore" data-id="${idea.id}">Вернуть к идеям</button>
+         <button class="action-button is-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`
+      : `<button class="action-button is-primary" type="button" data-entity="idea" data-action="launch" data-id="${idea.id}">Запустить проект</button>
+         <button class="action-button" type="button" data-entity="idea" data-action="review" data-id="${idea.id}">${idea.status === "review" ? "Снять с рассмотрения" : "На рассмотрение"}</button>
+         <button class="action-button" type="button" data-entity="idea" data-action="priority" data-id="${idea.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
+         <button class="action-button" type="button" data-entity="idea" data-action="archive" data-id="${idea.id}">В архив</button>
+         <button class="action-button is-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`;
+  return `<article class="idea-card"><div class="card-topline"><div><h3 class="card-title">${escapeHtml(idea.name)}</h3>${idea.description ? `<p class="card-description">${escapeHtml(idea.description)}</p>` : ""}</div></div>
+    <div class="card-meta"><span class="badge badge-status">${ideaStatusLabel(idea.status)}</span><span class="badge ${priority === "high" || priority === "critical" ? "badge-priority" : ""}">${priorityLabel(priority)}</span>${idea.launched_at ? `<span class="card-date">Запущена: ${dateLabel(idea.launched_at)}</span>` : ""}</div>
+    <div class="card-actions">${actions}</div></article>`;
 }
 
-function visibleProjects() {
-  return state.projects.filter((project) => !["idea", "review", "archived"].includes(project.status));
-}
-
-function archivedProjects() {
-  return state.projects.filter((project) => project.status === "archived");
-}
-
-function cardMarkup(project, isIdea) {
+function projectCard(project) {
   const priority = project.priority || "normal";
-  const isArchived = project.status === "archived";
-  const actions = isArchived
-    ? `<button class="action-button is-primary" type="button" data-action="restore" data-id="${project.id}">Вернуть в проекты</button>
-       <button class="action-button is-danger" type="button" data-action="delete" data-id="${project.id}">Удалить навсегда</button>`
-    : isIdea
-      ? `<button class="action-button is-primary" type="button" data-action="launch" data-id="${project.id}">Запустить проект</button>
-         <button class="action-button" type="button" data-action="review" data-id="${project.id}">На рассмотрение</button>
-         <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
-         <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>
-         <button class="action-button is-danger" type="button" data-action="delete" data-id="${project.id}">Удалить</button>`
-      : `<button class="action-button" type="button" data-action="pause" data-id="${project.id}">${project.status === "paused" ? "Возобновить" : "Пауза"}</button>
-         <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
-         <button class="action-button" type="button" data-action="complete" data-id="${project.id}">Завершить</button>
-         <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>`;
-
-  return `<article class="${isIdea ? "idea-card" : "project-card"}">
-    <div class="card-topline"><div>
-      <h3 class="card-title">${escapeHtml(project.name)}</h3>
-      ${project.description ? `<p class="card-description">${escapeHtml(project.description)}</p>` : ""}
-    </div></div>
-    <div class="card-meta">
-      <span class="badge badge-status">${statusLabel(project.status)}</span>
-      <span class="badge ${priority === "high" || priority === "critical" ? "badge-priority" : ""}">${priorityLabel(priority)}</span>
-      ${project.target_due_date ? `<span class="card-date">Срок: ${dateLabel(project.target_due_date)}</span>` : ""}
-    </div>
-    <div class="card-actions">${actions}</div>
-  </article>`;
+  const archived = project.status === "archived";
+  const actions = archived
+    ? `<button class="action-button is-primary" type="button" data-entity="project" data-action="restore" data-id="${project.id}">Восстановить проект</button>
+       <button class="action-button is-danger" type="button" data-entity="project" data-action="delete" data-id="${project.id}">Удалить навсегда</button>`
+    : `<button class="action-button" type="button" data-entity="project" data-action="pause" data-id="${project.id}">${project.status === "paused" ? "Возобновить" : "Пауза"}</button>
+       <button class="action-button" type="button" data-entity="project" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
+       <button class="action-button" type="button" data-entity="project" data-action="complete" data-id="${project.id}">Завершить</button>
+       <button class="action-button" type="button" data-entity="project" data-action="archive" data-id="${project.id}">В архив</button>
+       <button class="action-button is-danger" type="button" data-entity="project" data-action="delete" data-id="${project.id}">Удалить</button>`;
+  const source = project.source_idea_id ? '<span class="badge">Создан из идеи</span>' : "";
+  return `<article class="project-card"><div class="card-topline"><div><h3 class="card-title">${escapeHtml(project.name)}</h3>${project.description ? `<p class="card-description">${escapeHtml(project.description)}</p>` : ""}</div></div>
+    <div class="card-meta"><span class="badge badge-status">${projectStatusLabel(project.status)}</span><span class="badge ${priority === "high" || priority === "critical" ? "badge-priority" : ""}">${priorityLabel(priority)}</span>${source}${project.target_due_date ? `<span class="card-date">Срок: ${dateLabel(project.target_due_date)}</span>` : ""}</div>
+    <div class="card-actions">${actions}</div></article>`;
 }
 
-function emptyState(title, message, button = true) {
-  return `<div class="empty-state"><div><div class="empty-symbol">✳</div><strong>${title}</strong><p>${message}</p>${button ? '<button class="button button-primary empty-add" type="button">＋ Добавить идею</button>' : ""}</div></div>`;
+function emptyState(title, message, addIdea = false) {
+  return `<div class="empty-state"><div><div class="empty-symbol">✳</div><strong>${title}</strong><p>${message}</p>${addIdea ? '<button class="button button-primary empty-add" type="button">＋ Добавить идею</button>' : ""}</div></div>`;
 }
 
 function renderOverview() {
-  const ideas = visibleIdeas();
-  const projects = visibleProjects();
-  const active = projects.filter((item) => item.status === "active").length;
-  const priority = state.projects.filter((item) => item.priority === "high" || item.priority === "critical").length;
-  const recent = [...state.projects].filter((item) => item.status !== "archived").slice(0, 4);
-
+  const ideas = openIdeas();
+  const projects = activeProjects();
+  const activeCount = projects.filter((project) => project.status === "active").length;
+  const priorityCount = [...ideas, ...projects].filter((item) => ["high", "critical"].includes(item.priority)).length;
+  const recentIdeas = [...state.ideas].filter((idea) => idea.status !== "archived").slice(0, 3);
+  const recentProjects = [...state.projects].filter((project) => project.status !== "archived").slice(0, 3);
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">ECOSYSTEM / OVERVIEW</p><h1>Центр управления</h1><p>Все идеи и направления в одном месте. Зафиксируй мысль сейчас — вернись к ней, когда будешь готов.</p></div></div>
+    <div class="page-heading"><div><p class="eyebrow">ECOSYSTEM / OVERVIEW</p><h1>Центр управления</h1><p>Идеи и проекты — отдельные этапы. Сначала фиксируй мысль, а в проект она перейдёт только после твоего решения.</p></div></div>
     <div class="overview-grid">
-      <article class="metric-card"><div class="metric-label">Входящие идеи</div><div class="metric-value">${ideas.length}</div><div class="metric-note">Новые и ожидающие решения</div></article>
-      <article class="metric-card"><div class="metric-label">Активные проекты</div><div class="metric-value">${active}</div><div class="metric-note">Направления в реализации</div></article>
-      <article class="metric-card"><div class="metric-label">Приоритетные</div><div class="metric-value">${priority}</div><div class="metric-note">Отмечены твоим вниманием</div></article>
+      <article class="metric-card"><div class="metric-label">Идеи на рассмотрении</div><div class="metric-value">${ideas.length}</div><div class="metric-note">Потенциальные направления</div></article>
+      <article class="metric-card"><div class="metric-label">Активные проекты</div><div class="metric-value">${activeCount}</div><div class="metric-note">Уже запущены в работу</div></article>
+      <article class="metric-card"><div class="metric-label">Приоритетные</div><div class="metric-value">${priorityCount}</div><div class="metric-note">Идеи и проекты с высоким приоритетом</div></article>
     </div>
     <div class="columns-two">
-      <section class="section-card"><div class="section-heading"><h2>Недавние записи</h2><button class="text-action" type="button" data-go="ideas">Все идеи →</button></div>
-        <div class="list-stack">${recent.length ? recent.map((item) => cardMarkup(item, item.status === "idea" || item.status === "review")).join("") : emptyState("Пока здесь пусто", "Добавь первую идею. Для этого достаточно одного короткого названия.")}</div>
+      <section class="section-card"><div class="section-heading"><h2>Недавние идеи</h2><button class="text-action" type="button" data-go="ideas">Все идеи →</button></div>
+        <div class="list-stack">${recentIdeas.length ? recentIdeas.map(ideaCard).join("") : emptyState("Пока нет идей", "Добавь первую мысль — достаточно короткого названия.", true)}</div>
       </section>
-      <section class="section-card"><div class="section-heading"><h2>Фокус</h2><span class="badge">Сейчас</span></div>
-        <div class="list-stack">${projects.filter((item) => item.status === "active").length ? projects.filter((item) => item.status === "active").slice(0,3).map((item) => cardMarkup(item, false)).join("") : emptyState("Нет активного проекта", "Выбери идею и запусти её, когда будешь готов.", false)}</div>
+      <section class="section-card"><div class="section-heading"><h2>Проекты в работе</h2><button class="text-action" type="button" data-go="projects">Все проекты →</button></div>
+        <div class="list-stack">${recentProjects.length ? recentProjects.map(projectCard).join("") : emptyState("Проектов пока нет", "Запусти одну из идей, когда примешь решение.", false)}</div>
       </section>
     </div>`;
 }
 
 function renderIdeas() {
-  const ideas = visibleIdeas();
-  const sorted = [...ideas].sort((a,b) => {
-    const ap = a.priority === "critical" ? 3 : a.priority === "high" ? 2 : a.priority === "low" ? 0 : 1;
-    const bp = b.priority === "critical" ? 3 : b.priority === "high" ? 2 : b.priority === "low" ? 0 : 1;
-    return bp - ap || new Date(b.updated_at) - new Date(a.updated_at);
-  });
+  const archived = state.ideaFilter === "archived";
+  const items = archived ? archivedIdeas() : openIdeas();
+  const launched = archived ? [] : launchedIdeas();
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">CAPTURE / THINK LATER</p><h1>Идеи</h1><p>Быстро фиксируй мысли. Не нужно сразу превращать каждую из них в задачу или бизнес-план.</p></div><button class="button button-primary" type="button" id="page-add-idea">＋ Новая идея</button></div>
-    <section class="section-card"><div class="section-heading"><h2>Входящие идеи</h2><span class="badge">${ideas.length} записей</span></div>
-      <div class="list-stack">${sorted.length ? sorted.map((item) => cardMarkup(item, true)).join("") : emptyState("Идей пока нет", "Когда появится мысль, просто нажми «Новая идея». Она сохранится здесь и не потеряется.")}</div>
+    <div class="page-heading"><div><p class="eyebrow">CAPTURE / THINK LATER</p><h1>Идеи</h1><p>Идеи живут отдельно от проектов. Только команда «Запустить проект» создаёт рабочий проект.</p></div><button class="button button-primary" type="button" id="page-add-idea">＋ Новая идея</button></div>
+    <section class="section-card"><div class="section-heading"><h2>${archived ? "Архив идей" : "Входящие идеи"}</h2><span class="badge">${items.length} записей</span></div>
+      <div class="segmented-control" role="group" aria-label="Фильтр идей">
+        <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-idea-filter="open">Входящие</button>
+        <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
+      </div>
+      <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(ideaCard).join("") : emptyState(archived ? "Архив идей пуст" : "Идей пока нет", archived ? "Архивированные идеи появятся здесь." : "Добавь первую мысль. Её не нужно сразу превращать в проект.", !archived)}</div>
+      ${launched.length ? `<div class="section-heading" style="margin-top:26px"><h2>Переданы в проекты</h2><span class="badge">${launched.length}</span></div><div class="list-stack">${launched.sort(prioritySort).map(ideaCard).join("")}</div>` : ""}
     </section>`;
 }
 
 function renderProjects() {
   const archived = state.projectFilter === "archived";
-  const projects = archived ? archivedProjects() : visibleProjects();
-  const sorted = [...projects].sort((a,b) => {
-    const ap = a.priority === "critical" ? 3 : a.priority === "high" ? 2 : 1;
-    const bp = b.priority === "critical" ? 3 : b.priority === "high" ? 2 : 1;
-    return bp - ap || new Date(b.updated_at) - new Date(a.updated_at);
-  });
+  const items = archived ? archivedProjects() : activeProjects();
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">EXECUTION / PROJECTS</p><h1>Проекты</h1><p>Направления, которые перешли от идеи к реализации. Детальная карта, статистика и документация будут подключаться отдельными этапами.</p></div></div>
-    <section class="section-card">
-      <div class="section-heading"><h2>${archived ? "Архив" : "Рабочие направления"}</h2><span class="badge">${projects.length} записей</span></div>
+    <div class="page-heading"><div><p class="eyebrow">EXECUTION / PROJECTS</p><h1>Проекты</h1><p>Здесь находятся только идеи, которые ты явно запустил в реализацию.</p></div></div>
+    <section class="section-card"><div class="section-heading"><h2>${archived ? "Архив проектов" : "Рабочие проекты"}</h2><span class="badge">${items.length} записей</span></div>
       <div class="segmented-control" role="group" aria-label="Фильтр проектов">
         <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-project-filter="active">Проекты</button>
         <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-project-filter="archived">Архив <span>${archivedProjects().length}</span></button>
       </div>
-      <div class="list-stack">${sorted.length ? sorted.map((item) => cardMarkup(item, false)).join("") : emptyState(archived ? "Архив пуст" : "Проектов пока нет", archived ? "Отправленные в архив идеи и проекты появятся здесь. Их можно будет вернуть." : "Выбери идею во входящих и нажми «Запустить проект».", false)}</div>
+      <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(projectCard).join("") : emptyState(archived ? "Архив проектов пуст" : "Проектов пока нет", archived ? "Архивированные проекты появятся здесь." : "Перейди в раздел «Идеи» и запусти направление, которое готов реализовывать.", false)}</div>
     </section>`;
 }
 
 function render() {
   document.querySelectorAll("[data-view]").forEach((button) => button.classList.toggle("is-active", button.dataset.view === state.view));
-  ideasCount.textContent = String(visibleIdeas().length);
-  projectsCount.textContent = String(visibleProjects().length);
+  ideasCount.textContent = String(openIdeas().length);
+  projectsCount.textContent = String(activeProjects().length);
   if (state.view === "ideas") renderIdeas();
   else if (state.view === "projects") renderProjects();
   else renderOverview();
 }
 
 async function refresh() {
-  state.projects = await listProjects(state.user.id);
+  const [ideas, projects] = await Promise.all([listIdeas(state.user.id), listProjects(state.user.id)]);
+  state.ideas = ideas;
+  state.projects = projects;
   render();
 }
 
@@ -171,66 +173,108 @@ function openDialog() {
   titleInput.focus();
 }
 
-async function performAction(action, id) {
-  const project = state.projects.find((item) => item.id === id);
-  if (!project || state.busy) return;
-
-  let changes = null;
-  if (action === "launch" || action === "restore") changes = { status: "active" };
-  if (action === "review") changes = { status: "review" };
-  if (action === "archive") changes = { status: "archived" };
-  if (action === "complete") changes = { status: "completed" };
-  if (action === "pause") changes = { status: project.status === "paused" ? "active" : "paused" };
-  if (action === "priority") changes = { priority: project.priority === "high" || project.priority === "critical" ? "normal" : "high" };
+async function performAction(entity, action, id) {
+  if (state.busy) return;
+  const isIdea = entity === "idea";
+  const item = (isIdea ? state.ideas : state.projects).find((entry) => entry.id === id);
+  if (!item) return;
 
   if (action === "delete") {
-    if (!window.confirm(`Удалить «${project.name}» без возможности восстановления?`)) return;
+    if (!window.confirm(`Удалить «${item.name}» без возможности восстановления?`)) return;
     state.busy = true;
     try {
-      await deleteProject(id, state.user.id);
-      showStatus("Запись удалена.");
+      if (isIdea) await deleteIdea(id, state.user.id);
+      else await deleteProject(id, state.user.id);
+      showStatus(isIdea ? "Идея удалена." : "Проект удалён.");
       await refresh();
     } catch (error) { showStatus(error.message, true); }
     finally { state.busy = false; }
     return;
   }
 
-  if (!changes) return;
+  if (isIdea && action === "launch") {
+    state.busy = true;
+    try {
+      await createProjectFromIdea(item, state.user.id);
+      state.view = "projects";
+      showStatus("Проект создан. Исходная идея сохранена в истории.");
+      await refresh();
+    } catch (error) { showStatus(error.message, true); }
+    finally { state.busy = false; }
+    return;
+  }
+
+  const changes = {};
+  if (isIdea) {
+    if (action === "review") changes.status = item.status === "review" ? "new" : "review";
+    if (action === "archive") changes.status = "archived";
+    if (action === "restore") changes.status = "new";
+    if (action === "priority") changes.priority = ["high", "critical"].includes(item.priority) ? "normal" : "high";
+    if (!Object.keys(changes).length) return;
+    state.busy = true;
+    try {
+      await updateIdea(id, state.user.id, changes);
+      showStatus("Статус идеи обновлён.");
+      await refresh();
+    } catch (error) { showStatus(error.message, true); }
+    finally { state.busy = false; }
+    return;
+  }
+
+  if (action === "restore") changes.status = "active";
+  if (action === "archive") changes.status = "archived";
+  if (action === "complete") changes.status = "completed";
+  if (action === "pause") changes.status = item.status === "paused" ? "active" : "paused";
+  if (action === "priority") changes.priority = ["high", "critical"].includes(item.priority) ? "normal" : "high";
+  if (!Object.keys(changes).length) return;
   state.busy = true;
   try {
     await updateProject(id, state.user.id, changes);
-    showStatus(action === "launch" ? "Проект запущен." : action === "priority" ? "Приоритет обновлён." : "Изменения сохранены.");
+    showStatus("Изменения проекта сохранены.");
     await refresh();
   } catch (error) { showStatus(error.message, true); }
   finally { state.busy = false; }
 }
 
-function closeSidebar() { document.body.classList.remove("sidebar-open"); menuToggle?.setAttribute("aria-expanded", "false"); }
-function closeAccountPanel() { accountPanel.hidden = true; accountTrigger.setAttribute("aria-expanded", "false"); }
-menuToggle?.addEventListener("click", () => { const opened = document.body.classList.toggle("sidebar-open"); menuToggle.setAttribute("aria-expanded", String(opened)); });
+function closeSidebar() {
+  document.body.classList.remove("sidebar-open");
+  menuToggle?.setAttribute("aria-expanded", "false");
+}
+function closeAccountPanel() {
+  if (!accountPanel || !accountTrigger) return;
+  accountPanel.hidden = true;
+  accountTrigger.setAttribute("aria-expanded", "false");
+}
+menuToggle?.addEventListener("click", () => {
+  const opened = document.body.classList.toggle("sidebar-open");
+  menuToggle.setAttribute("aria-expanded", String(opened));
+});
 sidebarBackdrop?.addEventListener("click", closeSidebar);
-accountTrigger.addEventListener("click", (event) => { event.stopPropagation(); const opened = accountPanel.hidden; accountPanel.hidden = !opened; accountTrigger.setAttribute("aria-expanded", String(opened)); });
-document.addEventListener("click", (event) => { if (!event.target.closest(".account-wrap")) closeAccountPanel(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") { closeAccountPanel(); closeSidebar(); } });
+accountTrigger?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const opened = accountPanel.hidden;
+  accountPanel.hidden = !opened;
+  accountTrigger.setAttribute("aria-expanded", String(opened));
+});
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".account-wrap")) closeAccountPanel();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") { closeAccountPanel(); closeSidebar(); }
+});
 
 document.addEventListener("click", async (event) => {
   const nav = event.target.closest("[data-view]");
   if (nav) { state.view = nav.dataset.view; render(); closeSidebar(); return; }
-
   const go = event.target.closest("[data-go]");
   if (go) { state.view = go.dataset.go; render(); return; }
-
   if (event.target.closest("#page-add-idea, .empty-add")) { openDialog(); return; }
-
+  const ideaFilter = event.target.closest("[data-idea-filter]");
+  if (ideaFilter) { state.ideaFilter = ideaFilter.dataset.ideaFilter; renderIdeas(); return; }
   const projectFilter = event.target.closest("[data-project-filter]");
-  if (projectFilter) {
-    state.projectFilter = projectFilter.dataset.projectFilter;
-    renderProjects();
-    return;
-  }
-
+  if (projectFilter) { state.projectFilter = projectFilter.dataset.projectFilter; renderProjects(); return; }
   const actionButton = event.target.closest("[data-action]");
-  if (actionButton) await performAction(actionButton.dataset.action, actionButton.dataset.id);
+  if (actionButton) await performAction(actionButton.dataset.entity, actionButton.dataset.action, actionButton.dataset.id);
 });
 
 openIdeaButton.addEventListener("click", openDialog);
@@ -247,14 +291,11 @@ ideaForm.addEventListener("submit", async (event) => {
     ideaForm.reset();
     dialog.close();
     state.view = "ideas";
+    state.ideaFilter = "open";
     await refresh();
-    showStatus("Идея сохранена. К ней можно вернуться в любой момент.");
-  } catch (error) {
-    showStatus(error.message, true);
-  } finally {
-    state.busy = false;
-    saveIdeaButton.disabled = false;
-  }
+    showStatus("Идея сохранена отдельно от проектов.");
+  } catch (error) { showStatus(error.message, true); }
+  finally { state.busy = false; saveIdeaButton.disabled = false; }
 });
 
 logoutButton.addEventListener("click", async () => {
