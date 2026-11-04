@@ -14,7 +14,7 @@ const descriptionInput = document.querySelector("#idea-description");
 const ideasCount = document.querySelector("#ideas-count");
 const projectsCount = document.querySelector("#projects-count");
 
-const state = { user: null, projects: [], view: "overview", busy: false };
+const state = { user: null, projects: [], view: "overview", projectFilter: "active", busy: false };
 
 function showStatus(message, isError = false) {
   status.textContent = message || "";
@@ -50,18 +50,26 @@ function visibleProjects() {
   return state.projects.filter((project) => !["idea", "review", "archived"].includes(project.status));
 }
 
+function archivedProjects() {
+  return state.projects.filter((project) => project.status === "archived");
+}
+
 function cardMarkup(project, isIdea) {
   const priority = project.priority || "normal";
-  const actions = isIdea
-    ? `<button class="action-button is-primary" type="button" data-action="launch" data-id="${project.id}">Запустить проект</button>
-       <button class="action-button" type="button" data-action="review" data-id="${project.id}">На рассмотрение</button>
-       <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
-       <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>
-       <button class="action-button is-danger" type="button" data-action="delete" data-id="${project.id}">Удалить</button>`
-    : `<button class="action-button" type="button" data-action="pause" data-id="${project.id}">${project.status === "paused" ? "Возобновить" : "Пауза"}</button>
-       <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
-       <button class="action-button" type="button" data-action="complete" data-id="${project.id}">Завершить</button>
-       <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>`;
+  const isArchived = project.status === "archived";
+  const actions = isArchived
+    ? `<button class="action-button is-primary" type="button" data-action="restore" data-id="${project.id}">Вернуть в проекты</button>
+       <button class="action-button is-danger" type="button" data-action="delete" data-id="${project.id}">Удалить навсегда</button>`
+    : isIdea
+      ? `<button class="action-button is-primary" type="button" data-action="launch" data-id="${project.id}">Запустить проект</button>
+         <button class="action-button" type="button" data-action="review" data-id="${project.id}">На рассмотрение</button>
+         <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
+         <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>
+         <button class="action-button is-danger" type="button" data-action="delete" data-id="${project.id}">Удалить</button>`
+      : `<button class="action-button" type="button" data-action="pause" data-id="${project.id}">${project.status === "paused" ? "Возобновить" : "Пауза"}</button>
+         <button class="action-button" type="button" data-action="priority" data-id="${project.id}">${priority === "high" || priority === "critical" ? "Снять приоритет" : "В приоритет"}</button>
+         <button class="action-button" type="button" data-action="complete" data-id="${project.id}">Завершить</button>
+         <button class="action-button" type="button" data-action="archive" data-id="${project.id}">В архив</button>`;
 
   return `<article class="${isIdea ? "idea-card" : "project-card"}">
     <div class="card-topline"><div>
@@ -91,7 +99,7 @@ function renderOverview() {
   content.innerHTML = `
     <div class="page-heading"><div><p class="eyebrow">ECOSYSTEM / OVERVIEW</p><h1>Центр управления</h1><p>Все идеи и направления в одном месте. Зафиксируй мысль сейчас — вернись к ней, когда будешь готов.</p></div></div>
     <div class="overview-grid">
-      <article class="metric-card"><div class="metric-label">Идей в работе с мыслями</div><div class="metric-value">${ideas.length}</div><div class="metric-note">Новые и ожидающие решения</div></article>
+      <article class="metric-card"><div class="metric-label">Входящие идеи</div><div class="metric-value">${ideas.length}</div><div class="metric-note">Новые и ожидающие решения</div></article>
       <article class="metric-card"><div class="metric-label">Активные проекты</div><div class="metric-value">${active}</div><div class="metric-note">Направления в реализации</div></article>
       <article class="metric-card"><div class="metric-label">Приоритетные</div><div class="metric-value">${priority}</div><div class="metric-note">Отмечены твоим вниманием</div></article>
     </div>
@@ -120,7 +128,8 @@ function renderIdeas() {
 }
 
 function renderProjects() {
-  const projects = visibleProjects();
+  const archived = state.projectFilter === "archived";
+  const projects = archived ? archivedProjects() : visibleProjects();
   const sorted = [...projects].sort((a,b) => {
     const ap = a.priority === "critical" ? 3 : a.priority === "high" ? 2 : 1;
     const bp = b.priority === "critical" ? 3 : b.priority === "high" ? 2 : 1;
@@ -128,8 +137,13 @@ function renderProjects() {
   });
   content.innerHTML = `
     <div class="page-heading"><div><p class="eyebrow">EXECUTION / PROJECTS</p><h1>Проекты</h1><p>Направления, которые перешли от идеи к реализации. Детальная карта, статистика и документация будут подключаться отдельными этапами.</p></div></div>
-    <section class="section-card"><div class="section-heading"><h2>Рабочие направления</h2><span class="badge">${projects.length} проектов</span></div>
-      <div class="list-stack">${sorted.length ? sorted.map((item) => cardMarkup(item, false)).join("") : emptyState("Проектов пока нет", "Выбери идею во входящих и нажми «Запустить проект».", false)}</div>
+    <section class="section-card">
+      <div class="section-heading"><h2>${archived ? "Архив" : "Рабочие направления"}</h2><span class="badge">${projects.length} записей</span></div>
+      <div class="segmented-control" role="group" aria-label="Фильтр проектов">
+        <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-project-filter="active">Проекты</button>
+        <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-project-filter="archived">Архив <span>${archivedProjects().length}</span></button>
+      </div>
+      <div class="list-stack">${sorted.length ? sorted.map((item) => cardMarkup(item, false)).join("") : emptyState(archived ? "Архив пуст" : "Проектов пока нет", archived ? "Отправленные в архив идеи и проекты появятся здесь. Их можно будет вернуть." : "Выбери идею во входящих и нажми «Запустить проект».", false)}</div>
     </section>`;
 }
 
@@ -157,7 +171,7 @@ async function performAction(action, id) {
   if (!project || state.busy) return;
 
   let changes = null;
-  if (action === "launch") changes = { status: "active" };
+  if (action === "launch" || action === "restore") changes = { status: "active" };
   if (action === "review") changes = { status: "review" };
   if (action === "archive") changes = { status: "archived" };
   if (action === "complete") changes = { status: "completed" };
@@ -194,6 +208,13 @@ document.addEventListener("click", async (event) => {
   if (go) { state.view = go.dataset.go; render(); return; }
 
   if (event.target.closest("#page-add-idea, .empty-add")) { openDialog(); return; }
+
+  const projectFilter = event.target.closest("[data-project-filter]");
+  if (projectFilter) {
+    state.projectFilter = projectFilter.dataset.projectFilter;
+    renderProjects();
+    return;
+  }
 
   const actionButton = event.target.closest("[data-action]");
   if (actionButton) await performAction(actionButton.dataset.action, actionButton.dataset.id);
