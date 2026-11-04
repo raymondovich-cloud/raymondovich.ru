@@ -1,4 +1,4 @@
-// version 4.9
+// version 4.11
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -19,6 +19,10 @@ const ideaForm = document.querySelector("#idea-form");
 const saveIdeaButton = document.querySelector("#save-idea");
 const titleInput = document.querySelector("#idea-title");
 const descriptionInput = document.querySelector("#idea-description");
+const goalInput = document.querySelector("#idea-goal");
+const estimatedCostInput = document.querySelector("#idea-estimated-cost");
+const additionalInfoInput = document.querySelector("#idea-additional-info");
+const additionalParameters = document.querySelector("#idea-additional-parameters");
 const ideasCount = document.querySelector("#ideas-count");
 const projectsCount = document.querySelector("#projects-count");
 const projectActionDialog = document.createElement("dialog");
@@ -449,8 +453,16 @@ ideaForm.addEventListener("submit", async (event) => {
   saveIdeaButton.disabled = true;
   state.busy = true;
   try {
-    await createIdea({ ownerId: state.user.id, title: titleInput.value, description: descriptionInput.value });
+    await createIdea({
+      ownerId: state.user.id,
+      title: titleInput.value,
+      description: descriptionInput.value,
+      goal: goalInput.value,
+      estimatedCost: estimatedCostInput.value === "" ? null : Number(estimatedCostInput.value),
+      additionalInfo: additionalInfoInput.value,
+    });
     ideaForm.reset();
+    additionalParameters.open = false;
     dialog.close();
     state.view = "ideas";
     state.ideaFilter = "open";
