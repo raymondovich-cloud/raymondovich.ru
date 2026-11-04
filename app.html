@@ -1,31 +1,71 @@
 <!DOCTYPE html>
-<!-- version 2.0 -->
+<!-- version 3.0 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://yajybgdorhxebbigwjgi.supabase.co; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="Закрытая административная область Raymondovich.">
+  <meta name="description" content="Закрытый центр управления экосистемой Raymondovich.">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#050505">
   <title>RAYMONDOVICH — Control</title>
-  <link rel="stylesheet" href="./source/design/app.css?v=2.0">
+  <link rel="stylesheet" href="./source/design/app.css?v=3.0">
 </head>
 <body>
-  <main class="control-shell">
-    <header class="control-header">
-      <div>
-        <p class="control-kicker">PRIVATE WORKSPACE</p>
-        <h1>Raymondovich Control</h1>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./app.html" aria-label="Raymondovich Control">
+        <span class="brand-mark">R</span>
+        <span class="brand-copy"><strong>RAYMONDOVICH</strong><small>CONTROL CENTER</small></span>
+      </a>
+      <p class="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</p>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <button class="nav-item is-active" type="button" data-view="overview"><span class="nav-icon">⌂</span>Обзор</button>
+        <button class="nav-item" type="button" data-view="ideas"><span class="nav-icon">✳</span>Идеи<span class="nav-count" id="ideas-count">0</span></button>
+        <button class="nav-item" type="button" data-view="projects"><span class="nav-icon">▦</span>Проекты<span class="nav-count" id="projects-count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        <span>Личное пространство</span>
       </div>
-      <button class="control-logout" id="logout-button" type="button">Выйти</button>
-    </header>
-    <section class="control-workspace" aria-label="Рабочее пространство">
-      <p class="control-kicker">WORKSPACE</p>
-      <p class="control-empty">Рабочее пространство готово к новой архитектуре.</p>
-    </section>
-    <p class="control-status" id="control-status" role="status" aria-live="polite"></p>
-  </main>
-  <script type="module" src="./source/presentation/app/app-page.js?v=2.0"></script>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">R</span><strong>RAYMONDOVICH</strong></div>
+        <div class="topbar-context"><span class="status-dot"></span>ECOSYSTEM ONLINE</div>
+        <div class="topbar-actions">
+          <button class="button button-primary" id="open-idea-dialog" type="button"><span aria-hidden="true">＋</span> Новая идея</button>
+          <button class="avatar-button" id="logout-button" type="button" aria-label="Выйти из аккаунта" title="Выйти">↗</button>
+        </div>
+      </header>
+
+      <section class="page-content" id="workspace-content" aria-live="polite">
+        <div class="loading-state">Подключаем рабочее пространство…</div>
+      </section>
+      <p class="app-status" id="control-status" role="status" aria-live="polite"></p>
+      <footer class="app-footer">RAYMONDOVICH DIGITAL ECOSYSTEM <span>·</span> PRIVATE WORKSPACE</footer>
+    </main>
+  </div>
+
+  <dialog class="idea-dialog" id="idea-dialog">
+    <form id="idea-form" class="idea-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">БЫСТРАЯ ФИКСАЦИЯ</p><h2>Новая идея</h2></div>
+        <button class="icon-button" id="close-idea-dialog" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <label class="field-label" for="idea-title">О чём идея?</label>
+      <input id="idea-title" name="title" type="text" maxlength="120" placeholder="Коротко запиши мысль…" autocomplete="off" required>
+      <label class="field-label" for="idea-description">Дополнение <span>необязательно</span></label>
+      <textarea id="idea-description" name="description" rows="3" maxlength="3000" placeholder="Контекст, детали или просто голосом позже…"></textarea>
+      <div class="dialog-actions">
+        <button class="button button-quiet" id="cancel-idea" type="button">Отмена</button>
+        <button class="button button-primary" id="save-idea" type="submit">Сохранить идею</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="./source/presentation/app/app-page.js?v=3.0"></script>
 </body>
 </html>
