@@ -323,3 +323,17 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .project-action-list button.is-danger span { color:#ffaaaa; }
 .project-action-hint { margin:11px 0 0; color:var(--muted-soft); font-size:9px; line-height:1.5; }
 @media(max-width:640px) { .project-action-panel { padding:18px; } .project-action-list button { min-height:48px; } }
+
+
+/* version 4.9 — compact add-idea control in the ideas section heading */
+.ideas-intro .ideas-add-button { display:none; }
+.ideas-heading-tools { gap:14px; }
+.ideas-add-icon { display:grid; width:31px; height:31px; flex:0 0 31px; place-items:center; padding:0 0 2px; border:1px solid var(--border); border-radius:50%; color:var(--accent-light); background:rgba(255,106,0,.07); cursor:pointer; font-size:19px; line-height:1; transition:background .18s ease,border-color .18s ease,transform .18s ease; }
+.ideas-add-icon:hover { border-color:rgba(255,106,0,.58); background:rgba(255,106,0,.16); transform:translateY(-1px); }
+.ideas-add-icon:active { transform:scale(.94); }
+.ideas-add-icon:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.ideas-archive-link { white-space:nowrap; }
+@media(max-width:640px) {
+  .ideas-heading-tools { gap:11px; }
+  .ideas-add-icon { width:30px; height:30px; flex-basis:30px; }
+}
