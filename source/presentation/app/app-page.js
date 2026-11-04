@@ -1,4 +1,4 @@
-// version 4.1
+// version 4.2
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -127,13 +127,13 @@ function renderIdeas() {
   const items = archived ? archivedIdeas() : openIdeas();
   const launched = archived ? [] : launchedIdeas();
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">CAPTURE / THINK LATER</p><h1>Идеи</h1><p>Идеи живут отдельно от проектов. Только команда «Запустить проект» создаёт рабочий проект.</p></div><button class="button button-primary" type="button" id="page-add-idea">＋ Новая идея</button></div>
+    <div class="page-heading"><div><p class="eyebrow">CAPTURE / THINK LATER</p><h1>Идеи</h1><p>Идеи живут отдельно от проектов. Только команда «Запустить проект» создаёт рабочий проект.</p></div></div>
     <section class="section-card"><div class="section-heading"><h2>${archived ? "Архив идей" : "Входящие идеи"}</h2><span class="badge">${items.length} записей</span></div>
       <div class="segmented-control" role="group" aria-label="Фильтр идей">
         <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-idea-filter="open">Входящие</button>
         <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
       </div>
-      <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(ideaCard).join("") : emptyState(archived ? "Архив идей пуст" : "Идей пока нет", archived ? "Архивированные идеи появятся здесь." : "Добавь первую мысль. Её не нужно сразу превращать в проект.", !archived)}</div>
+      <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(ideaCard).join("") : emptyState(archived ? "Архив идей пуст" : "Идей пока нет", archived ? "Архивированные идеи появятся здесь." : "Нажми «Новая идея» в верхней панели, чтобы зафиксировать первую мысль.", false)}</div>
       ${launched.length ? `<div class="section-heading idea-history-heading"><h2>Переданы в проекты</h2><span class="badge">${launched.length}</span></div><div class="list-stack">${launched.sort(prioritySort).map(ideaCard).join("")}</div>` : ""}
     </section>`;
 }
@@ -268,7 +268,7 @@ document.addEventListener("click", async (event) => {
   if (nav) { state.view = nav.dataset.view; render(); closeSidebar(); return; }
   const go = event.target.closest("[data-go]");
   if (go) { state.view = go.dataset.go; render(); return; }
-  if (event.target.closest("#page-add-idea, .empty-add")) { openDialog(); return; }
+  if (event.target.closest(".empty-add")) { openDialog(); return; }
   const ideaFilter = event.target.closest("[data-idea-filter]");
   if (ideaFilter) { state.ideaFilter = ideaFilter.dataset.ideaFilter; renderIdeas(); return; }
   const projectFilter = event.target.closest("[data-project-filter]");
