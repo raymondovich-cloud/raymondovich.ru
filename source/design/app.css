@@ -388,3 +388,32 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .planning-details-grid { grid-template-columns:1fr; gap:11px; }
   .idea-workspace-row .planning-details { margin-top:8px; }
 }
+
+
+/* version 4.13 — unified idea cards with tap-to-edit and long-press actions */
+.idea-card-interactive { position:relative; cursor:pointer; border-radius:13px; padding-right:42px; transition:background .18s ease,border-color .18s ease; -webkit-touch-callout:none; user-select:none; }
+.idea-card-interactive:hover { background:rgba(255,255,255,.025); }
+.idea-card-interactive:active { background:rgba(255,106,0,.055); }
+.idea-card-interactive:focus-visible { outline:1px solid var(--accent); outline-offset:3px; }
+.idea-card-open-indicator { position:absolute; right:8px; top:50%; display:grid; width:27px; height:27px; place-items:center; border:1px solid var(--border-soft); border-radius:50%; color:var(--muted-soft); font-size:12px; transform:translateY(-50%); }
+.idea-detail-dialog { width:min(92vw,560px); max-width:560px; max-height:min(88dvh,850px); padding:0; overflow:auto; border:1px solid var(--border); border-radius:21px; color:var(--text); background:#101010; box-shadow:0 24px 90px rgba(0,0,0,.7); }
+.idea-detail-dialog::backdrop { background:rgba(0,0,0,.78); backdrop-filter:blur(7px); }
+.idea-detail-form { display:grid; gap:14px; padding:22px; }
+.idea-detail-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding-bottom:17px; border-bottom:1px solid var(--border-soft); }
+.idea-detail-heading .eyebrow { margin:0 0 7px; font-size:8px; letter-spacing:.14em; }
+.idea-detail-heading h2 { margin:0; font-size:22px; letter-spacing:-.04em; }
+.idea-detail-heading p { margin:7px 0 0; color:var(--muted); font-size:10px; }
+.idea-detail-field { display:grid; gap:7px; min-width:0; }
+.idea-detail-field > span { color:var(--muted); font-size:10px; }
+.idea-detail-field input,.idea-detail-field textarea { width:100%; min-height:43px; padding:11px 12px; border:1px solid var(--border-soft); border-radius:10px; outline:none; color:#eee; background:rgba(255,255,255,.025); font:inherit; font-size:13px; line-height:1.5; resize:vertical; }
+.idea-detail-field input:focus,.idea-detail-field textarea:focus { border-color:var(--border); }
+.idea-detail-divider { margin-top:3px; padding:13px 0 0; border-top:1px solid var(--border-soft); color:var(--accent-light); font-size:8px; font-weight:700; letter-spacing:.13em; }
+.idea-detail-actions { display:flex; justify-content:flex-end; gap:9px; padding-top:12px; border-top:1px solid var(--border-soft); }
+@media(max-width:640px) {
+  .idea-card-interactive { min-height:76px; padding-right:36px; }
+  .idea-detail-dialog { width:calc(100vw - 24px); max-height:calc(100dvh - 30px); border-radius:18px; }
+  .idea-detail-form { gap:12px; padding:17px; }
+  .idea-detail-heading h2 { font-size:20px; }
+  .idea-detail-field input,.idea-detail-field textarea { font-size:16px; }
+  .idea-detail-actions { position:sticky; bottom:-17px; margin:0 -17px -17px; padding:13px 17px calc(13px + env(safe-area-inset-bottom)); background:#101010; }
+}
