@@ -1,7 +1,7 @@
 // version 2.1
 import { supabase } from "../../infrastructure/supabase/client.js";
 
-const PROJECT_FIELDS = "id, owner_id, source_idea_id, name, description, goal, estimated_cost, additional_info, status, priority, target_start_date, target_due_date, created_at, updated_at, is_pinned";
+const PROJECT_FIELDS = "id, owner_id, source_idea_id, name, description, goal, expected_revenue, estimated_cost, business_model, concept, additional_info, status, priority, target_start_date, target_due_date, created_at, updated_at, is_pinned";
 
 function normalizeError(error, fallback = "Не удалось выполнить операцию с проектом.") {
   if (!error) return null;
@@ -43,7 +43,10 @@ export async function createProjectFromIdea(idea, ownerId) {
       name: idea.name,
       description: idea.description || "",
       goal: idea.goal || "",
+      expected_revenue: idea.expected_revenue ?? null,
       estimated_cost: idea.estimated_cost ?? null,
+      business_model: idea.business_model || "",
+      concept: idea.concept || "",
       additional_info: idea.additional_info || "",
       completion_criteria: "",
       status: "active",
@@ -66,7 +69,7 @@ export async function createProjectFromIdea(idea, ownerId) {
 
 export async function updateProject(id, ownerId, changes) {
   const allowed = {};
-  for (const key of ["status", "priority", "is_pinned"]) {
+  for (const key of ["status", "priority", "is_pinned", "name", "description", "goal", "expected_revenue", "estimated_cost", "business_model", "concept", "additional_info"]) {
     if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
   }
   allowed.updated_at = new Date().toISOString();

@@ -1,4 +1,4 @@
-// version 4.11
+// version 4.12
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -20,7 +20,10 @@ const saveIdeaButton = document.querySelector("#save-idea");
 const titleInput = document.querySelector("#idea-title");
 const descriptionInput = document.querySelector("#idea-description");
 const goalInput = document.querySelector("#idea-goal");
+const expectedRevenueInput = document.querySelector("#idea-expected-revenue");
 const estimatedCostInput = document.querySelector("#idea-estimated-cost");
+const businessModelInput = document.querySelector("#idea-business-model");
+const conceptInput = document.querySelector("#idea-concept");
 const additionalInfoInput = document.querySelector("#idea-additional-info");
 const additionalParameters = document.querySelector("#idea-additional-parameters");
 const ideasCount = document.querySelector("#ideas-count");
@@ -70,6 +73,29 @@ function prioritySort(a, b) {
   return rank(b.priority) - rank(a.priority) || new Date(b.updated_at) - new Date(a.updated_at);
 }
 
+function formatMoney(value) {
+  if (value === null || value === undefined || value === "") return "";
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return "";
+  return new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 2 }).format(amount);
+}
+
+function planningDetails(item, label = "Планирование") {
+  const fields = [
+    ["Цель проекта", item.goal],
+    ["Желаемый доход", item.expected_revenue === null || item.expected_revenue === undefined ? "" : formatMoney(item.expected_revenue)],
+    ["Примерные расходы", item.estimated_cost === null || item.estimated_cost === undefined ? "" : formatMoney(item.estimated_cost)],
+    ["Модель заработка", item.business_model],
+    ["Концепция", item.concept],
+    ["Дополнительная информация", item.additional_info],
+  ].filter(([, value]) => value !== null && value !== undefined && String(value).trim() !== "");
+  if (!fields.length) return "";
+  return `<details class="planning-details">
+    <summary>${label}<span>${fields.length} ${fields.length === 1 ? "параметр" : "параметров"}</span></summary>
+    <div class="planning-details-grid">${fields.map(([title, value]) => `<div class="planning-detail"><span>${escapeHtml(title)}</span><p>${escapeHtml(value)}</p></div>`).join("")}</div>
+  </details>`;
+}
+
 function ideaCard(idea) {
   const priority = idea.priority || "normal";
   const actions = idea.status === "launched"
@@ -83,6 +109,7 @@ function ideaCard(idea) {
          <button class="action-button" type="button" data-entity="idea" data-action="archive" data-id="${idea.id}">В архив</button>
          <button class="action-button is-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`;
   return `<article class="idea-card"><div class="card-topline"><div><h3 class="card-title">${escapeHtml(idea.name)}</h3>${idea.description ? `<p class="card-description">${escapeHtml(idea.description)}</p>` : ""}</div></div>
+    ${planningDetails(idea, "План идеи")}
     <div class="card-meta"><span class="badge badge-status">${ideaStatusLabel(idea.status)}</span><span class="badge ${priority === "high" || priority === "critical" ? "badge-priority" : ""}">${priorityLabel(priority)}</span>${idea.launched_at ? `<span class="card-date">Запущена: ${dateLabel(idea.launched_at)}</span>` : ""}</div>
     <div class="card-actions">${actions}</div></article>`;
 }
@@ -100,6 +127,7 @@ function projectCard(project) {
        <button class="action-button is-danger" type="button" data-entity="project" data-action="delete" data-id="${project.id}">Удалить</button>`;
   const source = project.source_idea_id ? '<span class="badge">Создан из идеи</span>' : "";
   return `<article class="project-card"><div class="card-topline"><div><h3 class="card-title">${escapeHtml(project.name)}</h3>${project.description ? `<p class="card-description">${escapeHtml(project.description)}</p>` : ""}</div></div>
+    ${planningDetails(project, "План проекта")}
     <div class="card-meta"><span class="badge badge-status">${projectStatusLabel(project.status)}</span><span class="badge ${priority === "high" || priority === "critical" ? "badge-priority" : ""}">${priorityLabel(priority)}</span>${source}${project.target_due_date ? `<span class="card-date">Срок: ${dateLabel(project.target_due_date)}</span>` : ""}</div>
     <div class="card-actions">${actions}</div></article>`;
 }
@@ -240,6 +268,7 @@ function renderIdeas() {
           <strong>${escapeHtml(idea.name)}</strong>
           <span>${ideaStatusLabel(idea.status)} · ${priorityLabel(priority)}${idea.updated_at || idea.created_at ? ` · ${dateLabel(idea.updated_at || idea.created_at)}` : ""}</span>
           ${idea.description ? `<p class="idea-row-description">${escapeHtml(idea.description)}</p>` : ""}
+          ${planningDetails(idea, "Показать план и экономику")}
         </div>
       </div>
       <div class="overview-row-actions idea-row-actions">${rowActions}</div>
@@ -458,7 +487,10 @@ ideaForm.addEventListener("submit", async (event) => {
       title: titleInput.value,
       description: descriptionInput.value,
       goal: goalInput.value,
+      expectedRevenue: expectedRevenueInput.value === "" ? null : Number(expectedRevenueInput.value),
       estimatedCost: estimatedCostInput.value === "" ? null : Number(estimatedCostInput.value),
+      businessModel: businessModelInput.value,
+      concept: conceptInput.value,
       additionalInfo: additionalInfoInput.value,
     });
     ideaForm.reset();
