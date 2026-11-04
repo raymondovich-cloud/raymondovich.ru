@@ -19,6 +19,8 @@ create table if not exists public.ideas (
 
 create index if not exists ideas_owner_status_priority_updated_idx
   on public.ideas (owner_id, status, priority, updated_at desc);
+alter table public.ideas drop constraint if exists ideas_launched_at_check;
+alter table public.ideas add constraint ideas_launched_at_check check ((status = 'launched' and launched_at is not null) or status <> 'launched');
 alter table public.ideas enable row level security;
 drop policy if exists "admin manages ideas" on public.ideas;
 create policy "admin manages ideas" on public.ideas for all to authenticated
