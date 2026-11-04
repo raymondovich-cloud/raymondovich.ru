@@ -301,3 +301,25 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .idea-row-actions .overview-inline-action { margin-right:auto; max-width:none; text-align:left; }
   .idea-row-description { font-size:10px; }
 }
+
+/* version 4.7 — long-press controls for converted ideas */
+.idea-row-project-trigger { display:inline-flex; align-items:center; gap:10px; padding:7px 9px; border:1px solid transparent; border-radius:10px; background:transparent; cursor:pointer; touch-action:pan-y; -webkit-touch-callout:none; }
+.idea-row-project-trigger:active { border-color:var(--border-soft); background:rgba(255,255,255,.035); }
+.idea-row-pin { color:var(--muted-soft); font-size:13px; }
+.idea-row-pin.is-pinned { color:var(--accent-light); }
+.project-action-dialog { width:min(92vw,390px); max-width:390px; padding:0; border:1px solid var(--border); border-radius:21px; color:var(--text); background:#101010; box-shadow:0 24px 90px rgba(0,0,0,.7); }
+.project-action-dialog::backdrop { background:rgba(0,0,0,.76); backdrop-filter:blur(6px); }
+.project-action-panel { padding:21px; }
+.project-action-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding-bottom:17px; border-bottom:1px solid var(--border-soft); }
+.project-action-heading .eyebrow { margin:0 0 8px; font-size:8px; letter-spacing:.14em; }
+.project-action-heading h2 { margin:0; font-size:20px; letter-spacing:-.04em; overflow-wrap:anywhere; }
+.project-action-heading span { display:block; margin-top:7px; color:var(--muted); font-size:10px; }
+.project-action-close { width:31px; height:31px; flex:0 0 31px; border:1px solid var(--border-soft); border-radius:50%; color:#aaa; background:transparent; cursor:pointer; font-size:20px; }
+.project-action-list { display:grid; gap:5px; padding:13px 0 5px; }
+.project-action-list button { display:flex; align-items:center; gap:13px; width:100%; min-height:45px; padding:0 11px; border:1px solid transparent; border-radius:10px; color:var(--accent-light); background:transparent; cursor:pointer; text-align:left; font-size:15px; }
+.project-action-list button span { color:#ddd; font-size:12px; }
+.project-action-list button:hover { border-color:var(--border-soft); background:rgba(255,255,255,.035); }
+.project-action-list button.is-danger { color:#ff8585; }
+.project-action-list button.is-danger span { color:#ffaaaa; }
+.project-action-hint { margin:11px 0 0; color:var(--muted-soft); font-size:9px; line-height:1.5; }
+@media(max-width:640px) { .project-action-panel { padding:18px; } .project-action-list button { min-height:48px; } }
