@@ -1,4 +1,4 @@
-// version 4.7
+// version 4.8
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -266,10 +266,6 @@ function renderIdeas() {
           <span class="ideas-total">${items.length} ${items.length === 1 ? "запись" : "записей"}</span>
           <button class="text-action" type="button" data-idea-filter="${archived ? "open" : "archived"}">${archived ? "К входящим" : `Архив · ${archivedIdeas().length}`} <span aria-hidden="true">↗</span></button>
         </div>
-      </div>
-      <div class="segmented-control ideas-filter" role="group" aria-label="Фильтр идей">
-        <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-idea-filter="open">Входящие</button>
-        <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
       </div>
       <div class="overview-list ideas-list">
         ${items.length ? [...items].sort(prioritySort).map((idea) => ideaRows([idea])).join("") : `<div class="overview-quiet-state">${archived ? "Архив пока пуст. Сюда попадают идеи, которые ты отправляешь в архив." : "Пока нет зафиксированных идей. Добавь первую мысль — она появится в этом списке."}</div>`}
