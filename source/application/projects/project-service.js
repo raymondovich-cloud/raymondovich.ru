@@ -1,7 +1,7 @@
 // version 2.1
 import { supabase } from "../../infrastructure/supabase/client.js";
 
-const PROJECT_FIELDS = "id, owner_id, source_idea_id, name, description, goal, status, priority, target_start_date, target_due_date, created_at, updated_at, is_pinned";
+const PROJECT_FIELDS = "id, owner_id, source_idea_id, name, description, goal, estimated_cost, additional_info, status, priority, target_start_date, target_due_date, created_at, updated_at, is_pinned";
 
 function normalizeError(error, fallback = "Не удалось выполнить операцию с проектом.") {
   if (!error) return null;
@@ -42,7 +42,9 @@ export async function createProjectFromIdea(idea, ownerId) {
       source_idea_id: idea.id,
       name: idea.name,
       description: idea.description || "",
-      goal: "",
+      goal: idea.goal || "",
+      estimated_cost: idea.estimated_cost ?? null,
+      additional_info: idea.additional_info || "",
       completion_criteria: "",
       status: "active",
       priority: idea.priority || "normal",
