@@ -521,11 +521,7 @@ function openProjectActionMenu(ideaId) {
   projectActionDialog.innerHTML = '<div class="project-action-panel"><div class="project-action-heading"><div><p class="eyebrow">PROJECT CONTROL</p><h2>' + escapeHtml(project.name) + '</h2><span>' + projectStatusLabel(project.status) + ' · ' + priorityLabel(project.priority || "normal") + '</span></div><button class="project-action-close" type="button" data-close-project-menu aria-label="Закрыть">×</button></div><div class="project-action-list">' + (archived ? restore : controls) + '<button class="is-danger" type="button" data-entity="project" data-action="delete" data-id="' + project.id + '">× <span>Удалить проект</span></button></div><p class="project-action-hint">Действия применяются к проекту, связанному с этой идеей.</p></div>';
   if (!projectActionDialog.open) projectActionDialog.showModal();
 }
-let projectPressTimer = null;
-let projectPressTarget = null;
-let projectPressStart = null;
 let suppressIdeaClickUntil = 0;
-function cancelProjectPress() { if (projectPressTimer) window.clearTimeout(projectPressTimer); projectPressTimer = null; projectPressTarget = null; projectPressStart = null; }
 content.addEventListener("pointerdown", (event) => {
   const target = event.target.closest("[data-idea-card]");
   if (!target || event.button !== 0) return;
