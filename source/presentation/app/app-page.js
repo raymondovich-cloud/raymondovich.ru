@@ -1,4 +1,4 @@
-// version 4.0
+// version 4.1
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
