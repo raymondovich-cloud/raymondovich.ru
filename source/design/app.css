@@ -1,4 +1,4 @@
-/* version 4.1 */
+/* version 4.6 */
 :root {
   color-scheme: dark;
   --bg: #050505;
@@ -266,4 +266,38 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
   .overview-inline-action { max-width:105px; text-align:right; line-height:1.35; }
   .overview-chevron { width:27px; height:27px; }
   .overview-recent-row time { font-size:8px; }
+}
+
+
+/* version 4.6 — Ideas workspace aligned with Control Center */
+.ideas-intro { align-items:center; }
+.ideas-intro .ideas-add-button { flex:0 0 auto; }
+.ideas-summary { margin-bottom:38px; }
+.ideas-section { margin-bottom:38px; }
+.ideas-heading-tools { display:flex; align-items:center; gap:18px; }
+.ideas-total { color:var(--muted); font-size:10px; white-space:nowrap; }
+.ideas-filter { margin:0 0 12px; }
+.ideas-list .idea-workspace-row { min-height:82px; }
+.idea-workspace-row .overview-row-main { flex:1 1 auto; }
+.idea-workspace-row .overview-row-copy { gap:6px; }
+.idea-row-description { display:-webkit-box; overflow:hidden; margin:1px 0 0; color:#777; font-size:11px; line-height:1.45; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.idea-row-actions { gap:9px; }
+.idea-row-tool { display:grid; width:29px; height:29px; flex:0 0 29px; place-items:center; border:1px solid var(--border-soft); border-radius:9px; color:#999; background:transparent; cursor:pointer; font-size:14px; }
+.idea-row-tool:hover { border-color:var(--border); color:var(--accent-light); }
+.idea-row-tool.is-danger:hover, .idea-row-danger:hover { border-color:rgba(255,85,85,.4); color:#ff8b8b; }
+.idea-row-complete { color:var(--green); font-size:10px; white-space:nowrap; }
+.idea-row-danger { padding:7px 0; border:0; color:#999; background:transparent; cursor:pointer; font-size:10px; }
+.ideas-latest-note { margin:2px 0 0; color:var(--muted-soft); font-size:9px; }
+@media (max-width:640px) {
+  .ideas-intro { align-items:flex-start; flex-direction:column; gap:18px; margin-bottom:27px; }
+  .ideas-intro .ideas-add-button { min-height:40px; }
+  .ideas-summary { margin-bottom:30px; }
+  .ideas-section { margin-bottom:30px; }
+  .ideas-heading-tools { gap:10px; }
+  .ideas-total { font-size:9px; }
+  .ideas-list .idea-workspace-row { align-items:flex-start; flex-direction:column; gap:10px; padding:14px 2px; }
+  .idea-workspace-row .overview-row-main { width:100%; }
+  .idea-row-actions { width:100%; flex-wrap:wrap; padding-left:17px; }
+  .idea-row-actions .overview-inline-action { margin-right:auto; max-width:none; text-align:left; }
+  .idea-row-description { font-size:10px; }
 }
