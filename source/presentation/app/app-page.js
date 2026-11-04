@@ -1,4 +1,4 @@
-// version 4.6
+// version 4.7
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -21,6 +21,10 @@ const titleInput = document.querySelector("#idea-title");
 const descriptionInput = document.querySelector("#idea-description");
 const ideasCount = document.querySelector("#ideas-count");
 const projectsCount = document.querySelector("#projects-count");
+const projectActionDialog = document.createElement("dialog");
+projectActionDialog.className = "project-action-dialog";
+projectActionDialog.setAttribute("aria-label", "Действия с проектом");
+document.body.append(projectActionDialog);
 
 const state = { user: null, ideas: [], projects: [], view: "overview", ideaFilter: "open", projectFilter: "active", busy: false };
 
@@ -216,7 +220,10 @@ function renderIdeas() {
       ? `<button class="overview-inline-action" type="button" data-entity="idea" data-action="restore" data-id="${idea.id}">Восстановить</button>
          <button class="idea-row-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`
       : isLaunched
-        ? '<span class="idea-row-complete">Передана в проект</span>'
+        ? `<button class="idea-row-project-trigger" type="button" data-project-menu-idea="${idea.id}" aria-label="Удерживай, чтобы открыть действия с проектом">
+             <span class="idea-row-complete">Передана в проект</span>
+             <span class="idea-row-pin ${state.projects.find((project) => project.source_idea_id === idea.id)?.is_pinned ? "is-pinned" : ""}" aria-hidden="true">${state.projects.find((project) => project.source_idea_id === idea.id)?.is_pinned ? "◆" : "◇"}</span>
+           </button>`
         : `<button class="overview-inline-action" type="button" data-entity="idea" data-action="launch" data-id="${idea.id}">Запустить проект</button>
            <button class="idea-row-tool" type="button" data-entity="idea" data-action="review" data-id="${idea.id}" aria-label="${idea.status === "review" ? "Снять с рассмотрения" : "На рассмотрение"}">${idea.status === "review" ? "↶" : "◷"}</button>
            <button class="idea-row-tool" type="button" data-entity="idea" data-action="priority" data-id="${idea.id}" aria-label="Изменить приоритет">${["high", "critical"].includes(priority) ? "★" : "☆"}</button>
@@ -363,6 +370,7 @@ async function performAction(entity, action, id) {
   }
 
   if (action === "restore") changes.status = "active";
+  if (action === "pin") changes.is_pinned = !item.is_pinned;
   if (action === "archive") changes.status = "archived";
   if (action === "complete") changes.status = "completed";
   if (action === "pause") changes.status = item.status === "paused" ? "active" : "paused";
@@ -404,6 +412,24 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") { closeAccountPanel(); closeSidebar(); }
 });
 
+let projectPressTimer = null;
+let projectPressTarget = null;
+let projectPressStart = null;
+function cancelProjectPress() { if (projectPressTimer) window.clearTimeout(projectPressTimer); projectPressTimer = null; projectPressTarget = null; projectPressStart = null; }
+function openProjectActionMenu(ideaId) {
+  const project = state.projects.find((entry) => entry.source_idea_id === ideaId);
+  if (!project) { showStatus("Связанный проект не найден. Обнови страницу.", true); return; }
+  const paused = project.status === "paused"; const archived = project.status === "archived";
+  const restore = '<button type="button" data-entity="project" data-action="restore" data-id="' + project.id + '">↶ <span>Восстановить проект</span></button>';
+  const controls = '<button type="button" data-entity="project" data-action="pin" data-id="' + project.id + '">' + (project.is_pinned ? "◆" : "◇") + '<span>' + (project.is_pinned ? "Открепить" : "Закрепить") + '</span></button>' + '<button type="button" data-entity="project" data-action="pause" data-id="' + project.id + '">' + (paused ? "▶" : "Ⅱ") + '<span>' + (paused ? "Возобновить" : "Поставить на паузу") + '</span></button>' + '<button type="button" data-entity="project" data-action="priority" data-id="' + project.id + '">★ <span>' + (["high", "critical"].includes(project.priority) ? "Снять приоритет" : "В приоритет") + '</span></button>' + '<button type="button" data-entity="project" data-action="complete" data-id="' + project.id + '">✓ <span>Завершить проект</span></button>' + '<button type="button" data-entity="project" data-action="archive" data-id="' + project.id + '">↓ <span>Переместить в архив</span></button>';
+  projectActionDialog.innerHTML = '<div class="project-action-panel"><div class="project-action-heading"><div><p class="eyebrow">PROJECT CONTROL</p><h2>' + escapeHtml(project.name) + '</h2><span>' + projectStatusLabel(project.status) + ' · ' + priorityLabel(project.priority || "normal") + '</span></div><button class="project-action-close" type="button" data-close-project-menu aria-label="Закрыть">×</button></div><div class="project-action-list">' + (archived ? restore : controls) + '<button class="is-danger" type="button" data-entity="project" data-action="delete" data-id="' + project.id + '">× <span>Удалить проект</span></button></div><p class="project-action-hint">Действия применяются к проекту, связанному с этой идеей.</p></div>';
+  if (!projectActionDialog.open) projectActionDialog.showModal();
+}
+content.addEventListener("pointerdown", (event) => { const target = event.target.closest("[data-project-menu-idea]"); if (!target || event.button !== 0) return; cancelProjectPress(); projectPressTarget = target; projectPressStart = {x:event.clientX,y:event.clientY}; projectPressTimer = window.setTimeout(() => { const id = projectPressTarget?.dataset.projectMenuIdea; cancelProjectPress(); if (id) openProjectActionMenu(id); }, 550); });
+content.addEventListener("pointermove", (event) => { if (projectPressTimer && projectPressStart && Math.hypot(event.clientX-projectPressStart.x,event.clientY-projectPressStart.y)>12) cancelProjectPress(); });
+["pointerup","pointercancel","pointerleave"].forEach((type) => content.addEventListener(type,cancelProjectPress));
+content.addEventListener("contextmenu", (event) => { const target=event.target.closest("[data-project-menu-idea]"); if (!target) return; event.preventDefault(); openProjectActionMenu(target.dataset.projectMenuIdea); });
+projectActionDialog.addEventListener("click", async (event) => { if (event.target===projectActionDialog || event.target.closest("[data-close-project-menu]")) { projectActionDialog.close(); return; } const button=event.target.closest("[data-action]"); if (!button) return; projectActionDialog.close(); await performAction(button.dataset.entity,button.dataset.action,button.dataset.id); });
 document.addEventListener("click", async (event) => {
   const nav = event.target.closest("[data-view]");
   if (nav) { state.view = nav.dataset.view; render(); closeSidebar(); return; }
