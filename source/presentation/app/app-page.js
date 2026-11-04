@@ -1,4 +1,4 @@
-// version 4.2
+// version 4.3
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -8,7 +8,10 @@ const status = document.querySelector("#control-status");
 const logoutButton = document.querySelector("#logout-button");
 const accountTrigger = document.querySelector("#account-trigger");
 const accountPanel = document.querySelector("#account-panel");
+const accountName = document.querySelector("#account-name");
+const accountRole = document.querySelector("#account-role");
 const accountEmail = document.querySelector("#account-email");
+const accountAvatar = document.querySelector("#account-panel-avatar");
 const menuToggle = document.querySelector("#menu-toggle");
 const sidebarBackdrop = document.querySelector("#sidebar-backdrop");
 const openIdeaButton = document.querySelector("#open-idea-dialog");
@@ -317,7 +320,15 @@ async function init() {
       return;
     }
     state.user = session.user;
+    const displayName = session.user.user_metadata?.display_name?.trim()
+      || session.user.user_metadata?.full_name?.trim()
+      || session.user.email?.split("@")[0]
+      || "Пользователь";
+    const role = getRole(session);
+    accountName.textContent = displayName;
+    accountRole.textContent = role === "admin" ? "Администратор" : "Пользователь";
     accountEmail.textContent = session.user.email || "Email не указан";
+    accountAvatar.textContent = displayName.charAt(0).toUpperCase();
     await refresh();
   } catch (error) {
     content.innerHTML = '<div class="empty-state"><div><strong>Не удалось открыть рабочее пространство</strong><p>Проверь подключение и попробуй обновить страницу.</p></div></div>';
