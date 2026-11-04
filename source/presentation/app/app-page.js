@@ -265,7 +265,7 @@ function renderIdeas() {
         <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
       </div>
       <div class="overview-list ideas-list">
-        ${items.length ? [...items].sort(prioritySort).map(ideaRows).join("") : `<div class="overview-quiet-state">${archived ? "Архив пока пуст. Сюда попадают идеи, которые ты отправляешь в архив." : "Пока нет зафиксированных идей. Добавь первую мысль — она появится в этом списке."}</div>`}
+        ${items.length ? [...items].sort(prioritySort).map((idea) => ideaRows([idea])).join("") : `<div class="overview-quiet-state">${archived ? "Архив пока пуст. Сюда попадают идеи, которые ты отправляешь в архив." : "Пока нет зафиксированных идей. Добавь первую мысль — она появится в этом списке."}</div>`}
       </div>
     </section>
 
