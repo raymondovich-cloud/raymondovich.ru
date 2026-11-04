@@ -35,6 +35,7 @@ export async function updateIdea(id, ownerId, changes) {
   for (const key of ["status", "priority"]) {
     if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
   }
+  allowed.updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("ideas")
     .update(allowed)
