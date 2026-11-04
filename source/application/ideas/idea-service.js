@@ -1,7 +1,7 @@
 // version 1.0
 import { supabase } from "../../infrastructure/supabase/client.js";
 
-const IDEA_FIELDS = "id, owner_id, name, description, status, priority, created_at, updated_at, launched_at";
+const IDEA_FIELDS = "id, owner_id, name, description, goal, estimated_cost, additional_info, status, priority, created_at, updated_at, launched_at";
 
 function normalizeError(error, fallback = "Не удалось выполнить операцию с идеей.") {
   if (!error) return null;
@@ -18,12 +18,12 @@ export async function listIdeas(ownerId) {
   return data || [];
 }
 
-export async function createIdea({ ownerId, title, description = "" }) {
+export async function createIdea({ ownerId, title, description = "", goal = "", estimatedCost = null, additionalInfo = "" }) {
   const name = title.trim();
   if (!name) throw new Error("Добавь короткое название идеи.");
   const { data, error } = await supabase
     .from("ideas")
-    .insert({ owner_id: ownerId, name, description: description.trim() })
+    .insert({ owner_id: ownerId, name, description: description.trim(), goal: goal.trim(), estimated_cost: estimatedCost, additional_info: additionalInfo.trim() })
     .select(IDEA_FIELDS)
     .single();
   if (error) throw normalizeError(error);
@@ -32,7 +32,7 @@ export async function createIdea({ ownerId, title, description = "" }) {
 
 export async function updateIdea(id, ownerId, changes) {
   const allowed = {};
-  for (const key of ["status", "priority"]) {
+  for (const key of ["status", "priority", "name", "description", "goal", "estimated_cost", "additional_info"]) {
     if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
   }
   allowed.updated_at = new Date().toISOString();
