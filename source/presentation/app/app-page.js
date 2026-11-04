@@ -1,4 +1,4 @@
-// version 4.5
+// version 4.6
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
 import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
@@ -203,16 +203,80 @@ function renderIdeas() {
   const archived = state.ideaFilter === "archived";
   const items = archived ? archivedIdeas() : openIdeas();
   const launched = archived ? [] : launchedIdeas();
+  const reviewCount = openIdeas().filter((idea) => idea.status === "review").length;
+  const priorityCount = openIdeas().filter((idea) => ["high", "critical"].includes(idea.priority)).length;
+  const latest = [...state.ideas]
+    .filter((idea) => idea.status !== "archived")
+    .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))[0];
+
+  const ideaRows = (list) => list.map((idea) => {
+    const priority = idea.priority || "normal";
+    const isLaunched = idea.status === "launched";
+    const rowActions = archived
+      ? `<button class="overview-inline-action" type="button" data-entity="idea" data-action="restore" data-id="${idea.id}">Восстановить</button>
+         <button class="idea-row-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}">Удалить</button>`
+      : isLaunched
+        ? '<span class="idea-row-complete">Передана в проект</span>'
+        : `<button class="overview-inline-action" type="button" data-entity="idea" data-action="launch" data-id="${idea.id}">Запустить проект</button>
+           <button class="idea-row-tool" type="button" data-entity="idea" data-action="review" data-id="${idea.id}" aria-label="${idea.status === "review" ? "Снять с рассмотрения" : "На рассмотрение"}">${idea.status === "review" ? "↶" : "◷"}</button>
+           <button class="idea-row-tool" type="button" data-entity="idea" data-action="priority" data-id="${idea.id}" aria-label="Изменить приоритет">${["high", "critical"].includes(priority) ? "★" : "☆"}</button>
+           <button class="idea-row-tool" type="button" data-entity="idea" data-action="archive" data-id="${idea.id}" aria-label="В архив">↓</button>
+           <button class="idea-row-tool is-danger" type="button" data-entity="idea" data-action="delete" data-id="${idea.id}" aria-label="Удалить">×</button>`;
+    return `<article class="overview-row idea-workspace-row">
+      <div class="overview-row-main">
+        <span class="overview-row-marker idea-marker" aria-hidden="true"></span>
+        <div class="overview-row-copy">
+          <strong>${escapeHtml(idea.name)}</strong>
+          <span>${ideaStatusLabel(idea.status)} · ${priorityLabel(priority)}${idea.updated_at || idea.created_at ? ` · ${dateLabel(idea.updated_at || idea.created_at)}` : ""}</span>
+          ${idea.description ? `<p class="idea-row-description">${escapeHtml(idea.description)}</p>` : ""}
+        </div>
+      </div>
+      <div class="overview-row-actions idea-row-actions">${rowActions}</div>
+    </article>`;
+  }).join("");
+
   content.innerHTML = `
-    <div class="page-heading"><div><p class="eyebrow">CAPTURE / THINK LATER</p><h1>Идеи</h1><p>Идеи живут отдельно от проектов. Только команда «Запустить проект» создаёт рабочий проект.</p></div><button class="button button-primary ideas-add-button" type="button" data-open-idea><span aria-hidden="true">＋</span> Новая идея</button></div>
-    <section class="section-card"><div class="section-heading"><h2>${archived ? "Архив идей" : "Входящие идеи"}</h2><span class="badge">${items.length} записей</span></div>
-      <div class="segmented-control" role="group" aria-label="Фильтр идей">
+    <header class="overview-intro ideas-intro">
+      <div>
+        <p class="eyebrow">RAYMONDOVICH / IDEA SPACE</p>
+        <h1>Идеи</h1>
+        <p>Пространство для фиксации мыслей и направлений до их превращения в проекты.</p>
+      </div>
+      <button class="button button-primary ideas-add-button" type="button" data-open-idea><span aria-hidden="true">＋</span> Новая идея</button>
+    </header>
+
+    <section class="overview-summary ideas-summary" aria-label="Сводка идей">
+      <div class="summary-item"><span>Входящие</span><strong>${openIdeas().length}</strong><small>ожидают решения</small></div>
+      <div class="summary-item"><span>На рассмотрении</span><strong>${reviewCount}</strong><small>требуют оценки</small></div>
+      <div class="summary-item"><span>Приоритет</span><strong>${priorityCount}</strong><small>важные направления</small></div>
+      <div class="summary-item"><span>Запущено</span><strong>${launchedIdeas().length}</strong><small>перешли в проекты</small></div>
+    </section>
+
+    <section class="overview-focus ideas-section">
+      <div class="overview-section-heading">
+        <div><p class="eyebrow">CAPTURE / ORGANIZE</p><h2>${archived ? "Архив идей" : "Рабочий список"}</h2></div>
+        <div class="ideas-heading-tools">
+          <span class="ideas-total">${items.length} ${items.length === 1 ? "запись" : "записей"}</span>
+          <button class="text-action" type="button" data-idea-filter="${archived ? "open" : "archived"}">${archived ? "К входящим" : `Архив · ${archivedIdeas().length}`} <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <div class="segmented-control ideas-filter" role="group" aria-label="Фильтр идей">
         <button class="segment-button ${!archived ? "is-active" : ""}" type="button" data-idea-filter="open">Входящие</button>
         <button class="segment-button ${archived ? "is-active" : ""}" type="button" data-idea-filter="archived">Архив <span>${archivedIdeas().length}</span></button>
       </div>
-      <div class="list-stack">${items.length ? [...items].sort(prioritySort).map(ideaCard).join("") : emptyState(archived ? "Архив идей пуст" : "Идей пока нет", archived ? "Архивированные идеи появятся здесь." : "Используй кнопку «Новая идея» в этом разделе, чтобы зафиксировать первую мысль.", false)}</div>
-      ${launched.length ? `<div class="section-heading idea-history-heading"><h2>Переданы в проекты</h2><span class="badge">${launched.length}</span></div><div class="list-stack">${launched.sort(prioritySort).map(ideaCard).join("")}</div>` : ""}
-    </section>`;
+      <div class="overview-list ideas-list">
+        ${items.length ? [...items].sort(prioritySort).map(ideaRows).join("") : `<div class="overview-quiet-state">${archived ? "Архив пока пуст. Сюда попадают идеи, которые ты отправляешь в архив." : "Пока нет зафиксированных идей. Добавь первую мысль — она появится в этом списке."}</div>`}
+      </div>
+    </section>
+
+    ${launched.length ? `<section class="overview-recent ideas-section">
+      <div class="overview-section-heading">
+        <div><p class="eyebrow">EXECUTION / CONVERTED</p><h2>Переданы в проекты</h2></div>
+        <span class="ideas-total">${launched.length} ${launched.length === 1 ? "идея" : "идей"}</span>
+      </div>
+      <div class="overview-list ideas-list">${ideaRows([...launched].sort(prioritySort))}</div>
+    </section>` : ""}
+    <p class="ideas-latest-note">${latest ? `Последнее обновление: ${dateLabel(latest.updated_at || latest.created_at)}` : "Новые идеи будут собираться здесь."}</p>`;
 }
 
 function renderProjects() {
