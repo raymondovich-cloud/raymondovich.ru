@@ -347,3 +347,22 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
     font-size: 16px !important;
   }
 }
+
+
+/* Optional planning parameters in the idea capture dialog */
+.idea-extra-parameters { margin-top: 18px; border: 1px solid var(--border-soft); border-radius: 13px; background: rgba(255,255,255,.018); overflow: hidden; }
+.idea-extra-parameters > summary { display: flex; align-items: center; gap: 11px; min-height: 61px; padding: 10px 13px; color: #ddd; cursor: pointer; list-style: none; }
+.idea-extra-parameters > summary::-webkit-details-marker { display: none; }
+.idea-extra-parameters > summary > span:nth-child(2) { display: grid; gap: 4px; min-width: 0; }
+.idea-extra-parameters > summary strong { font-size: 11px; font-weight: 650; }
+.idea-extra-parameters > summary small { color: var(--muted); font-size: 10px; }
+.idea-extra-icon { display: grid; width: 29px; height: 29px; flex: 0 0 29px; place-items: center; border: 1px solid rgba(255,106,0,.3); border-radius: 9px; color: var(--accent-light); background: rgba(255,106,0,.08); font-size: 17px; }
+.idea-extra-chevron { margin-left: auto; color: var(--muted); font-size: 17px; transition: transform .18s ease; }
+.idea-extra-parameters[open] .idea-extra-chevron { transform: rotate(180deg); }
+.idea-extra-fields { padding: 0 13px 14px; border-top: 1px solid var(--border-soft); }
+.idea-extra-fields .field-label:first-child { margin-top: 14px; }
+.idea-extra-fields textarea, .idea-extra-fields input { font-size: 16px; }
+.idea-cost-field { position: relative; }
+.idea-cost-field input { padding-right: 38px; }
+.idea-cost-field > span { position: absolute; top: 50%; right: 14px; color: var(--muted); font-size: 13px; transform: translateY(-50%); pointer-events: none; }
+@media (max-width: 640px) { .idea-form { padding: 20px; } .idea-extra-parameters > summary { min-height: 58px; } }
