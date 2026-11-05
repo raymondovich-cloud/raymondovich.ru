@@ -31,6 +31,14 @@
 
 Следовательно, наличие GitHub Pages не подтверждает поддержку clean SPA routes. Текущее поведение прямого запроса к `/owner/projects` остаётся неподтверждённым.
 
+## 1.2. Проверка совместимости текущего build/publish контура
+
+Read-only GitHub repository metadata на 05.11.2026 показывает `has_pages=true`, default branch `main`; в дереве `main` отсутствует deployment workflow, а migration branch содержит только CI workflow для build/test без публикации. Точный publishing source GitHub Pages (branch root, `/docs` или Actions artifact) через доступный read-only API не подтверждён.
+
+SPA source `index.html` импортирует `/source/presentation/spa/main.js`, а application modules используют bare package imports `vue` и `vue-router`. Такой source tree требует Vite bundling; публикация необработанного repository root не является корректным deployment output. CI формирует `dist/`, но не публикует его.
+
+**Merge gate:** до слияния необходимо подтвердить текущий GitHub Pages publishing source и выбрать/утвердить deployment path, который публикует Vite build artifact. Нельзя предполагать, что merge в `main` безопасен для live site. Ни deployment workflow, ни Pages source, ни production hosting в рамках текущей подготовки не менялись.
+
 ## 2. Обязательные требования
 
 Решение по hosting/routing должно обеспечивать:
