@@ -40,11 +40,11 @@
     <button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b><em>Завершить сеанс</em></span></button>
       </nav></aside><div class="scrim"></div>
     <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><RouterLink class="logo" to="/">RAYMONDOVICH</RouterLink><RouterLink to="/" class="back">Главная</RouterLink></div></header>
-    <main class="wrap"><p class="eyebrow">Сотрудничество / Форматы</p><h1>Три формата<br>развития проектов.</h1><p class="intro">Три направления взаимодействия: от собственных разработок до совместного развития и интеграции независимых продуктов.</p>
+    <main class="wrap"><p class="eyebrow">01 / НАПРАВЛЕНИЯ</p><h1>Три формата<br>развития проектов</h1>
     <section class="formats" aria-label="Три формата сотрудничества">
-    <article class="format" id="own"><span class="number">01</span><div><p class="code">OWN PROJECTS</p><h2>Собственные проекты</h2><p>создаём и развиваем свои продукты</p></div></article>
-    <article class="format" id="partner"><span class="number">02</span><div><p class="code">PARTNER PROJECTS</p><h2>Партнёрские проекты</h2><p>объединяем усилия для совместного развития</p></div></article>
-    <article class="format" id="external"><span class="number">03</span><div><p class="code">EXTERNAL PROJECTS</p><h2>Сторонние проекты</h2><p>отбираем перспективные разработки для сотрудничества</p></div></article>
+    <article class="format" id="own"><span class="number">01</span><div><p class="code">OWN PROJECTS</p><h2>Собственные проекты</h2><p>Продукты и цифровые решения, которые мы самостоятельно разрабатываем и развиваем.</p></div></article>
+    <article class="format" id="partner"><span class="number">02</span><div><p class="code">PARTNER PROJECTS</p><h2>Партнёрские проекты</h2><p>Направления, к которым можно присоединиться, чтобы совместно создавать, развивать и продвигать продукты.</p></div></article>
+    <article class="format" id="external"><span class="number">03</span><div><p class="code">EXTERNAL PROJECTS</p><h2>Сторонние проекты</h2><p>Разработки независимых авторов, которые могут стать частью экосистемы после рассмотрения и согласования условий сотрудничества.</p></div></article>
     </section></main>
     <footer><div class="wrap">© 2026 RAYMONDOVICH — цифровая экосистема.</div></footer>
   </div>
