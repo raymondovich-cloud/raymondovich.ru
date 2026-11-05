@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - architecture/spa-rewrite-2026-11-05
+      - rebuild/foundation-2026-11-06
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
+    if: contains(fromJSON('["refs/heads/architecture/spa-rewrite-2026-11-05","refs/heads/rebuild/foundation-2026-11-06"]'), github.ref)
     name: Run tests, production build and browser E2E
     runs-on: ubuntu-latest
     timeout-minutes: 30
