@@ -109,11 +109,37 @@ body.side-open .side{width:var(--side-expanded-width)}
   body.side-open .side{width:var(--side-expanded-width)}
 }
 
+
+/* navigation alignment and single-active-item behavior */
+.side-body{display:flex;flex-direction:column;align-items:stretch}
+.side-body>.side-home,.side-body>.p,.side-body>.faq-sidebar{width:100%;min-width:0;flex:none;box-sizing:border-box}
+.side-body>.side-home{padding:0;margin:0;box-sizing:border-box}
+.side-body>.p,.side-body>.faq-sidebar{padding:0;margin:0;border-bottom:1px solid var(--line)}
+.side-body>.p>summary,.side-body>.faq-sidebar>summary{
+  display:flex;align-items:center;justify-content:flex-start;
+  width:100%;min-width:0;height:var(--side-row-height);min-height:var(--side-row-height);
+  margin:0;padding:0;gap:0;box-sizing:border-box;list-style:none;
+  font:inherit;letter-spacing:0;cursor:pointer
+}
+.side-body>.p>summary::-webkit-details-marker,.side-body>.faq-sidebar>summary::-webkit-details-marker{display:none}
+.side-body>.p>summary::marker,.side-body>.faq-sidebar>summary::marker{content:""}
+.side-body>.p>summary .badge,.side-body>.faq-sidebar>summary .badge{
+  display:grid;place-items:center;flex:0 0 56px;width:56px;min-width:56px;
+  height:var(--side-row-height);margin:0;padding:0;box-sizing:border-box
+}
+.side-body>.p>summary .pn,.side-body>.faq-sidebar>summary .pn{
+  display:flex;flex:1 1 auto;min-width:0;margin:0;padding:0;gap:2px;box-sizing:border-box
+}
+.side-body>.side-home .badge{flex:0 0 56px;width:56px;min-width:56px;margin:0;padding:0;box-sizing:border-box}
+.side-body>.side-home .pn{flex:1 1 auto;min-width:0;margin:0;padding:0}
+.side-body>.p[open],.side-body>.faq-sidebar[open]{background:transparent}
+.side-body>.p[open]>summary,.side-body>.faq-sidebar[open]>summary{border-bottom-color:transparent}
+
 </style></head>
 <body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
 <nav class="side-body" aria-label="Основные разделы">
-<a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b></span></a>
+<a class="side-home" href="/" aria-label="Главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b></span></a>
 <a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
 <a class="side-home" href="/pages/cooperation/cooperation.html" aria-current="page" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
 <details class="p partner-guide">
@@ -159,4 +185,5 @@ body.side-open .side{width:var(--side-expanded-width)}
 </section></main>
 <footer><div class="wrap">© 2026 RAYMONDOVICH — цифровая экосистема.</div></footer>
 <script>(function(){var b=document.body,t=document.querySelector('.side-toggle'),m=document.querySelector('.mob-toggle'),s=document.querySelector('.scrim');function set(o){b.classList.toggle('side-open',o);t.setAttribute('aria-expanded',o);m.setAttribute('aria-expanded',o)}function flip(){set(!b.classList.contains('side-open'))}t.addEventListener('click',flip);m.addEventListener('click',flip);s.addEventListener('click',function(){set(false)});document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});if(window.innerWidth>1100)set(true)})();</script><script type="module" src="/source/presentation/account/sidebar-logout.js"></script>
+<script type="module" src="/source/presentation/account/sidebar-navigation.js"></script>
 </body></html>
