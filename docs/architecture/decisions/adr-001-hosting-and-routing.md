@@ -257,3 +257,17 @@ ADR фиксирует анализ и рекомендуемый путь. Ок
 - Cloudflare Docs — [Single Page Application on Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/)
 - Cloudflare Docs — [Workers Routes](https://developers.cloudflare.com/workers/configuration/routing/routes/)
 - Cloudflare Docs — [Workers Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
+
+
+## 5. Production hosting evidence (05.11.2026)
+
+Read-only inspection of the Cloudflare account and DNS zone found:
+
+- Cloudflare Pages project list is empty for the connected account.
+- `raymondovich.ru` apex A records point to GitHub Pages addresses `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`; records are DNS-only.
+- `www.raymondovich.ru` is a DNS-only CNAME to `raymondovich-cloud.github.io`.
+- No `gh-pages` branch and no repository deploy workflow were found. The GitHub Pages publishing source setting itself was not accessible through the connected GitHub API.
+
+This confirms GitHub Pages as the current public origin, but does not independently prove the configured publishing branch/folder. The migration branch changes root `index.html` to the SPA; merging it into the Pages publishing source would therefore be a production cutover.
+
+**Decision gate:** Hash Router remains approved only for temporary test use. No production routing/hosting migration or production cutover is approved by this ADR. Do not merge the root-entry cutover until the owner explicitly approves the production effect and chooses the production routing/hosting approach.
