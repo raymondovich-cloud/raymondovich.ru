@@ -179,3 +179,40 @@ Cloudflare проверялся read-only. Настройки DNS, Cloudflare, h
 - Production Supabase/Auth/data/RLS/grants/Edge Functions не затрагивались.
 - Cloudflare DNS, zone settings, rulesets и Pages resources не изменялись.
 - SPA implementation не начиналась.
+
+
+## Дополнение: функциональная инвентаризация — этап 4 и матрица переноса
+
+**Дата:** 05.11.2026  
+**Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`
+
+В документ аудита добавлен раздел 18 — полная функциональная матрица переноса и обязательных тестов.
+
+Систематизированы:
+- публичная часть: главная, навигация, about, каталог продуктов, форматы сотрудничества, контакты и legal pages;
+- Identity/Auth: login, registration, recovery request, callback, password update, logout;
+- Account: профиль, настройки, email и password update;
+- Owner Control Center: overview, идеи, проекты и все обнаруженные CRUD/status/action flows;
+- целевые Partner Workspace и External Project Workspace;
+- отсутствующие или неподтверждённые функции: Tools UI, milestones/tasks/history, AI Business Analyst, заявки/модерация, checkout/payments, permissions UI, monitoring/notifications/audit/backup runtime.
+
+Для каждого текущего сценария определены целевой модуль/предварительный route и обязательные проверки: happy path, validation, authentication, authorization/RLS, loading/empty, failure/recovery, concurrency/idempotency, navigation, accessibility/responsive и data integrity.
+
+Отдельно зафиксированы:
+- неатомарные операции запуска и удаления проекта;
+- redirect loop для non-admin;
+- отсутствие отдельного создания проекта и UI редактирования проекта;
+- редактирование содержания идеи в detail dialog;
+- расхождения текущего кода с архитектурными и публичными документами;
+- необходимость read-only проверки production schema/RLS только с отдельным разрешением.
+
+**Статус:** статическая функциональная инвентаризация и предварительная матрица переноса завершены. ADR и прикладная реализация ещё не начинались.
+
+## Границы изменений
+
+- Изменён только документ аудита и этот changelog в рабочей ветке.
+- Прикладные HTML/CSS/JS, SQL, тесты и hosting config не изменялись.
+- `main`, backup branch и `raymondovich.online` не затрагивались.
+- Production Supabase/Auth/data/RLS/grants/Edge Functions не проверялись и не изменялись.
+- Cloudflare/GitHub Pages/DNS configuration не изменялись.
+- SPA implementation не начиналась.
