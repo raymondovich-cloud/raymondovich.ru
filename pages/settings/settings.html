@@ -103,6 +103,54 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 
 .logout-link{appearance:none;-webkit-appearance:none;width:100%;padding:0;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
 .logout-link:disabled{opacity:.55;cursor:wait}
+
+/* compact command-panel sidebar */
+:root{--side-expanded-width:min(300px,82vw);--side-row-height:clamp(42px,5.8vh,52px)}
+body.side-open{padding-left:var(--side-expanded-width)}
+.side,body.side-open .side{width:64px}
+body.side-open .side{width:var(--side-expanded-width)}
+.side-top{height:56px;min-width:var(--side-expanded-width)}
+.side-toggle,.mob-toggle{width:56px;height:56px}
+.side-body{min-width:var(--side-expanded-width);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.side-body::-webkit-scrollbar{display:none}
+.side-home{min-width:var(--side-expanded-width);height:var(--side-row-height);min-height:var(--side-row-height);border-bottom:1px solid rgba(239,234,225,.075);gap:0}
+.side-home .badge{width:56px;height:var(--side-row-height);font-size:.62rem;letter-spacing:.035em}
+.side-home .pn b,.pn b{font-size:1rem;line-height:1.2}
+.pn{gap:2px}
+.pn em{font-size:.58rem;line-height:1.15;letter-spacing:.055em}
+.p,.faq-sidebar{min-width:var(--side-expanded-width)}
+.p>summary,.faq-sidebar>summary,.partner-guide>summary{min-width:var(--side-expanded-width);height:var(--side-row-height);min-height:var(--side-row-height)}
+.p>summary .badge,.faq-sidebar>summary .badge{height:var(--side-row-height)}
+.pd,.partner-guide .pd,.faq-sidebar .pd{padding:0 14px 14px 56px}
+.side-divider{min-width:0;width:calc(100% - 36px);height:1px;margin:10px 18px;background:linear-gradient(90deg,rgba(255,106,31,.55),var(--line) 58%,transparent)}
+.side-home[aria-current="page"],.p[open]>summary,.faq-sidebar[open]>summary{
+  position:relative;
+  color:var(--or);
+  background:linear-gradient(100deg,rgba(255,106,31,.20),rgba(255,106,31,.075) 62%,rgba(255,106,31,.025));
+  border-bottom-color:transparent;
+}
+.side-home[aria-current="page"]::before,.p[open]>summary::before,.faq-sidebar[open]>summary::before{
+  content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--or);box-shadow:0 0 14px rgba(255,106,31,.35)
+}
+.side-home[aria-current="page"] .badge,.side-home[aria-current="page"] .pn b,
+.p[open]>summary .badge,.p[open]>summary .pn b,
+.faq-sidebar[open]>summary .badge,.faq-sidebar[open]>summary .pn b{color:var(--or)}
+.side-home:hover{background:linear-gradient(100deg,rgba(255,106,31,.10),rgba(255,106,31,.025))}
+.side-home[aria-current="page"]:hover{background:linear-gradient(100deg,rgba(255,106,31,.20),rgba(255,106,31,.075) 62%,rgba(255,106,31,.025))}
+.logout-link{border-bottom:0}
+@media(max-width:820px){
+  body,body.side-open{padding-left:0}
+  .side,body.side-open .side{width:var(--side-expanded-width);transform:translateX(-100%)}
+  body.side-open .side{transform:none}
+  .side-top,.side-body,.side-home,.p,.faq-sidebar,.p>summary,.faq-sidebar>summary{min-width:var(--side-expanded-width)}
+  body:not(.side-open) .pn,body:not(.side-open) .pd,body:not(.side-open) .side-title{visibility:visible;opacity:1}
+  .mob-toggle{width:52px}
+}
+@media(min-width:821px) and (max-width:1100px){
+  body.side-open{padding-left:var(--side-expanded-width)}
+  body.side-open .side{width:var(--side-expanded-width)}
+}
+
 </style></head>
 <body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
