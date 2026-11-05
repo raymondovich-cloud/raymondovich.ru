@@ -25,6 +25,8 @@
 - Исторические `functional-inventory-and-migration-matrix` и `deep-functional-and-data-migration-map` явно помечены как baseline-снимки до SPA-миграции; актуальный статус вынесен в merge-preparation status.
 - `final-repository-structure.md` синхронизирован с фактическим прогрессом и действующим разрешением на работу в migration branch; production/merge ограничения сохранены.
 
+- `docs/architecture/overview.md` обновлён до version 1.2 после исправления описания модели данных.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
