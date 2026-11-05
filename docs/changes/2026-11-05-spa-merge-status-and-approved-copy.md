@@ -43,6 +43,8 @@
 
 - Read-only Supabase audit подтвердил, что все 14 migration files совпадают с сохранёнными live `schema_migrations.statements` (0 SQL differences). Clean local Supabase replay и RLS integration tests остаются отдельным quality gate; production не менялся.
 
+- Обновлён `docs/security/admin-security.md` до version 1.4: устранено устаревшее утверждение об отсутствующих миграциях; зафиксировано 0 SQL statement differences между 14 repo migrations и live ledger, при сохранении требования clean isolated replay.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
