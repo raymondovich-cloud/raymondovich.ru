@@ -4,8 +4,8 @@
       <div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-brand"><strong>RAYMONDOVICH</strong><em>Навигация</em></span></div>
       <nav class="side-body" aria-label="Основные разделы">
         <a class="side-home" href="/spa.html#/" aria-label="Главная страница raymondovich.ru" aria-current="page"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b><em>Обзор платформы</em></span></a>
-        <a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Каталог продуктов</em></span></a>
-        <a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
+        <a class="side-home" href="/spa.html#/products" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Каталог продуктов</em></span></a>
+        <a class="side-home" href="/spa.html#/cooperation" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
     <details class="p partner-guide">
       <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
       <div class="pd">
