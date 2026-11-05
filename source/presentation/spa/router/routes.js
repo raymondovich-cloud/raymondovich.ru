@@ -6,6 +6,8 @@ const NotFound = () => import("../views/system/NotFound.vue");
 const Products = () => import("../views/public/Products.vue");
 const Cooperation = () => import("../views/public/Cooperation.vue");
 const About = () => import("../views/public/About.vue");
+const Profile = () => import("../views/public/Profile.vue");
+const Settings = () => import("../views/public/Settings.vue");
 
 export const routeRecords = [
   {
@@ -31,6 +33,18 @@ export const routeRecords = [
     name: "about",
     component: About,
     meta: { space: "public", layout: "standalone", title: "Подход к разработке — RAYMONDOVICH" },
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
+    meta: { space: "public", layout: "standalone", title: "Профиль — RAYMONDOVICH" },
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: Settings,
+    meta: { space: "public", layout: "standalone", title: "Настройки — RAYMONDOVICH" },
   },
   {
     path: "/owner",
