@@ -104,3 +104,48 @@
 **CI on latest HEAD:** MUST BE RECONFIRMED.  
 **Merge readiness:** NOT READY.  
 **Merge to main:** NOT PERFORMED; explicit owner approval required.
+
+
+## Verification update — 2026-11-05
+
+### Functional migration completed in the branch
+
+- Root `index.html` now starts the Vue SPA.
+- Public views migrated: home, products, cooperation formats, about, profile, settings and legal information.
+- Owner Control Center migrated for ideas and projects, with dedicated routes `/owner`, `/owner/ideas`, and `/owner/projects`.
+- Existing public/account/auth/legal URLs hand off to their SPA routes. Legacy root fragment anchors are normalized before Vue Router initializes.
+- Supabase callback and password-recovery pages remain dedicated compatibility bridges because Supabase may return token fragments that conflict with Hash History.
+- Domain rules are isolated from Application use cases; Supabase gateways/repositories are isolated in Infrastructure; `source/presentation/runtime/` is the composition root.
+- Partner and External Project workspaces remain protected placeholders pending their own membership/data model and RLS design.
+
+### Latest automated verification
+
+- Successful CI run: `42102546920`.
+- Tested code commit: `73e6a9d79f464b35ed4455b8f4408625560ab008`.
+- 42 unit tests passed; 0 failed.
+- `npm ci`, Vite production build and built-output smoke checks passed.
+- Branch subsequently received documentation-only commits; no executable source changes followed the tested code commit at the time of this update.
+
+### Read-only production Supabase review
+
+No Supabase configuration or data was changed.
+
+- Confirmed live tables `ideas`, `projects`, `user_profiles`; RLS is enabled.
+- `ideas` and `projects` policies require authenticated admin role and `owner_id = auth.uid()`.
+- `user_profiles` policies constrain access to the authenticated user's own profile.
+- A unique index exists for `projects.source_idea_id`.
+- Existing `anon` table grants remain on `ideas`, although no anonymous RLS policy exists; RLS denies anonymous access. This remains a least-privilege hardening item.
+- Supabase Security Advisor reports leaked-password protection disabled. It was not changed.
+- Auth redirect allow-list configuration was not available for read-only verification.
+
+### Merge status
+
+**Not yet ready for merge approval.** Remaining gates:
+
+1. Verify the current branch head has a successful CI run after the final documentation-only commits.
+2. Run real-browser end-to-end checks, including auth redirect behavior; iOS Safari verification has not been performed.
+3. Decide the scope/timing for Partner Workspace and External Project Workspace backend, membership and RLS implementation.
+4. Review the existing `ideas` anon grants and leaked-password protection warning as separate security decisions.
+5. Confirm Supabase Auth redirect allow-list entries for the legacy callback and password-reset bridge URLs.
+
+The migration branch remains isolated. `main`, production hosting, DNS, Cloudflare, Supabase schema/RLS/grants, Auth settings and Edge Functions remain unchanged.
