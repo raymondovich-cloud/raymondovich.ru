@@ -44,7 +44,8 @@
     <p class="eyebrow">Личный кабинет / Настройки</p>
     <h1>Настройки<br>аккаунта.</h1>
     <p class="intro">Управление персональными данными, контактной информацией и безопасностью учётной записи.</p>
-    <div class="settings-access" role="status" v-if="accessMessage">{{ accessMessage }} <a href="/pages/auth/auth.html">Войти</a></div>
+    <div class="settings-access" role="status" v-if="loading">Загружаем настройки аккаунта…</div>
+    <div class="settings-access" role="status" v-else-if="accessMessage">{{ accessMessage }} <a href="/pages/auth/auth.html">Войти</a></div>
     <div id="settings-content" v-else>
     <section class="settings-section" aria-labelledby="settings-profile-title">
       <div class="settings-section-head"><span class="settings-index">01 / PROFILE</span><div><h2 id="settings-profile-title">Профиль</h2><p>Персональные данные и часовой пояс.</p></div></div>
