@@ -103,24 +103,42 @@ const storageKey = "sb-yajybgdorhxebbigwjgi-auth-token";
 
 async function installSession(page, role = "admin") {
   const now = Math.floor(Date.now() / 1000);
-  await page.addInitScript(({ key, currentTime, userRole }) => {
+  const userId = "00000000-0000-4000-8000-000000000001";
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+  const accessToken = [
+    encode({ alg: "HS256", typ: "JWT" }),
+    encode({
+      aud: "authenticated",
+      exp: now + 3600,
+      iat: now,
+      iss: `${supabaseOrigin}/auth/v1`,
+      sub: userId,
+      email: "e2e@example.test",
+      app_metadata: { provider: "email", providers: ["email"], role },
+      user_metadata: { display_name: "E2E User" },
+      role: "authenticated",
+    }),
+    "e2e-signature",
+  ].join(".");
+
+  await page.addInitScript(({ key, currentTime, userRole, token, id }) => {
     localStorage.setItem(key, JSON.stringify({
-      access_token: "e2e-access-token",
+      access_token: token,
       refresh_token: "e2e-refresh-token",
       token_type: "bearer",
       expires_in: 3600,
       expires_at: currentTime + 3600,
       user: {
-        id: "e2e-user-0001",
+        id,
         aud: "authenticated",
         role: "authenticated",
         email: "e2e@example.test",
-        app_metadata: { role: userRole },
+        app_metadata: { provider: "email", providers: ["email"], role: userRole },
         user_metadata: { display_name: "E2E User" },
         created_at: new Date(currentTime * 1000).toISOString(),
       },
     }));
-  }, { key: storageKey, currentTime: now, userRole: role });
+  }, { key: storageKey, currentTime: now, userRole: role, token: accessToken, id: userId });
 }
 
 async function mockOwnerData(page) {
