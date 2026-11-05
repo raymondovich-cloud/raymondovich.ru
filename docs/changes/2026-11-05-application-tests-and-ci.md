@@ -1,27 +1,32 @@
-# Application tests and CI verification
+# Application tests and CI
 
-**Date:** 05.11.2026  
-**Branch:** `architecture/spa-rewrite-2026-11-05`
+Date: 2026-11-05
 
 ## Changes
 
-- Added Node.js built-in test runner command (`npm test`) without introducing another test framework dependency.
-- Added unit coverage for idea, project, authentication and account-settings application services.
-- Covered owner-scoped repository delegation, input normalization, allow-listed update fields, auth callback configuration, account metadata mapping, project launch/restore behaviour and rollback failures.
-- Updated SPA build workflow to execute unit tests before the production build.
-- Disabled cancellation of in-progress runs for this branch so rapid commits do not prevent the final candidate from receiving a complete CI result.
-- Corrected Profile.vue to consume the composed authentication runtime.
-- Corrected the public home sign-out handler to call the injected authentication operation without recursively shadowing it.
+- Added Node.js built-in unit tests for authentication, account settings, ideas, projects and domain invariants.
+- Added a CI workflow limited to `architecture/spa-rewrite-2026-11-05` and manual dispatch.
+- The workflow generates and commits `package-lock.json` when dependency metadata changes, then runs `npm ci`, `npm test`, `npm run build` and `npm run test:build`.
+- Direct frontend dependencies are pinned:
+  - Vue 3.5.45
+  - Vue Router 5.4.0
+  - Supabase JS 2.119.0
+  - Vite 8.3.6
+  - Vite Vue plugin 6.0.10
+- Node.js engine requirement is `>=22.12.0`; CI currently runs Node.js 22.
 
-## Verification
+## Latest verification
 
-- The latest completed run before the public-home fix reported all 30 application unit tests passing.
-- The same run exposed a Vue SFC build error caused by a duplicate `logout` identifier; the public-home handler was corrected in the branch.
-- A fresh build on the corrected branch head is required before considering the change verified.
-- No production deployment, production Supabase change, or merge to `main` was performed.
+- Workflow run: `42102546920`
+- Tested code commit: `73e6a9d79f464b35ed4455b8f4408625560ab008`
+- Result: success.
+- Unit tests: 42 passed, 0 failed.
+- Production build: passed.
+- Built-output smoke checks: passed.
+- The current branch head subsequently received a documentation-only commit `95525b30f61f0944af16f68f6fac5375007b4815`; executable source and package files were unchanged by that commit.
 
-## Remaining verification
+## Scope
 
-- Re-run CI on the exact final branch SHA.
-- Add lockfile and switch CI to reproducible `npm ci` after generating and verifying the lockfile.
-- Complete browser/E2E, isolated Supabase/RLS and real iOS Safari checks.
+- CI does not deploy the site or change hosting.
+- No production Supabase, Auth, DNS, Cloudflare or application data was changed.
+- Passing unit/build checks do not substitute for real-browser end-to-end tests or iOS Safari verification.
