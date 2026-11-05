@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { getRole, getSession } from "../../runtime/auth.js";
 
 const PublicHome = () => import("../views/public/PublicHome.vue");
 const NotFound = () => import("../views/system/NotFound.vue");
@@ -137,6 +136,7 @@ router.beforeEach(async (to) => {
 
   let session;
   try {
+    const { getRole, getSession } = await import("../../runtime/auth.js");
     session = await getSession();
   } catch {
     return { name: "auth-login", query: { redirect: to.fullPath } };
