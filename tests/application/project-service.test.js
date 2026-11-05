@@ -133,6 +133,19 @@ test("deleteProject deletes the project and restores its source idea for review"
   assert.equal(repos.calls[restoreIndex][3].launched_at, null);
 });
 
+test("deleteProject reports that deletion succeeded when source-idea restoration fails", async () => {
+  const repos = createRepositories({ ideaUpdateError: new Error("restore denied") });
+  const service = createProjectService(repos);
+
+  await assert.rejects(
+    () => service.deleteProject("project-1", "owner-1"),
+    /Проект удалён, но исходную идею не удалось вернуть на рассмотрение\. Причина: restore denied/,
+  );
+  const deleteIndex = repos.calls.findIndex(([name]) => name === "deleteProject");
+  const restoreIndex = repos.calls.findIndex(([name]) => name === "updateIdea");
+  assert.ok(deleteIndex >= 0 && restoreIndex > deleteIndex);
+});
+
 test("deleteProject stops when the project deletion fails", async () => {
   const repos = createRepositories({ deleteError: new Error("delete failed") });
   const service = createProjectService(repos);
