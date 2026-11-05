@@ -1,9 +1,4 @@
-// version 1.2
-import { supabase } from "../../infrastructure/supabase/client.js";
-
-const AUTH_CALLBACK_URL = "https://raymondovich.ru/pages/auth/auth-callback.html";
-const PASSWORD_RESET_URL = "https://raymondovich.ru/pages/auth/update-password.html";
-
+// version 2.0
 function normalizeError(error) {
   if (!error) return null;
   const message = error.message || "Операция не выполнена.";
@@ -12,76 +7,82 @@ function normalizeError(error) {
   return new Error(message);
 }
 
-export async function getSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw normalizeError(error);
-  return data.session;
-}
-
-export async function register({ email, password, displayName }) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { display_name: displayName || null },
-      emailRedirectTo: AUTH_CALLBACK_URL,
+export function createAuthenticationService({
+  authGateway,
+  profileGateway,
+  authCallbackUrl,
+  passwordResetUrl,
+}) {
+  return {
+    async getSession() {
+      const { data, error } = await authGateway.getSession();
+      if (error) throw normalizeError(error);
+      return data.session;
     },
-  });
-  if (error) throw normalizeError(error);
-  if (data.session?.user) await ensureProfile(data.session.user, displayName);
-  return data;
-}
 
-export async function requestPasswordReset(email) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: PASSWORD_RESET_URL,
-  });
+    async register({ email, password, displayName }) {
+      const { data, error } = await authGateway.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName || null },
+          emailRedirectTo: authCallbackUrl,
+        },
+      });
+      if (error) throw normalizeError(error);
+      if (data.session?.user) {
+        try {
+          await profileGateway.ensureProfile(data.session.user, displayName);
+        } catch (profileError) {
+          throw normalizeError(profileError);
+        }
+      }
+      return data;
+    },
 
-  if (error) throw normalizeError(error);
-}
+    async requestPasswordReset(email) {
+      const { error } = await authGateway.resetPasswordForEmail(email, { redirectTo: passwordResetUrl });
+      if (error) throw normalizeError(error);
+    },
 
-export async function updatePassword(password) {
-  const { error } = await supabase.auth.updateUser({ password });
+    async updatePassword(password) {
+      const { error } = await authGateway.updateUser({ password });
+      if (error) throw normalizeError(error);
+    },
 
-  if (error) throw normalizeError(error);
-}
+    async login({ email, password }) {
+      const { data, error } = await authGateway.signInWithPassword({ email, password });
+      if (error) throw normalizeError(error);
+      if (data.user) {
+        try {
+          await profileGateway.ensureProfile(data.user, data.user.user_metadata?.display_name || "");
+        } catch (profileError) {
+          throw normalizeError(profileError);
+        }
+      }
+      return data;
+    },
 
-export async function login({ email, password }) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw normalizeError(error);
-  if (data.user) await ensureProfile(data.user, data.user.user_metadata?.display_name || "");
-  return data;
-}
+    async logout() {
+      const { error } = await authGateway.signOut();
+      if (error) throw normalizeError(error);
+    },
 
-export async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw normalizeError(error);
-}
+    getRole(session) {
+      return session?.user?.app_metadata?.role || "user";
+    },
 
-export function getRole(session) {
-  return session?.user?.app_metadata?.role || "user";
-}
+    async completeAuthCallback(search) {
+      const { data, error } = await authGateway.exchangeCodeForSession(search);
+      if (error) throw normalizeError(error);
+      return data.session;
+    },
 
-async function ensureProfile(user, displayName) {
-  const { error } = await supabase
-    .from("user_profiles")
-    .upsert({
-      user_id: user.id,
-      display_name: displayName || user.user_metadata?.display_name || null,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" });
-  if (error) throw normalizeError(error);
-}
-
-export async function completeAuthCallback(search = window.location.search) {
-  const { data, error } = await supabase.auth.exchangeCodeForSession(search);
-  if (error) throw normalizeError(error);
-  return data.session;
-}
-
-export function subscribeToPasswordRecovery(callback) {
-  const { data } = supabase.auth.onAuthStateChange((event, session) => {
-    if (event === "PASSWORD_RECOVERY") callback(session);
-  });
-  return () => data.subscription.unsubscribe();
+    subscribeToPasswordRecovery(callback) {
+      const { data } = authGateway.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY") callback(session);
+      });
+      return () => data.subscription.unsubscribe();
+    },
+  };
 }
