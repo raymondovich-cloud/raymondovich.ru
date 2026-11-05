@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { getRole, getSession } from "../../../application/auth/authentication.js";
+import { getRole, getSession } from "../../runtime/auth.js";
 
 const PublicHome = () => import("../views/public/PublicHome.vue");
 const NotFound = () => import("../views/system/NotFound.vue");
