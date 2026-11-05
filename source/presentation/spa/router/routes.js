@@ -147,9 +147,11 @@ router.beforeEach(async (to) => {
   if (!to.meta.requiresAuth) return true;
 
   let session;
+  let getRole;
   try {
-    const { getRole, getSession } = await import("../../runtime/auth.js");
-    session = await getSession();
+    const authentication = await import("../../runtime/auth.js");
+    getRole = authentication.getRole;
+    session = await authentication.getSession();
   } catch {
     return { name: "auth-login", query: { redirect: to.fullPath } };
   }
