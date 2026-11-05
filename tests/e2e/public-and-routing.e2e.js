@@ -172,7 +172,7 @@ test("login form reports invalid credentials without exposing backend details", 
 
 test("password reset sends request and displays privacy-preserving confirmation", async ({ page }) => {
   let resetPayload;
-  await page.route(`${supabaseOrigin}/auth/v1/recover`, async (route) => {
+  await page.route(`${supabaseOrigin}/auth/v1/recover**`, async (route) => {
     resetPayload = route.request().postDataJSON();
     await route.fulfill({ status: 200, contentType: "application/json", body: "{}" });
   });
