@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import { getRole, getSession } from "../../../application/auth/authentication.js";
 
 const PublicHome = () => import("../views/public/PublicHome.vue");
 const NotFound = () => import("../views/system/NotFound.vue");
@@ -44,4 +45,27 @@ export const router = createRouter({
     if (to.hash) return { el: to.hash, behavior: "smooth" };
     return { top: 0 };
   },
+});
+
+router.beforeEach(async (to) => {
+  if (!to.meta.requiresAuth) return true;
+
+  let session;
+  try {
+    session = await getSession();
+  } catch {
+    window.location.replace("/pages/auth/auth.html");
+    return false;
+  }
+
+  if (!session) {
+    window.location.replace("/pages/auth/auth.html");
+    return false;
+  }
+
+  if (to.meta.space === "owner" && getRole(session) !== "admin") {
+    return { name: "public-home" };
+  }
+
+  return true;
 });
