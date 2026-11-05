@@ -14,9 +14,9 @@
 Сравнение `main...architecture/spa-rewrite-2026-11-05` на момент проверки:
 
 - `main` — базовый commit: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`;
-- рабочая ветка опережает `main` на 48 commits (после добавления этого отчёта и changelog);
+- рабочая ветка опережает `main` на 52 commits (после добавления этого отчёта и changelog);
 - рабочая ветка отстаёт от `main` на 0 commits;
-- GitHub Compare вернул 22 изменённых пути;
+- GitHub Compare вернул 25 изменённых путей;
 - все возвращённые изменённые пути относятся к `docs/`;
 - изменения прикладного кода, HTML, CSS, JavaScript, SQL migrations и конфигурации приложения в сравнении не обнаружены.
 
@@ -45,11 +45,13 @@
 - Подготовлена карта целевой структуры репозитория.
 - Зафиксированы ADR по hosting/routing, frontend stack, state management и testing strategy.
 - Проведён статический аудит текущего состояния репозитория.
+- Подготовлена функциональная инвентаризация 16 HTML entry points, 15 JavaScript modules, 2 CSS files и 10 SQL migration files с первичной migration matrix: `docs/architecture/functional-inventory-and-migration-matrix-2026-11-05.md`.
 - Зафиксированы ограничения на production Supabase, Auth, DNS, Cloudflare и hosting.
 
 ### Не сделано
 
 - Не выполнен перенос текущих MPA-маршрутов в единый SPA Router.
+- Не завершена детальная декомпозиция сценариев `app-page.js`, SQL/RLS mapping и legacy URL compatibility audit.
 - Не выполнен перенос существующих HTML-страниц в единый SPA application shell.
 - Не завершена декомпозиция крупного presentation-модуля Control Center.
 - Не подтверждено удаление inline CSS и inline JavaScript из существующих HTML.
