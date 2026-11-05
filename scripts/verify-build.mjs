@@ -25,6 +25,30 @@ function read(relativePath) {
   return readFileSync(absolutePath, "utf8");
 }
 
+function htmlFiles(directory) {
+  return readdirSync(directory).flatMap((name) => {
+    const absolute = resolve(directory, name);
+    return statSync(absolute).isDirectory()
+      ? htmlFiles(absolute)
+      : absolute.endsWith(".html") ? [absolute] : [];
+  });
+}
+
+
+assert.equal(read("robots.txt"), readSource("robots.txt"), "Vite output must include the canonical robots.txt");
+assert.equal(read("sitemap.xml"), readSource("sitemap.xml"), "Vite output must include the canonical sitemap.xml");
+
+for (const file of htmlFiles(root)) {
+  const html = readFileSync(file, "utf8");
+  assert.doesNotMatch(html, /<style\\b/i, `Built HTML must not contain inline CSS: ${file}`);
+  assert.doesNotMatch(html, /\\sstyle\\s*=/i, `Built HTML must not contain style attributes: ${file}`);
+  assert.doesNotMatch(
+    html,
+    /<script\\b(?![^>]*\\bsrc\\s*=)(?![^>]*type\\s*=\\s*["']application\\/ld\\+json["'])[^>]*>[\\s\\S]*?<\\/script>/i,
+    `Built HTML must not contain inline JavaScript (JSON-LD is allowed): ${file}`,
+  );
+}
+
 const index = read("index.html");
 assert.match(index, /<div id="app"><\/div>/, "Root entry must mount the Vue SPA");
 assert.match(index, /type="module"[^>]+src="[^"]+\.js"/, "Root entry must load a bundled module");
