@@ -4,7 +4,7 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import {
   completeAuthCallback, getRole, getSession, login, logout, register,
   requestPasswordReset, subscribeToPasswordRecovery, updatePassword,
-} from "../../../../application/auth/authentication.js";
+} from "../../../runtime/auth.js";
 
 const route = useRoute();
 const router = useRouter();
