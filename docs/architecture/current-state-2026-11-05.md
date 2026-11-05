@@ -1,4 +1,4 @@
-<!-- version 1.0 -->
+<!-- version 1.1 -->
 
 # Снимок текущего состояния Raymondovich.ru перед архитектурной переработкой
 
@@ -309,3 +309,177 @@ Commit: 95f62ca1199beb2400a0a8622fc3b4b4446f68ff
 
 ---
 **Итог:** на текущем состоянии Raymondovich.ru — статический MPA-сайт с отдельными ES module слоями и Supabase-backed Control Center. Переход на SPA потребует согласованной миграции маршрутизации, загрузки страниц, Auth redirects, hosting fallback и функциональности, а не только добавления файла router.js.
+
+
+## 15. Функциональная инвентаризация: подтверждённые сценарии и контракты
+
+**Дата дополнительной проверки:** 05.11.2026  
+**Проверенная ветка:** `architecture/spa-rewrite-2026-11-05`  
+**Проверенный commit до документального дополнения:** `df506fb002df63f2d6156b389a6b08c66eba190b`
+
+Этот раздел дополняет статический снимок функциональной инвентаризацией JavaScript, DOM-контрактов и SQL-миграций. Проверка выполнялась чтением исходников и истории миграций; SQL не исполнялся, к production Supabase не подключались.
+
+### 15.1. Полный перечень JavaScript-файлов
+
+В дереве обнаружено 15 JS-файлов:
+
+- Application: `account/account-session.js`, `account/account-settings.js`, `auth/authentication.js`, `ideas/idea-service.js`, `projects/project-service.js`.
+- Infrastructure: `supabase/client.js`.
+- Presentation: `account/settings-page.js`, `account/sidebar-logout.js`, `account/sidebar-navigation.js`, `app/app-page.js`, `auth/auth-page.js`, `auth/callback-page.js`, `auth/register-page.js`, `auth/reset-password-page.js`, `auth/update-password-page.js`.
+
+Других JS-файлов в Git tree проверенной ветки не обнаружено. При этом часть поведения реализована inline-скриптами непосредственно в HTML.
+
+### 15.2. Auth и аккаунт: фактические операции
+
+Application-контракт `authentication.js`:
+
+- `getSession()` — получить текущую сессию;
+- `register()` — регистрация через email/password, запись display_name в user metadata и callback URL;
+- `requestPasswordReset()` — запрос письма восстановления;
+- `updatePassword()` — смена пароля;
+- `login()` — вход по email/password;
+- `logout()` — выход;
+- `getRole()` — чтение роли из `user.app_metadata.role`;
+- `ensureProfile()` — upsert в `user_profiles` при регистрации с уже выданной сессией или при входе.
+
+Account settings:
+
+- получение email, first_name, last_name и timezone из Supabase Auth user metadata;
+- обновление first_name, last_name и timezone через `auth.updateUser({ data })`;
+- изменение email через `auth.updateUser({ email })`;
+- изменение пароля через `auth.updateUser({ password })`.
+
+Подтверждены два нарушения целевой границы Presentation/Application:
+
+- `source/presentation/auth/callback-page.js` напрямую вызывает `supabase.auth.exchangeCodeForSession()`;
+- `source/presentation/auth/update-password-page.js` напрямую вызывает `getSession()`, подписывается на `onAuthStateChange()` и вызывает `signOut()`.
+
+При этом `updatePassword()` уже проходит через Application. При переносе callback/recovery lifecycle следует оформить единым прикладным контрактом, не оставляя прямые обращения к Supabase в UI.
+
+Отдельный вопрос согласования данных профиля: `ensureProfile()` записывает `display_name` в `user_profiles`, а экран настроек хранит first/last name и timezone в Auth user metadata. Это два разных хранилища профиля; их назначение и источник истины необходимо определить до переноса. Production-данные не проверялись.
+
+### 15.3. Control Center: подтверждённые пользовательские сценарии
+
+`app-page.js` содержит три представления: обзор, идеи и проекты. Внутренняя навигация выполняется через локальное состояние `state.view`, без изменения URL.
+
+**Идеи:**
+- создание с названием, описанием, целью, ожидаемой выручкой, оценкой затрат, бизнес-моделью, концепцией и дополнительной информацией;
+- просмотр подробностей;
+- перевод между «Новая» и «На рассмотрении»;
+- назначение/снятие приоритета;
+- запуск идеи с созданием отдельного проекта;
+- архивирование и восстановление;
+- окончательное удаление.
+
+Статусы, используемые UI: `new`, `review`, `launched`, `archived`. Приоритеты БД: `low`, `normal`, `high`, `critical`; интерфейс переключает обычный/высокий приоритет.
+
+**Проекты:**
+- список и просмотр проектов;
+- пауза/возобновление;
+- завершение;
+- архивирование/восстановление;
+- назначение/снятие закрепления;
+- назначение/снятие приоритета;
+- удаление.
+
+Статусы проектов после миграции разделения: `active`, `paused`, `completed`, `archived`. UI использует все эти статусы.
+
+**Взаимодействие:**
+- обычное нажатие на карточку идеи открывает подробности;
+- длительное удерживание около 550 мс открывает меню действий;
+- контекстное меню открывает то же меню;
+- реализована обработка pointer move/up/cancel/leave, click и keyboard Enter/Space;
+- диалог создания идеи, меню действий и подтверждение удаления являются частью существующего сценария и должны попасть в тестовую матрицу.
+
+`app-page.js` (около 38,6 KB) объединяет рендеринг, управление представлениями, обработчики, диалоги и координацию операций. При декомпозиции необходимо сохранить поведенческие контракты, а не делить файл механически по размеру.
+
+### 15.4. Application services и операции с данными
+
+`idea-service.js`:
+- `listIdeas(ownerId)`;
+- `createIdea(...)`;
+- `updateIdea(id, ownerId, changes)`;
+- `deleteIdea(id, ownerId)`.
+
+Читает и изменяет `public.ideas`. Выборка включает все поля идеи, включая плановые параметры и timestamps.
+
+`project-service.js`:
+- `listProjects(ownerId)`;
+- `createProjectFromIdea(idea, ownerId)`;
+- `updateProject(id, ownerId, changes)`;
+- `deleteProject(id, ownerId)`.
+
+Читает и изменяет `public.projects`, а при запуске/удалении проекта также обновляет `public.ideas`.
+
+Операции запуска и удаления проекта состоят из нескольких отдельных запросов без транзакционной границы:
+- запуск сначала создаёт проект, затем меняет статус идеи; при ошибке обновления идеи пытается удалить созданный проект, но ошибка компенсирующего удаления не обрабатывается отдельно;
+- удаление сначала удаляет проект, затем возвращает исходную идею в `review`; если второй запрос завершается ошибкой, проект уже удалён.
+
+Это подтверждённый риск согласованности данных. В целевой архитектуре сценарии требуют атомарной серверной операции либо другого явно спроектированного механизма компенсации. Конкретный механизм определить в отдельном решении после проверки инфраструктуры; текущий код не менять на этапе инвентаризации.
+
+### 15.5. SQL migrations: подтверждённая модель
+
+В десяти миграциях проверены следующие изменения:
+
+- Реестр инструментов: `ecosystem_tools`, `tool_resources`, `project_tool_relations`, `project_resource_relations`; индексы, внешние ключи, CHECK constraints, RLS policies и grants.
+- Начальное заполнение реестра сервисов, ресурсов и отношений.
+- Явные grants для четырёх таблиц реестра; доступ authenticated ограничен RLS.
+- Уточнение связей проектов с Supabase, REG.RU, доменами и LifeGame.
+- Закрепление проектов: `is_pinned`, `pin_order`, ограничение неотрицательного порядка и индекс.
+- Расширение жизненного цикла проектов, затем отдельное разделение идей и проектов.
+- Плановые поля для идей и проектов: `goal`, `estimated_cost`, `additional_info`, `expected_revenue`, `business_model`, `concept`.
+- Для денежных числовых полей заданы ограничения неотрицательных значений.
+- Для дат проекта задано условие: target_due_date не раньше target_start_date, если обе даты заполнены.
+- Для `ideas` создана RLS policy, ограничивающая операции ролью admin и совпадающим owner_id; authenticated получает CRUD grants.
+
+После миграции разделения:
+- `ideas.status`: `new`, `review`, `launched`, `archived`;
+- `projects.status`: `active`, `paused`, `completed`, `archived`;
+- `projects.source_idea_id` ссылается на `ideas.id`, при удалении идеи связь обнуляется;
+- для source_idea_id создан уникальный частичный индекс, предотвращающий создание нескольких проектов из одной идеи.
+
+### 15.6. Подтверждённые расхождения и незакрытые вопросы
+
+1. **Устаревшая документация Ideas/Projects.** `docs/architecture/overview.md` и `docs/architecture/projects.md` всё ещё описывают идею и проект как одну запись в `projects`. Это противоречит фактической модели двух таблиц в миграции `20261104144433_split_ideas_and_projects.sql`. Документы требуют последующего обновления, но не меняются в рамках этого дополнения.
+2. **Базовая схема не версионирована в найденном каталоге миграций.** В десяти SQL-файлах нет первоначального CREATE TABLE для `projects` и `user_profiles`, хотя миграции и приложение от них зависят. Поэтому полная исходная схема, первоначальные grants/RLS и базовые ограничения не могут быть восстановлены только из этого каталога.
+3. **Дополнительные таблицы из документации.** `docs/architecture/tools-data-model.md` упоминает `project_milestones`, `project_tasks` и `project_history`, но их DDL в проверенных десяти миграциях отсутствует. Их текущее наличие и применение не подтверждены данным статическим аудитом.
+4. **Поле закрепления.** Миграция добавляет `pin_order`, однако текущий `PROJECT_FIELDS` и сервисные операции его не читают и не изменяют. Текущий UI использует `is_pinned`; необходимость полноценного ручного порядка следует оценить отдельно.
+5. **Профиль в двух хранилищах.** `user_profiles.display_name` и Auth user metadata содержат разные части профиля. Требуется определить единый контракт и источник истины.
+6. **Схема проектов зависит от более раннего состояния.** `createProjectFromIdea()` вставляет `completion_criteria`, но в десяти миграциях данного каталога нет определения этого столбца. Нельзя считать его наличие подтверждённым только по текущему набору миграций.
+7. **Удаление исходной идеи.** FK `projects.source_idea_id` использует `ON DELETE SET NULL`; сервис удаления идеи не проверяет связанные проекты. При прямом вызове удаления запущенной идеи проект останется, но связь с исходной идеей будет потеряна. UI обычно направляет действие с запущенной идеи в меню связанного проекта, однако сервисный контракт сам по себе этого ограничения не обеспечивает.
+
+### 15.7. Границы достоверности
+
+- Проверены исходники и SQL-файлы в Git указанной ветки/commit.
+- SQL не исполнялся.
+- Production Supabase, Auth settings, RLS, grants, данные, Edge Functions и резервные копии не проверялись.
+- Не выполнялись browser/runtime, accessibility, security или integration tests.
+- Выводы о миграциях описывают историю файлов в репозитории, а не гарантируют, что все эти миграции применены в production.
+- Никакие прикладные файлы, SQL, настройки хостинга или production-сервисы не изменялись.
+
+## 16. Предварительная матрица функционального переноса
+
+Матрица фиксирует подтверждённые текущие сценарии. Целевые модули и маршруты предварительные и должны быть окончательно закреплены после завершения инвентаризации и ADR.
+
+| Текущий сценарий | Текущие файлы | Данные/зависимости | Предварительный целевой модуль/маршрут |
+|---|---|---|---|
+| Публичная главная, боковая навигация, табы | `index.html` | HTML/CSS/inline JS, внешние ссылки | Public / `/` |
+| О странице | `pages/about/about.html` | статический контент | Public / `/about` |
+| Каталог продуктов | `pages/products/products.html` | статический контент, навигация | Public / `/products` |
+| Форматы сотрудничества | `pages/cooperation/cooperation.html` | статический контент, навигация | Public / `/cooperation` |
+| Профиль участника | `pages/profile/profile.html` | текущий HTML; динамический data-service не обнаружен | Identity/Profile / `/profile` |
+| Настройки профиля | `pages/settings/settings.html`, `settings-page.js`, `account-settings.js` | Supabase Auth user metadata | Identity/Account / `/settings` |
+| Вход | `auth.html`, `auth-page.js`, `authentication.js` | Supabase Auth | Identity/Auth / `/auth/login` |
+| Регистрация и подтверждение email | `register.html`, `register-page.js`, `authentication.js`, callback | Supabase Auth, email redirect | Identity/Auth / `/auth/register`, callback route |
+| Запрос восстановления пароля | `reset-password.html`, `reset-password-page.js` | Supabase Auth email | Identity/Auth / `/auth/recovery` |
+| Callback обмена кода | `auth-callback.html`, `callback-page.js` | Supabase Auth PKCE/session exchange | Identity/Auth / callback route |
+| Установка нового пароля | `update-password.html`, `update-password-page.js` | Supabase Auth recovery session | Identity/Auth / `/auth/update-password` |
+| Выход и боковая навигация | `sidebar-logout.js`, `sidebar-navigation.js`, `app-page.js` | Auth session, DOM state | Identity + App Shell |
+| Control Center: обзор | `app.html`, `app-page.js` | ideas/projects queries | Owner Control Center / overview route |
+| Создание и просмотр идей | `app-page.js`, `idea-service.js` | `ideas` | Ideas module / ideas route |
+| Изменение статуса, приоритета, архивация и восстановление идеи | `app-page.js`, `idea-service.js` | `ideas.status`, `ideas.priority` | Ideas module / ideas route |
+| Запуск идеи в проект | `app-page.js`, `project-service.js` | `ideas`, `projects`, `source_idea_id` | Ideas + Projects use case |
+| Управление проектом | `app-page.js`, `project-service.js` | `projects` | Projects module / projects route |
+| Публичные правовые страницы | `pages/legal/*.html` | статический контент | Public / соответствующие legal routes |
+
+Покрытие тестами по этой матрице пока не установлено. Для каждой строки требуется определить позитивные, негативные, permission, loading, error, empty и recovery states, а затем связать их с тестами.
