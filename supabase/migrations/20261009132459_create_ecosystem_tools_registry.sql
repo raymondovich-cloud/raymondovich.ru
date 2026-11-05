@@ -1,6 +1,4 @@
--- version 1.0
--- Private ecosystem tools registry. Applied as migration 20261009132459_create_ecosystem_tools_registry.
-
+-- Create private ecosystem tools registry with owner- and role-based RLS.
 create table public.ecosystem_tools (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
@@ -78,39 +76,74 @@ alter table public.tool_resources enable row level security;
 alter table public.project_tool_relations enable row level security;
 alter table public.project_resource_relations enable row level security;
 
-create policy "admin manages ecosystem tools" on public.ecosystem_tools for all to authenticated
+create policy "admin manages ecosystem tools"
+on public.ecosystem_tools for all to authenticated
 using ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid()))
 with check ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid()));
 
-create policy "admin manages tool resources" on public.tool_resources for all to authenticated
-using ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid()))
-with check ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid())
-  and exists (select 1 from public.ecosystem_tools t where t.id = tool_id and t.owner_id = (select auth.uid())));
+create policy "admin manages tool resources"
+on public.tool_resources for all to authenticated
+using (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
+)
+with check (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
+  and exists (select 1 from public.ecosystem_tools t where t.id = tool_id and t.owner_id = (select auth.uid()))
+);
 
-create policy "admin manages project tool relations" on public.project_tool_relations for all to authenticated
-using ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid())
-  and exists (select 1 from public.projects p where p.id = project_id and p.owner_id = (select auth.uid())))
-with check ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid())
+create policy "admin manages project tool relations"
+on public.project_tool_relations for all to authenticated
+using (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
   and exists (select 1 from public.projects p where p.id = project_id and p.owner_id = (select auth.uid()))
-  and exists (select 1 from public.ecosystem_tools t where t.id = tool_id and t.owner_id = (select auth.uid())));
+)
+with check (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
+  and exists (select 1 from public.projects p where p.id = project_id and p.owner_id = (select auth.uid()))
+  and exists (select 1 from public.ecosystem_tools t where t.id = tool_id and t.owner_id = (select auth.uid()))
+);
 
-create policy "admin manages project resource relations" on public.project_resource_relations for all to authenticated
-using ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid())
+create policy "admin manages project resource relations"
+on public.project_resource_relations for all to authenticated
+using (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
   and exists (select 1 from public.projects p where p.id = project_id and p.owner_id = (select auth.uid()))
-  and exists (select 1 from public.tool_resources r where r.id = resource_id and r.owner_id = (select auth.uid())))
-with check ((select auth.jwt()->'app_metadata'->>'role') = 'admin' and owner_id = (select auth.uid())
+  and exists (select 1 from public.tool_resources r where r.id = resource_id and r.owner_id = (select auth.uid()))
+)
+with check (
+  (select auth.jwt()->'app_metadata'->>'role') = 'admin'
+  and owner_id = (select auth.uid())
   and exists (select 1 from public.projects p where p.id = project_id and p.owner_id = (select auth.uid()))
-  and exists (select 1 from public.tool_resources r where r.id = resource_id and r.owner_id = (select auth.uid())));
+  and exists (select 1 from public.tool_resources r where r.id = resource_id and r.owner_id = (select auth.uid()))
+);
 
-create function public.set_ecosystem_tools_updated_at() returns trigger language plpgsql set search_path = '' as $$
-begin new.updated_at = now(); return new; end;
+create function public.set_ecosystem_tools_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
 $$;
+
 revoke all on function public.set_ecosystem_tools_updated_at() from public, anon;
 
-create trigger ecosystem_tools_updated_at before update on public.ecosystem_tools for each row execute function public.set_ecosystem_tools_updated_at();
-create trigger tool_resources_updated_at before update on public.tool_resources for each row execute function public.set_ecosystem_tools_updated_at();
-create trigger project_tool_relations_updated_at before update on public.project_tool_relations for each row execute function public.set_ecosystem_tools_updated_at();
-create trigger project_resource_relations_updated_at before update on public.project_resource_relations for each row execute function public.set_ecosystem_tools_updated_at();
+create trigger ecosystem_tools_updated_at before update on public.ecosystem_tools
+for each row execute function public.set_ecosystem_tools_updated_at();
+create trigger tool_resources_updated_at before update on public.tool_resources
+for each row execute function public.set_ecosystem_tools_updated_at();
+create trigger project_tool_relations_updated_at before update on public.project_tool_relations
+for each row execute function public.set_ecosystem_tools_updated_at();
+create trigger project_resource_relations_updated_at before update on public.project_resource_relations
+for each row execute function public.set_ecosystem_tools_updated_at();
 
+-- Minimize direct profile-table permissions; existing authenticated profile flows require select/insert/update only.
 revoke all privileges on table public.user_profiles from anon, authenticated;
 grant select, insert, update on table public.user_profiles to authenticated;
