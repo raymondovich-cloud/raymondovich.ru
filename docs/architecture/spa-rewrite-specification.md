@@ -1390,7 +1390,7 @@ ADR-001 частично решён: временная среда разраб�
 
 ### 24.2. Definition of architecture-document completion
 
-Документ готов к рассмотрению владельцем, когда описаны четыре пространства и границы доступа; frontend/backend/data/integration/security/deployment/operations boundaries; все ранее согласованные решения без противоречий; факты текущего состояния отделены от целевых требований и неподтверждённых предположений; функциональная инвентаризация и migration matrix связаны с целевой архитектурой; unresolved decisions явно перечислены; документ не подразумевает разрешение на реализацию или production changes.
+Документ готов к рассмотрению владельцем, когда описаны четыре пространства и границы доступа; frontend/backend/data/integration/security/deployment/operations boundaries; временная схема GitHub Pages + Hash Router отделена от невыбранного production hosting; conceptual repository structure и module boundaries документированы; факты текущего состояния отделены от целевых требований и неподтверждённых предположений; функциональная инвентаризация и migration matrix связаны с целевой архитектурой; unresolved decisions явно перечислены; документ не подразумевает разрешение на реализацию или production changes.
 
 Завершение архитектурного документа не означает, что все технологические ADR приняты или все production-факты проверены. Оно означает, что целевая инфраструктура и контрольные точки решений описаны для предметного рассмотрения владельцем.
 
@@ -1405,7 +1405,7 @@ ADR-001 частично решён: временная среда разраб�
 6. docs/architecture/decisions/adr-004-testing-strategy.md — proposed testing/tooling recommendation.
 7. docs/architecture/final-repository-structure.md — предлагаемая карта структуры репозитория и ответственности каталогов.
 8. docs/architecture/target-architecture.md — прежняя концептуальная архитектура. Её MPA routing statements superseded данной спецификацией; принципы Clean Architecture остаются применимыми, если не противоречат ей.
-9. docs/changes/ — хронологический журнал решений и изменений.
+9. docs/changes/ — хронологический журнал решений и изменений, включая ADR-003, ADR-004 и фиксацию временного hosting/routing.
 
 При конфликте данная спецификация определяет целевую архитектуру; current-state audit — факты проверенного исходного снимка; ADR регулирует только явно утверждённую владельцем область. Draft ADR не переопределяет утверждённые требования владельца.
 
