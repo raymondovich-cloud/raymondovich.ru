@@ -5,94 +5,88 @@
 **Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`  
 **Целевая ветка:** `main`
 
-## 1. Цель этапа
+## 1. Цель и ограничения
 
-Подготовить безопасный перенос уже существующего Raymondovich.ru в согласованную целевую архитектуру. Перенос не должен создавать отсутствующие бизнес-функции или менять production-инфраструктуру. До отдельного согласования владельца изменения не сливаются в `main`.
+Подготовить полноценную миграцию Raymondovich.ru из legacy MPA в согласованную SPA/Modular Monolith архитектуру с сохранением действующих функций. Старые HTML entry points, inline CSS и inline JavaScript — наследие, которое должно быть заменено, а не перенесено как целевая структура.
 
-## 2. Результат сравнения Git refs
+Работа ведётся только в указанной рабочей ветке. `main`, backup branch, `raymondovich.online`, production Supabase/Auth/data/RLS/grants/Edge Functions, DNS, Cloudflare, hosting и production deployment не затрагиваются. Merge возможен только после отдельного финального разрешения владельца.
 
-Сравнение `main...architecture/spa-rewrite-2026-11-05` на момент проверки:
+## 2. Git состояние
 
-- `main` — базовый commit: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`;
-- рабочая ветка опережает `main` на 52 commits (после добавления этого отчёта и changelog);
-- рабочая ветка отстаёт от `main` на 0 commits;
-- GitHub Compare вернул 25 изменённых путей;
-- все возвращённые изменённые пути относятся к `docs/`;
-- изменения прикладного кода, HTML, CSS, JavaScript, SQL migrations и конфигурации приложения в сравнении не обнаружены.
+Последнее сравнение `main...architecture/spa-rewrite-2026-11-05`:
 
-Это означает, что текущая рабочая ветка содержит архитектурную и аудиторскую документацию, но ещё не содержит переноса приложения в SPA-инфраструктуру. Слияние этой ветки сейчас перенесло бы документацию, а не новую архитектуру приложения.
+- Base `main`: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
+- Рабочая ветка ahead by **55 commits**, behind by **0**.
+- GitHub Compare вернул **26 changed paths**.
+- Все 26 путей относятся к `docs/`.
+- Изменений application code, HTML, CSS, JavaScript, SQL migrations или app/build configuration относительно main пока нет.
 
-## 3. Подтверждённая текущая структура приложения
+Следствие: SPA rewrite ещё не реализован. Ветка пока содержит архитектурные документы и результаты аудита; её нельзя считать merge candidate с новой работающей архитектурой.
 
-В рабочей ветке сохранены существующие корневые элементы:
+## 3. Подтверждённая исходная структура
 
-- `index.html`;
-- `pages/` с разделами about, account, auth, cooperation, legal, products, profile и settings;
-- `source/application/` с модулями account, auth, ideas и projects;
-- `source/presentation/` с модулями account, app и auth;
-- `source/design/` с существующими CSS-файлами;
-- `source/domain/`, `source/core/`, `source/infrastructure/`, `source/memory/`;
-- `supabase/migrations/`;
-- `CNAME`.
+Ветка содержит:
+- 16 HTML entry points;
+- 15 JavaScript modules;
+- 2 CSS files;
+- 10 SQL migration files;
+- нет обнаруженных `package.json`, lockfile, Vite config, tsconfig и GitHub Actions workflow YAML.
 
-Проверка структуры подтверждает, что каталоги новой целевой архитектуры частично существуют, но само наличие каталогов не подтверждает завершённость SPA, модульной декомпозиции или выноса всех inline styles/scripts.
+В legacy HTML присутствуют inline style blocks и inline scripts. Они не являются частью целевой архитектуры. Целевое приложение — один SPA entry point, единый route registry/router, разделённые Presentation/Application/Domain/Infrastructure и самостоятельный design layer.
 
-## 4. Что уже сделано и что ещё не сделано
+## 4. Выполненная работа
 
-### Сделано
+- Подготовлена целевая архитектурная спецификация SPA/Modular Monolith.
+- Подготовлены ADR-001...ADR-004 и карта целевой структуры репозитория.
+- Выполнен статический аудит исходного состояния и первичная migration matrix.
+- Выполнена глубокая инвентаризация Owner Control Center: Overview, Ideas, Projects, формы, детали, архивы, статусы, приоритеты, pin, long-press/context-menu, keyboard и мобильная навигация.
+- Составлена карта Auth/register/callback/password recovery/account settings и legacy URL contracts.
+- Проанализированы текущие Application-to-Supabase зависимости.
+- Проанализированы checked-in SQL migrations для ideas, projects extensions, private registry RLS/grants; ограничения аудита live schema задокументированы.
+- Выявлены риски согласованности при launch idea → project и delete project → restore idea.
+- Результаты зафиксированы в `docs/architecture/deep-functional-and-data-migration-map-2026-11-05.md` и changelog.
 
-- Подготовлена целевая архитектурная спецификация.
-- Подготовлена карта целевой структуры репозитория.
-- Зафиксированы ADR по hosting/routing, frontend stack, state management и testing strategy.
-- Проведён статический аудит текущего состояния репозитория.
-- Подготовлена функциональная инвентаризация 16 HTML entry points, 15 JavaScript modules, 2 CSS files и 10 SQL migration files с первичной migration matrix: `docs/architecture/functional-inventory-and-migration-matrix-2026-11-05.md`.
-- Зафиксированы ограничения на production Supabase, Auth, DNS, Cloudflare и hosting.
+## 5. Критический блокирующий вопрос
 
-### Не сделано
+**ADR-002 — frontend stack — остаётся PROPOSED.** Рекомендация: Vue 3 + TypeScript + Vite 8.x + Vue Router 5.x; Domain/Application должны оставаться framework-independent.
 
-- Не выполнен перенос текущих MPA-маршрутов в единый SPA Router.
-- Не завершена детальная декомпозиция сценариев `app-page.js`, SQL/RLS mapping и legacy URL compatibility audit.
-- Не выполнен перенос существующих HTML-страниц в единый SPA application shell.
-- Не завершена декомпозиция крупного presentation-модуля Control Center.
-- Не подтверждено удаление inline CSS и inline JavaScript из существующих HTML.
-- Не подтверждено сохранение всех существующих сценариев авторизации и callback/recovery.
-- Не выполнены функциональные parity tests.
-- Не выполнены runtime-проверки на реальном iOS Safari.
-- Не подготовлен окончательный merge candidate.
+До явного утверждения стека нельзя устанавливать зависимости, создавать app/build configuration или начинать прикладную SPA-реализацию. Остальной аудит, проектирование маршрутов, data contracts и миграционная подготовка могут продолжаться.
 
-## 5. Обязательные условия готовности к merge
+ADR-003 (state management) и ADR-004 (testing) также остаются proposed и должны быть согласованы с окончательным stack. Pinia — условный вариант только при выборе Vue.
 
-Перенос в `main` допускается только после выполнения всех применимых пунктов:
+## 6. Следующие этапы после принятия ADR-002
 
-1. Утверждён конкретный frontend toolchain; предложенные ADR не трактуются как автоматически принятые решения.
-2. Составлена проверяемая функциональная инвентаризация существующих страниц, операций, ролей, состояний и переходов.
-3. Для каждого существующего сценария определены целевой модуль и способ проверки сохранения поведения.
-4. Все существующие функции перенесены без добавления незаказанной функциональности.
-5. HTML, JavaScript/TypeScript и CSS разделены по ответственности; CSS не встроен в JS/TS.
-6. Domain и Application не зависят от Presentation и Infrastructure.
-7. Supabase schema, migrations, Auth settings, RLS, grants, Edge Functions и production data не изменялись без отдельного разрешения.
-8. Сохранены старые URL/redirect/callback сценарии либо документирован и проверен безопасный механизм совместимости.
-9. Пройдены доступные автоматизированные проверки и функциональные parity tests.
-10. Проверены diff относительно актуального `main`, конфликты, workflow и deploy side effects.
-11. Подготовлены merge summary, rollback notes и окончательная документация фактической архитектуры.
-12. Владелец отдельно просмотрел итоговый merge candidate и дал разрешение на слияние.
+1. Зафиксировать frontend stack и совместимые версии Node/Vite/framework/router.
+2. Создать package/build configuration и единственный SPA entry point в утверждённом временном GitHub Pages + Hash Router режиме.
+3. Реализовать app composition root, centralized route registry и layouts четырёх пространств.
+4. Вынести Supabase access в Infrastructure adapters; Application use cases не должны напрямую импортировать Supabase client.
+5. Мигрировать Auth и recovery flows с проверкой callback URL/allowlist в изолированной среде.
+6. Мигрировать Owner Control Center shell, Overview, Ideas, Projects и все существующие действия.
+7. Мигрировать account settings, публичные страницы и legal content.
+8. Обеспечить совместимость старых URL через redirects/entry shims там, где это необходимо.
+9. Удалять legacy HTML/CSS/JS implementations только после parity verification.
+10. Выполнить automated unit/integration/route/browser tests и критические проверки на реальном iOS Safari.
+11. Обновить migration matrix, changelog, repository structure и финальный diff report.
 
-## 6. Ограничения до финального согласования
+## 7. Требования к готовности merge candidate
 
-- Не выполнять merge или squash в `main`.
-- Не обновлять `main` напрямую.
-- Не менять backup branch.
-- Не менять `raymondovich.online`.
-- Не запускать production deployment.
-- Не менять production Supabase, Auth, SQL migrations, RLS, grants, Edge Functions, DNS, Cloudflare или hosting.
-- Не удалять старые страницы и реализации до подтверждённой функциональной эквивалентности.
+- SPA реально запускается и собирается; MPA больше не является целевой архитектурой.
+- Все подтверждённые существующие функции сохранены либо их изменение отдельно согласовано.
+- Нет inline CSS/JS в целевых HTML entry points; CSS не встроен в JS/TS.
+- Domain/Application не зависят от UI framework, DOM или Supabase SDK.
+- Маршруты, redirects, callbacks, recovery, refresh/back/forward работают в согласованном режиме.
+- Owner, Partner и External Project access controls проверяются на backend; UI guards не считаются security boundary.
+- Supabase schema/RLS/grants проверены; production не менялся без отдельного разрешения.
+- Есть автоматизированные проверки, тесты отказов/конкурентности и iOS Safari verification.
+- Сверен полный diff относительно актуального main, исключены deploy side effects.
+- Подготовлены rollback notes и merge summary.
+- Владелец отдельно просмотрел результат и дал разрешение на merge.
 
-## 7. Следующий рабочий шаг
+## 8. Текущий статус
 
-Продолжить с функциональной инвентаризации исходного приложения: пройти все HTML entry points, presentation/application modules, публичные и закрытые сценарии, Auth flows и операции Ideas/Projects. Затем создать migration matrix с трассировкой «текущая реализация → целевой модуль → проверка». Только после этого начинать перенос существующего функционала в согласованную SPA-структуру.
-
-## 8. Статус
-
-**Статус подготовки:** IN PROGRESS  
-**Статус merge:** NOT READY — архитектурная ветка пока содержит документацию, а не реализацию SPA-переноса.  
-**Слияние в main:** НЕ ВЫПОЛНЕНО. Требуется отдельное финальное разрешение владельца.
+**Подготовка:** IN PROGRESS.  
+**Функциональная инвентаризация:** статически выполнена для текущего Owner Control Center, Auth и Account Settings; другие публичные страницы и inline scripts ещё требуют полного route/content mapping.  
+**Frontend stack:** BLOCKED — ожидает утверждения ADR-002.  
+**SPA implementation:** NOT STARTED.  
+**Merge readiness:** NOT READY.  
+**Merge to main:** NOT PERFORMED; отдельное разрешение владельца обязательно.
