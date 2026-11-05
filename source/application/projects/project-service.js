@@ -28,7 +28,22 @@ export function createProjectService({ projectRepository, ideaRepository }) {
           return existing;
         }
 
-        const project = await projectRepository.create(buildProjectRecordFromIdea(idea, ownerId));
+        let project;
+        try {
+          project = await projectRepository.create(buildProjectRecordFromIdea(idea, ownerId));
+        } catch (error) {
+          if (error.code !== "23505") throw error;
+
+          const concurrentProject = await projectRepository.findBySourceIdea(ownerId, idea.id);
+          if (!concurrentProject) throw error;
+
+          await ideaRepository.update(idea.id, ownerId, {
+            status: "launched",
+            launched_at: idea.launched_at || new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+          return concurrentProject;
+        }
 
         try {
           await ideaRepository.update(idea.id, ownerId, {
