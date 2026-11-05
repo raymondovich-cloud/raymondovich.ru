@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getRole, getSession, logout } from "../../../runtime/auth.js";
 import {
   createIdea, deleteIdea, listIdeas, updateIdea,
@@ -8,10 +8,15 @@ import {
 } from "../../../runtime/services.js";
 
 const router = useRouter();
+const route = useRoute();
 const user = ref(null);
 const ideas = ref([]);
 const projects = ref([]);
-const view = ref("overview");
+const view = computed(() => ({ "owner-ideas": "ideas", "owner-projects": "projects" })[route.name] || "overview");
+function navigateView(nextView) {
+  const routeName = ({ overview: "owner-overview", ideas: "owner-ideas", projects: "owner-projects" })[nextView] || "owner-overview";
+  if (route.name !== routeName) router.push({ name: routeName });
+}
 const ideaFilter = ref("open");
 const projectFilter = ref("active");
 const busy = ref(false);
@@ -110,7 +115,7 @@ async function performAction(entity, action, id) {
       showStatus(isIdea ? "Идея удалена." : "Проект удалён.");
     } else if (isIdea && action === "launch") {
       await createProjectFromIdea(item, user.value.id);
-      view.value = "projects";
+      navigateView("projects");
       showStatus("Проект создан. Исходная идея сохранена в истории.");
     } else if (isIdea) {
       const changes = {};
@@ -157,7 +162,7 @@ async function saveNewIdea() {
       additionalInfo: newIdea.value.additionalInfo,
     });
     ideaDialog.value?.close();
-    view.value = "ideas";
+    navigateView("ideas");
     ideaFilter.value = "open";
     await refresh();
     showStatus("Идея сохранена отдельно от проектов.");
@@ -229,7 +234,7 @@ function openLaunchedIdeaContext(idea, event) {
 }
 function onLaunchedIdeaClick() {
   if (longPressTriggered.value) return;
-  view.value = "projects";
+  navigateView("projects");
 }
 function openContextAction(action) {
   if (!contextMenu.value) return;
@@ -267,9 +272,9 @@ onMounted(async () => {
       <aside class="sidebar" aria-label="Боковая навигация">
         <p class="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</p>
         <nav class="main-nav" aria-label="Основная навигация">
-          <button class="nav-item" :class="{ 'is-active': view === 'overview' }" type="button" @click="view = 'overview'; sidebarOpen = false"><span class="nav-icon">⌂</span><span>Обзор</span></button>
-          <button class="nav-item" :class="{ 'is-active': view === 'ideas' }" type="button" @click="view = 'ideas'; sidebarOpen = false"><span class="nav-icon">✳</span><span>Идеи</span><span class="nav-count">{{ openIdeas.length }}</span></button>
-          <button class="nav-item" :class="{ 'is-active': view === 'projects' }" type="button" @click="view = 'projects'; sidebarOpen = false"><span class="nav-icon">▦</span><span>Проекты</span><span class="nav-count">{{ activeProjects.length }}</span></button>
+          <button class="nav-item" :class="{ 'is-active': view === 'overview' }" type="button" @click="navigateView('overview'); sidebarOpen = false"><span class="nav-icon">⌂</span><span>Обзор</span></button>
+          <button class="nav-item" :class="{ 'is-active': view === 'ideas' }" type="button" @click="navigateView('ideas'); sidebarOpen = false"><span class="nav-icon">✳</span><span>Идеи</span><span class="nav-count">{{ openIdeas.length }}</span></button>
+          <button class="nav-item" :class="{ 'is-active': view === 'projects' }" type="button" @click="navigateView('projects'); sidebarOpen = false"><span class="nav-icon">▦</span><span>Проекты</span><span class="nav-count">{{ activeProjects.length }}</span></button>
         </nav>
         <div class="sidebar-bottom"><span class="status-dot"></span><span>Личное пространство</span></div>
       </aside>
@@ -303,27 +308,27 @@ onMounted(async () => {
               <div class="summary-item"><span>Приоритет</span><strong>{{ priorityCount }}</strong><small>направлений</small></div>
             </section>
             <section class="overview-focus">
-              <div class="overview-section-heading"><div><p class="eyebrow">ATTENTION REQUIRED</p><h2>Требуют внимания</h2></div><button class="text-action" type="button" @click="view = 'ideas'">Все идеи ↗</button></div>
+              <div class="overview-section-heading"><div><p class="eyebrow">ATTENTION REQUIRED</p><h2>Требуют внимания</h2></div><button class="text-action" type="button" @click="navigateView('ideas')">Все идеи ↗</button></div>
               <div class="overview-list">
                 <div v-if="!focusIdeas.length" class="overview-quiet-state">Нет приоритетных идей. Новые направления появятся здесь, когда ты отметишь их как приоритетные.</div>
                 <article v-for="idea in focusIdeas" :key="idea.id" class="overview-row overview-idea-row">
                   <div class="overview-row-main"><span class="overview-row-marker idea-marker"></span><div class="overview-row-copy"><strong>{{ idea.name }}</strong><span>{{ ideaStatusLabel(idea.status) }} · {{ priorityLabel(idea.priority) }}</span></div></div>
-                  <div class="overview-row-actions"><button class="overview-inline-action" type="button" :disabled="busy" @click="performAction('idea','launch',idea.id)">Запустить проект</button><button class="overview-chevron" type="button" aria-label="Открыть идеи" @click="view='ideas'">↗</button></div>
+                  <div class="overview-row-actions"><button class="overview-inline-action" type="button" :disabled="busy" @click="performAction('idea','launch',idea.id)">Запустить проект</button><button class="overview-chevron" type="button" aria-label="Открыть идеи" @click="navigateView('ideas')">↗</button></div>
                 </article>
               </div>
             </section>
             <section class="overview-work">
-              <div class="overview-section-heading"><div><p class="eyebrow">EXECUTION / IN PROGRESS</p><h2>Проекты в работе</h2></div><button class="text-action" type="button" @click="view='projects'">Все проекты ↗</button></div>
+              <div class="overview-section-heading"><div><p class="eyebrow">EXECUTION / IN PROGRESS</p><h2>Проекты в работе</h2></div><button class="text-action" type="button" @click="navigateView('projects')">Все проекты ↗</button></div>
               <div class="overview-list">
                 <div v-if="!recentProjects.length" class="overview-quiet-state">Пока нет запущенных проектов. Когда идея будет готова к реализации, запусти её в разделе «Идеи».</div>
                 <article v-for="project in recentProjects" :key="project.id" class="overview-row">
                   <div class="overview-row-main"><span class="overview-row-marker project-marker"></span><div class="overview-row-copy"><strong>{{ project.name }}</strong><span>{{ projectStatusLabel(project.status) }} · {{ priorityLabel(project.priority) }}</span></div></div>
-                  <div class="overview-row-actions"><button class="overview-inline-action" type="button" :disabled="busy" @click="performAction('project','pause',project.id)">{{ project.status === 'paused' ? 'Возобновить' : 'Пауза' }}</button><button class="overview-chevron" type="button" aria-label="Открыть проекты" @click="view='projects'">↗</button></div>
+                  <div class="overview-row-actions"><button class="overview-inline-action" type="button" :disabled="busy" @click="performAction('project','pause',project.id)">{{ project.status === 'paused' ? 'Возобновить' : 'Пауза' }}</button><button class="overview-chevron" type="button" aria-label="Открыть проекты" @click="navigateView('projects')">↗</button></div>
                 </article>
               </div>
             </section>
             <section class="overview-recent">
-              <div class="overview-section-heading"><div><p class="eyebrow">CAPTURE / LATEST UPDATES</p><h2>Недавние идеи</h2></div><button class="text-action" type="button" @click="view='ideas'">Открыть идеи ↗</button></div>
+              <div class="overview-section-heading"><div><p class="eyebrow">CAPTURE / LATEST UPDATES</p><h2>Недавние идеи</h2></div><button class="text-action" type="button" @click="navigateView('ideas')">Открыть идеи ↗</button></div>
               <div class="overview-recent-list">
                 <div v-if="!recentIdeas.length" class="overview-quiet-state">Здесь будут отображаться последние зафиксированные идеи.</div>
                 <article v-for="idea in recentIdeas" :key="idea.id" class="overview-recent-row"><div><strong>{{ idea.name }}</strong><span>{{ ideaStatusLabel(idea.status) }}</span></div><time>{{ dateLabel(idea.updated_at || idea.created_at) }}</time></article>
