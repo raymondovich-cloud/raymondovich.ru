@@ -82,6 +82,34 @@ test("completeAuthCallback exchanges the supplied query string", async () => {
   assert.deepEqual(calls.find(([name]) => name === "exchangeCodeForSession"), ["exchangeCodeForSession", "?code=abc"]);
 });
 
+test("completeAuthCallback reuses the implicit-flow session when no PKCE code is present", async () => {
+  const { gateway, calls } = createGateway();
+  const service = createAuthenticationService({
+    authGateway: gateway,
+    profileGateway: {},
+    authCallbackUrl: "/callback",
+    passwordResetUrl: "/reset",
+  });
+  const session = await service.completeAuthCallback("#access_token=implicit-token");
+  assert.equal(session.user.id, "user-1");
+  assert.ok(calls.some(([name]) => name === "getSession"));
+  assert.equal(calls.some(([name]) => name === "exchangeCodeForSession"), false);
+});
+
+test("completeAuthCallback returns null when an implicit callback has no session", async () => {
+  const { gateway, calls } = createGateway({
+    async getSession() { calls.push(["getSession"]); return { data: { session: null }, error: null }; },
+  });
+  const service = createAuthenticationService({
+    authGateway: gateway,
+    profileGateway: {},
+    authCallbackUrl: "/callback",
+    passwordResetUrl: "/reset",
+  });
+  assert.equal(await service.completeAuthCallback(""), null);
+  assert.ok(calls.some(([name]) => name === "getSession"));
+});
+
 test("getRole defaults to user and reads only app metadata", () => {
   const { gateway } = createGateway();
   const service = createAuthenticationService({ authGateway: gateway, profileGateway: {}, authCallbackUrl: "/callback", passwordResetUrl: "/reset" });
