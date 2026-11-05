@@ -36,6 +36,8 @@
 
 - CI jobs дополнительно ограничены условием точной migration branch; даже ручной `workflow_dispatch` на `main` не выполнит lockfile write или build job.
 
+- Восстановлены четыре отсутствовавших migration files по версиям live history и выровнен timestamp migration расширения projects. Восстановление сделано только в рабочей ветке; byte-for-byte identity исходного SQL не подтверждена, требуется clean isolated staging replay. Production migrations не запускались.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
