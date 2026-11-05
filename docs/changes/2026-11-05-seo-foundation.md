@@ -14,7 +14,7 @@ No production hosting, DNS, Cloudflare, deployment, Supabase or Auth settings we
 
 ## Build artifact verification
 
-- Added `public/robots.txt` and `public/sitemap.xml` mirrors so Vite copies crawler files into `dist/`; root copies remain available for branch-root Pages publishing.
+- Added `public/robots.txt` and `public/sitemap.xml` as the canonical crawler assets copied into Vite `dist/`. Root-level duplicates were removed; the unbundled repository root is not an approved production publishing target for this SPA.
 - Extended `npm run test:build` to assert both files are present and byte-identical in the build output.
 - Extended the build smoke check to reject inline CSS/style attributes and inline executable scripts across built HTML entry points; the approved JSON-LD structured-data script is explicitly allowed.
 
