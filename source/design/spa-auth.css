@@ -1,11 +1,11 @@
 /* version 1.1 */
 .spa-auth-page {
-  --auth-bg: #050505;
+  --auth-bg: var(--rv-color-owner-background);
   --auth-panel: rgba(17, 17, 17, 0.82);
   --auth-border: rgba(255, 106, 0, 0.5);
   --auth-text: #ffffff;
   --auth-muted: rgba(255, 255, 255, 0.58);
-  --auth-accent: #ff6a00;
+  --auth-accent: var(--rv-color-owner-accent);
 }
 
 * {
@@ -27,7 +27,7 @@
   background:
     radial-gradient(ellipse 90% 55% at 100% 100%, rgba(255, 106, 0, 0.38), transparent 72%),
     linear-gradient(155deg, #030303 0%, #0b0705 58%, #170a03 100%);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--rv-font-system-sans);
 }
 
 .auth-shell {
@@ -45,7 +45,7 @@
 .auth-panel {
   padding: 28px;
   border: 1px solid var(--auth-border);
-  border-radius: 28px;
+  border-radius: var(--rv-radius-auth-panel);
   background: var(--auth-panel);
   backdrop-filter: blur(18px);
 }
