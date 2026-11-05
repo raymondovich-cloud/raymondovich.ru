@@ -67,7 +67,7 @@
   if(dialog){
    if(target.closest('[data-intro-close],[data-intro-skip]')){dialog.close();return;}
    if(target.closest('[data-intro-prev]')){setIntroStep(dialog,Math.max(1,Number(dialog.dataset.step||1)-1));return;}
-   if(target.closest('[data-intro-next]')){setIntroStep(dialog,Math.min(3,Number(dialog.dataset.step||1)+1));return;}
+   if(target.closest('[data-intro-next]')){const nextStep=Math.min(3,Number(dialog.dataset.step||1)+1);setIntroStep(dialog,nextStep);if(nextStep===3)dialog.querySelector('[data-intro-finish]').focus();return;}
    if(target.closest('[data-intro-finish]')){dialog.close();return;}
    if(target===dialog){dialog.close();return;}
   }
