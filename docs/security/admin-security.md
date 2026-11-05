@@ -1,4 +1,4 @@
-<!-- version 1.3 -->
+<!-- version 1.4 -->
 
 # Безопасность административного блока Raymondovich
 
@@ -123,9 +123,11 @@
 
 **Решение:** в рамках SPA migration grants не менялись. Отзыв anon privileges должен выполняться отдельной согласованной миграцией после проверки SQL functions/RPC и безопасного тестирования в isolated environment. До устранения риска не считать grants posture полностью least-privilege.
 
-### Migration history gap
+### Migration history reconciliation
 
-Live policy `admin manages projects` обнаружена в базе, но среди checked-in migrations репозитория её создание не найдено. Live `supabase_migrations.schema_migrations` также содержит четыре версии, отсутствующие в repo: `20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`. Filename mismatch для project extension migration выровнен в рабочей ветке: файл переименован на live version `20261104131912_extend_projects_for_idea_inbox.sql`, SQL content сохранён без изменений. Оригинальный applied SQL из live migration history недоступен, поэтому exact content identity не подтверждена. Необходимо отдельно восстановить отсутствующие migrations и проверить clean staging replay; не создавать дублирующие/конфликтующие migrations или policies без проверки фактической migration history.
+В migration branch восстановлены четыре ранее отсутствовавших файла и приведён к live version timestamp project extension migration. Сверка всех 14 файлов с сохранёнными SQL `statements` из `supabase_migrations.schema_migrations` подтвердила совпадение version/name и **0 различий в SQL statements**.
+
+Clean local Supabase replay ещё не выполнен: seed migrations требуют isolated fixtures с admin owner и проектом LifeGame. До успешного replay и schema/policy/grant diff migration baseline не считается полностью проверенным. Ни одна migration не применялась к production.
 
 ### Auth Advisor
 
