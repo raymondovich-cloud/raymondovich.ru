@@ -49,6 +49,8 @@
 
 - Обновлён CI toolchain: Node.js 22.x (минимум 22.18), lockfile job снова генерирует и фиксирует `package-lock.json` до `npm ci`; ручной запуск ограничен migration branch. Build job запускает Playwright Chromium/WebKit E2E после Vite build smoke tests.
 
+- Добавлен `.gitignore` для `node_modules`, `dist`, Playwright reports/results, Vite cache и локальных `.env` файлов.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
