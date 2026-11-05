@@ -33,7 +33,7 @@
 
 Последний подтверждённый успешный полный pipeline: workflow run `42103202430`, build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`:
 - `npm ci` — SUCCESS.
-- `npm test` — **49 tests passed, 0 failed**.
+- `npm test` — **50 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
 - `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
@@ -142,7 +142,7 @@ CI workflow работает только на migration branch и вручну�
 
 - Successful complete CI run: `42103202430`.
 - Tested executable code and test commit: `ef0701a9be2ad160037f6b1835a6384685e9318c`.
-- 49 tests passed; 0 failed.
+- 50 tests passed; 0 failed.
 - Locked dependency installation, production build and built-output smoke checks passed.
 - The current branch head is newer only through documentation commits; source, tests, package manifest and lockfile are unchanged from the tested commit.
 - The legacy redirect test now verifies that generic handoff query parameters are moved into router query state. The Supabase PKCE/implicit callback remains a separate HTML bridge.
@@ -152,9 +152,17 @@ CI workflow работает только на migration branch и вручну�
 
 ## Latest successful CI after concurrency hardening
 
-- Run: `42103929643`
-- Tested code commit: `be38ba3f6e40588dd83cb75658fde7c064c32196`
-- 49 tests passed; 0 failed.
+- Run: `42104225677`
+- Tested code commit: `6148c7f5ccf044b0911e44787f002bf62098ed47`
+- 50 tests passed; 0 failed.
 - `npm ci`, production build and built-output smoke checks passed.
 - The run includes the idempotent handling of concurrent project creation using the live unique `source_idea_id` constraint.
 - Later branch changes were documentation-only; source, tests, package manifest and lockfile were unchanged from the tested revision.
+
+
+## Latest verification after project partial-failure handling
+
+- CI run `42104225677` passed on branch HEAD `6148c7f5ccf044b0911e44787f002bf62098ed47`.
+- 50 tests passed; 0 failed.
+- This run includes idempotent concurrent idea launch and explicit reporting when project deletion succeeds but source-idea restoration fails.
+- Dependency lockfile install, production build and build-output smoke checks all passed.
