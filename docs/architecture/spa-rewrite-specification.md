@@ -1400,8 +1400,12 @@ ADR-001 существует и остаётся PROPOSED. Его рекомен
 1. docs/architecture/spa-rewrite-specification.md — консолидированная целевая архитектура и инфраструктурные требования; основной нормативный документ.
 2. docs/architecture/current-state-2026-11-05.md — статическая инвентаризация и migration matrix; доказательства относятся к проверенному Git baseline, а не к runtime certification.
 3. docs/architecture/decisions/adr-001-hosting-and-routing.md — варианты hosting и предложенная рекомендация; статус PROPOSED.
-4. docs/architecture/target-architecture.md — прежняя концептуальная архитектура. Её MPA routing statements superseded данной спецификацией; принципы Clean Architecture остаются применимыми, если не противоречат ей.
-5. docs/changes/ — хронологический журнал решений и изменений.
+4. docs/architecture/decisions/adr-002-frontend-stack.md — сравнение и proposed frontend stack recommendation.
+5. docs/architecture/decisions/adr-003-state-management.md — proposed state management recommendation.
+6. docs/architecture/decisions/adr-004-testing-strategy.md — proposed testing/tooling recommendation.
+7. docs/architecture/final-repository-structure.md — proposed physical repository responsibility map.
+8. docs/architecture/target-architecture.md — прежняя концептуальная архитектура. Её MPA routing statements superseded данной спецификацией; принципы Clean Architecture остаются применимыми, если не противоречат ей.
+9. docs/changes/ — хронологический журнал решений и изменений.
 
 При конфликте данная спецификация определяет целевую архитектуру; current-state audit — факты проверенного исходного снимка; ADR регулирует только явно утверждённую владельцем область. Draft ADR не переопределяет утверждённые требования владельца.
 
