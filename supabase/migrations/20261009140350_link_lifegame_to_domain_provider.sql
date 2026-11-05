@@ -1,5 +1,3 @@
--- version 1.0
--- Связать LifeGame с поставщиком домена, сохранив DNS в статусе проверки.
 do $$
 declare
   v_owner uuid;

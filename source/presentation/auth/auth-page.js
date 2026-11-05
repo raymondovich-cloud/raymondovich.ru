@@ -1,5 +1,5 @@
 // version 1.2
-import { getSession, login, getRole } from "../../application/auth/authentication.js";
+import { getSession, login, getRole } from "../runtime/auth.js";
 
 const form = document.querySelector("#auth-form");
 const emailInput = document.querySelector("#email");
@@ -14,7 +14,7 @@ function setMessage(text, state = "normal") {
 
 async function redirectIfAuthenticated() {
   const session = await getSession();
-  if (session) window.location.replace("/pages/account/app.html");
+  if (session) window.location.replace("/#/owner");
 }
 
 form.addEventListener("submit", async (event) => {

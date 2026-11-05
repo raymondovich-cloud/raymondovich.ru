@@ -1,6 +1,3 @@
--- version 1.0
--- Extend idea and project planning with target revenue, monetization model, and concept.
-
 begin;
 
 alter table public.ideas

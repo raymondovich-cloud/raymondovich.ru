@@ -1,4 +1,4 @@
-<!-- version 1.1 -->
+<!-- version 1.3 -->
 # Архитектура Raymondovich
 
 ## Принципы
@@ -24,7 +24,9 @@
 
 `presentation → application → domain`
 
-`application → infrastructure / memory` через определённые контракты.
+`infrastructure → application ports` — Infrastructure реализует контракты, определённые Application. Application не импортирует Infrastructure.
+
+Composition root находится в `source/presentation/runtime/` и связывает use cases с Supabase gateways/repositories. Это единственная точка, где Presentation composition может импортировать конкретные Infrastructure adapters.
 
 `domain` не импортирует `presentation`, `infrastructure` или `memory`.
 
@@ -39,6 +41,6 @@
 - **Focus** — работа с выбранными приоритетными направлениями.
 - **Portfolio** — обзор состояния всех идей и проектов.
 
-Идея и запущенный проект — один объект жизненного цикла в `public.projects`. Статус меняется с `idea` / `review` на `active`; отдельная копия записи не создаётся. Это сохраняет историю и исключает дублирование.
+В текущей реализации идеи и проекты хранятся раздельно: идеи — в `public.ideas`, проекты — в `public.projects`; связь запуска фиксируется через `projects.source_idea_id`. Application service создаёт проект из идеи и затем переводит исходную идею в `launched`. Это текущее поведение, а не утверждение об атомарной транзакции: операция состоит из нескольких запросов и использует компенсационное удаление проекта при неудаче обновления идеи. Изменение модели данных требует отдельного ADR и миграционного плана.
 
 AI-анализ, участники и роли, ежедневные сводки, Web Push, финансы и подробная аналитика добавляются отдельными этапами. Они не должны блокировать быстрое сохранение идеи.

@@ -1,5 +1,5 @@
 // version 1.0
-import { signOutAccount } from "../../application/account/account-session.js";
+import { logout } from "../runtime/auth.js";
 
 const logoutButton = document.querySelector(".logout-link");
 
@@ -12,7 +12,7 @@ if (logoutButton) {
     label.textContent = "Выходим…";
 
     try {
-      await signOutAccount();
+      await logout();
       window.location.assign("/");
     } catch (error) {
       label.textContent = originalLabel;

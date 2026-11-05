@@ -1,5 +1,5 @@
 // version 1.0
-import { getSession, register } from "../../application/auth/authentication.js";
+import { getSession, register } from "../runtime/auth.js";
 
 const form = document.querySelector("#registration-form");
 const displayNameInput = document.querySelector("#display-name");
@@ -15,7 +15,7 @@ function setMessage(text, state = "normal") {
 
 async function redirectIfAuthenticated() {
   const session = await getSession();
-  if (session) window.location.replace("/pages/account/app.html");
+  if (session) window.location.replace("/#/");
 }
 
 form.addEventListener("submit", async (event) => {
@@ -35,7 +35,7 @@ form.addEventListener("submit", async (event) => {
       return;
     }
 
-    window.location.replace("/pages/account/app.html");
+    window.location.replace("/spa.html#/");
   } catch (error) {
     setMessage(error.message || "Не удалось выполнить регистрацию.", "error");
   } finally {

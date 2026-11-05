@@ -1,6 +1,5 @@
--- version 1.0
--- Expand the existing project lifecycle so an idea can become a project in place.
--- Applied to Supabase project yajybgdorhxebbigwjgi.
+-- Extend the existing project lifecycle to support the idea inbox.
+-- Ideas and launched projects remain the same entity, avoiding duplicate records.
 
 alter table public.projects
   drop constraint if exists projects_status_check;

@@ -1,5 +1,5 @@
 // version 1.0
-import { requestPasswordReset } from "../../application/auth/authentication.js";
+import { requestPasswordReset } from "../runtime/auth.js";
 
 const form = document.querySelector("#reset-form");
 const emailInput = document.querySelector("#email");
