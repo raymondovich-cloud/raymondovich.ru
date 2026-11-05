@@ -1,8 +1,8 @@
 // version 1.2
 import { supabase } from "../../infrastructure/supabase/client.js";
 
-const AUTH_CALLBACK_URL = "https://raymondovich.ru/auth-callback.html";
-const PASSWORD_RESET_URL = "https://raymondovich.ru/update-password.html";
+const AUTH_CALLBACK_URL = "https://raymondovich.ru/pages/auth/auth-callback.html";
+const PASSWORD_RESET_URL = "https://raymondovich.ru/pages/auth/update-password.html";
 
 function normalizeError(error) {
   if (!error) return null;
