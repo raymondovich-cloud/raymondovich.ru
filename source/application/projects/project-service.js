@@ -90,7 +90,9 @@ export function createProjectService({ projectRepository, ideaRepository }) {
             updated_at: new Date().toISOString(),
           });
         } catch (error) {
-          throw normalizeError(error, "Проект удалён, но исходную идею не удалось вернуть на рассмотрение.");
+          throw new Error(
+            `Проект удалён, но исходную идею не удалось вернуть на рассмотрение. Причина: ${error.message || "ошибка обновления идеи"}.`,
+          );
         }
       }
     },
