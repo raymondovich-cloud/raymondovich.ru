@@ -15,10 +15,36 @@ main{padding:clamp(76px,11vw,132px) 0 110px}.eyebrow{font:500 .74rem var(--mono)
 @media(max-width:820px){body,body.side-open{padding-left:0}.side{width:340px;transform:translateX(-100%)}body.side-open .side{transform:none}body:not(.side-open) .pn,body:not(.side-open) .side-title{visibility:visible;opacity:1}.mob-toggle{display:grid;margin-left:-20px}.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.6)}.category{grid-template-columns:44px minmax(0,1fr);gap:14px}}
 @media(min-width:1101px){body:not(.side-open){padding-left:340px}body:not(.side-open) .side{width:340px}body:not(.side-open) .pn,body:not(.side-open) .side-title{visibility:visible;opacity:1}}
 @media(max-width:520px){.wrap{width:calc(100% - 40px)}main{padding-top:76px}.intro{margin-bottom:44px}.category{padding:27px 0}}
+
+/* expandable partner guide in sidebar */
+.p{border-bottom:1px solid var(--line)}
+.p>summary{display:flex;align-items:center;gap:0;min-width:340px;height:72px;padding:0;cursor:pointer;list-style:none}
+.p>summary::-webkit-details-marker{display:none}
+.p>summary::after{content:"+";margin:0 24px 0 auto;color:var(--or);font:400 1.4rem/1 var(--mono);transition:transform .2s}
+.p[open]>summary::after{transform:rotate(45deg)}
+.p[open] .badge,.p>summary:hover .badge{color:var(--or)}
+.p .pd{padding:0 22px 20px 64px;font-size:.86rem;color:var(--mute);line-height:1.5}
+.p .ss{list-style:none;margin:0;padding:0;counter-reset:q}
+.p .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
+.p .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
+.p .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+.p .n{font:400 .7rem/1.5 var(--mono);color:var(--mute);margin:12px 0 0}
 </style></head><body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
 <nav class="side-body" aria-label="Основные разделы"><a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b></span></a><a class="side-home" href="/pages/products/products.html" aria-current="page" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
-<a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a></nav></aside><div class="scrim"></div>
+<a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
+<details class="p partner-guide">
+  <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
+  <div class="pd">
+    <ol class="ss">
+      <li><div><b>Вступление</b>Получите доступ к RAYMONDOVICH Private и личному кабинету на raymondovich.ru.</div></li>
+      <li><div><b>Знакомство с проектами</b>Изучите доступные партнёрские предложения, условия участия и информацию о проектах.</div></li>
+      <li><div><b>Выбор проекта</b>Выберите подходящее направление и отправьте заявку на участие.</div></li>
+      <li><div><b>Сотрудничество</b>После рассмотрения заявки и взаимного согласия согласуйте условия и приступайте к работе с выбранным проектом.</div></li>
+    </ol>
+    <p class="n">Условия и вознаграждение определяются отдельно для каждого проекта.</p>
+  </div>
+</details></nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap"><p class="eyebrow">Каталог / Направления</p><h1>Продукты<br>экосистемы.</h1><p class="intro">Три направления, объединяющие собственную разработку, партнёрство и независимые цифровые продукты.</p>
 <section class="categories" aria-label="Категории продуктов">

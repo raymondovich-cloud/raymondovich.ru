@@ -216,6 +216,17 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
 .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
 .pd .n{font:400 .7rem/1.5 var(--mono);color:var(--mute);margin:12px 0 0}
+
+/* partner guide */
+.partner-guide>summary{display:flex;align-items:center;padding:0;gap:0;font:inherit;letter-spacing:0}
+.partner-guide>summary::after{display:none}
+.partner-guide[open] .badge,.partner-guide>summary:hover .badge{color:var(--or)}
+.partner-guide .pd{padding:0 22px 20px 64px}
+.partner-guide .ss{list-style:none;margin:0;padding:0;counter-reset:q}
+.partner-guide .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
+.partner-guide .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
+.partner-guide .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+.partner-guide .n{font:400 .7rem/1.5 var(--mono);color:var(--mute);margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -225,6 +236,18 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
     <a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b></span></a>
     <a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
     <a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
+<details class="p partner-guide">
+  <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
+  <div class="pd">
+    <ol class="ss">
+      <li><div><b>Вступление</b>Получите доступ к RAYMONDOVICH Private и личному кабинету на raymondovich.ru.</div></li>
+      <li><div><b>Знакомство с проектами</b>Изучите доступные партнёрские предложения, условия участия и информацию о проектах.</div></li>
+      <li><div><b>Выбор проекта</b>Выберите подходящее направление и отправьте заявку на участие.</div></li>
+      <li><div><b>Сотрудничество</b>После рассмотрения заявки и взаимного согласия согласуйте условия и приступайте к работе с выбранным проектом.</div></li>
+    </ol>
+    <p class="n">Условия и вознаграждение определяются отдельно для каждого проекта.</p>
+  </div>
+</details>
   </nav>
 </aside>
 <div class="scrim"></div>
