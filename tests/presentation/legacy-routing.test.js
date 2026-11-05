@@ -25,12 +25,12 @@ test("legacy public URLs hand off to the matching SPA route", () => {
 test("legacy redirect preserves query strings and fragment anchors", () => {
   assert.equal(
     redirect({
-      route: "/pages/auth/auth-callback.html",
-      pathname: "/pages/auth/auth-callback.html",
-      search: "?code=pkce-code",
-      hash: "#legacy-anchor",
+      route: "/pages/products/products.html",
+      pathname: "/pages/products/products.html",
+      search: "?campaign=summer",
+      hash: "#section",
     }),
-    "/?code=pkce-code#/pages/auth/auth-callback.html#legacy-anchor",
+    "/#/pages/products/products.html?campaign=summer#section",
   );
 });
 
