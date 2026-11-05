@@ -98,9 +98,9 @@ CI запускается push-событиями рабочей ветки и �
   - `20261008184746_temporary_promote_admin.sql`;
   - `20261008185014_lock_temporary_admin_function.sql`;
   - `20261008195529_create_project_management.sql`.
-- Восстановленные SQL-файлы сопоставлены с доступной live schema/metadata. Таблица `supabase_migrations` хранит версию и имя, но не исходный текст SQL; поэтому byte-for-byte identity с первоначально применёнными файлами не подтверждена. Нужны review каждого восстановленного SQL и clean isolated staging replay с последующим сравнением schema/policies/grants.
-- Для расширения projects имя checked-in файла теперь совпадает с live version `20261104131912_extend_projects_for_idea_inbox`; само переименование не доказывает идентичность SQL с оригинальным применённым migration. Нужны тот же review и staging replay.
-- Policy `admin manages projects`, которая была обнаружена в live schema, теперь присутствует в восстановленном `20261008195529_create_project_management.sql`; точное соответствие live policy и migration policy ещё не подтверждено integration test.
+- Восстановленные SQL-файлы сверены с массивами `statements` из read-only `supabase_migrations.schema_migrations`: для всех 14 migration versions различий в SQL statements не обнаружено. Это подтверждает соответствие сохранённого SQL доступным записям live ledger; clean isolated staging replay всё равно необходим для проверки применимости полного набора, prerequisites и итоговой schema/policies/grants.
+- Для расширения projects checked-in файл `20261104131912_extend_projects_for_idea_inbox.sql` совпадает с live migration version; SQL statements также входят в сверку с нулём различий. Clean staging replay остаётся обязательным для проверки порядка и результата применения.
+- Policy `admin manages projects`, обнаруженная в live schema, присутствует в восстановленном `20261008195529_create_project_management.sql`; её SQL входит в сверку migration statements. Реальные positive/negative RLS integration tests с несколькими identities ещё не выполнены.
 - Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`; отдельная следующая migration отзывает EXECUTE у `PUBLIC`, `anon` и `authenticated`. Live ACL показывает EXECUTE только у `postgres` и `service_role`; production function не изменялась.
 - Migration files восстановлены только в рабочей ветке; production migration history/schema не менялись и migrations не применялись. Нельзя запускать эти миграции поверх live database вслепую.
 
