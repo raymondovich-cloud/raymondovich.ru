@@ -152,12 +152,21 @@ body.side-open .side{width:var(--side-expanded-width)}
 .side-body>.p[open],.side-body>.faq-sidebar[open]{background:transparent}
 .side-body>.p[open]>summary,.side-body>.faq-sidebar[open]>summary{border-bottom-color:transparent}
 
+
+/* Raymondovich sidebar identity and uniform subtitles */
+.side-brand{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;visibility:visible;opacity:1;transition:opacity .25s .1s}
+.side-brand strong{font:800 .92rem/1.05 var(--sans);letter-spacing:.075em;color:var(--text);white-space:nowrap}
+.side-brand em{font:500 .62rem/1.2 var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.12em;color:var(--or)}
+body:not(.side-open) .side-brand{visibility:hidden;opacity:0}
+.profile-link .pn em,.settings-link .pn em{color:var(--text)}
+.side-home .pn em{display:block}
+
 </style></head>
 <body>
-<aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
+<aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-brand"><strong>RAYMONDOVICH</strong><em>Навигация</em></span></div>
 <nav class="side-body" aria-label="Основные разделы">
-<a class="side-home" href="/" aria-label="Главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b></span></a>
-<a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
+<a class="side-home" href="/" aria-label="Главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b><em>Обзор платформы</em></span></a>
+<a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Каталог продуктов</em></span></a>
 <a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
 <details class="p partner-guide">
   <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
@@ -191,7 +200,7 @@ body.side-open .side{width:var(--side-expanded-width)}
 <div class="side-home tariffs-link" aria-disabled="true"><span class="badge">TRF</span><span class="pn"><b>Тарифы и пакеты</b><em>Скоро</em></span></div>
 <div class="side-home theme-link" aria-disabled="true"><span class="badge">THM</span><span class="pn"><b>Светлая тема</b><em>Скоро</em></span></div>
 <div class="side-divider" role="separator" aria-hidden="true"></div>
-<button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b></span></button>
+<button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b><em>Завершить сеанс</em></span></button>
   </nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap profile-main">
