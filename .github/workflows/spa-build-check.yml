@@ -81,6 +81,23 @@ jobs:
       - name: Verify built routes and authentication bridges
         run: npm run test:build
 
+      - name: Install Playwright Chromium and WebKit browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run browser end-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Install Chromium and WebKit test browsers
         run: npx playwright install --with-deps chromium webkit
 
