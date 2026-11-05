@@ -1,0 +1,47 @@
+/* version 1.0
+ * Raymondovich Design System — primitive tokens.
+ * Values are extracted from the existing visual implementation.
+ * Public and Owner legacy accent variants remain distinct until a visual
+ * normalization decision is made; do not silently replace one with another.
+ */
+:root {
+  color-scheme: dark;
+
+  /* Public / shared dark foundation */
+  --rv-color-public-background: #080706;
+  --rv-color-public-foreground: #efeae1;
+  --rv-color-public-muted: #8f887c;
+  --rv-color-public-border: rgba(239, 234, 225, 0.13);
+  --rv-color-public-border-strong: rgba(239, 234, 225, 0.26);
+  --rv-color-public-accent: #ff6a1f;
+  --rv-color-public-accent-light: #ff8a3d;
+  --rv-color-public-accent-soft: rgba(255, 106, 31, 0.13);
+
+  /* Owner Control Center — current legacy visual values */
+  --rv-color-owner-background: #050505;
+  --rv-color-owner-surface: #0d0d0d;
+  --rv-color-owner-foreground: #f5f5f5;
+  --rv-color-owner-muted: #858585;
+  --rv-color-owner-muted-soft: #555555;
+  --rv-color-owner-border: rgba(255, 106, 0, 0.22);
+  --rv-color-owner-border-soft: rgba(255, 255, 255, 0.09);
+  --rv-color-owner-accent: #ff6a00;
+  --rv-color-owner-accent-light: #ff9a52;
+  --rv-color-owner-positive: #78d6a0;
+
+  /* Legacy standalone page accents retained without visual reinterpretation */
+  --rv-color-about-accent: #ff7900;
+  --rv-color-legal-accent: #ff8a32;
+
+  /* Typography */
+  --rv-font-public-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --rv-font-public-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --rv-font-system-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Shared geometry already present in the UI */
+  --rv-radius-small: 2px;
+  --rv-radius-control: 10px;
+  --rv-radius-card: 14px;
+  --rv-radius-panel: 20px;
+  --rv-radius-auth-panel: 28px;
+}
