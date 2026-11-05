@@ -119,7 +119,10 @@ onMounted(async () => {
   }
   if (mode.value === "callback") {
     try {
-      const session = await completeAuthCallback(window.location.search);
+      const callbackSearch = route.query.code
+        ? `?${new URLSearchParams(route.query).toString()}`
+        : window.location.search;
+      const session = await completeAuthCallback(callbackSearch);
       if (!session) throw new Error("Сессия авторизации не создана.");
       await router.replace(getRole(session) === "admin" ? "/owner" : "/");
     } catch {
