@@ -203,7 +203,8 @@ function startLongPress(event, entity, id) {
   clearTimeout(longPressTimer.value);
   longPressTimer.value = window.setTimeout(() => {
     longPressTriggered.value = true;
-    contextMenu.value = { entity, id, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
+    const item = (entity === "idea" ? ideas.value : projects.value).find((entry) => entry.id === id);
+    contextMenu.value = { entity, id, status: item?.status, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
   }, 550);
 }
 function cancelLongPress() {
@@ -211,7 +212,7 @@ function cancelLongPress() {
 }
 function openContext(item, entity, event) {
   event.preventDefault();
-  contextMenu.value = { entity, id: item.id, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
+  contextMenu.value = { entity, id: item.id, status: item.status, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
 }
 function openContextAction(action) {
   if (!contextMenu.value) return;
@@ -243,10 +244,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="owner-workspace">
+  <div class="owner-workspace" :class="{ 'sidebar-open': sidebarOpen }">
     <div class="app-shell">
       <button class="sidebar-backdrop" type="button" aria-label="Закрыть меню" @click="sidebarOpen = false"></button>
-      <aside class="sidebar" :class="{ 'is-open': sidebarOpen }" aria-label="Боковая навигация">
+      <aside class="sidebar" aria-label="Боковая навигация">
         <p class="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</p>
         <nav class="main-nav" aria-label="Основная навигация">
           <button class="nav-item" :class="{ 'is-active': view === 'overview' }" type="button" @click="view = 'overview'; sidebarOpen = false"><span class="nav-icon">⌂</span><span>Обзор</span></button>
@@ -394,8 +395,14 @@ onMounted(async () => {
 
     <div v-if="contextMenu" class="owner-context-backdrop" @click="contextMenu = null">
       <div class="owner-context-menu" :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }" @click.stop>
-        <template v-if="contextMenu.entity === 'idea'">
+        <template v-if="contextMenu.entity === 'idea' && contextMenu.status === 'archived'">
+          <button type="button" @click="openContextAction('restore')">Вернуть к идеям</button><button type="button" class="is-danger" @click="openContextAction('delete')">Удалить</button>
+        </template>
+        <template v-else-if="contextMenu.entity === 'idea'">
           <button type="button" @click="openContextAction('review')">На рассмотрение</button><button type="button" @click="openContextAction('priority')">Изменить приоритет</button><button type="button" @click="openContextAction('launch')">Запустить проект</button><button type="button" @click="openContextAction('archive')">В архив</button><button type="button" class="is-danger" @click="openContextAction('delete')">Удалить</button>
+        </template>
+        <template v-else-if="contextMenu.status === 'archived'">
+          <button type="button" @click="openContextAction('restore')">Восстановить проект</button><button type="button" class="is-danger" @click="openContextAction('delete')">Удалить</button>
         </template>
         <template v-else>
           <button type="button" @click="openContextAction('pin')">Закрепить / открепить</button><button type="button" @click="openContextAction('pause')">Пауза / возобновить</button><button type="button" @click="openContextAction('complete')">Завершить</button><button type="button" @click="openContextAction('archive')">В архив</button><button type="button" class="is-danger" @click="openContextAction('delete')">Удалить</button>
