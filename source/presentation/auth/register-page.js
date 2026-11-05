@@ -1,5 +1,5 @@
 // version 1.0
-import { getSession, register } from "../../application/auth/authentication.js";
+import { getSession, register } from "../runtime/auth.js";
 
 const form = document.querySelector("#registration-form");
 const displayNameInput = document.querySelector("#display-name");
