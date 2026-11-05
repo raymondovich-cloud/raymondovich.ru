@@ -126,3 +126,28 @@
 - `main`, резервная ветка и репозиторий `raymondovich.online` не затрагивались.
 - Production Supabase, Auth, данные, RLS, DNS, Cloudflare и hosting не затрагивались.
 - Тесты приложения не запускались: изменялась только документация.
+
+
+## Дополнение: функциональная инвентаризация — этап 2
+
+**Дата:** 05.11.2026  
+**Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`  
+**Проверенный исходный commit:** `df506fb002df63f2d6156b389a6b08c66eba190b`
+
+В существующий документ `docs/architecture/current-state-2026-11-05.md` добавлены разделы 15–16: подтверждённые Auth/Account сценарии, полный перечень JS-файлов, действия Control Center, контракты Ideas/Projects services, сверка десяти SQL migrations, выявленные расхождения и предварительная матрица переноса.
+
+Ключевые подтверждённые замечания:
+- callback и recovery presentation напрямую обращаются к Supabase;
+- документация Ideas/Projects устарела относительно миграции с отдельными таблицами `ideas` и `projects`;
+- операции запуска и удаления проекта состоят из нескольких запросов без общей транзакционной границы;
+- базовые DDL для `projects` и `user_profiles` отсутствуют в проверенном каталоге миграций;
+- `pin_order` добавлен в БД, но текущий application service его не использует;
+- часть профиля хранится в Auth metadata, а `display_name` дополнительно записывается в `user_profiles`.
+
+## Границы изменений
+
+- Изменены только существующий документ аудита и этот changelog в рабочей ветке.
+- Прикладной код, HTML, CSS, SQL migrations и конфигурация не изменялись.
+- `main`, backup branch и `raymondovich.online` не затрагивались.
+- Production Supabase, Auth, пользовательские данные, RLS, grants, Edge Functions, DNS, Cloudflare и hosting не затрагивались.
+- SQL не исполнялся; runtime- и browser-тесты не запускались.
