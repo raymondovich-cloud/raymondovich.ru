@@ -31,7 +31,7 @@
 
 Сравнение GitHub Compare выполняется повторно перед финальным PR; текущие значения HEAD/ahead/behind не следует переносить из этого документа без свежей проверки. Base `main` на последнем подтверждённом чтении: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
 
-Последний подтверждённый успешный полный pipeline: workflow run `42103202430`, build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`:
+Последний подтверждённый успешный полный pipeline: workflow run `42104225677`, build job checkout SHA `6148c7f5ccf044b0911e44787f002bf62098ed47`:
 - `npm ci` — SUCCESS.
 - `npm test` — **50 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
@@ -104,7 +104,7 @@ CI запускается push-событиями рабочей ветки и �
 
 - Реальный iOS Safari на устройстве владельца не проверен.
 - Browser E2E suite (например, Playwright) не внедрён; текущие проверки — Node unit/architecture tests и build-output smoke checks.
-- Production routing/hosting не утверждены. Hash Router — только временное решение. Merge в `main` потенциально может изменить публикуемый GitHub Pages сайт; publish source и production cutover должны быть отдельно проверены до слияния.
+- Production routing/hosting не утверждены. Hash Router — только временное решение. Репозиторий сообщает `has_pages=true`, default branch — `main`; в `main` нет deployment workflow. Точный GitHub Pages publishing source не удалось прочитать через доступный API. Корневой `index.html` migration branch загружает исходный `main.js` с bare imports `vue`/`vue-router`, то есть для работы необходим Vite build artifact. CI собирает `dist/`, но не публикует его. Если GitHub Pages настроен на публикацию корня `main`, прямое слияние приведёт к выдаче несобранного SPA и поломке сайта. **До merge необходимо подтвердить Pages source и подготовить/утвердить способ публикации Vite build; production deploy не разрешён.**
 - ADR-003 (state management) остаётся PROPOSED; Pinia не внедрён.
 - ADR-004 (testing strategy) остаётся PROPOSED; текущий тестовый baseline использует встроенный Node.js `node:test`, Vitest/Vue Test Utils/Playwright не внедрены.
 - Production Supabase/Auth/data/RLS/grants, DNS, Cloudflare, hosting и deployment не менялись.
