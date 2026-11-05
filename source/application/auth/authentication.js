@@ -81,7 +81,9 @@ export function createAuthenticationService({
         if (error) throw normalizeError(error);
         session = data.session;
       } else {
-        const { data, error } = await authGateway.exchangeCodeForSession(search);
+        const authCode = params.get("code");
+        if (!authCode) throw new Error("Код авторизации отсутствует.");
+        const { data, error } = await authGateway.exchangeCodeForSession(authCode);
         if (error) throw normalizeError(error);
         session = data.session;
       }

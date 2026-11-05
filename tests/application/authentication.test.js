@@ -84,8 +84,8 @@ test("completeAuthCallback exchanges the PKCE code and ensures the confirmed use
     authCallbackUrl: "/callback",
     passwordResetUrl: "/reset",
   });
-  await service.completeAuthCallback("?code=abc");
-  assert.deepEqual(calls.find(([name]) => name === "exchangeCodeForSession"), ["exchangeCodeForSession", "?code=abc"]);
+  await service.completeAuthCallback("?code=abc&state=verification-state");
+  assert.deepEqual(calls.find(([name]) => name === "exchangeCodeForSession"), ["exchangeCodeForSession", "abc"]);
   assert.deepEqual(profileCalls, [["user-1", ""]]);
 });
 
