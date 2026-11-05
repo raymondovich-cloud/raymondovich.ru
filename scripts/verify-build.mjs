@@ -37,6 +37,7 @@ function htmlFiles(directory) {
 
 assert.equal(read("robots.txt"), readSource("public/robots.txt"), "Vite output must include the canonical robots.txt");
 assert.equal(read("sitemap.xml"), readSource("public/sitemap.xml"), "Vite output must include the canonical sitemap.xml");
+assert.equal(read("CNAME"), readSource("public/CNAME"), "Vite output must preserve the GitHub Pages custom domain file");
 
 for (const file of htmlFiles(root)) {
   const html = readFileSync(file, "utf8");
