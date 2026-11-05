@@ -1361,9 +1361,9 @@ Privacy/legal requirements проверяются для реальных юри
 | Topic | Current position | Gate |
 |---|---|---|
 | Hosting and routing | Cloudflare Pages recommended candidate; ADR-001 PROPOSED | Owner decision + staging validation |
-| Frontend framework | Not selected | ADR-002 |
-| Bundler/build tool | Not selected | ADR-002 |
-| Router implementation | History API expected for clean pathname routes; library not selected | ADR-002 / routing follow-up |
+| Frontend framework | Vue 3 + TypeScript recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
+| Bundler/build tool | Vite 8.x recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
+| Router implementation | Vue Router 5.x recommended candidate if Vue is approved; mode depends on ADR-001 | Owner review + hosting compatibility |
 | State management library | Not selected; ownership model fixed | ADR-003 |
 | Testing toolchain | Test layers and gates fixed; tools not selected | ADR-004 |
 | Final physical repository tree | Conceptual boundaries fixed; final tree after ADRs and mapping | Final structure step |
