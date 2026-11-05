@@ -54,3 +54,5 @@
 
 - Усилен `tests/architecture/dependency-boundaries.test.js`: проверяется, что каждая ссылка `var(--rv-...)` объявлена в `tokens.css`, а tokens подключаются раньше SPA foundation.
 - `spa-build-check.yml` теперь запускается и для `rebuild/foundation-2026-11-06`; production deployment workflow не запускался и не менялся.
+
+- Архитектурный тест уточнён: он требует явного наличия обоих CSS imports и проверяет их порядок; отсутствие обоих импортов больше не может дать ложноположительный результат.
