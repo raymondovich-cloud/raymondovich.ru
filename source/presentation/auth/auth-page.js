@@ -1,5 +1,5 @@
 // version 1.2
-import { getSession, login, getRole } from "../../application/auth/authentication.js";
+import { getSession, login, getRole } from "../runtime/auth.js";
 
 const form = document.querySelector("#auth-form");
 const emailInput = document.querySelector("#email");
