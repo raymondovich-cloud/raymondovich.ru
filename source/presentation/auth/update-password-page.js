@@ -60,7 +60,7 @@ form.addEventListener("submit", async (event) => {
     await updatePassword(passwordInput.value);
     await logout();
     unsubscribeRecovery();
-    window.location.replace("/spa.html#/auth/login?password=updated");
+    window.location.replace("/#/auth/login?password=updated");
   } catch (error) {
     setMessage(error.message || "Не удалось изменить пароль.", "error");
   } finally {
