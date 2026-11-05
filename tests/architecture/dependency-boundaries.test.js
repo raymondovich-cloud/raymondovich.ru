@@ -111,8 +111,9 @@ test("Every shared Design token reference is declared and loaded before SPA styl
   }
 
   const entry = await readFile(join(root, "presentation", "spa", "main.js"), "utf8");
-  assert.ok(
-    entry.indexOf("../../design/tokens.css") < entry.indexOf("../../design/spa.css"),
-    "tokens.css must load before global SPA styles",
-  );
+  const tokensImport = entry.indexOf("../../design/tokens.css");
+  const spaImport = entry.indexOf("../../design/spa.css");
+  assert.ok(tokensImport >= 0, "tokens.css must be imported by the SPA entry");
+  assert.ok(spaImport >= 0, "spa.css must be imported by the SPA entry");
+  assert.ok(tokensImport < spaImport, "tokens.css must load before global SPA styles");
 });
