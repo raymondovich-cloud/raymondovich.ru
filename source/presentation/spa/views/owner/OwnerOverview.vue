@@ -212,6 +212,25 @@ function openContext(item, entity, event) {
   event.preventDefault();
   contextMenu.value = { entity, id: item.id, status: item.status };
 }
+function linkedProject(idea) {
+  return projects.value.find((project) => project.source_idea_id === idea.id) || null;
+}
+function startLaunchedIdeaLongPress(event, idea) {
+  const project = linkedProject(idea);
+  if (project) startLongPress(event, "project", project.id);
+}
+function openLaunchedIdeaContext(idea, event) {
+  const project = linkedProject(idea);
+  if (project) openContext(project, "project", event);
+  else {
+    event.preventDefault();
+    showStatus("Связанный проект не найден. Обнови страницу.", true);
+  }
+}
+function onLaunchedIdeaClick() {
+  if (longPressTriggered.value) return;
+  view.value = "projects";
+}
 function openContextAction(action) {
   if (!contextMenu.value) return;
   performAction(contextMenu.value.entity, action, contextMenu.value.id);
@@ -331,7 +350,7 @@ onMounted(async () => {
                 </article>
               </div>
             </section>
-            <section v-if="ideaFilter !== 'archived' && launchedIdeas.length" class="overview-recent ideas-section"><div class="overview-section-heading"><div><p class="eyebrow">EXECUTION / CONVERTED</p><h2>Переданы в проекты</h2></div><span class="ideas-total">{{ launchedIdeas.length }} идей</span></div><div class="overview-list ideas-list"><article v-for="idea in [...launchedIdeas].sort(prioritySort)" :key="idea.id" class="overview-row idea-workspace-row"><div class="overview-row-main"><span class="overview-row-marker idea-marker"></span><div class="overview-row-copy"><strong>{{ idea.name }}</strong><span>{{ ideaStatusLabel(idea.status) }} · {{ priorityLabel(idea.priority) }}</span></div></div></article></div></section>
+            <section v-if="ideaFilter !== 'archived' && launchedIdeas.length" class="overview-recent ideas-section"><div class="overview-section-heading"><div><p class="eyebrow">EXECUTION / CONVERTED</p><h2>Переданы в проекты</h2></div><span class="ideas-total">{{ launchedIdeas.length }} идей</span></div><div class="overview-list ideas-list"><article v-for="idea in [...launchedIdeas].sort(prioritySort)" :key="idea.id" class="overview-row idea-workspace-row" tabindex="0" role="button" :aria-label="'Открыть связанный проект: ' + idea.name" @click="onLaunchedIdeaClick" @contextmenu="openLaunchedIdeaContext(idea,$event)" @pointerdown="startLaunchedIdeaLongPress($event,idea)" @pointerup="cancelLongPress" @pointerleave="cancelLongPress" @pointercancel="cancelLongPress"><div class="overview-row-main"><span class="overview-row-marker idea-marker"></span><div class="overview-row-copy"><strong>{{ idea.name }}</strong><span>{{ ideaStatusLabel(idea.status) }} · {{ priorityLabel(idea.priority) }}</span></div></div><span class="idea-card-open-indicator">↗</span></article></div></section>
             <p class="ideas-latest-note">{{ recentIdeas[0] ? 'Последнее обновление: ' + dateLabel(recentIdeas[0].updated_at || recentIdeas[0].created_at) : 'Новые идеи будут собираться здесь.' }}</p>
           </template>
 
