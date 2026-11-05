@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useRoute, RouterLink, RouterView } from "vue-router";
 
 const route = useRoute();
+const isStandalone = computed(() => route.meta.layout === "standalone");
 const spaceLabel = computed(() => ({
   public: "PUBLIC SPACE",
   owner: "OWNER CONTROL CENTER",
@@ -13,7 +14,8 @@ const spaceLabel = computed(() => ({
 </script>
 
 <template>
-  <div class="spa-shell">
+  <RouterView v-if="isStandalone" />
+  <div v-else class="spa-shell">
     <header class="spa-header">
       <RouterLink class="spa-brand" to="/">RAYMONDOVICH</RouterLink>
       <span class="spa-context">{{ spaceLabel }}</span>
