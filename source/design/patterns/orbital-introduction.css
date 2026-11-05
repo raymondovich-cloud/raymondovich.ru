@@ -22,7 +22,7 @@
 .system-intro__core small{margin-top:5px;color:var(--muted);font:500 .48rem var(--mono);letter-spacing:.14em}
 .intro-node{position:absolute;z-index:3;display:flex;align-items:center;gap:8px;color:var(--muted);font:500 .55rem var(--mono);letter-spacing:.055em;white-space:nowrap;opacity:.48;transition:opacity var(--motion-duration-standard) var(--motion-ease-standard),color var(--motion-duration-standard) var(--motion-ease-standard),transform var(--motion-duration-standard) var(--motion-ease-standard)}
 .intro-node i{width:8px;height:8px;flex:none;border-radius:50%;background:var(--muted);box-shadow:0 0 0 0 rgba(255,112,40,0);transition:background var(--motion-duration-standard),box-shadow var(--motion-duration-standard)}
-.intro-node.is-active{color:var(--text);opacity:1;transform:scale(1.035)}
+.intro-node.is-active{color:var(--text);opacity:1}
 .intro-node.is-active i{background:var(--orange2);box-shadow:0 0 14px rgba(255,112,40,.8)}
 .intro-node--own{top:1%;left:50%;transform:translateX(-50%)}
 .intro-node--partner{right:0;top:57%}
