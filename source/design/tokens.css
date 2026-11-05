@@ -16,6 +16,8 @@
   --rv-color-public-accent: #ff6a1f;
   --rv-color-public-accent-light: #ff8a3d;
   --rv-color-public-accent-soft: rgba(255, 106, 31, 0.13);
+  --rv-color-shell-border: rgba(239, 234, 225, 0.14);
+  --rv-color-shell-overlay: rgba(8, 7, 6, 0.86);
 
   /* Owner Control Center — current legacy visual values */
   --rv-color-owner-background: #050505;
