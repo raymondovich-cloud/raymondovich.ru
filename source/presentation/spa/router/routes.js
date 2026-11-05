@@ -8,6 +8,7 @@ const Cooperation = () => import("../views/public/Cooperation.vue");
 const About = () => import("../views/public/About.vue");
 const Profile = () => import("../views/public/Profile.vue");
 const Settings = () => import("../views/public/Settings.vue");
+const LegalPage = () => import("../views/public/LegalPage.vue");
 
 export const routeRecords = [
   {
@@ -45,6 +46,12 @@ export const routeRecords = [
     name: "settings",
     component: Settings,
     meta: { space: "public", layout: "standalone", title: "Настройки — RAYMONDOVICH" },
+  },
+  {
+    path: "/legal/:slug",
+    name: "legal-document",
+    component: LegalPage,
+    meta: { space: "public", layout: "standalone", title: "Документы — RAYMONDOVICH" },
   },
   {
     path: "/owner",
