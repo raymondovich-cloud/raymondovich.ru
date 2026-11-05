@@ -76,8 +76,8 @@ CI запускается push-событиями рабочей ветки и �
 - `projects`: live policy `admin manages projects` с аналогичными admin/owner predicates.
 - `user_profiles`: отдельные policies ограничивают INSERT/SELECT/UPDATE собственным `user_id = auth.uid()`.
 - В live migration history обнаружены четыре версии, отсутствующие в repo: `20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`.
-- Live migration `20261104131912_extend_projects_for_idea_inbox` не совпадает по timestamp с checked-in `20261104120000_extend_projects_for_idea_inbox.sql`.
-- Policy `admin manages projects` присутствует в live schema, но не обнаружена в checked-in migrations. Совокупно это означает, что текущая migration history не воспроизводит live schema и требует отдельной reconciliation до clean staging deployment; production не менялся.
+- Filename mismatch устранён в рабочей ветке: checked-in migration переименована с `20261104120000_extend_projects_for_idea_inbox.sql` на live version `20261104131912_extend_projects_for_idea_inbox.sql`; SQL content сохранён без изменений. Оригинальный применённый SQL из Supabase migration history недоступен, поэтому exact content identity не подтверждена; необходим clean staging migration replay.
+- Policy `admin manages projects` присутствует в live schema, но не обнаружена в checked-in migrations. Совокупно это означает, что текущая migration history всё ещё не воспроизводит live schema и требует отдельной reconciliation до clean staging deployment; production не менялся.
 
 ### Grants и security findings
 
