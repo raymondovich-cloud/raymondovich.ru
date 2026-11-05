@@ -56,7 +56,7 @@ test("historical seed migration retains both Raymondovich project records", asyn
 
 test("planning migration keeps its explicit transaction boundary", async () => {
   const sql = await migration("20261104185802_extend_ideas_with_optional_planning_details.sql");
-  assert.match(sql, /^\s*begin;/i);
+  assert.match(sql, /^\s*(?:--[^\n]*\n\s*)*begin;/i);
   assert.match(sql, /commit;\s*$/i);
 });
 
