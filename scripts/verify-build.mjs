@@ -73,6 +73,12 @@ for (const file of sourceFiles(resolve(repositoryRoot, "source/application"))) {
   assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase/, `Application layer must not depend on Supabase SDK: ${file}`);
 }
 
+for (const file of sourceFiles(resolve(repositoryRoot, "source/presentation"))) {
+  if (file.includes("/runtime/")) continue;
+  const content = readFileSync(file, "utf8");
+  assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase/, `Presentation modules must use the runtime composition boundary: ${file}`);
+}
+
 const preview = read("spa.html");
 assert.match(preview, /noindex,nofollow/i, "The separate SPA preview entry must remain non-indexable");
 
