@@ -104,6 +104,10 @@ CI запускается push-событиями рабочей ветки и �
 - Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`; отдельная migration отзывает EXECUTE у `PUBLIC`, `anon` и `authenticated`. Live ACL показывает EXECUTE только у `postgres` и `service_role`.
 - Все восстановленные файлы находятся только в рабочей ветке. Production migration history/schema не менялись; migrations не применялись к production.
 ## 8. Остальные ограничения
+### Production hosting evidence
+
+Read-only Cloudflare inspection confirmed an empty Pages project list in the connected account. DNS for `raymondovich.ru` points to GitHub Pages apex addresses `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`; `www.raymondovich.ru` is a DNS-only CNAME to `raymondovich-cloud.github.io`. No `gh-pages` branch or repository deploy workflow exists. The exact GitHub Pages publishing source setting was not accessible, so `main` as source is strongly indicated but not independently confirmed. Merging the root `index.html` SPA cutover into the publishing source would change the public site. Hash Router is approved only for temporary test use; production cutover requires explicit owner approval and a production routing/hosting decision.
+
 
 - Реальный iOS Safari на устройстве владельца не проверен.
 - Browser E2E suite (например, Playwright) не внедрён; текущие проверки — Node unit/architecture tests и build-output smoke checks.
