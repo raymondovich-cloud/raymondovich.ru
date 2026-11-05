@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   lockfile:
+    if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
     name: Generate and commit dependency lockfile
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -57,6 +58,7 @@ jobs:
           fi
 
   build:
+    if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
     name: Run tests and production build
     needs: lockfile
     runs-on: ubuntu-latest
