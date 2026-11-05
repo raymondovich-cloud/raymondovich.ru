@@ -28,6 +28,7 @@ function read(relativePath) {
 const index = read("index.html");
 assert.match(index, /<div id="app"><\/div>/, "Root entry must mount the Vue SPA");
 assert.match(index, /type="module"[^>]+src="[^"]+\.js"/, "Root entry must load a bundled module");
+assert.doesNotMatch(index, /(?:auth|supabase)[^"]*\.js/i, "Public root entry must not eagerly load the Supabase authentication bundle");
 
 const legacyRoutes = {
   "pages/about/about.html": "/pages/about/about.html",
@@ -67,6 +68,11 @@ for (const requiredRoute of ["/", "/products", "/cooperation", "/about", "/profi
   assert.ok(routes.includes(`path: "${requiredRoute}"`), `Missing SPA route: ${requiredRoute}`);
 }
 assert.match(routes, /getRole\(session\) !== "admin"/, "Owner route must reject non-admin sessions");
+
+const ownerView = readSource("source/presentation/spa/views/owner/OwnerOverview.vue");
+for (const action of ["createIdea", "updateIdea", "deleteIdea", "createProjectFromIdea", "updateProject", "deleteProject", "launch", "review", "priority", "archive", "restore", "pin", "pause", "complete"]) {
+  assert.ok(ownerView.includes(action), `Owner workspace is missing expected action: ${action}`);
+}
 
 for (const file of sourceFiles(resolve(repositoryRoot, "source/domain"))) {
   const content = readFileSync(file, "utf8");
