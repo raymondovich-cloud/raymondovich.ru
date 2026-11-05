@@ -4,7 +4,7 @@ Date: 2026-11-05
 
 ## Changes
 
-- Added Node.js built-in unit tests for authentication, account settings, ideas, projects and domain invariants.
+- Added Node.js built-in unit tests for authentication, account settings, ideas, projects, domain invariants and protected owner route/history behavior.
 - Added a CI workflow limited to `architecture/spa-rewrite-2026-11-05` and manual dispatch.
 - The workflow generates and commits `package-lock.json` when dependency metadata changes, then runs `npm ci`, `npm test`, `npm run build` and `npm run test:build`.
 - Direct frontend dependencies are pinned:
