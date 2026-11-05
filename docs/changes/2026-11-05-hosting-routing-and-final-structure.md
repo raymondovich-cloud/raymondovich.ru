@@ -15,6 +15,7 @@
 - Основная спецификация обновлена с учётом временного routing решения и статуса production hosting.
 - Подготовлена расширенная карта целевой структуры репозитория: четыре workspace, app composition, domain/application/infrastructure, feature modules, Design System, tests, configuration, deployment boundaries, migration mapping и unresolved decisions.
 - Сохранена текущая корневая конвенция `source/` вместо необоснованного rename в `src/`; миграция каталогов не выполнялась.
+- ADR-002 уточнён: если Vue Router будет выбран, временный режим — hash history; production route mode пересматривается после выбора hosting.
 - Framework-specific choices и tooling явно обозначены как условные, поскольку ADR-002–004 не утверждены.
 
 ## Что не выполнялось
