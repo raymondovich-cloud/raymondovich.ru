@@ -18,7 +18,7 @@ jobs:
     if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
     name: Run tests and production build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Check out migration branch
         uses: actions/checkout@v4
@@ -45,3 +45,9 @@ jobs:
 
       - name: Verify built routes and authentication bridges
         run: npm run test:build
+
+      - name: Install Chromium and WebKit test browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Run browser end-to-end tests
+        run: npm run test:e2e
