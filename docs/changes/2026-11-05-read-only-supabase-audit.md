@@ -27,3 +27,13 @@
 - Не читались пользовательские строки и персональные данные.
 - Isolated Supabase integration/RLS tests с синтетическими identities не запускались.
 - Ни одна production настройка не менялась.
+
+## Последующая repository-side migration reconciliation
+
+В рабочей ветке восстановлены четыре migration files, соответствующие версиям live history:
+- `20261008184130_create_user_profiles_rls.sql`;
+- `20261008184746_temporary_promote_admin.sql`;
+- `20261008185014_lock_temporary_admin_function.sql`;
+- `20261008195529_create_project_management.sql`.
+
+Migration filename для расширения projects приведён к live version `20261104131912_extend_projects_for_idea_inbox.sql`. Это только изменения repository files. Supabase migration history хранит version/name, а не исходный SQL text, поэтому точное совпадение восстановленных файлов с первоначально применённым SQL не подтверждено. Требуются review SQL и clean isolated staging replay/schema comparison. Ни одна migration не применялась к production.
