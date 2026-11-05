@@ -3,7 +3,7 @@
 **Статус:** PROPOSED — рекомендация для рассмотрения владельцем; не утверждено.  
 **Дата исследования:** 05.11.2026  
 **Область:** только Raymondovich.ru  
-**Зависимости:** целевая архитектура SPA/Modular Monolith; ADR-001 Hosting & Routing остаётся PROPOSED.
+**Зависимости:** целевая архитектура SPA/Modular Monolith; ADR-001 частично решён: временный GitHub Pages + Hash Router утверждён, production hosting остаётся открытым.
 
 ## 1. Контекст и задача решения
 
@@ -180,7 +180,7 @@ Route registry остаётся централизованным и опреде
 
 Route guards — UX layer. Server-side RLS/authorization остаётся единственной границей доступа к данным. Business use cases не размещаются в Router.
 
-Vue Router HTML5 history mode соответствует clean pathname URLs, но требует server-side SPA fallback. Поэтому routing mode зависит от решения ADR-001. При Cloudflare Pages кандидат — history mode; при сохранении GitHub Pages без rewrite fallback — hash mode как резервный компромисс. Production routing не меняется до staging verification.
+Vue Router HTML5 history mode соответствует clean pathname URLs, но требует server-side SPA fallback. Временный режим для GitHub Pages уже утверждён владельцем: Hash Router. Если Vue Router будет выбран в ADR-002, для текущего этапа следует использовать его hash history mode. Для будущего production hosting route mode пересматривается отдельно: при платформе со штатным SPA rewrite возможен history mode. Никакой production routing не меняется до staging verification и отдельного approval.
 
 ## 8. SEO и Public workspace
 
@@ -223,7 +223,7 @@ Before acceptance:
 3. Verify Vite 8 / Vue / Vue Router compatibility and supported Node.js version at implementation start.
 4. Verify selected Vue Router major release stability and avoid experimental APIs.
 5. Determine public SEO/prerender strategy.
-6. Confirm hosting fallback mode remains dependent on ADR-001.
+6. Confirm Vue Router mode supports the approved temporary Hash Router deployment and can be switched for production only after hosting decision.
 7. Create a small isolated proof-of-concept only after owner authorizes implementation/testing; do not touch production.
 
 ADR-002 does not authorize package installation, config creation, code migration, hosting change or production deployment.
