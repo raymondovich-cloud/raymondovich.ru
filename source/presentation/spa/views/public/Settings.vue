@@ -84,7 +84,7 @@
 import { onMounted, ref } from "vue";
 import {
   getAccountSettings, updateProfileSettings, updateAccountEmail, updateAccountPassword,
-} from "../../../../application/account/account-settings.js";
+} from "../../../runtime/account-settings.js";
 import { usePublicNavigation } from "../../composables/usePublicNavigation.js";
 
 const root = ref(null);
