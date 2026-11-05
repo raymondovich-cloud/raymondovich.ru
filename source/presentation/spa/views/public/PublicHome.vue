@@ -101,7 +101,6 @@
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { logout as signOut } from "../../../runtime/auth.js";
 
 const root = ref(null);
 let cleanups = [];
@@ -135,7 +134,8 @@ async function logout() {
   button.setAttribute("aria-busy", "true");
   label.textContent = "Выходим…";
   try {
-    await signOut();
+    const { logout } = await import("../../../runtime/auth.js");
+    await logout();
     window.location.assign("/#/");
   } catch (error) {
     label.textContent = originalLabel;
