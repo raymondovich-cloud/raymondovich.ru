@@ -33,7 +33,7 @@
 
 Последний подтверждённый успешный полный pipeline: workflow run `42103202430`, build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`:
 - `npm ci` — SUCCESS.
-- `npm test` — **48 tests passed, 0 failed**.
+- `npm test` — **49 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
 - `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
@@ -142,9 +142,19 @@ CI workflow работает только на migration branch и вручну�
 
 - Successful complete CI run: `42103202430`.
 - Tested executable code and test commit: `ef0701a9be2ad160037f6b1835a6384685e9318c`.
-- 48 tests passed; 0 failed.
+- 49 tests passed; 0 failed.
 - Locked dependency installation, production build and built-output smoke checks passed.
 - The current branch head is newer only through documentation commits; source, tests, package manifest and lockfile are unchanged from the tested commit.
 - The legacy redirect test now verifies that generic handoff query parameters are moved into router query state. The Supabase PKCE/implicit callback remains a separate HTML bridge.
 
 **Security note:** the live `anon` grants on `public.ideas` include `TRUNCATE`. RLS does not protect TRUNCATE. This is a critical existing least-privilege issue and remains unremediated because no production grants were changed.
+
+
+## Latest successful CI after concurrency hardening
+
+- Run: `42103929643`
+- Tested code commit: `be38ba3f6e40588dd83cb75658fde7c064c32196`
+- 49 tests passed; 0 failed.
+- `npm ci`, production build and built-output smoke checks passed.
+- The run includes the idempotent handling of concurrent project creation using the live unique `source_idea_id` constraint.
+- Later branch changes were documentation-only; source, tests, package manifest and lockfile were unchanged from the tested revision.
