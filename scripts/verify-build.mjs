@@ -64,7 +64,7 @@ assert.ok(spaMain.indexOf("legacy-hash-compat.js") < spaMain.indexOf("router/rou
 assert.match(legacyHashCompat, /!legacyHash\.startsWith\("#\/"\)/, "Legacy anchor hashes must be normalized for Hash History");
 
 const routes = readSource("source/presentation/spa/router/routes.js");
-for (const requiredRoute of ["/", "/products", "/cooperation", "/about", "/profile", "/settings", "/legal/:slug", "/auth/login", "/auth/register", "/auth/reset-password", "/auth/callback", "/owner", "/partner", "/external/:projectId"]) {
+for (const requiredRoute of ["/", "/products", "/cooperation", "/about", "/profile", "/settings", "/legal/:slug", "/auth/login", "/auth/register", "/auth/reset-password", "/auth/callback", "/owner", "/owner/ideas", "/owner/projects", "/partner", "/external/:projectId"]) {
   assert.ok(routes.includes(`path: "${requiredRoute}"`), `Missing SPA route: ${requiredRoute}`);
 }
 assert.match(routes, /getRole\(session\) !== "admin"/, "Owner route must reject non-admin sessions");
