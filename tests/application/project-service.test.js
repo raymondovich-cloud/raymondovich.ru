@@ -2,12 +2,21 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createProjectService } from "../../source/application/projects/project-service.js";
 
-function createRepositories({ existing = null, ideaUpdateError = null, deleteError = null } = {}) {
+function createRepositories({ existing = null, existingAfterConflict = undefined, createError = null, ideaUpdateError = null, deleteError = null } = {}) {
   const calls = [];
+  let sourceLookupCount = 0;
   const projectRepository = {
     async listByOwner(ownerId) { calls.push(["list", ownerId]); return []; },
-    async findBySourceIdea(ownerId, ideaId) { calls.push(["findBySourceIdea", ownerId, ideaId]); return existing; },
-    async create(record) { calls.push(["create", record]); return { id: "project-1", ...record }; },
+    async findBySourceIdea(ownerId, ideaId) {
+      calls.push(["findBySourceIdea", ownerId, ideaId]);
+      sourceLookupCount += 1;
+      return sourceLookupCount === 1 ? existing : (existingAfterConflict ?? existing);
+    },
+    async create(record) {
+      calls.push(["create", record]);
+      if (createError) throw createError;
+      return { id: "project-1", ...record };
+    },
     async update(id, ownerId, changes) { calls.push(["updateProject", id, ownerId, changes]); return { id, ...changes }; },
     async findSourceIdeaId(id, ownerId) { calls.push(["findSourceIdeaId", id, ownerId]); return "idea-1"; },
     async delete(id, ownerId) {
@@ -64,6 +73,20 @@ test("createProjectFromIdea reuses an existing project and synchronizes the idea
   const service = createProjectService(repos);
   assert.equal(await service.createProjectFromIdea(sourceIdea, "owner-1"), existing);
   assert.equal(repos.calls.some(([name]) => name === "create"), false);
+  assert.equal(repos.calls.find(([name]) => name === "updateIdea")[3].status, "launched");
+});
+
+test("createProjectFromIdea treats a concurrent unique-source conflict as an idempotent success", async () => {
+  const duplicateError = Object.assign(new Error("duplicate source_idea_id"), { code: "23505" });
+  const existingAfterConflict = { id: "project-created-by-concurrent-request", source_idea_id: "idea-1" };
+  const repos = createRepositories({ createError: duplicateError, existingAfterConflict });
+  const service = createProjectService(repos);
+
+  const result = await service.createProjectFromIdea(sourceIdea, "owner-1");
+
+  assert.equal(result, existingAfterConflict);
+  assert.equal(repos.calls.filter(([name]) => name === "findBySourceIdea").length, 2);
+  assert.equal(repos.calls.some(([name]) => name === "deleteProject"), false);
   assert.equal(repos.calls.find(([name]) => name === "updateIdea")[3].status, "launched");
 });
 
