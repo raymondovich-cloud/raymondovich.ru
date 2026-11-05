@@ -97,9 +97,9 @@ Read-only Cloudflare/DNS inspection:
 - Cloudflare Pages project list в подключённом аккаунте пуст.
 - Apex A records `raymondovich.ru` указывают на GitHub Pages IP `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`; записи DNS-only.
 - `www.raymondovich.ru` — DNS-only CNAME на `raymondovich-cloud.github.io`.
-- В репозитории нет `gh-pages` branch и deploy workflow. GitHub Pages publishing source setting недоступен для независимой проверки.
+- В репозитории нет `gh-pages` branch и repository-authored deploy workflow. Зафиксирован GitHub-managed Pages run `42106930006` на `main` commit `c2a495be2cb995c40cf4ab540b00c5b6aae3581c`: checkout `main` → `actions/jekyll-build-pages@v1` → upload artifact → `Deploy to GitHub Pages` SUCCESS. Triggering commit менял только `.gitignore`.
 
-Следовательно, текущий публичный origin — GitHub Pages; если publishing source указывает на `main` root, merge нового `index.html` опубликует SPA. Точный source setting не подтверждён. Production routing/hosting не утверждены; Hash Router остаётся временным решением. **Merge root cutover требует отдельного явного разрешения владельца на production effect.**
+Наблюдаемый production pipeline собирает `main` через Jekyll и не выполняет Vite / не публикует `dist/`. Новый root `index.html` SPA загружает `main.js` с bare imports `vue`/`vue-router`; без Vite bundle это нерабочая production entry. **Прямой merge root cutover в текущий Pages pipeline ожидаемо сломает сайт.** До merge требуется отдельное утверждение production build/deployment migration и явное разрешение владельца на cutover.
 
 ## 7. Оставшиеся проверки и решения
 
