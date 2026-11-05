@@ -75,18 +75,26 @@ test("password reset uses the configured recovery callback", async () => {
   assert.deepEqual(calls.find(([name]) => name === "resetPasswordForEmail").slice(1), ["person@example.com", { redirectTo: "/auth/update-password" }]);
 });
 
-test("completeAuthCallback exchanges the supplied query string", async () => {
+test("completeAuthCallback exchanges the PKCE code and ensures the confirmed user's profile", async () => {
   const { gateway, calls } = createGateway();
-  const service = createAuthenticationService({ authGateway: gateway, profileGateway: {}, authCallbackUrl: "/callback", passwordResetUrl: "/reset" });
-  await service.completeAuthCallback("?code=abc");
-  assert.deepEqual(calls.find(([name]) => name === "exchangeCodeForSession"), ["exchangeCodeForSession", "?code=abc"]);
-});
-
-test("completeAuthCallback reuses the implicit-flow session when no PKCE code is present", async () => {
-  const { gateway, calls } = createGateway();
+  const profileCalls = [];
   const service = createAuthenticationService({
     authGateway: gateway,
-    profileGateway: {},
+    profileGateway: { async ensureProfile(user, name) { profileCalls.push([user.id, name]); } },
+    authCallbackUrl: "/callback",
+    passwordResetUrl: "/reset",
+  });
+  await service.completeAuthCallback("?code=abc");
+  assert.deepEqual(calls.find(([name]) => name === "exchangeCodeForSession"), ["exchangeCodeForSession", "?code=abc"]);
+  assert.deepEqual(profileCalls, [["user-1", ""]]);
+});
+
+test("completeAuthCallback reuses the implicit-flow session and ensures the user's profile", async () => {
+  const { gateway, calls } = createGateway();
+  const profileCalls = [];
+  const service = createAuthenticationService({
+    authGateway: gateway,
+    profileGateway: { async ensureProfile(user, name) { profileCalls.push([user.id, name]); } },
     authCallbackUrl: "/callback",
     passwordResetUrl: "/reset",
   });
@@ -94,19 +102,22 @@ test("completeAuthCallback reuses the implicit-flow session when no PKCE code is
   assert.equal(session.user.id, "user-1");
   assert.ok(calls.some(([name]) => name === "getSession"));
   assert.equal(calls.some(([name]) => name === "exchangeCodeForSession"), false);
+  assert.deepEqual(profileCalls, [["user-1", ""]]);
 });
 
 test("completeAuthCallback returns null when an implicit callback has no session", async () => {
   const { gateway, calls } = createGateway({
     async getSession() { calls.push(["getSession"]); return { data: { session: null }, error: null }; },
   });
+  let profileCalls = 0;
   const service = createAuthenticationService({
     authGateway: gateway,
-    profileGateway: {},
+    profileGateway: { async ensureProfile() { profileCalls += 1; } },
     authCallbackUrl: "/callback",
     passwordResetUrl: "/reset",
   });
   assert.equal(await service.completeAuthCallback(""), null);
+  assert.equal(profileCalls, 0);
   assert.ok(calls.some(([name]) => name === "getSession"));
 });
 
