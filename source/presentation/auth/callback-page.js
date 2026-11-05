@@ -11,7 +11,7 @@ function setMessage(text, state = "normal") {
 async function init() {
   try {
     await completeAuthCallback(window.location.search);
-    window.location.replace("/spa.html#/owner");
+    window.location.replace("/#/owner");
   } catch {
     setMessage("Ссылка авторизации недействительна или срок её действия истёк.", "error");
   }
