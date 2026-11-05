@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("../../source/", import.meta.url);
+const root = fileURLToPath(new URL("../../source/", import.meta.url));
 
 async function sourceFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -25,7 +26,7 @@ async function contents(directory) {
 }
 
 test("Domain has no dependencies on outer application layers or runtime frameworks", async () => {
-  const files = await contents(new URL("domain/", root));
+  const files = await contents(join(root, "domain"));
   for (const file of files) {
     assert.doesNotMatch(
       file.content,
@@ -36,7 +37,7 @@ test("Domain has no dependencies on outer application layers or runtime framewor
 });
 
 test("Application does not depend on Infrastructure, Supabase SDK, Vue or browser globals", async () => {
-  const files = await contents(new URL("application/", root));
+  const files = await contents(join(root, "application"));
   for (const file of files) {
     assert.doesNotMatch(
       file.content,
@@ -52,7 +53,7 @@ test("Application does not depend on Infrastructure, Supabase SDK, Vue or browse
 });
 
 test("SPA views do not import Infrastructure internals directly", async () => {
-  const files = await contents(new URL("presentation/spa/", root));
+  const files = await contents(join(root, "presentation", "spa"));
   for (const file of files) {
     assert.doesNotMatch(
       file.content,
