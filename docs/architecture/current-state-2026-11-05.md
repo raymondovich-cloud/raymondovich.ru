@@ -1,4 +1,4 @@
-<!-- version 1.2 -->
+<!-- version 1.3 -->
 
 # Снимок текущего состояния Raymondovich.ru перед архитектурной переработкой
 
@@ -584,3 +584,152 @@ Application service использует callback URL `https://raymondovich.ru/p
 - Production Supabase/Auth/data/RLS/grants/Edge Functions не проверялись и не изменялись.
 - `main`, backup branch и `raymondovich.online` не изменялись.
 - Следующий этап: закрыть оставшуюся инвентаризацию и построить полную матрицу переноса с состояниями и тест-кейсами; затем оформить отдельные ADR по hosting fallback/routing, frontend stack/bundler, state management и testing. Реализация SPA по-прежнему не разрешена и не начиналась.
+
+
+## 18. Полная функциональная матрица переноса и тестового покрытия
+
+Матрица ниже фиксирует функции, реально обнаруженные в текущем коде, и отдельно — направления, которые подтверждены только архитектурными/продуктовыми документами. Целевые маршруты являются проектными идентификаторами для дальнейшего ADR, а не уже работающими URL. Все перечисленные тесты — обязательная будущая программа проверки; на данном этапе они не запускались.
+
+### 18.1. Публичная часть
+
+| Функция / сценарий | Текущая реализация | Целевой модуль / маршрут | Обязательные проверки |
+|---|---|---|---|
+| Главная и обзор экосистемы | `index.html`; якоря top/private/contact; публичные секции и FAQ | Public / `/` | Первичная загрузка; прямое открытие; якорные переходы; FAQ раскрытие/закрытие; отсутствие JS errors; мобильное меню; клавиатурная навигация; внешние ссылки; корректная работа без сессии |
+| Публичная боковая навигация | HTML + inline JS + `sidebar-navigation.js` | App Shell navigation + Public routes | Правильный active route; раскрытие только одной группы; переход по ссылкам; закрытие меню; доступность с клавиатуры; мобильное состояние |
+| О проекте / подход | `pages/about/about.html`, статическая страница | Public / `/about` | Прямое открытие/refresh; ссылки назад; адаптивность; отсутствие несуществующих ссылок |
+| Каталог продуктов | `pages/products/products.html`, три направления | Public / `/products` | Отображение OWN/PARTNER/EXTERNAL; корректный контент и ссылки; пустое/неактивное состояние при отсутствии опубликованных карточек; мобильная адаптация |
+| Форматы развития проектов | `pages/cooperation/cooperation.html`; утверждённый текст «Три формата развития проектов» | Public / `/cooperation` | Сохранение согласованного содержания; прямое открытие/refresh; корректность ссылок и адаптивность |
+| Публичные контакты | Telegram, Instagram, YouTube ссылки на главной | Public / `/#contact` | Открытие правильного назначения; внешние ссылки не получают внутренний SPA routing; безопасные target/rel атрибуты |
+| Условия участия | `pages/legal/private-conditions.html` | Public / `/legal/private-conditions` | Прямое открытие; полнота текста; обратная навигация; ссылки на контакты |
+| Правовые документы | `privacy.html`, `terms.html`, `cookies.html` | Public / `/legal/privacy`, `/legal/terms`, `/legal/cookies` | Прямое открытие каждого маршрута; ссылки между документами/главной; корректность текста и мобильной верстки |
+
+**Публичные ограничения текущей версии:** каталог и три формата — статические презентационные страницы, а не динамический каталог с данными проектов. Форма заявки, процесс модерации, checkout и оплата в текущих HTML/JS не обнаружены. Публичная цена Private не доказывает наличие работающей продажи.
+
+### 18.2. Identity, Auth и Account
+
+| Функция / сценарий | Текущая реализация | Целевой модуль / маршрут | Обязательные проверки |
+|---|---|---|---|
+| Вход | `auth-page.js` + `authentication.js` | Identity/Auth / `/auth/login` | Валидные/невалидные credentials; пустые поля; неверный пароль; rate limit; network error; повторный submit; loading; уже авторизованная admin-сессия; уже авторизованная non-admin-сессия |
+| Регистрация | `register-page.js` + `authentication.js` | Identity/Auth / `/auth/register` | Обязательные поля; некорректный email; слабый пароль; повторный email; email confirmation включён/выключен; ошибка отправки; успешная регистрация без session; поведение при уже активной сессии |
+| Запрос восстановления пароля | `reset-password-page.js` + `authentication.js` | Identity/Auth / `/auth/recovery` | Валидный/невалидный email; rate limit; нейтральное сообщение без раскрытия наличия аккаунта (если политика безопасности это предусматривает); network error; повторный запрос |
+| Auth callback / email confirmation | `callback-page.js` | Identity/Auth / callback route | Валидный, отсутствующий, просроченный и повторно использованный code; exchange error; network failure; успешное создание session; безопасный конечный redirect |
+| Установка нового пароля | `update-password-page.js` + `updatePassword()` | Identity/Auth / `/auth/update-password` | Валидная recovery session; отсутствующая/истёкшая session; PASSWORD_RECOVERY event; совпадение паролей; слабый пароль; успешное обновление; signOut; повторный вход |
+| Logout | `sidebar-logout.js`, `account-session.js`, logout handler Control Center | Identity/Session + App Shell | Успешный logout; ошибка logout; очистка session-scoped state/cache; запрет возврата в закрытый экран через browser back; повторный logout |
+| Профиль участника | `profile.html`, демонстрационные данные | Identity/Profile / `/profile` | До подключения данных не считать интерактивной функцией; после реализации — owner isolation, loading/empty/error, актуальные поля, отсутствие чужих данных |
+| Настройки профиля | `settings-page.js`, `account-settings.js` | Identity/Account / `/settings` | Неавторизованный пользователь; загрузка metadata; сохранение имени/фамилии/timezone; неподдерживаемая timezone; ошибка сети; повторный submit; проверка сохранения после reload |
+| Смена email | `updateAccountEmail()` | Identity/Account / `/settings` | Валидный/занятый email; rate limit; подтверждение нового адреса; старый email до подтверждения; ошибка отправки |
+| Смена пароля из настроек | `updateAccountPassword()` | Identity/Account / `/settings` | Несовпадающие пароли; слабый пароль; успешное обновление; истёкшая session; отображение результата без утечки деталей |
+
+**Критический Auth gate:** будущая матрица ролей обязана проверять anonymous, authenticated non-owner/non-admin, owner/admin, истёкшую сессию и смену account context. UI redirect не является защитой; доступ должен быть подтверждён серверными политиками. Текущая redirect loop для non-admin остаётся дефектом исходного поведения, который нельзя переносить как норму.
+
+### 18.3. Owner Control Center
+
+| Функция / сценарий | Текущая реализация | Целевой модуль / маршрут | Обязательные проверки |
+|---|---|---|---|
+| Вход в Control Center | `app.html`, `app-page.js`, admin-only guard | Owner Control Center / `/owner/overview` | Anonymous denied; non-admin denied; owner/admin allowed; expired session; Auth service unavailable; refresh на закрытом маршруте; back/forward |
+| Обзор | Сводные счётчики, приоритетные и последние идеи/проекты | Owner Control Center / `/owner/overview` | Empty state; частично заполненные данные; корректные счётчики; сортировка; переход к идеям/проектам; ошибка загрузки; повторная загрузка |
+| Создание идеи | Idea dialog + `createIdea()` | Ideas / `/owner/ideas` | Название обязательно; trim; пустые optional fields; денежные поля null/0/positive/negative/invalid; максимальные длины; двойной submit; network/RLS error; созданная запись видна после refresh |
+| Просмотр и редактирование идеи | `openIdeaDetails()`, `updateIdea()` | Ideas / `/owner/ideas/:ideaId` (предварительно) | Загрузка существующей идеи; сохранение всех полей; пустые optional values; отрицательные суммы; несуществующий ID; ошибка сохранения; закрытие без сохранения; stale data |
+| Идея: new/review | `updateIdea()`, action menu | Ideas / `/owner/ideas` | Перевод new → review и обратно; корректный статус после reload; повторный action; race/duplicate request |
+| Идея: приоритет | UI переключает normal ↔ high; БД допускает low/normal/high/critical | Ideas / `/owner/ideas` | normal → high → normal; сохранение; отображение high/critical; проверить, что UI не затирает critical непреднамеренно |
+| Идея: архив/восстановление | `archived` filter, restore → `new` | Ideas / `/owner/ideas/archive` | Архивация; отдельный архивный фильтр; восстановление; пустой архив; запрет случайного удаления; сохранение статуса |
+| Запуск идеи в проект | `createProjectFromIdea()`; две таблицы и связь `source_idea_id` | Ideas + Projects use case / `/owner/ideas/:id/launch` | Проект создан один раз; поля перенесены без потери; идея стала launched; повторный запуск идемпотентен; unique conflict; отказ создания; отказ обновления идеи; отказ компенсационного удаления; восстановление согласованности |
+| Просмотр запущенной идеи | Идея связывается с проектом; action menu открывает действия связанного проекта | Ideas + Projects / связанный project context | Связь существует; связь отсутствует; проект удалён; неверный owner; stale client cache; правильный переход к проекту |
+| Список проектов | `listProjects()`, active/archive filters | Projects / `/owner/projects` | Пустой список; активные/paused/completed; архив; сортировка; корректный owner scope; query error |
+| Пауза/возобновление | `updateProject()` | Projects / `/owner/projects/:projectId` | active → paused → active; reload; повторный action; ошибка сохранения |
+| Завершение проекта | `status = completed` | Projects / `/owner/projects/:projectId` | Завершение; отображение в правильной выборке; исключение из active list согласно бизнес-правилу; обратное действие пока не обнаружено |
+| Архивация/восстановление проекта | `archived`; restore → `active` | Projects / `/owner/projects/archive` | Архивация; фильтр; восстановление; пустой архив; ожидаемое поведение completed → archived → active |
+| Закрепление проекта | `is_pinned` toggle | Projects / `/owner/projects` | Pin/unpin; reload; влияние на сортировку; согласование смысла `pin_order`, который сейчас не используется |
+| Приоритет проекта | normal ↔ high UI action | Projects / `/owner/projects` | normal/high/critical; сохранение и сортировка; не потерять critical |
+| Удаление идеи/проекта | confirm + delete service | Ideas/Projects / соответствующие detail routes | Отмена confirm; подтверждение; неверный ID; RLS denial; ошибка сервера; удаление связанного проекта и исходной идеи; FK behavior; восстановление/компенсация |
+| Доступность и управление интерфейсом | Click, keyboard, contextmenu, long press около 550 ms, pointer cancel/move | App Shell + соответствующий модуль | Enter/Space; click; long press; context menu; touch cancel; движение пальца; случайное срабатывание при scroll; закрытие dialogs; focus trap/restore; iOS Safari |
+
+**Ограничения текущей реализации Control Center:**
+- В текущем HTML/JS обнаружены только Overview, Ideas и Projects.
+- Создание проекта доступно через запуск идеи; отдельный сценарий создания проекта не обнаружен.
+- Редактирование содержания идеи реализовано; самостоятельный экран/форма редактирования проекта не обнаружены.
+- Для проектов UI предоставляет статусные действия, приоритет и pin; управление этапами, задачами и историей проекта не обнаружено.
+- `project-service` и `idea-service` напрямую импортируют Supabase client. Application слой не изолирован от Infrastructure через port/adapter contract.
+- Сценарии запуска и удаления проекта не атомарны; их тесты должны включать отказ каждого промежуточного шага.
+
+### 18.4. Целевые пространства, не представленные в текущем исполняемом коде
+
+| Целевая функция | Подтверждение в текущем репозитории | Целевое пространство / модуль | Статус инвентаризации |
+|---|---|---|---|
+| Owner: управление пользователями, партнёрами, внешними проектами, назначениями и разрешениями | Целевое требование архитектуры; действующего UI/сервисов в дереве не обнаружено | Owner Control Center / Identity, Access, Partners, External Projects | Требование зафиксировано; реализации не обнаружено |
+| Owner: аналитика, документация, маркетинг, стратегия | Упоминается в `docs/ideas/business-analyst.md`; текущих маршрутов/модулей нет | Owner Control Center / соответствующие функциональные модули | Концептуальные разделы; не считать реализованными |
+| Реестр инструментов и ресурсов | Есть SQL migrations для четырёх registry tables и документы `tools.md` / `tools-data-model.md`; текущей страницы `tools.html` и JS UI в дереве нет | Owner Control Center / Tools & Infrastructure | Схема и документация описаны; актуальный UI/production schema не подтверждены. Требуется отдельная проверка before deciding restore/rebuild |
+| Этапы, задачи и история проектов | Документация упоминает `project_milestones`, `project_tasks`, `project_history`; соответствующего DDL в проверенных 10 migrations и UI в текущем дереве не обнаружено | Projects / Planning, Tasks, History | Наличие таблиц в production не подтверждено; кодового сценария не обнаружено |
+| Partner Workspace | В целевой архитектуре утверждены категории Accounting, Services, Analytics, Marketing и custom modules; текущих страниц/сервисов не обнаружено | Partner Workspace | Целевая функция, не реализована в проверенном дереве |
+| External Project Workspace | Утверждены referral links, promo codes, traffic/click statistics и promotion performance; текущих страниц/сервисов не обнаружено | External Project Workspace | Целевая функция, не реализована в проверенном дереве |
+| Подача/модерация заявок на партнёрство и сторонний проект | Публично описана как процесс обсуждения и согласования; формы и workflow не обнаружены | Public + Owner Control Center / Applications & Admission | Текстовая концепция; исполняемого workflow нет |
+| Платёжный процесс Private | На главной указана цена 4 990 ₽; payment provider, checkout, webhook и entitlement flow в проверенном дереве не обнаружены | Public + Billing/Entitlements | Продажа не реализована в проверенном исходном коде |
+| AI Business Analyst | Документ `docs/ideas/business-analyst.md`, статус отложено; кода и API integration не обнаружено | Owner Control Center / Analytics Assistant | Отложено; не включать в текущий перенос как готовую функцию |
+| Уведомления, мониторинг, аудит, backup/restore | Зафиксированы в архитектурной спецификации; текущих runtime модулей и таблиц в проверенном дереве не обнаружено | Core Platform Services / Owner Control Center | Архитектурные требования; реализация не подтверждена |
+
+### 18.5. Документационные расхождения и реестр решений
+
+1. `docs/architecture/overview.md` и `docs/architecture/projects.md` описывают прежнюю модель «идея = проект в одной записи». Это противоречит фактическим текущим сервисам и migration `20261104144433_split_ideas_and_projects.sql`. При переносе источником текущего поведения считать код и миграции, а не устаревший текст; сами документы обновлять отдельной согласованной задачей.
+2. `docs/public-site-content.md` содержит старые URL (`/auth.html`, `/private-conditions.html`, `/privacy.html`, `/terms.html`, `/cookies.html`), которые не соответствуют текущим путям в HTML. Нужна последующая синхронизация документа с фактическими публичными маршрутами.
+3. `docs/architecture/tools.md` утверждает наличие реализованного `tools.html` и UI, но соответствующего файла/JS модуля в текущем дереве нет. SQL registry migrations присутствуют; судьбу UI и применённость схемы следует выяснить отдельно, не восстанавливая функциональность по предположению.
+4. Документация проектов упоминает milestones/tasks/history и расчёт готовности, но в текущем исполняемом дереве нет соответствующих модулей, а в проверенном наборе миграций нет их DDL. Это не доказывает отсутствие production таблиц.
+5. Профиль пользователя распределён между Auth metadata и `user_profiles.display_name`; перед переносом определить единый профильный контракт и источник истины.
+6. `pin_order` существует в миграции, но текущий UI/service используют только `is_pinned`; определить, нужен ли ручной порядок закреплённых проектов.
+7. `createProjectFromIdea()` вставляет `completion_criteria`, не найденный в проверенных миграциях. Требуется сверка с реальной схемой до изменения контракта.
+8. Текущие сервисы используют owner_id фильтры и Auth role check в UI, но полноценные негативные RLS tests для non-admin/non-owner не выполнялись.
+9. Прямые ссылки/redirects MPA, callback URLs, hash navigation и browser history должны быть отдельно отображены в route migration map; механически заменить href недостаточно.
+
+### 18.6. Обязательная общая тестовая матрица для каждого маршрута/сценария
+
+Для каждого маршрута и use case в следующей таблице тестирования должны быть отмечены:
+- **Happy path:** валидный пользовательский сценарий завершается ожидаемым результатом.
+- **Validation:** пустые, неверные, слишком длинные и граничные значения.
+- **Authentication:** anonymous, authenticated, expired session, re-authentication.
+- **Authorization:** owner/admin, пользователь без нужного permission, другой project owner; backend/RLS denial.
+- **Loading/empty:** первая загрузка, задержка, пустой результат, повторная загрузка.
+- **Failure/recovery:** network/server error, retry только безопасной операции, восстановление UI и повторная проверка server state.
+- **Concurrency/idempotency:** двойной submit, параллельные запросы, stale response, повторный action, конфликт обновления.
+- **Navigation:** direct URL, refresh, back/forward, query/hash, внутренний и внешний переход.
+- **Accessibility/responsive:** keyboard, focus management, labels/aria, touch, iOS Safari/mobile widths.
+- **Data integrity/security:** отсутствие утечки данных между аккаунтами/проектами, отсутствие секретов в логах/URL/browser storage.
+
+### 18.7. Классификация переноса
+
+**Перенести с сохранением подтверждённого поведения:**
+- публичные статические страницы и согласованный контент;
+- Auth сценарии и Account settings;
+- Owner Control Center overview;
+- Ideas: создание, просмотр/редактирование, статусы, приоритет, архив, запуск;
+- Projects: список, pause/resume, complete, archive/restore, pin, priority, delete.
+
+**Перенести, но исправить до признания готовым:**
+- Auth redirect/role routing (non-admin loop);
+- Presentation → Supabase direct calls;
+- atomicity launch/delete project workflows;
+- единый профильный контракт;
+- idea/project delete relationship safety;
+- pin order semantics;
+- неизвестность `completion_criteria` schema;
+- hosting SPA fallback and direct route refresh;
+- тестовая инфраструктура и негативные access/RLS tests.
+
+**Не считать реализованным и не переносить как готовое:**
+- Partner Workspace и External Project Workspace;
+- user/partner/project permission management UI;
+- application/admission workflow;
+- payment/checkout/entitlements;
+- Tools UI (до выяснения причины отсутствия);
+- milestones/tasks/history UI and services;
+- AI Business Analyst;
+- monitoring, notification delivery, audit log and backup runtime.
+
+### 18.8. Следующий контрольный этап
+
+Функциональная инвентаризация текущих исходников и первичная матрица переноса завершены на статическом уровне. До выбора стека остаются отдельные технические подтверждения:
+1. сверка актуальной production Supabase schema/RLS/grants только после отдельного разрешения на read-only audit;
+2. уточнение GitHub Pages SPA fallback и фактических HTTP behavior;
+3. определение окончательных route names и redirect contract;
+4. открытие ADR: hosting/routing fallback, frontend stack/bundler, state management, testing strategy;
+5. при необходимости — уточнение бизнес-правил для неатомарных project operations, profile source of truth, pin_order и удаления связанной идеи.
+
+Ни один из этих пунктов не разрешает прикладную реализацию автоматически. До отдельного одобрения изменения остаются документальными.
