@@ -45,6 +45,8 @@
 
 - Обновлён `docs/security/admin-security.md` до version 1.4: устранено устаревшее утверждение об отсутствующих миграциях; зафиксировано 0 SQL statement differences между 14 repo migrations и live ledger, при сохранении требования clean isolated replay.
 
+- Добавлен Playwright 1.64.1 и E2E-контур Chromium + WebKit iPhone emulation: публичные маршруты, утверждённые тексты направлений, legacy URL redirect, owner auth guard, 404, robots/sitemap и мобильный horizontal overflow. CI устанавливает browser engines и запускает `npm run test:e2e`; реальный iOS Safari и живой Supabase Auth остаются отдельными проверками.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
