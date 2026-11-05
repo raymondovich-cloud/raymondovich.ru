@@ -40,3 +40,9 @@
 ## Безопасность изменений
 
 Изменения ограничены E2E tests и changelog в migration branch. `main`, production deployment, DNS, Cloudflare, hosting и production Supabase не изменялись.
+
+## Дополнительная проверка перехвата password reset
+
+При сверке Playwright route handler с Supabase Auth flow обнаружено, что запрос восстановления пароля может содержать query-параметр `redirect_to`. Точный matcher `/auth/v1/recover` не гарантировал перехват URL с query string. Matcher расширен до `/auth/v1/recover**`, чтобы E2E тест проверял именно мокированный ответ, а не пытался обратиться к внешнему Auth endpoint.
+
+Это исправление внесено в `tests/e2e/public-and-routing.e2e.js`. Требуется повторный полный CI на новом HEAD; результат браузерного теста пока не подтверждён.
