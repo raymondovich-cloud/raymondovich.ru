@@ -1,4 +1,4 @@
-<!-- version 1.1 -->
+<!-- version 1.2 -->
 # Raymondovich Design System
 
 Самостоятельная визуальная система проекта. Design отвечает за визуальные контракты и не содержит бизнес-логики.
@@ -18,7 +18,8 @@
 - `tokens.css` — единый источник базовых визуальных токенов, извлечённых из существующего UI.
 - `spa.css` — глобальная SPA foundation и shell styles; использует shared tokens.
 - `spa-auth.css` — текущие scoped auth styles.
-- Остальные CSS-файлы — текущие scoped page/workspace styles, которые постепенно классифицируются и переводятся на shared tokens.
+- `about.css` и `legal.css` — scoped styles информационных страниц; их базовые accent values используют shared tokens.
+- Остальные CSS-файлы — scoped page/workspace styles; уникальные значения остаются локальными до отдельной проверки визуального паритета.
 
 ## Правила
 
