@@ -49,7 +49,6 @@ jobs:
           fi
 
   build:
-  build:
     if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
     needs: lockfile
     name: Run tests and production build
@@ -64,7 +63,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 22
           cache: npm
 
       - name: Install locked dependencies
