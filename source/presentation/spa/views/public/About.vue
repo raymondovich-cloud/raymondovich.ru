@@ -1,8 +1,8 @@
 <template>
   <div class="about-page">
     <header class="header">
-        <a class="brand" href="/spa.html#/">RAYMONDOVICH</a>
-        <a class="back" href="/spa.html#/">← Главная</a>
+        <RouterLink class="brand" to="/">RAYMONDOVICH</RouterLink>
+        <RouterLink class="back" to="/">← Главная</RouterLink>
       </header>
       <main>
         <p class="eyebrow">02 / Подход</p>
