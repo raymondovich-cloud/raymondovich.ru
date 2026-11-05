@@ -16,10 +16,11 @@
 ## Architecture and quality
 
 - Added Domain rules for Idea and Project normalization/validation.
+- Made concurrent idea launch idempotent on unique-source conflict (`23505`); the service re-reads the winning project and synchronizes the idea. Partial project-delete recovery errors now state explicitly that the project was deleted but source-idea restoration failed.
 - Kept Supabase SDK access behind Infrastructure gateways/repositories and Presentation runtime composition.
 - Added unit tests for Domain and Application services, architecture boundary tests and build-output smoke checks.
 - Added Node.js built-in `node:test` runner and CI execution.
-- Latest confirmed complete CI before this documentation update: run `42103202430`, build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`; 48 tests passed, 0 failed, build and built-output smoke checks passed.
+- Latest confirmed complete CI before this documentation update: run `42104225677`, build job checkout SHA `6148c7f5ccf044b0911e44787f002bf62098ed47`; 50 tests passed, 0 failed, build and built-output smoke checks passed.
 - CI lockfile generation and installation use a committed `package-lock.json` and `npm ci`.
 
 ## Read-only production Supabase audit
