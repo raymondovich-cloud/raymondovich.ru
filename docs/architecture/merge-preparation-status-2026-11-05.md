@@ -76,9 +76,11 @@ CI запускается push-событиями рабочей ветки и �
 - `ideas`: policy `admin manages ideas`, роль `authenticated`, условие — JWT `app_metadata.role = 'admin'` и `auth.uid() = owner_id`; тот же предикат в `WITH CHECK`.
 - `projects`: live policy `admin manages projects` с аналогичными admin/owner predicates.
 - `user_profiles`: отдельные policies ограничивают INSERT/SELECT/UPDATE собственным `user_id = auth.uid()`.
-- В live migration history обнаружены четыре версии, отсутствующие в repo: `20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`.
-- Filename mismatch устранён в рабочей ветке: checked-in migration переименована с `20261104120000_extend_projects_for_idea_inbox.sql` на live version `20261104131912_extend_projects_for_idea_inbox.sql`; SQL content сохранён без изменений. Оригинальный применённый SQL из Supabase migration history недоступен, поэтому exact content identity не подтверждена; необходим clean staging migration replay.
-- Policy `admin manages projects` присутствует в live schema, но не обнаружена в checked-in migrations. Совокупно это означает, что текущая migration history всё ещё не воспроизводит live schema и требует отдельной reconciliation до clean staging deployment; production не менялся.
+- Migration history восстановлена в рабочей ветке: четыре отсутствовавших файла (`20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`) восстановлены из read-only `supabase_migrations.schema_migrations.statements`.
+- Project extension migration приведена к live version `20261104131912_extend_projects_for_idea_inbox.sql`; прежний неприкреплённый version `20261104120000` удалён.
+- Сверка всех **14** файлов `supabase/migrations/*.sql` с live migration ledger завершилась: filenames/versions/names совпадают полностью, SQL statement content differences — **0**.
+- Policies `admin manages projects` и user profile policies теперь присутствуют в восстановленных checked-in migrations. Это восстанавливает migration-source parity с live ledger; clean local Supabase replay ещё не выполнен. Data seed migrations имеют prerequisites по owner/admin и проекту LifeGame, которые нужно подготовить в изолированной среде.
+- Все изменения касались только файлов в рабочей ветке; production Supabase не менялся.
 
 ### Grants и security findings
 
