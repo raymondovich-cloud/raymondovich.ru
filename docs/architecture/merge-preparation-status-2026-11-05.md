@@ -93,17 +93,16 @@ CI запускается push-событиями рабочей ветки и �
 
 ### Migration history и privileged functions
 
-- Live `supabase_migrations` содержит 14 записей; в рабочей ветке теперь присутствуют 14 migration files с теми же версиями/именами. Четыре ранее отсутствовавших файла восстановлены в migration branch:
+- Live `supabase_migrations.schema_migrations` содержит 14 записей и сохранённые SQL `statements`. В migration branch восстановлены четыре отсутствовавших файла:
   - `20261008184130_create_user_profiles_rls.sql`;
   - `20261008184746_temporary_promote_admin.sql`;
   - `20261008185014_lock_temporary_admin_function.sql`;
   - `20261008195529_create_project_management.sql`.
-- Восстановленные SQL-файлы сверены с массивами `statements` из read-only `supabase_migrations.schema_migrations`: для всех 14 migration versions различий в SQL statements не обнаружено. Это подтверждает соответствие сохранённого SQL доступным записям live ledger; clean isolated staging replay всё равно необходим для проверки применимости полного набора, prerequisites и итоговой schema/policies/grants.
-- Для расширения projects checked-in файл `20261104131912_extend_projects_for_idea_inbox.sql` совпадает с live migration version; SQL statements также входят в сверку с нулём различий. Clean staging replay остаётся обязательным для проверки порядка и результата применения.
-- Policy `admin manages projects`, обнаруженная в live schema, присутствует в восстановленном `20261008195529_create_project_management.sql`; её SQL входит в сверку migration statements. Реальные positive/negative RLS integration tests с несколькими identities ещё не выполнены.
-- Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`; отдельная следующая migration отзывает EXECUTE у `PUBLIC`, `anon` и `authenticated`. Live ACL показывает EXECUTE только у `postgres` и `service_role`; production function не изменялась.
-- Migration files восстановлены только в рабочей ветке; production migration history/schema не менялись и migrations не применялись. Нельзя запускать эти миграции поверх live database вслепую.
-
+- Filename/version project extension migration приведены к live version `20261104131912_extend_projects_for_idea_inbox.sql`.
+- Все 14 repository migration files сравнены с сохранёнными live SQL statements: filename/version/name совпадают, SQL statement content differences — **0**. Evidence: `docs/changes/2026-11-05-read-only-supabase-audit.md`.
+- Это подтверждает repository source parity, но не доказывает успешный replay с нуля. Clean local Supabase replay ещё не выполнен: seed migrations требуют isolated fixtures с admin owner и проектом LifeGame. Нужны isolated replay, schema diff и positive/negative RLS tests.
+- Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`; отдельная migration отзывает EXECUTE у `PUBLIC`, `anon` и `authenticated`. Live ACL показывает EXECUTE только у `postgres` и `service_role`.
+- Все восстановленные файлы находятся только в рабочей ветке. Production migration history/schema не менялись; migrations не применялись к production.
 ## 8. Остальные ограничения
 
 - Реальный iOS Safari на устройстве владельца не проверен.
