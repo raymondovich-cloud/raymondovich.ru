@@ -1,13 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test("public root renders without browser runtime errors", async ({ page }) => {
+test("public root renders without runtime errors or Supabase requests", async ({ page }) => {
   const pageErrors = [];
+  const supabaseRequests = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("request", (request) => {
+    if (new URL(request.url()).hostname.endsWith(".supabase.co")) supabaseRequests.push(request.url());
+  });
 
   await page.goto("/");
   await expect(page).toHaveTitle(/RAYMONDOVICH/i);
   await expect(page.locator("body")).toContainText("RAYMONDOVICH");
   expect(pageErrors).toEqual([]);
+  expect(supabaseRequests).toEqual([]);
 });
 
 test("products route renders directly", async ({ page }) => {
@@ -33,6 +38,25 @@ test("about route renders directly", async ({ page }) => {
 test("legacy products URL redirects into its SPA route", async ({ page }) => {
   await page.goto("/pages/products/products.html");
   await expect(page).toHaveURL(/#\/pages\/products\/products\.html/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Продукты");
+});
+
+test("legacy products URL preserves query parameters and anchor fragments", async ({ page }) => {
+  await page.goto("/pages/products/products.html?campaign=summer#section");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Продукты");
+  await expect.poll(() => page.url()).toContain("campaign=summer");
+  await expect.poll(() => page.url()).toContain("#section");
+});
+
+test("browser Back restores the previous public route", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === "webkit-iphone", "Desktop navigation history is covered in the Chromium project.");
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "Продукты экосистемы" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Продукты");
+  await page.getByRole("link", { name: "Форматы сотрудничества" }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Три формата развития проектов");
+  await page.goBack();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Продукты");
 });
 
