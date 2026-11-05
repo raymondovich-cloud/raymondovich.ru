@@ -2,38 +2,42 @@
 
 **Дата:** 05.11.2026  
 **Проект:** `yajybgdorhxebbigwjgi`  
-**Область:** только read-only metadata inspection; production database не изменялась.
+**Область:** read-only metadata inspection; production database не изменялась.
 
 ## Проверки
 
-- Проверены существование и колонки `public.ideas`, `public.projects`, `public.user_profiles`.
-- Проверены RLS flags, policies, table grants и CHECK/FK constraints.
-- Получен список live migration history.
-- Проверен ACL для privileged function `public.promote_raymondovich_admin(text)`.
+- Проверены таблицы, колонки, constraints, indexes, RLS flags, policies и table grants.
+- Получен список `supabase_migrations.schema_migrations`, включая сохранённые SQL `statements`.
+- Проверен ACL для `public.promote_raymondovich_admin(text)`.
+- Проверены public functions, доступные для EXECUTE роли `anon`.
 - Запущен Supabase Security Advisor (security).
 
-## Результаты
+## Подтверждённое состояние
 
-- RLS включён на `ideas`, `projects`, `user_profiles`; owner/admin policies подтверждены live metadata.
-- Колонки и ключевые ограничения для ideas/projects согласуются с используемыми Domain/Repository полями.
-- На `ideas` у роли `anon` обнаружены избыточные table grants, включая `TRUNCATE`; RLS не защищает TRUNCATE. Требуется отдельное разрешённое security remediation.
+- RLS включён на `public.ideas`, `public.projects`, `public.user_profiles`; FORCE RLS выключен.
+- `ideas`: admin policy требует JWT `app_metadata.role = 'admin'` и `auth.uid() = owner_id`.
+- `projects`: live admin policy использует те же admin/owner predicates.
+- `user_profiles`: policies ограничивают INSERT/SELECT/UPDATE собственным `user_id = auth.uid()`.
+- `projects` grants: authenticated CRUD; anon grants не обнаружены.
+- `ideas` grants: у anon обнаружены SELECT/INSERT/UPDATE/DELETE, TRUNCATE, TRIGGER и REFERENCES. Отсутствие anon RLS policy блокирует обычный row access, но RLS не защищает TRUNCATE. Нужна отдельная разрешённая security remediation.
+- `public.promote_raymondovich_admin(text)` — SECURITY DEFINER; EXECUTE разрешён service_role, запрещён anon/authenticated. Других public functions, доступных anon для EXECUTE, проверка не обнаружила.
 - Security Advisor сообщил, что Leaked Password Protection отключена; Auth setting не менялась.
-- Live migration history содержит четыре миграции, отсутствующие в репозитории; timestamp migration расширения projects отличается от checked-in файла. Нужна отдельная reconciliation до подтверждения воспроизводимости чистого staging deployment.
-- `promote_raymondovich_admin(text)` — SECURITY DEFINER; EXECUTE доступен только `postgres` и `service_role`, не `anon` и не `authenticated`.
+- В проверенной public schema не обнаружены таблицы, содержащие в имени `partner`, `external`, `member` или `workspace`.
+
+## Repository-side migration reconciliation
+
+Первоначальная сверка обнаружила четыре live migration versions, отсутствовавшие в repository, и неправильный filename для project extension migration.
+
+В migration branch:
+- восстановлены `20261008184130_create_user_profiles_rls.sql`, `20261008184746_temporary_promote_admin.sql`, `20261008185014_lock_temporary_admin_function.sql`, `20261008195529_create_project_management.sql` из сохранённых в live ledger SQL statements;
+- project extension migration приведена к live version `20261104131912_extend_projects_for_idea_inbox.sql`;
+- все 14 repository migration files сравнены с `supabase_migrations.schema_migrations.statements`: filenames/versions/names совпадают, SQL statement content differences — **0**.
+
+Это repository-only восстановление источника миграций. Ни одна migration не применялась к production. Clean local Supabase replay ещё не выполнялся: seed migrations требуют изолированных fixtures с admin owner и проектом LifeGame.
 
 ## Ограничения
 
-- Не выполнялись INSERT/UPDATE/DELETE/DDL, не менялись grants, RLS, Auth settings или функции.
+- Не выполнялись INSERT/UPDATE/DELETE/DDL; не менялись grants, RLS, Auth settings или функции.
 - Не читались пользовательские строки и персональные данные.
 - Isolated Supabase integration/RLS tests с синтетическими identities не запускались.
-- Ни одна production настройка не менялась.
-
-## Последующая repository-side migration reconciliation
-
-В рабочей ветке восстановлены четыре migration files, соответствующие версиям live history:
-- `20261008184130_create_user_profiles_rls.sql`;
-- `20261008184746_temporary_promote_admin.sql`;
-- `20261008185014_lock_temporary_admin_function.sql`;
-- `20261008195529_create_project_management.sql`.
-
-Migration filename для расширения projects приведён к live version `20261104131912_extend_projects_for_idea_inbox.sql`. Это только изменения repository files. Supabase migration history хранит version/name, а не исходный SQL text, поэтому точное совпадение восстановленных файлов с первоначально применённым SQL не подтверждено. Требуются review SQL и clean isolated staging replay/schema comparison. Ни одна migration не применялась к production.
+- Migration replay, schema diff и migration fixture setup остаются отдельным quality gate.
