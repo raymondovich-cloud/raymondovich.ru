@@ -196,13 +196,13 @@ async function saveIdeaDetails() {
     showStatus("Изменения идеи сохранены.");
   });
 }
-function startLongPress(event, entity, id) {
+function startLongPress(_event, entity, id) {
   longPressTriggered.value = false;
   clearTimeout(longPressTimer.value);
   longPressTimer.value = window.setTimeout(() => {
     longPressTriggered.value = true;
     const item = (entity === "idea" ? ideas.value : projects.value).find((entry) => entry.id === id);
-    contextMenu.value = { entity, id, status: item?.status, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
+    contextMenu.value = { entity, id, status: item?.status };
   }, 550);
 }
 function cancelLongPress() {
@@ -210,7 +210,7 @@ function cancelLongPress() {
 }
 function openContext(item, entity, event) {
   event.preventDefault();
-  contextMenu.value = { entity, id: item.id, status: item.status, x: Math.min(event.clientX, window.innerWidth - 250), y: Math.min(event.clientY, window.innerHeight - 220) };
+  contextMenu.value = { entity, id: item.id, status: item.status };
 }
 function openContextAction(action) {
   if (!contextMenu.value) return;
@@ -392,7 +392,7 @@ onMounted(async () => {
     </dialog>
 
     <div v-if="contextMenu" class="owner-context-backdrop" @click="contextMenu = null">
-      <div class="owner-context-menu" :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }" @click.stop>
+      <div class="owner-context-menu" @click.stop>
         <template v-if="contextMenu.entity === 'idea' && contextMenu.status === 'archived'">
           <button type="button" @click="openContextAction('restore')">Вернуть к идеям</button><button type="button" class="is-danger" @click="openContextAction('delete')">Удалить</button>
         </template>
