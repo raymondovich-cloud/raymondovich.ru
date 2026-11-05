@@ -62,7 +62,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
-import { getSession } from "../../../../application/auth/authentication.js";
+import { getSession } from "../../../runtime/auth.js";
 import { usePublicNavigation } from "../../composables/usePublicNavigation.js";
 
 const root = ref(null);
