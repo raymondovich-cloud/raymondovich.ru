@@ -19,10 +19,10 @@ Branch: `architecture/spa-rewrite-2026-11-05`
 
 ## Verification completed
 
-- Application and domain unit tests: 44 passed, 0 failed.
+- Application and domain unit tests: 48 passed, 0 failed.
 - Vite production build: passed.
 - Built-output smoke checks: passed, including root SPA entry, legacy route handoffs, auth bridge outputs, route registry, Domain/Application/Presentation boundaries and CSS separation.
-- A successful complete CI run was recorded for commit `f42562583d8095efaf0bf9597e2d9fbbe74d0b93` (run `42102398276`). The branch head is newer only by documentation commits; source, tests and package files are unchanged from the tested code commit.
+- A successful complete CI run was recorded for commit `ef0701a9be2ad160037f6b1835a6384685e9318c` (run `42103202430`). The branch head is newer only by documentation commits; source, tests and package files are unchanged from the tested code commit.
 
 ## Read-only Supabase schema and security review
 
@@ -32,7 +32,7 @@ The linked Supabase project was inspected without changing database or Auth sett
 - Ideas and projects have authenticated admin-only policies that also constrain `owner_id = auth.uid()`.
 - User profiles have authenticated own-profile policies.
 - A unique index exists for `projects.source_idea_id`, supporting one project per source idea.
-- The `anon` role still has table-level grants on `ideas`, but there is no anon RLS policy; RLS therefore denies anonymous access. This is an existing least-privilege cleanup item and was not changed.
+- The `anon` role has broad table-level grants on `ideas`, including `TRUNCATE`. No anon RLS policy exists for row-level operations, but PostgreSQL RLS does not protect `TRUNCATE`; this remains a critical least-privilege risk and was not changed.
 - Supabase Security Advisor reports leaked-password protection disabled. This setting was not changed.
 
 ## Remaining gates before merge approval
