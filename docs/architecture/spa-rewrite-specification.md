@@ -1,8 +1,8 @@
-<!-- version 1.1-draft -->
+<!-- version 2.0-draft -->
 
 # Техническое задание: полная архитектурная переработка Raymondovich.ru (MPA → SPA)
 
-**Статус:** рабочая спецификация, draft 1.1  
+**Статус:** консолидированная архитектурная спецификация, draft 2.0 — готова к комплексному рассмотрению владельцем; технологические ADR и production-проверки остаются отдельными контрольными воротами  
 **Дата:** 05.11.2026  
 **Репозиторий:** raymondovich-cloud/raymondovich.ru  
 **Рабочая ветка:** architecture/spa-rewrite-2026-11-05  
@@ -1067,3 +1067,346 @@ Rewrite готов к рассмотрению владельцем, когда:
 - docs/security/admin-security.md
 
 **Статус:** draft 1.1. Это рабочая спецификация для дальнейшей детализации и согласования. Реализацию приложения начинать после функциональной инвентаризации и принятия критичных ADR.
+
+
+# Часть II. Полная инфраструктурная спецификация платформы
+
+> Эта часть консолидирует инфраструктурные требования. Она описывает целевую модель и обязательные ограничения, но не означает, что перечисленные сервисы уже созданы или включены. Технологические продукты, тарифы, конкретные значения лимитов и production-конфигурация фиксируются только после соответствующих ADR и отдельного разрешения владельца.
+
+## 13. Архитектурный контур всей платформы
+
+### 13.1. Логические уровни
+
+Платформа разделяется на логические уровни:
+
+1. Client / Presentation — SPA shell, маршруты, layouts, UI-компоненты, формы, доступность и локальное UI-состояние.
+2. Application — use cases, orchestration, проверка предусловий, координация транзакций, порты и защита от повторных операций.
+3. Domain — сущности, value objects, инварианты, доменные политики и события.
+4. Infrastructure adapters — Supabase client, repositories, storage adapters, network clients, telemetry, notification delivery и внешние интеграции.
+5. Backend platform — Supabase Auth, PostgreSQL, RLS, database functions/RPC, Edge Functions при обоснованной необходимости, storage и фоновые задачи при наличии соответствующей потребности.
+6. Delivery / Hosting — source control, build pipeline, immutable build artifacts, staging и production deployments, CDN/hosting, DNS/TLS.
+7. Operations / Governance — monitoring, health checks, audit, incident response, backups, restore, access governance и change control.
+
+Это логические границы, а не обязательное разбиение на отдельные физические серверы или микросервисы. Базовая модель — модульный монолит на клиенте и управляемая backend-инфраструктура. Выделение отдельных сервисов допускается только при измеримой необходимости.
+
+### 13.2. Системные границы
+
+- Browser UI не является доверенной средой.
+- Клиент не является источником истины для прав, ролей, владельца записи и критических атрибутов.
+- Application Layer обращается к внешним системам только через объявленные порты.
+- Infrastructure не принимает доменные решения.
+- Backend enforcement обязателен для операций с закрытыми данными.
+- Публичные и закрытые данные имеют различимые политики доступа.
+- Каждая внешняя интеграция имеет владельца, контракт, scope разрешений, таймаут, обработку ошибок, правила логирования и процедуру отключения.
+- Отказ необязательной интеграции не останавливает независимые пространства.
+
+## 14. Backend, API и серверные операции
+
+### 14.1. Роль Supabase
+
+Supabase является текущей backend-платформой Raymondovich.ru. Компоненты используются по назначению:
+
+- Auth — идентификация и управление сессиями;
+- PostgreSQL — постоянные бизнес-данные и транзакционная целостность;
+- RLS — серверная авторизация на уровне строк;
+- SQL functions/RPC — атомарные операции и серверные бизнес-переходы, когда это оправдано;
+- Edge Functions — защищённые операции и интеграции, которые нельзя безопасно выполнять в браузере;
+- Storage — только при подтверждённой потребности в хранении файлов;
+- scheduled/background mechanisms — для фоновых задач, мониторинга, уведомлений и архивирования, если выбранная инфраструктура их поддерживает.
+
+Наличие функции или сервиса в этой архитектуре не означает, что компонент уже создан, настроен или используется в production.
+
+### 14.2. API contracts
+
+Каждая операция Application Layer имеет контракт: назначение/use case ID, входная схема и валидация, пользовательский и проектный контекст, предусловия и permissions, результат, типизированные ошибки, идемпотентность, побочные эффекты, требования к транзакционности, correlation ID и тестовые сценарии.
+
+Внешние ответы и строки БД не передаются напрямую в UI как универсальные объекты. Infrastructure mapping преобразует DTO в типизированные внутренние модели и обратно.
+
+### 14.3. Серверная авторизация
+
+UI guards нужны для навигации и UX, но не для защиты данных. Каждая закрытая операция проверяется сервером через RLS, безопасную database function или Edge Function с корректной проверкой пользователя и полномочий.
+
+Запрещено:
+- считать скрытую кнопку защитой;
+- доверять переданному клиентом user_id, owner_id, role, project_id или permission без серверной проверки;
+- помещать service-role key или иные секреты в браузерный bundle;
+- использовать service-role key в клиентском коде;
+- обходить RLS без отдельного security review и строго ограниченного server-side сценария.
+
+### 14.4. Транзакции и согласованность
+
+Операции, меняющие несколько связанных записей, имеют чёткую границу атомарности. Если действие является одной бизнес-операцией, предпочтительно выполнять его в одной транзакции PostgreSQL, например через контролируемую RPC/database function. Если задействованы внешние системы без общей транзакции, применяется спроектированная последовательность состояний, idempotency и compensating actions/Saga. Нельзя обещать атомарность между независимыми сервисами.
+
+До реализации отдельно разрешаются и тестируются:
+- запуск проекта из идеи;
+- удаление проекта и поведение исходной идеи;
+- архивирование/восстановление связанных сущностей;
+- профильный source of truth;
+- semantics of pin_order;
+- наличие completion_criteria в фактической схеме;
+- реальная связь ideas/projects и её cardinality.
+
+До read-only сверки production schema нельзя выполнять destructive или corrective migrations по предположению.
+
+### 14.5. Фоновые задачи
+
+Длительные и повторяющиеся задачи не должны блокировать UI request. Если появляется реальная потребность, серверный job pattern определяет уникальный ID, queued/running/succeeded/failed/cancelled status, время создания/запуска/завершения, ограниченные попытки, idempotency, timeout/cancellation, diagnostics, correlation ID и безопасный повторный запуск.
+
+Конкретный механизм очереди/планировщика выбирается после проверки возможностей Supabase и фактической потребности. Не вводить отдельную очередь без реальных фоновых задач.
+
+## 15. Identity, account, permissions и security model
+
+### 15.1. Identity и session lifecycle
+
+Identity Module владеет получением и наблюдением сессии, login/logout, registration, email confirmation/callback, password recovery/update, обновлением токенов через SDK, обработкой истечения/отзыва сессии и очисткой session-scoped cache при logout/account switch.
+
+Сессия считается подтверждённой только после успешной проверки Auth. Если Auth недоступен и невозможно подтвердить право доступа, закрытые пространства блокируются. Public остаётся доступным, если его функции не зависят от Auth.
+
+Auth callback и recovery URL являются внешним контрактом, используемым письмами и Supabase Auth. Их нельзя менять без проверки allowlist, шаблонов писем, legacy compatibility и end-to-end тестов.
+
+### 15.2. Модель участия и разрешений
+
+Один аккаунт может иметь несколько типов участия. Тип участия не является глобальной ролью, автоматически дающей доступ ко всем проектам.
+
+Модель различает:
+- Account — идентичность пользователя;
+- Participation Type — вид участия;
+- Project Membership — участие в конкретном проекте;
+- Assignment — назначенная область ответственности;
+- Global Permission — глобальное полномочие;
+- Project Permission — полномочие в конкретном проекте;
+- Resource Scope — объект или набор объектов, на который распространяется разрешение.
+
+Effective access вычисляется из допустимых global/project permissions с учётом scope, статуса назначения и ограничений. Доступ к проекту A не даёт доступа к проекту B. Owner Control Center доступен только владельцу; дополнительные административные полномочия не дают автоматически полный owner access.
+
+### 15.3. Space switching
+
+После подтверждения сессии система определяет доступные пространства. Если доступно одно — открывает его; если несколько — предлагает выбор либо открывает последнее использованное пространство согласно UX-политике. Переключение не требует повторной авторизации при действительной сессии. Последнее пространство может запоминаться как UI preference. Переключение не расширяет permissions и не меняет серверную авторизацию.
+
+### 15.4. Security controls
+
+Обязательны least privilege, RLS для закрытых таблиц и операций, deny-by-default для закрытых ресурсов, серверная проверка project scope, безопасное управление сессиями/logout, защита от open redirect, валидация входных данных на доверенной стороне, output encoding и защита от XSS, защита от CSRF там, где применима cookie-based схема, контроль CORS/origin allowlist, rate limiting для чувствительных операций, безопасная обработка ошибок, аудит зависимостей, защита секретов и security review для операций с повышенными полномочиями.
+
+Конкретные CSP, cookie flags, headers, rate limits и retention policies определяются после выбора hosting/build stack и проверки фактической схемы Auth.
+
+### 15.5. Secrets and environment configuration
+
+- Публичный Supabase publishable/anon key может находиться в клиентской конфигурации только при корректной защите данных через RLS; он не является секретом.
+- Service-role keys, API tokens, webhook secrets и private keys хранятся только в защищённом server-side secret storage.
+- Секреты не коммитятся в Git, документацию, issue, telemetry или клиентские bundles.
+- Development, staging и production имеют отдельные значения конфигурации и credentials, где поддерживается.
+- Доступ к секретам предоставляется только нужным server-side компонентам.
+- Rotation/revocation документируется и проверяется.
+- .env.example содержит только имена переменных и безопасные placeholders.
+
+## 16. Data architecture, storage and cache
+
+### 16.1. Data ownership
+
+Каждая сущность имеет один доменный модуль-владелец и определённый repository contract. Модуль-владелец определяет допустимые операции, invariants, lifecycle, visibility/access scope, mapping persistence schema, retention/archive policy и события значимых изменений.
+
+Другие модули не изменяют таблицы напрямую в обход владельца доменной операции. Сквозные операции вызывают публичный use case владельца либо application orchestration с явными контрактами.
+
+### 16.2. Database conventions
+
+Для каждой таблицы/сущности определяются назначение и владелец, primary key, foreign keys/cardinality, nullability/defaults, unique/check constraints, обоснованные indexes, RLS policies/grants, audit/retention requirements, migration path/rollback strategy и тесты доступа/целостности.
+
+Migrations последовательны и проверяемы в контролируемой среде. Не менять production schema автоматически из frontend deployment. Любая production migration — отдельная операция с backup/rollback plan и прямым разрешением.
+
+### 16.3. Files and object storage
+
+Storage не вводится «на будущее». Если потребуется хранение документов, изображений или файлов проектов, заранее определить private/public bucket policy, MIME types/size limits, naming strategy без утечки PII, upload/download authorization, signed URL expiry, content scanning при необходимости, lifecycle/retention/deletion, ownership/project scope и backup implications.
+
+Публичные assets сайта не смешиваются с приватными пользовательскими файлами.
+
+### 16.4. Cache consistency
+
+Supabase/server остаётся source of truth. Client cache — оптимизация. Кэш scoped by user/session/project, обновляется или инвалидируется после успешных мутаций, защищён от stale responses/races, очищается или перепроверяется при logout/account switch/permission changes, ограничен TTL/size/cleanup policy. Нельзя показывать неподтверждённую запись как успешно сохранённую. Offline/stale data маркируются явно. Чувствительные данные не сохраняются в долговременном browser storage без security approval.
+
+Конкретная cache library и policy выбираются в отдельном ADR.
+
+### 16.5. Data lifecycle
+
+Для каждой категории данных определяются create/update/archive/delete semantics, soft vs hard delete, retention, export, restoration and audit. Универсальное soft delete или физическое удаление не вводится без предметного обоснования. Удаление учитывает foreign keys, dependent records, external references and audit requirements.
+
+## 17. External integrations and services
+
+Каждая интеграция описывается паспортом: business purpose/owner, exchanged data and classification, authentication/scopes, API contract/version, timeout/retry, rate limits/quotas, error mapping, telemetry/redaction, outage behaviour/fallback, retention, credential rotation and disablement/rollback procedure.
+
+Упоминание GitHub, Cloudflare, Telegram, payment providers, analytics или других платформ не означает, что интеграция уже существует. Credentials для административного управления платформой отделены от обычного членства в проекте. Доступ партнёра к проекту не даёт автоматический доступ к GitHub organization, Cloudflare account или secrets владельца.
+
+## 18. Hosting, environments and delivery pipeline
+
+### 18.1. Environment separation
+
+Целевая модель предусматривает Local/Development, Staging и Production. Окружения максимально изолированы: разные deploy targets, credentials, Auth redirect configuration и backend resources, где возможно. Staging не должен случайно обращаться к production database или записывать production data. Production credentials не используются в локальных тестах.
+
+### 18.2. Hosting and routing status
+
+ADR-001 docs/architecture/decisions/adr-001-hosting-and-routing.md сравнивает GitHub Pages + Hash Router, GitHub Pages 404 fallback, Cloudflare Pages, Worker + GitHub Pages и альтернативный hosting. Cloudflare Pages рекомендован как кандидат для staging, но ADR остаётся PROPOSED. Это не утверждает, что Cloudflare Pages выбран или создан.
+
+До решения текущий hosting не меняется; DNS, Cloudflare zone, Pages, Workers, SSL/TLS и GitHub Pages settings не меняются; production custom domain не переключается; Auth callback/recovery URLs не меняются.
+
+После отдельного утверждения hosting ADR требуются staging build, direct URL/refresh tests, static asset 404 tests, TLS/headers/cache tests, Auth E2E, SEO review and rollback rehearsal.
+
+### 18.3. Build and release pipeline
+
+После выбора stack/build toolchain целевой pipeline включает dependency installation from lockfile, static analysis/lint, unit tests, architecture boundary checks, integration tests against isolated backend, production build, bundle/security checks, staging deployment, smoke/browser E2E tests, explicit release approval, production deployment only after owner authorization, post-deploy health checks and monitoring.
+
+Автоматический production deployment не включается до отдельного решения. Build artifacts воспроизводимы и отделены от исходников. Source maps имеют осознанную политику доступа и не содержат секретов.
+
+### 18.4. Release and rollback
+
+Каждый релиз имеет commit/version identifier, changelog, build artifact reference, test evidence and deployment record. Rollback приложения должен учитывать совместимость с database schema; database rollback не всегда безопасен и проектируется отдельно. Предпочтительны backward-compatible expand/contract migrations.
+
+Критерии rollback определяются для каждого релиза: Auth failure, data integrity issues, critical error rate, broken routes/assets, security incident.
+
+## 19. Observability, audit, notifications and incident response
+
+### 19.1. Observability
+
+Разделять application logs, security/audit events, health-check history, performance metrics, deployment/release events и notification delivery history.
+
+Значимые события связываются correlation ID/trace context. Логи структурированные: timestamp, environment, component, space/project context, severity, event type and outcome. Секреты и чувствительные payload redacted before persistence.
+
+### 19.2. Error and incident history
+
+Подробная история ошибок включает stack trace после redaction, stage/component/module/route, dependency context, correlation ID, sequence of related events, attempts/recovery result, affected spaces/projects, first seen/last seen/resolved time.
+
+Retention error logs определяется отдельно и не приравнивается автоматически к 90-дневной Health Check history.
+
+### 19.3. Notifications
+
+Подтверждённые каналы уведомления владельца:
+1. Owner Control Center.
+2. Telegram.
+
+Email не используется как канал системных уведомлений в текущей спецификации.
+
+Централизованные настройки определяют event categories, minimum Telegram severity, отдельные error/recovery preferences, repeat suppression, delivery history and failures. Delivery асинхронна и не блокирует основные бизнес-операции. Event recording независимо от доступности Control Center UI. Если Telegram недоступен, событие остаётся записанным и доставка может быть безопасно повторена.
+
+### 19.4. Audit and change history
+
+Audit Log фиксирует значимые security/admin actions, а не каждый click: login/logout/failed access, permission/assignment changes, project lifecycle/publication changes, settings/integration changes, justified sensitive data access, backup/restore and incident actions.
+
+Change History хранит before/after representation, actor, timestamp, object, action and result, исключая секреты и чувствительные значения. Подробная история аудита хранится один год, затем архивируется; для критических security/admin events устанавливается отдельный более длительный срок.
+
+Журналы требуют ограниченного доступа на запись, tamper-evident или append-oriented storage там, где поддерживается, контролируемого retention и аудита доступа. Владелец — единственный глобальный администратор и полный владелец платформы. Scoped user roles не могут повышать свои права.
+
+### 19.5. Health checks
+
+Статусы: HEALTHY, DEGRADED, UNAVAILABLE, RECOVERING. Проверки плановые, событийные или ручные владельцем. Не использовать агрессивный polling; применять timeout, cooldown, debounce, bounded parallelism и deduplication. Первая неудачная проверка обычно означает подозрение, а не немедленное отключение, кроме security/data-integrity угроз. Подробная история Health Checks хранится 90 дней, затем агрегируется/архивируется с сохранением серьёзных инцидентов.
+
+### 19.6. Platform operational modes
+
+- NORMAL — штатная работа.
+- DEGRADED — отдельные функции ограничены; независимые функции продолжают работу.
+- PROTECTIVE — угроза безопасности, достоверности авторизации или целостности данных; опасные операции блокируются/ограничиваются до проверки.
+
+Смена режима регистрируется и уведомляет владельца. Protective mode по возможности ограничивается затронутыми ресурсами.
+
+### 19.7. Incident response
+
+Обязательная последовательность: detect/classify → contain/isolate → protect credentials/data integrity → notify owner → investigate → restore after security/integrity checks → verify recovery → record root cause/timeline/prevention.
+
+Destructive repair или production restore не выполняется без разрешения владельца, если только заранее утверждённый emergency runbook явно не разрешает такое действие.
+
+## 20. Backup, disaster recovery and continuity
+
+Критически важные бизнес-данные регулярно резервируются; копии хранятся отдельно от основного failure domain, где возможно. Scope и retention зависят от критичности и возможностей провайдера. Secrets не копируются в обычный backup archive.
+
+Backup protection включает encryption at rest/in transit, least-privilege access, отделение от обычных application credentials, защиту от незаметного изменения/удаления или immutable retention там, где поддерживается, integrity verification после создания и перед restore, audit creation/access/export/restore и документированное восстановление ключей/credentials.
+
+RPO и RTO определяются отдельно для критических и обычных данных, компонентов и пространств. Численные цели не выдумываются: они требуют infrastructure audit, provider limits, cost assessment и restore exercises. Backup не считается проверенным до успешного тестового восстановления.
+
+Restore runbook определяет authorization/scope, target environment, backup/timestamp, integrity verification, dependency/configuration restoration, migration compatibility, access/RLS verification, post-restore functional checks, reconciliation of events after backup time, audit record and owner confirmation. Test restores выполняются в изолированной среде и не перезаписывают production.
+
+## 21. Performance, scalability and availability objectives
+
+Архитектура поддерживает route-level lazy loading, resource isolation, независимую оптимизацию модулей, bounded parallelism, async long-running work и workload isolation между проектами. Не загружать код/данные, не нужные текущему маршруту.
+
+Измерять initial load/route transitions, JS/CSS bundle size and chunk failures, Core Web Vitals where applicable, API latency/error rate, database query latency/slow queries, background job duration/queue age, cache hit/miss/invalidation correctness, resource consumption/provider quotas.
+
+SLO, concurrency, latency thresholds and alert thresholds определяются после baseline measurement и workload definition. В модульном монолите нельзя обещать независимое физическое масштабирование модулей; они изолируются логически и оптимизируются отдельно. Microservices не являются обязательной целью.
+
+## 22. Testing and quality gates
+
+### 22.1. Test layers
+
+- Unit tests — domain invariants and pure application logic.
+- Use-case tests — ports mocked/faked.
+- Repository/adapter integration tests — isolated backend resources.
+- RLS/authorization tests — owner, authorized partner, unauthorized user, other project member, anonymous.
+- UI/component tests — validation, loading/empty/error, keyboard/focus.
+- Router tests — direct URL, refresh, back/forward, query/hash, guards, redirects, unknown routes, cancellation.
+- E2E — complete business journeys including Auth callback/recovery.
+- Architecture tests — dependency direction, forbidden imports, module public APIs.
+- Migration tests — fresh schema, upgrade path, constraints, forward/rollback compatibility.
+- Performance/security tests — relevant critical paths.
+
+### 22.2. Quality gates
+
+Release candidate cannot pass if lint/static analysis fails; required tests fail; unauthorized access/RLS tests unexpectedly succeed; critical Auth journeys fail; routes/assets are broken; migrations risk existing data without reviewed plan; secrets appear in repository/build/logs; critical accessibility/mobile Safari regressions remain; rollback/recovery procedure is absent for a risky release.
+
+Exact tools and thresholds фиксируются в ADR-004 after frontend stack selection. Evidence for manual tests is recorded.
+
+## 23. Privacy, data classification and retention
+
+Каждая категория данных классифицируется как public, internal, confidential или restricted/secret. Для неё определяются purpose, owner, access scope, storage location, retention, deletion/export rules, logging restrictions and backup handling. Собираются только необходимые данные. Не логируются credentials, full auth tokens, payment secrets, private keys и лишний персональный payload.
+
+Privacy/legal requirements проверяются для реальных юрисдикций пользователей и коммерческой модели до публичного запуска. Этот документ не заменяет юридическую проверку.
+
+## 24. Architecture decision register and unresolved gates
+
+| Topic | Current position | Gate |
+|---|---|---|
+| Hosting and routing | Cloudflare Pages recommended candidate; ADR-001 PROPOSED | Owner decision + staging validation |
+| Frontend framework | Not selected | ADR-002 |
+| Bundler/build tool | Not selected | ADR-002 |
+| Router implementation | History API expected for clean pathname routes; library not selected | ADR-002 / routing follow-up |
+| State management library | Not selected; ownership model fixed | ADR-003 |
+| Testing toolchain | Test layers and gates fixed; tools not selected | ADR-004 |
+| Final physical repository tree | Conceptual boundaries fixed; final tree after ADRs and mapping | Final structure step |
+| Ideas/Projects domain lifecycle | Separate tables observed; lifecycle/cardinality unresolved | Domain decision before schema/service refactor |
+| Production Supabase schema/RLS/grants | Not verified; no production read-only audit performed | Explicit read-only authorization |
+| Auth redirect migration | Existing callback/recovery URLs observed; no changes allowed | Compatibility map and E2E tests |
+| SEO rendering strategy | SPA metadata required; prerender/SSR not assumed | Public SEO assessment |
+| Backup RPO/RTO | Principles fixed; numerical values unknown | Provider audit and restore tests |
+| SLO/performance thresholds | Principles fixed; numerical values unknown | Baseline/load testing |
+| Storage/files | No need confirmed | Define only when use case exists |
+| Payments/entitlements | Checkout not found in audited source | Separate product/provider decision |
+| Notifications runtime | Policy specified; delivery implementation unconfirmed | Implementation/provider validation |
+
+### 24.1. ADR sequence
+
+Утверждённый порядок:
+1. ADR-001 Hosting & Routing.
+2. ADR-002 Frontend Stack.
+3. ADR-003 State Management.
+4. ADR-004 Testing Strategy.
+5. Final Repository Structure.
+
+ADR-001 существует и остаётся PROPOSED. Его рекомендация Cloudflare Pages не является разрешением на внедрение. ADR-002–004 должны быть исследованы и документированы; framework, bundler, state library и test runner не считаются утверждёнными до соответствующего ADR. Окончательная структура репозитория следует после выбора стека и функционального mapping.
+
+### 24.2. Definition of architecture-document completion
+
+Документ готов к рассмотрению владельцем, когда описаны четыре пространства и границы доступа; frontend/backend/data/integration/security/deployment/operations boundaries; все ранее согласованные решения без противоречий; факты текущего состояния отделены от целевых требований и неподтверждённых предположений; функциональная инвентаризация и migration matrix связаны с целевой архитектурой; unresolved decisions явно перечислены; документ не подразумевает разрешение на реализацию или production changes.
+
+Завершение архитектурного документа не означает, что все технологические ADR приняты или все production-факты проверены. Оно означает, что целевая инфраструктура и контрольные точки решений описаны для предметного рассмотрения владельцем.
+
+## 25. Source documents and precedence
+
+Документы архитектурного пакета:
+1. docs/architecture/spa-rewrite-specification.md — консолидированная целевая архитектура и инфраструктурные требования; основной нормативный документ.
+2. docs/architecture/current-state-2026-11-05.md — статическая инвентаризация и migration matrix; доказательства относятся к проверенному Git baseline, а не к runtime certification.
+3. docs/architecture/decisions/adr-001-hosting-and-routing.md — варианты hosting и предложенная рекомендация; статус PROPOSED.
+4. docs/architecture/target-architecture.md — прежняя концептуальная архитектура. Её MPA routing statements superseded данной спецификацией; принципы Clean Architecture остаются применимыми, если не противоречат ей.
+5. docs/changes/ — хронологический журнал решений и изменений.
+
+При конфликте данная спецификация определяет целевую архитектуру; current-state audit — факты проверенного исходного снимка; ADR регулирует только явно утверждённую владельцем область. Draft ADR не переопределяет утверждённые требования владельца.
+
+## 26. Non-goals and prohibited assumptions
+
+Документ не утверждает, что Cloudflare Pages, framework, bundler, state library или test runner выбраны; не разрешает production DNS/hosting/Supabase/Auth/database/RLS/grants/Edge Functions changes; не утверждает, что monitoring/backup/notifications/payments/storage/partner workspace runtime уже существует; не разрешает удалять текущие файлы/функции; не разрешает merge to main/deployment; не задаёт численные SLO/RPO/RTO/traffic/cost promises без измерений; не требует microservices; не переносит работу в raymondovich.online.
+
+**Итоговый принцип:** сначала полностью определяем архитектуру и инфраструктурные контракты, проверяем факты и закрываем ADR; только после этого отдельно принимаем решение о реализации.
