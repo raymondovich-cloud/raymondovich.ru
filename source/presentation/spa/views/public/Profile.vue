@@ -62,8 +62,8 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
-import { getSession } from "../../application/auth/authentication.js";
-import { usePublicNavigation } from "../composables/usePublicNavigation.js";
+import { getSession } from "../../../../application/auth/authentication.js";
+import { usePublicNavigation } from "../../composables/usePublicNavigation.js";
 
 const root = ref(null);
 const user = ref(null);
