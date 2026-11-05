@@ -54,7 +54,7 @@
 - Presentation runtime является composition root.
 - Архитектурные тесты запрещают нарушения dependency boundaries и Vue `:style` bindings.
 - Pinia не используется; ADR-003 остаётся PROPOSED. URL state принадлежит Router, ephemeral UI state — views, persistent business data — Supabase.
-- ADR-004 остаётся PROPOSED: текущий baseline использует встроенный Node.js `node:test`; Vitest, Vue Test Utils и Playwright не внедрены.
+- ADR-004 остаётся PROPOSED: unit/architecture baseline использует встроенный Node.js `node:test`; Vitest и Vue Test Utils не внедрены. Playwright 1.64.1 добавлен для Chromium и WebKit iPhone emulation; браузерный CI пока не получил подтверждённый green run на актуальном HEAD.
 
 ## 4. CI и тесты
 
@@ -104,7 +104,7 @@ Read-only Cloudflare/DNS inspection:
 ## 7. Оставшиеся проверки и решения
 
 1. Browser E2E: direct routes, refresh, Back/Forward, legacy redirects, Auth flows.
-2. Реальная проверка критических сценариев в iOS Safari.
+2. Реальная проверка критических сценариев в iOS Safari; WebKit iPhone emulation не заменяет устройство.
 3. Проверка Supabase Auth redirect allow-list и email templates.
 4. Clean local Supabase migration replay с isolated fixtures.
 5. Отдельное решение о Partner/External scope: реализовать backend membership/authorization либо явно отложить эти пространства.
@@ -136,3 +136,13 @@ Read-only Cloudflare/DNS inspection:
 - Merge to main: NOT PERFORMED.
 
 **Conclusion:** executable SPA migration is prepared and automated checks are green, but the branch is not approved for production merge. Production hosting/routing, Partner/External scope and security findings require explicit owner decisions. No production or main changes have been made.
+
+
+## Playwright browser verification — 2026-11-05
+
+- Added pinned `@playwright/test@1.64.1` and its locked dependency graph.
+- CI runs Node unit tests, Vite build, build smoke checks, installs Chromium/WebKit, then runs Playwright.
+- Projects: desktop Chromium and iPhone 13 WebKit emulation.
+- Browser scenarios include public routes and approved cooperation copy, legacy route/query/anchor handoff, Back navigation, Owner authorization, auth form error/recovery/registration, crawler assets and horizontal overflow.
+- Current verification gate: run `42107424678`, HEAD `2a71f1d29e7537b0065011c7e5c6ebaaaf7895e9`; pending at the time of this update. Do not mark E2E complete until this and any subsequent final-head run succeeds.
+- WebKit device emulation is not a substitute for manual testing on the owner's actual iPhone Safari.
