@@ -25,6 +25,17 @@ async function contents(directory) {
   })));
 }
 
+async function designFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await designFiles(path));
+    else if (/\.(css|js|vue)$/.test(entry.name)) files.push(path);
+  }
+  return files;
+}
+
 test("Domain has no dependencies on outer application layers or runtime frameworks", async () => {
   const files = await contents(join(root, "domain"));
   for (const file of files) {
@@ -61,4 +72,25 @@ test("SPA views do not import Infrastructure internals directly", async () => {
       file.path,
     );
   }
+});
+
+test("Design System remains independent from business layers and UI frameworks", async () => {
+  const files = await designFiles(join(root, "design"));
+  for (const path of files) {
+    const source = await readFile(path, "utf8");
+    assert.doesNotMatch(
+      source,
+      /(?:from\\s*|@import\\s*)["'][^"']*(?:domain|application|infrastructure|supabase|presentation\\/runtime)[^"']*["']/,
+      path,
+    );
+    assert.doesNotMatch(
+      source,
+      /from\\s*["'](?:vue|vue-router|@vue\\/)[^"']*["']/,
+      path,
+    );
+  }
+
+  const tokens = await readFile(join(root, "design", "tokens.css"), "utf8");
+  assert.match(tokens, /--rv-color-public-background:\\s*#/);
+  assert.match(tokens, /--rv-color-owner-accent:\\s*#/);
 });
