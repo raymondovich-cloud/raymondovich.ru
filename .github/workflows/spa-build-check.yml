@@ -14,57 +14,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  lockfile:
-    if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
-    name: Generate and commit dependency lockfile
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Check out migration branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Generate npm lockfile
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-
-      - name: Commit lockfile when changed
-        run: |
-          if [ -f package-lock.json ] && { ! git ls-files --error-unmatch package-lock.json >/dev/null 2>&1 || ! git diff --quiet -- package-lock.json; }; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "build: lock frontend dependencies"
-            for attempt in 1 2 3; do
-              git fetch origin "${GITHUB_REF_NAME}"
-              if git cat-file -e "FETCH_HEAD:package-lock.json" 2>/dev/null; then
-                echo "A lockfile has already been committed to the branch."
-                exit 0
-              fi
-              git rebase FETCH_HEAD
-              if git push origin "HEAD:${GITHUB_REF_NAME}"; then
-                exit 0
-              fi
-            done
-            echo "Could not publish the lockfile after three concurrent-update retries."
-            exit 1
-          fi
-
   build:
     if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
     name: Run tests and production build
-    needs: lockfile
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      contents: read
     steps:
       - name: Check out migration branch
         uses: actions/checkout@v4
@@ -74,7 +28,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.12.0
           cache: npm
 
       - name: Install locked dependencies
@@ -88,6 +42,6 @@ jobs:
 
       - name: Build all legacy entry points and SPA
         run: npm run build
- 
+
       - name: Verify built routes and authentication bridges
         run: npm run test:build
