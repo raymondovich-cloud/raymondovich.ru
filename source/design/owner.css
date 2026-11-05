@@ -1,18 +1,18 @@
 /* version 4.6 */
 .owner-workspace {
   color-scheme: dark;
-  --bg: #050505;
-  --panel: #0d0d0d;
+  --bg: var(--rv-color-owner-background);
+  --panel: var(--rv-color-owner-surface);
   --panel-soft: rgba(255,255,255,.035);
-  --text: #f5f5f5;
-  --muted: #858585;
-  --muted-soft: #555;
-  --accent: #ff6a00;
-  --accent-light: #ff9a52;
-  --border: rgba(255,106,0,.22);
-  --border-soft: rgba(255,255,255,.09);
-  --green: #78d6a0;
-  --radius: 20px;
+  --text: var(--rv-color-owner-foreground);
+  --muted: var(--rv-color-owner-muted);
+  --muted-soft: var(--rv-color-owner-muted-soft);
+  --accent: var(--rv-color-owner-accent);
+  --accent-light: var(--rv-color-owner-accent-light);
+  --border: var(--rv-color-owner-border);
+  --border-soft: var(--rv-color-owner-border-soft);
+  --green: var(--rv-color-owner-positive);
+  --radius: var(--rv-radius-panel);
 }
 * { box-sizing: border-box; }
 .owner-workspace, .owner-workspace { min-height: 100%; margin: 0; }
