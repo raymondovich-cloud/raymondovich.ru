@@ -172,7 +172,7 @@ CI запускается push-событиями рабочей ветки и �
 ## SEO foundation — 2026-11-05
 
 - Root homepage metadata extended with Open Graph locale/site name, X/Twitter summary metadata, Googlebot directives and JSON-LD graph.
-- Added `robots.txt` and `sitemap.xml`; sitemap intentionally contains only `https://raymondovich.ru/`.
+- Added `public/robots.txt` and `public/sitemap.xml`; Vite copies them to the build output root, and `scripts/verify-build.mjs` checks the copied output. Sitemap intentionally contains only `https://raymondovich.ru/`.
 - Added `docs/architecture/seo-strategy.md` documenting the Hash Router indexing limitation and production decision gates.
 - No approved social preview image or favicon asset exists in the branch; neither was invented.
 - Route-level SEO, prerender/SSR, canonical host and Search Console verification remain open until production routing/hosting is decided.
@@ -190,3 +190,11 @@ CI запускается push-событиями рабочей ветки и �
 - `npm run test:build`: SUCCESS (`SPA build smoke checks passed`).
 - The workflow now has a single read-only build job; no CI-side lockfile generation or branch write permission.
 - This CI run verifies the homepage metadata, sitemap and crawler files are present in the branch checkout only insofar as the build includes the root output; the JSON-LD and sitemap were separately syntax-checked in the repository content. It does not validate live production crawl/indexing or route-specific SEO.
+
+
+## SEO asset build-path correction — 2026-11-05
+
+- Crawler source files are stored under Vite's `public/` directory, not at repository root.
+- Duplicate root-level copies were removed to prevent source/output ambiguity.
+- Build smoke checks now compare `dist/robots.txt` and `dist/sitemap.xml` with `public/robots.txt` and `public/sitemap.xml`.
+- This verifies build artifact presence, not live HTTP availability; production deployment and crawler access remain unverified.
