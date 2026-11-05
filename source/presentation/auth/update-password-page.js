@@ -1,6 +1,7 @@
-// version 1.0
-import { supabase } from "../../infrastructure/supabase/client.js";
-import { updatePassword } from "../../application/auth/authentication.js";
+// version 2.0
+import {
+  getSession, logout, subscribeToPasswordRecovery, updatePassword,
+} from "../runtime/auth.js";
 
 const form = document.querySelector("#update-password-form");
 const passwordInput = document.querySelector("#password");
@@ -27,21 +28,19 @@ function disableForm(text) {
   setMessage(text, "error");
 }
 
-supabase.auth.onAuthStateChange((event) => {
-  if (event === "PASSWORD_RECOVERY") {
-    enableForm();
-  }
-});
+const unsubscribeRecovery = subscribeToPasswordRecovery(enableForm);
 
 async function init() {
-  const { data, error } = await supabase.auth.getSession();
-
-  if (error || !data.session) {
-    disableForm("Ссылка восстановления недействительна или срок её действия истёк.");
-    return;
+  try {
+    const session = await getSession();
+    if (!session) {
+      disableForm("Ссылка восстановления недействительна или срок её действия истёк.");
+      return;
+    }
+    enableForm();
+  } catch {
+    disableForm("Не удалось проверить ссылку восстановления.");
   }
-
-  enableForm();
 }
 
 form.addEventListener("submit", async (event) => {
@@ -59,8 +58,9 @@ form.addEventListener("submit", async (event) => {
 
   try {
     await updatePassword(passwordInput.value);
-    await supabase.auth.signOut();
-    window.location.replace("/pages/auth/auth.html?password=updated");
+    await logout();
+    unsubscribeRecovery();
+    window.location.replace("/spa.html#/auth/login?password=updated");
   } catch (error) {
     setMessage(error.message || "Не удалось изменить пароль.", "error");
   } finally {
