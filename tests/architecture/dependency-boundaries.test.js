@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../../source/", import.meta.url));
 
@@ -18,7 +19,7 @@ async function sourceFiles(directory) {
 }
 
 async function contents(directory) {
-  const files = await sourceFiles(directory);
+  const files = await sourceFiles(typeof directory === "string" ? directory : fileURLToPath(directory));
   return Promise.all(files.map(async (path) => ({
     path,
     content: await readFile(path, "utf8"),
