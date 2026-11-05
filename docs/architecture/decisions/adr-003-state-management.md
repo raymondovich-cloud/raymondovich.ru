@@ -3,7 +3,7 @@
 **Статус:** PROPOSED — рекомендация для рассмотрения владельцем; не утверждено.  
 **Дата исследования:** 05.11.2026  
 **Область:** только Raymondovich.ru  
-**Зависимость:** условно предполагает Vue 3 из ADR-002; если frontend framework будет отклонён, библиотечный выбор пересматривается.
+**Зависимость:** Vue 3 принят с ограничениями в ADR-002. Выбор Pinia остаётся отдельным решением; библиотека в текущей реализации не используется.
 
 ## 1. Контекст
 
@@ -183,3 +183,15 @@ No package installation, state migration or application code changes are authori
 - Pinia package/version information: https://www.npmjs.com/package/pinia
 - Pinia 4 release notes: https://github.com/vuejs/pinia/releases
 - Redux Toolkit official recommendation: https://redux.js.org/introduction/getting-started
+
+
+## 5. Текущий implementation baseline (05.11.2026)
+
+- Vue 3 и Vue Router 5 приняты по ADR-002.
+- Pinia не установлена и не используется.
+- URL State принадлежит Vue Router: Owner Control Center использует `/owner`, `/owner/ideas` и `/owner/projects`; browser history отражает переключение разделов.
+- Ephemeral UI state (dialogs, filters, context menus, busy flags) остаётся локальным состоянием соответствующих views.
+- Persistent ideas/projects state читается и изменяется через Application use cases и repositories; Supabase остаётся source of truth.
+- Общий session projection читается через runtime authentication service; отдельный глобальный Pinia store пока не нужен для подтверждённых сценариев.
+
+ADR-003 остаётся PROPOSED. Введение Pinia должно быть основано на появлении конкретного cross-route state requirement, а не на самом факте использования Vue.
