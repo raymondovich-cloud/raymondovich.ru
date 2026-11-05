@@ -13,7 +13,7 @@ Branch: `architecture/spa-rewrite-2026-11-05`
 - Vite production build: passed.
 - Built-output and architecture smoke checks: passed.
 
-The current branch head at the time of this record is `c9c4502dea4b211ce2a07193ad1fc3a78a3ac53c`. A comparison against the tested code commit shows documentation-only changes after `a36a7d75`; no source, test, package manifest or lockfile changes followed the successful run.
+The current branch head after this checkpoint update is `52b953cf565904061385ce43d20221a0444dc97c`. A comparison against the tested code commit shows documentation-only changes after `72c32c78`; no source, test, package manifest or lockfile changes followed the successful run.
 
 ## Repository isolation
 
