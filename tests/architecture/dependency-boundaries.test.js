@@ -80,17 +80,17 @@ test("Design System remains independent from business layers and UI frameworks",
     const source = await readFile(path, "utf8");
     assert.doesNotMatch(
       source,
-      /(?:from\\s*|@import\\s*)["'][^"']*(?:domain|application|infrastructure|supabase|presentation\\/runtime)[^"']*["']/,
+      /(?:from\s*|@import\s*)["'][^"']*(?:domain|application|infrastructure|supabase|presentation\/runtime)[^"']*["']/,
       path,
     );
     assert.doesNotMatch(
       source,
-      /from\\s*["'](?:vue|vue-router|@vue\\/)[^"']*["']/,
+      /from\s*["'](?:vue|vue-router|@vue\/)[^"']*["']/,
       path,
     );
   }
 
   const tokens = await readFile(join(root, "design", "tokens.css"), "utf8");
-  assert.match(tokens, /--rv-color-public-background:\\s*#/);
-  assert.match(tokens, /--rv-color-owner-accent:\\s*#/);
+  assert.match(tokens, /--rv-color-public-background:\s*#/);
+  assert.match(tokens, /--rv-color-owner-accent:\s*#/);
 });
