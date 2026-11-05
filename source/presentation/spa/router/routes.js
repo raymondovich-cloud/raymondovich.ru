@@ -3,6 +3,8 @@ import { getRole, getSession } from "../../../application/auth/authentication.js
 
 const PublicHome = () => import("../views/public/PublicHome.vue");
 const NotFound = () => import("../views/system/NotFound.vue");
+const Products = () => import("../views/public/Products.vue");
+const Cooperation = () => import("../views/public/Cooperation.vue");
 
 export const routeRecords = [
   {
@@ -10,6 +12,18 @@ export const routeRecords = [
     name: "public-home",
     component: PublicHome,
     meta: { space: "public", layout: "standalone", title: "RAYMONDOVICH" },
+  },
+  {
+    path: "/products",
+    name: "products",
+    component: Products,
+    meta: { space: "public", layout: "standalone", title: "Продукты экосистемы — RAYMONDOVICH" },
+  },
+  {
+    path: "/cooperation",
+    name: "cooperation",
+    component: Cooperation,
+    meta: { space: "public", layout: "standalone", title: "Три формата развития проектов — RAYMONDOVICH" },
   },
   {
     path: "/owner",
@@ -68,4 +82,8 @@ router.beforeEach(async (to) => {
   }
 
   return true;
+});
+
+router.afterEach((to) => {
+  if (to.meta.title) document.title = to.meta.title;
 });
