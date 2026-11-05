@@ -41,6 +41,10 @@ main{padding:clamp(76px,11vw,132px) 0 110px}.eyebrow{font:500 .74rem var(--mono)
 .faq-sidebar .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
 .faq-sidebar .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
 .faq-sidebar .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+
+/* profile navigation separator */
+.side-divider{height:1px;min-width:292px;margin:18px 24px;background:linear-gradient(90deg,rgba(255,106,31,.65),var(--line) 55%,transparent);flex:none}
+.profile-link .pn em{color:var(--or)}
 </style></head><body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
 <nav class="side-body" aria-label="Основные разделы"><a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b></span></a><a class="side-home" href="/pages/products/products.html" aria-current="page" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
@@ -70,6 +74,8 @@ main{padding:clamp(76px,11vw,132px) 0 110px}.eyebrow{font:500 .74rem var(--mono)
     </ol>
   </div>
 </details>
+<div class="side-divider" role="separator" aria-hidden="true"></div>
+<a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
   </nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap"><p class="eyebrow">Каталог / Направления</p><h1>Продукты<br>экосистемы.</h1><p class="intro">Три направления, объединяющие собственную разработку, партнёрство и независимые цифровые продукты.</p>

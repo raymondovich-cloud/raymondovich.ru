@@ -237,6 +237,10 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 .faq-sidebar .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
 .faq-sidebar .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
 .faq-sidebar .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+
+/* profile navigation separator */
+.side-divider{height:1px;min-width:292px;margin:18px 24px;background:linear-gradient(90deg,rgba(255,106,31,.65),var(--line) 55%,transparent);flex:none}
+.profile-link .pn em{color:var(--or)}
 </style>
 </head>
 <body>
@@ -271,6 +275,8 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
     </ol>
   </div>
 </details>
+<div class="side-divider" role="separator" aria-hidden="true"></div>
+<a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
   </nav>
 </aside>
 <div class="scrim"></div>
