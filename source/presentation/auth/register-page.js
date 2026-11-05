@@ -15,7 +15,7 @@ function setMessage(text, state = "normal") {
 
 async function redirectIfAuthenticated() {
   const session = await getSession();
-  if (session) window.location.replace("/spa.html#/");
+  if (session) window.location.replace("/#/");
 }
 
 form.addEventListener("submit", async (event) => {
