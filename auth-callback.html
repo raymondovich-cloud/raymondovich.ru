@@ -1,24 +1,16 @@
-<!-- version 1.1 -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://yajybgdorhxebbigwjgi.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="Подтверждение авторизации Raymondovich.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>RAYMONDOVICH — Авторизация</title>
-  <link rel="stylesheet" href="./source/design/auth.css">
+  <meta http-equiv="refresh" content="0;url=/pages/auth/auth-callback.html">
+  <title>Переход — RAYMONDOVICH</title>
+  <script>
+    window.location.replace("/pages/auth/auth-callback.html" + window.location.search + window.location.hash);
+  </script>
 </head>
 <body>
-  <main class="auth-shell">
-    <div class="auth-brand">RAYMONDOVICH</div>
-    <section class="auth-panel">
-      <h1 class="auth-title">Проверка авторизации</h1>
-      <p class="auth-subtitle" id="message">Подождите, выполняется вход в систему.</p>
-    </section>
-  </main>
-  <script type="module" src="./source/presentation/auth/callback-page.js"></script>
+  <p>Страница перемещена. <a href="/pages/auth/auth-callback.html">Перейти</a>.</p>
 </body>
 </html>
