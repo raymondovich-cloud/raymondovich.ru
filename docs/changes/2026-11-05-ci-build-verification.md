@@ -18,3 +18,9 @@ Date: 2026-11-05
 ## Scope
 
 This is verification infrastructure only. It does not complete the SPA migration and does not authorize merging into `main`.
+
+## First CI attempt and correction
+
+- Run `42097174620` failed before dependency installation because `actions/setup-node` npm caching requires a lockfile, and this branch does not yet contain one.
+- Removed npm cache configuration so the workflow can bootstrap dependencies without a pre-existing lockfile.
+- A new push-triggered run is expected for the corrected workflow. The build itself has not yet been reached; no application build result is claimed.
