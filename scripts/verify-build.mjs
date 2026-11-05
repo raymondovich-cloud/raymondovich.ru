@@ -68,15 +68,21 @@ for (const requiredRoute of ["/", "/products", "/cooperation", "/about", "/profi
 }
 assert.match(routes, /getRole\(session\) !== "admin"/, "Owner route must reject non-admin sessions");
 
+for (const file of sourceFiles(resolve(repositoryRoot, "source/domain"))) {
+  const content = readFileSync(file, "utf8");
+  assert.doesNotMatch(content, /@supabase\/supabase-js|(?:application|infrastructure|presentation)\//, `Domain must remain independent: ${file}`);
+}
+
 for (const file of sourceFiles(resolve(repositoryRoot, "source/application"))) {
   const content = readFileSync(file, "utf8");
-  assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase/, `Application layer must not depend on Supabase SDK: ${file}`);
+  assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase|presentation\//, `Application must depend on ports, not infrastructure or presentation: ${file}`);
 }
 
 for (const file of sourceFiles(resolve(repositoryRoot, "source/presentation"))) {
   if (file.includes("/runtime/")) continue;
   const content = readFileSync(file, "utf8");
   assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase/, `Presentation modules must use the runtime composition boundary: ${file}`);
+  assert.doesNotMatch(content, /:style\s*=/, `Presentation must keep styling in CSS files: ${file}`);
 }
 
 const preview = read("spa.html");
