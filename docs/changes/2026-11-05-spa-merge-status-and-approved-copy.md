@@ -27,7 +27,6 @@
 
 - `docs/architecture/overview.md` обновлён до version 1.2 после исправления описания модели данных.
 
-- Синхронизированы ADR-004 и merge status с подтверждённым CI run `42102770536` (checkout SHA `98d62f7d1b65b69f340cf38a4ebd63017e379393`, 44 tests passed, build и smoke checks успешны); стратегия тестирования при этом остаётся PROPOSED.
 
 - Обновлены merge status, ADR-004 и final integration audit: CI run `42105782576`, checkout SHA `9fd037c900d5c9e2e371ec6783c4e176a622cd9a`, 56 tests passed, build и smoke checks прошли.
 
