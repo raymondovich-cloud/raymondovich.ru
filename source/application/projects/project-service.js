@@ -54,7 +54,7 @@ export function createProjectService({ projectRepository, ideaRepository }) {
           } catch (rollbackError) {
             throw new Error(`Не удалось обновить исходную идею, а автоматическая отмена создания проекта также завершилась ошибкой: ${rollbackError.message || "ошибка удаления"}.`);
           }
-          throw normalizeError(error, "Не удалось завершить запуск идеи. Создание проекта отменено.");
+          throw new Error(`Не удалось завершить запуск идеи. Создание проекта отменено. Причина: ${error.message || "ошибка обновления идеи"}`);
         }
         return project;
       } catch (error) {
