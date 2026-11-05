@@ -1,4 +1,6 @@
-// version 3.0
+// version 4.0
+import { buildProjectRecordFromIdea, buildProjectUpdate } from "../../domain/projects/project.js";
+
 function normalizeError(error, fallback = "Не удалось выполнить операцию с проектом.") {
   if (!error) return new Error(fallback);
   return new Error(error.message || fallback);
@@ -26,21 +28,7 @@ export function createProjectService({ projectRepository, ideaRepository }) {
           return existing;
         }
 
-        const project = await projectRepository.create({
-          owner_id: ownerId,
-          source_idea_id: idea.id,
-          name: idea.name,
-          description: idea.description || "",
-          goal: idea.goal || "",
-          expected_revenue: idea.expected_revenue ?? null,
-          estimated_cost: idea.estimated_cost ?? null,
-          business_model: idea.business_model || "",
-          concept: idea.concept || "",
-          additional_info: idea.additional_info || "",
-          completion_criteria: "",
-          status: "active",
-          priority: idea.priority || "normal",
-        });
+        const project = await projectRepository.create(buildProjectRecordFromIdea(idea, ownerId));
 
         try {
           await ideaRepository.update(idea.id, ownerId, {
@@ -63,13 +51,8 @@ export function createProjectService({ projectRepository, ideaRepository }) {
     },
 
     async updateProject(id, ownerId, changes) {
-      const allowed = {};
-      for (const key of ["status", "priority", "is_pinned", "name", "description", "goal", "expected_revenue", "estimated_cost", "business_model", "concept", "additional_info"]) {
-        if (Object.hasOwn(changes, key)) allowed[key] = changes[key];
-      }
-      allowed.updated_at = new Date().toISOString();
       try {
-        return await projectRepository.update(id, ownerId, allowed);
+        return await projectRepository.update(id, ownerId, buildProjectUpdate(changes));
       } catch (error) {
         throw normalizeError(error);
       }
