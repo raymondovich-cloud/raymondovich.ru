@@ -1364,8 +1364,8 @@ Privacy/legal requirements проверяются для реальных юри
 | Frontend framework | Vue 3 + TypeScript recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
 | Bundler/build tool | Vite 8.x recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
 | Router implementation | Vue Router 5.x recommended candidate if Vue is approved; mode depends on ADR-001 | Owner review + hosting compatibility |
-| State management library | Not selected; ownership model fixed | ADR-003 |
-| Testing toolchain | Test layers and gates fixed; tools not selected | ADR-004 |
+| State management library | Pinia 4.x recommended conditionally if Vue 3 is approved; restricted shared-state scope | Owner review of ADR-003 |
+| Testing toolchain | Vitest + Vue Test Utils + Playwright recommended conditionally; no tools installed | Owner review of ADR-004 |
 | Final physical repository tree | Conceptual boundaries fixed; final tree after ADRs and mapping | Final structure step |
 | Ideas/Projects domain lifecycle | Separate tables observed; lifecycle/cardinality unresolved | Domain decision before schema/service refactor |
 | Production Supabase schema/RLS/grants | Not verified; no production read-only audit performed | Explicit read-only authorization |
@@ -1384,7 +1384,7 @@ Privacy/legal requirements проверяются для реальных юри
 2. ADR-002 Frontend Stack.
 3. ADR-003 State Management.
 4. ADR-004 Testing Strategy.
-5. Final Repository Structure.
+5. Final Repository Structure, documented separately after the ADR reviews.
 
 ADR-001 существует и остаётся PROPOSED. Его рекомендация Cloudflare Pages не является разрешением на внедрение. ADR-002–004 должны быть исследованы и документированы; framework, bundler, state library и test runner не считаются утверждёнными до соответствующего ADR. Окончательная структура репозитория следует после выбора стека и функционального mapping.
 
