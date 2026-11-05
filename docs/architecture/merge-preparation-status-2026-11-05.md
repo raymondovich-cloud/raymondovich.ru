@@ -8,144 +8,120 @@
 
 ## 1. Границы и запреты
 
-Работа выполняется только в рабочей ветке. Не изменяются `main`, backup branch, `raymondovich.online`, production Supabase/Auth/data/RLS/grants/Edge Functions, DNS, Cloudflare, hosting и production deployment. Слияние возможно только после отдельного явного одобрения владельца.
+Работа выполняется только в рабочей ветке. `main`, backup branch, `raymondovich.online`, production Supabase/Auth/data/RLS/grants/Edge Functions, DNS, Cloudflare, hosting и production deployment не изменялись. Слияние возможно только после отдельного явного одобрения владельца.
 
 ## 2. Реализованная основа
 
-На рабочей ветке уже присутствует прикладная SPA-реализация, поэтому прежние формулировки «SPA implementation not started» и «ADR-002 proposed» более неактуальны.
+- Корневой `index.html` — единственная точка входа Vue SPA.
+- Стек зафиксирован: Vue 3.5.45, Vue Router 5.4.0, Vite 8.3.6, JavaScript ES modules; TypeScript не внедрён.
+- Используется Hash Router только в пределах временной GitHub Pages/test модели согласно ADR-001. Production hosting/routing не утверждены.
+- `spa.html` — noindex compatibility handoff, а не вторая SPA.
+- Старые публичные HTML URL перенаправляются в SPA через общий redirect module и route aliases.
+- Старые Supabase Auth callback и password recovery страницы сохранены как отдельные compatibility bridges: текущие ссылки могут содержать implicit-flow token fragments, которые нельзя без дополнительной миграции помещать в Hash Router fragment.
+- Реализованы Public views: главная, продукты, сотрудничество, подход, профиль, настройки и legal pages.
+- Реализован Owner Control Center: Overview, Ideas, Projects. Разделы доступны по маршрутам `/owner`, `/owner/ideas`, `/owner/projects`; внутреннее переключение синхронизировано с Router и browser history.
+- Partner Workspace и External Project Workspace пока являются placeholders; рабочие операции и project-scoped membership не реализованы.
+- Supabase client изолирован в Infrastructure gateways/repositories; Application services получают зависимости через composition runtime и не импортируют Supabase SDK.
+- Domain содержит правила построения/валидации Idea и Project records.
+- Внешние слои не должны импортировать Infrastructure internals; архитектурные проверки закреплены в тестах.
+- Зависимости закреплены в `package.json` и `package-lock.json`; CI использует `npm ci`.
 
-- Корневой `index.html` является точкой входа Vue SPA.
-- Используются Vue 3, Vue Router 5 и Vite 8; TypeScript не внедрён.
-- Используется Hash Router; GitHub Pages рассматривается только как временная тестовая среда. Production hosting остаётся отдельным решением.
-- Созданы route registry и представления Public Space, Owner Control Center, Partner Workspace и External Project Workspace.
-- Созданы Public views для главной, продуктов, сотрудничества, подхода, профиля, настроек и legal pages.
-- Основные старые публичные HTML URL перенаправляются в SPA через compatibility entry modules.
-- Legacy auth callback и password recovery entry points сохранены как отдельные compatibility bridges, чтобы не терять текущие URL-контракты.
-- Supabase client изолирован в Infrastructure gateways/repositories; Application использует внедряемые gateways/repositories.
-- Domain содержит правила нормализации и проверки Idea/Project данных.
-- Созданы unit tests для Application и Domain, архитектурные dependency-boundary tests и build-output smoke checks.
-- CI генерирует lockfile, устанавливает зафиксированные зависимости, запускает тесты, production build и smoke checks.
+## 3. Git и CI
 
-## 3. Git и CI — динамические сведения
+На момент последнего сравнения до этого обновления:
+- Base `main`: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
+- Рабочая ветка: ahead **251 commits**, behind **0**.
+- GitHub Compare: **117 changed paths**.
+- Точный HEAD и ahead/behind являются динамическими; их нужно заново проверить непосредственно перед созданием PR.
 
-Состояние ветки меняется последовательными коммитами, поэтому значения ahead/behind и HEAD нельзя считать постоянными. Перед финальным PR необходимо заново получить актуальные SHA `main` и рабочей ветки, выполнить GitHub Compare и проверить, что рабочая ветка не отстаёт от `main`.
+Последний подтверждённый успешный полный pipeline на commit `f42562583d8095efaf0bf9597e2d9fbbe74d0b93`:
+- `npm ci` — SUCCESS.
+- `npm test` — **42 tests passed, 0 failed**.
+- `npm run build` — SUCCESS.
+- `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
-Последние подтверждённые успешные workflow runs на промежуточных SHA:
-- `42101259216` — unit tests, build и build-output smoke checks: SUCCESS.
-- `42101544263` — CI: SUCCESS.
-- `42101553806` — CI: SUCCESS.
+После этого commit в ветку добавлялись дальнейшие изменения и документация. Поэтому успешный запуск на `f425625...` не заменяет обязательный успешный CI на точном финальном HEAD. Последний workflow на актуальном HEAD должен завершиться успешно после прекращения изменений.
 
-После этих успешных запусков в ветку продолжали поступать изменения. Следовательно, эти результаты не подтверждают автоматически зелёный CI на текущем HEAD. Последний workflow на точном HEAD должен завершиться успешно после прекращения изменений.
+CI workflow работает только на migration branch и вручную; он не содержит production deploy step. Lockfile generation job имеет отдельное `contents:write` разрешение и коммитит lockfile только в рабочую ветку.
 
-## 4. Текущие функциональные ограничения
+## 4. Public Space и утверждённый текст
 
-### Public Space
-- Содержимое основных публичных страниц перенесено в Vue views.
-- В `source/presentation/spa/views/public/Cooperation.vue` сохранён утверждённый блок «01 / НАПРАВЛЕНИЯ» с заголовком «Три формата развития проектов» и тремя описаниями без дополнительного вводного абзаца:
+- Основные публичные страницы перенесены в Vue views.
+- В `Cooperation.vue` сохранён утверждённый блок «01 / НАПРАВЛЕНИЯ», заголовок «Три формата развития проектов» и три точные формулировки:
   - OWN PROJECTS / «Собственные проекты» — «Продукты и цифровые решения, которые мы самостоятельно разрабатываем и развиваем.»
   - PARTNER PROJECTS / «Партнёрские проекты» — «Направления, к которым можно присоединиться, чтобы совместно создавать, развивать и продвигать продукты.»
   - EXTERNAL PROJECTS / «Сторонние проекты» — «Разработки независимых авторов, которые могут стать частью экосистемы после рассмотрения и согласования условий сотрудничества.»
-- Privacy, Terms и Cookies в исходном `main` уже отображали «В разработке»; SPA сохраняет этот фактический статус, а не подменяет его вымышленным юридическим текстом.
-- SEO для отдельных SPA-маршрутов (canonical, description, индексируемый контент и prerender/SSR) требует отдельного решения до production cutover.
+- Privacy, Terms и Cookies в исходном `main` уже отображали «В разработке»; SPA не подменяет этот статус вымышленным юридическим текстом.
+- SEO отдельных SPA routes (canonical, уникальные description, индексируемый контент, prerender/SSR) остаётся отдельным production decision.
 
-### Owner Control Center
-- Перенесены Overview, Ideas и Projects, включая создание/редактирование идей, статусы, приоритеты, архив, запуск идеи в проект, pin, pause/resume, complete, delete, dialogs и контекстные действия.
+## 5. Owner Control Center
+
+- Перенесены создание/редактирование идей, статусы, приоритеты, архив, восстановление, запуск идеи в проект, pin, pause/resume, complete, delete, dialogs и контекстные действия.
 - Доменная валидация и unit tests добавлены.
-- Операции launch idea → project и delete project → restore idea по-прежнему состоят из нескольких запросов с компенсационным поведением, а не из одной серверной транзакции. Конкурентность и частичные сбои требуют отдельного integration-level подтверждения.
-- Нельзя считать parity полностью доказанным только по сборке и unit tests: требуется browser-level проверка всех сценариев, в том числе на мобильном Safari.
+- Launch idea → project и delete project → restore idea по-прежнему состоят из нескольких запросов с компенсационным поведением, а не из одной серверной транзакции. Конкурентность и partial failures требуют отдельного integration-level подтверждения.
+- Build и unit tests не доказывают полную UI parity: необходима browser-level проверка всех сценариев, включая мобильный Safari.
 
-### Partner Workspace и External Project Workspace
+## 6. Partner Workspace и External Project Workspace
+
 - Маршруты и базовые placeholder views существуют.
-- Это **не готовые рабочие кабинеты**: реальные partner membership, external project membership, роли, data model и серверные политики доступа в репозитории не подтверждены.
-- Нельзя выдавать эти пространства за реализованные. До появления проверяемой модели и backend enforcement они должны оставаться явно ограниченными placeholders либо быть вынесены за рамки данного merge отдельным решением владельца.
-- UI route guards не являются security boundary.
+- Это **не готовые рабочие кабинеты**: реальные partner membership, external project membership, проектная модель участников и серверные политики project-scoped доступа не реализованы.
+- Read-only проверка live schema не обнаружила таблиц с именами, содержащими `partner`, `external`, `member` или `workspace`.
+- Эти пространства нельзя представлять как операционные до реализации и тестирования backend authorization. UI route guards не являются security boundary.
 
-### Authentication и Account
-- Перенесены Application services и runtime composition; сохранены legacy URL entry points для callback и password recovery.
-- Unit tests проверяют вызовы use cases, но не доказывают полный реальный Supabase email confirmation, OAuth/PKCE callback, password recovery, session restoration, logout и redirect allow-list.
-- Production Supabase Auth settings, email templates и Redirect URL allow-list не проверялись и не менялись. Перед production cutover нужна проверка конфигурации в согласованном безопасном порядке.
-- В callback и recovery нельзя считать успешный unit test заменой end-to-end проверки с тестовым пользователем и изолированной средой.
+## 7. Supabase: read-only security/schema audit
 
-## 5. Архитектурные и инфраструктурные ограничения
+Проверка выполнена только SELECT-запросами и Security Advisor на проекте `yajybgdorhxebbigwjgi`. Никакие данные, таблицы, RLS, grants, Auth settings или функции не изменялись.
 
-- Domain/Application dependency boundary автоматизированно проверяется; Domain/Application не должны импортировать Supabase SDK, Vue, DOM или Presentation.
-- Infrastructure содержит Supabase adapters. Publishable key в клиентском приложении не является service-role secret; service-role/private credentials не должны попадать в bundle.
-- В репозитории отсутствует подтверждённый полный актуальный снимок live schema, RLS и grants для всех задействованных таблиц, в частности pre-existing `projects` и `user_profiles`. Статические миграции не доказывают состояние удалённой БД.
-- Production database/RLS/grants не менялись и не должны изменяться в рамках этой подготовки.
+### RLS и policies
+
+- `public.ideas`, `public.projects`, `public.user_profiles`: RLS включён; `FORCE ROW LEVEL SECURITY` выключен.
+- `ideas`: policy `admin manages ideas`, роль `authenticated`, условие — JWT `app_metadata.role = 'admin'` и `auth.uid() = owner_id`; тот же предикат в `WITH CHECK`.
+- `projects`: live policy `admin manages projects` с аналогичными admin/owner predicates.
+- `user_profiles`: отдельные policies ограничивают INSERT/SELECT/UPDATE собственным `user_id = auth.uid()`.
+- В checked-in migrations policy `admin manages projects` не обнаружена, хотя в live schema она есть. Это gap воспроизводимости схемы, который следует закрыть отдельным migration-history review; production не менялся.
+
+### Grants и security findings
+
+- У роли `anon` обнаружены table privileges на `ideas`, включая SELECT/INSERT/UPDATE/DELETE и TRUNCATE/TRIGGER/REFERENCES. Row access закрыт отсутствием anon RLS policy, но RLS не защищает от TRUNCATE; избыточные anon grants требуют отдельного security remediation и явного разрешения владельца.
+- Для `projects` обнаружены CRUD grants у `authenticated`, anon grants не обнаружены.
+- Security Advisor сообщил: **Leaked Password Protection Disabled**. Настройка Supabase Auth не менялась.
+- Production Auth Redirect URL allowlist и email templates не проверялись через Dashboard/API и не менялись.
+- Изолированного Supabase test project для integration/RLS tests в рамках этой работы не использовали; реальные RLS tests с несколькими test identities остаются невыполненными.
+
+## 8. Остальные ограничения
+
 - Реальный iOS Safari на устройстве владельца не проверен.
-- Автоматизированный browser E2E suite (например, Playwright) пока не подтверждён как обязательный и проходящий gate.
-- GitHub Pages/Hash Router не утверждает production hosting. ADR-001 остаётся частично решённым.
-- ADR-003 (state management) и ADR-004 (testing strategy) нужно сверить с текущим кодом и фактическим тестовым контуром; статус документа не должен представлять предложенные технологии как внедрённые без проверки.
+- Browser E2E suite (например, Playwright) не внедрён; текущие проверки — Node unit/architecture tests и build-output smoke checks.
+- Production routing/hosting не утверждены. Hash Router — только временное решение. Merge в `main` потенциально может изменить публикуемый GitHub Pages сайт; publish source и production cutover должны быть отдельно проверены до слияния.
+- ADR-003 (state management) остаётся PROPOSED; Pinia не внедрён.
+- ADR-004 (testing strategy) остаётся PROPOSED; текущий тестовый baseline использует встроенный Node.js `node:test`, Vitest/Vue Test Utils/Playwright не внедрены.
+- Production Supabase/Auth/data/RLS/grants, DNS, Cloudflare, hosting и deployment не менялись.
 
-## 6. Условия допуска к финальному merge review
+## 9. Условия допуска к финальному merge review
 
-1. Завершить audit всех файлов и сравнить текущую реализацию с исходным поведением `main`.
-2. Подтвердить все legacy URL, прямые переходы, reload, back/forward, anchor links и auth redirects.
-3. Добавить/запустить browser-level tests для критических public, owner, auth и account flows.
-4. Провести изолированные Supabase integration/RLS tests; если live schema нельзя безопасно подтвердить, явно зафиксировать это как merge blocker или отдельное решение о допустимом scope.
-5. Разрешить неоднозначность по Partner/External workspaces: рабочая реализация с серверной авторизацией либо явно согласованный ограниченный scope.
-6. Проверить SEO/public metadata и production hosting decision; не менять production инфраструктуру.
-7. Провести security scan на случайные секреты и убедиться, что build/deploy workflows не запускают production deployment.
-8. Обновить migration matrix, ADRs, changelog, rollback notes и этот статусный документ.
-9. Получить успешный CI на точном финальном HEAD после прекращения изменений.
-10. Проверить актуальный diff с `main`, отсутствие конфликтов/неучтённых коммитов и подготовить PR.
-11. Не выполнять merge до отдельного одобрения владельца.
+1. Завершить audit полного diff и подтвердить соответствие legacy-функций новому UI.
+2. Подтвердить direct routes, refresh, Back/Forward, legacy redirects, anchor links и Auth callback/recovery на реальном тестовом пользователе.
+3. Провести browser E2E и реальную iOS Safari проверку критических сценариев.
+4. Создать/использовать изолированный Supabase test environment и выполнить integration/RLS positive/negative tests.
+5. Принять решение по scope Partner/External: реализовать backend membership/authorization либо явно отложить эти пространства отдельным одобренным scope.
+6. Согласовать production hosting/routing/SEO и проверить фактический эффект merge на GitHub Pages.
+7. Отдельно рассмотреть избыточные `anon` grants на `ideas` и выключенную Leaked Password Protection; никаких изменений без разрешения.
+8. Обновить ADR, migration matrix, changelog и rollback notes.
+9. Получить зелёный CI на точном финальном HEAD.
+10. Повторно сравнить рабочую ветку с актуальным `main`, подготовить PR и проверить отсутствие конфликтов.
+11. Не выполнять merge/deployment до отдельного явного одобрения владельца.
 
-## 7. Текущий статус
+## 10. Текущий статус
 
 **SPA foundation:** IMPLEMENTED IN WORKING BRANCH.  
-**Public routes:** IMPLEMENTED; content/SEO parity audit remains.  
-**Owner Control Center:** IMPLEMENTED; browser parity and failure/concurrency verification remain.  
-**Authentication/account:** MIGRATED WITH LEGACY BRIDGES; real Supabase E2E verification remains.  
+**Public routes:** IMPLEMENTED; SEO and browser parity remain.  
+**Owner Control Center:** IMPLEMENTED; browser parity and transaction/concurrency verification remain.  
+**Authentication/account:** MIGRATED WITH LEGACY BRIDGES; real Supabase E2E remains.  
 **Partner Workspace:** PLACEHOLDER — NOT OPERATIONAL.  
 **External Project Workspace:** PLACEHOLDER — NOT OPERATIONAL.  
-**Live Supabase schema/RLS/grants certification:** NOT VERIFIED.  
-**iOS Safari verification:** NOT PERFORMED.  
+**Live Supabase RLS:** READ-ONLY SNAPSHOT OBTAINED; integration tests and grant remediation remain.  
+**Security Advisor:** password leak protection warning remains unresolved.  
+**iOS Safari:** NOT VERIFIED.  
 **CI on latest HEAD:** MUST BE RECONFIRMED.  
 **Merge readiness:** NOT READY.  
-**Merge to main:** NOT PERFORMED; explicit owner approval required.
-
-
-## Verification update — 2026-11-05
-
-### Functional migration completed in the branch
-
-- Root `index.html` now starts the Vue SPA.
-- Public views migrated: home, products, cooperation formats, about, profile, settings and legal information.
-- Owner Control Center migrated for ideas and projects, with dedicated routes `/owner`, `/owner/ideas`, and `/owner/projects`.
-- Existing public/account/auth/legal URLs hand off to their SPA routes. Legacy root fragment anchors are normalized before Vue Router initializes.
-- Supabase callback and password-recovery pages remain dedicated compatibility bridges because Supabase may return token fragments that conflict with Hash History.
-- Domain rules are isolated from Application use cases; Supabase gateways/repositories are isolated in Infrastructure; `source/presentation/runtime/` is the composition root.
-- Partner and External Project workspaces remain protected placeholders pending their own membership/data model and RLS design.
-
-### Latest automated verification
-
-- Successful CI run: `42102546920`.
-- Tested code commit: `73e6a9d79f464b35ed4455b8f4408625560ab008`.
-- 42 unit tests passed; 0 failed.
-- `npm ci`, Vite production build and built-output smoke checks passed.
-- Branch subsequently received documentation-only commits; no executable source changes followed the tested code commit at the time of this update.
-
-### Read-only production Supabase review
-
-No Supabase configuration or data was changed.
-
-- Confirmed live tables `ideas`, `projects`, `user_profiles`; RLS is enabled.
-- `ideas` and `projects` policies require authenticated admin role and `owner_id = auth.uid()`.
-- `user_profiles` policies constrain access to the authenticated user's own profile.
-- A unique index exists for `projects.source_idea_id`.
-- Existing `anon` table grants remain on `ideas`, although no anonymous RLS policy exists; RLS denies anonymous access. This remains a least-privilege hardening item.
-- Supabase Security Advisor reports leaked-password protection disabled. It was not changed.
-- Auth redirect allow-list configuration was not available for read-only verification.
-
-### Merge status
-
-**Not yet ready for merge approval.** Remaining gates:
-
-1. Verify the current branch head has a successful CI run after the final documentation-only commits.
-2. Run real-browser end-to-end checks, including auth redirect behavior; iOS Safari verification has not been performed.
-3. Decide the scope/timing for Partner Workspace and External Project Workspace backend, membership and RLS implementation.
-4. Review the existing `ideas` anon grants and leaked-password protection warning as separate security decisions.
-5. Confirm Supabase Auth redirect allow-list entries for the legacy callback and password-reset bridge URLs.
-
-The migration branch remains isolated. `main`, production hosting, DNS, Cloudflare, Supabase schema/RLS/grants, Auth settings and Edge Functions remain unchanged.
+**Merge to main / production deployment:** NOT PERFORMED; explicit owner approval required.
