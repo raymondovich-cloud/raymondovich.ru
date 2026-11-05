@@ -10,7 +10,8 @@
 - Converted public/account/auth landing pages to explicit SPA route handoffs.
 - Retained the existing Supabase email callback and password-recovery HTML bridges because current implicit-flow links can contain token fragments that conflict with Hash Router.
 - Added support for both implicit session callbacks and PKCE code callbacks; confirmed-user profile provisioning runs after callback completion.
-- Added owner workspace routes for Overview, Ideas and Projects, with route state reflected in browser history.
+- Added owner workspace routes for Overview, Ideas and Projects (`/owner`, `/owner/ideas`, `/owner/projects`), with route state reflected in browser history and Back/Forward.
+- Callback completion supports PKCE and existing implicit-flow sessions; after email confirmation, the `user_profiles` row is ensured and redirects are role-aware.
 - Added legacy anchor/hash compatibility before Router initialization.
 
 ## Architecture and quality
@@ -34,7 +35,7 @@ No production changes were made. Read-only schema/policy/grant inspection found:
 
 ## Not completed / not authorized
 
-- Partner Workspace and External Project Workspace remain placeholders.
+- Partner Workspace and External Project Workspace remain non-operational placeholders; read-only live schema inspection found no partner/external membership model.
 - No isolated Supabase RLS/integration tests, browser E2E suite or real iOS Safari test were performed.
 - Production Auth allowlist/email template settings, SEO/prerender and production hosting/routing remain unresolved.
 - No production Supabase/Auth/RLS/grant, DNS, Cloudflare, hosting, deployment or `main` changes were performed.
