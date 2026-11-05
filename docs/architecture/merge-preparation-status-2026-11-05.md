@@ -89,6 +89,17 @@ CI workflow работает только на migration branch и вручну�
 - Production Auth Redirect URL allowlist и email templates не проверялись через Dashboard/API и не менялись.
 - Изолированного Supabase test project для integration/RLS tests в рамках этой работы не использовали; реальные RLS tests с несколькими test identities остаются невыполненными.
 
+### Migration history и privileged functions
+
+- Live `supabase_migrations` содержит 14 записей. В checked-in `supabase/migrations/` отсутствуют:
+  - `20261008184130_create_user_profiles_rls`;
+  - `20261008184746_temporary_promote_admin`;
+  - `20261008185014_lock_temporary_admin_function`;
+  - `20261008195529_create_project_management`.
+- Для расширения projects live history содержит `20261104131912_extend_projects_for_idea_inbox`, тогда как в репозитории лежит файл `20261104120000_extend_projects_for_idea_inbox.sql`. Это timestamp/history mismatch, который нужно reconciliate до утверждения, что чистое staging-развёртывание воспроизводит live schema.
+- Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`, но ACL ограничен `postgres` и `service_role`; роли `anon` и `authenticated` не имеют EXECUTE. Функция не изменялась.
+- Отсутствующие migration files и privilege mismatch не исправлялись в production. Необходимо отдельно восстановить/согласовать migration history, не перезапуская старые миграции вслепую.
+
 ## 8. Остальные ограничения
 
 - Реальный iOS Safari на устройстве владельца не проверен.
