@@ -1,313 +1,103 @@
 <!DOCTYPE html>
-<!-- version 3.0 -->
+<!-- version 3.1 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="RAYMONDOVICH — цифровая экосистема собственных продуктов, коммерческих направлений и партнёрских проектов.">
   <meta name="theme-color" content="#080706">
-  <title>RAYMONDOVICH — цифровая экосистема и партнёрские проекты</title>
+  <title>RAYMONDOVICH — цифровая экосистема</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #080706;
-      --surface: rgba(255,255,255,.035);
-      --surface-strong: rgba(255,255,255,.055);
-      --text: #f7f5f2;
-      --muted: #aaa39b;
-      --accent: #ff7900;
-      --accent-soft: #ffb36e;
-      --line: rgba(255,121,0,.28);
-      --content: 1120px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 92px; background: var(--bg); }
-    body {
-      min-width: 320px; margin: 0; color: var(--text);
-      background:
-        radial-gradient(ellipse 75% 35% at 95% 0%, rgba(255,106,0,.13), transparent 70%),
-        radial-gradient(ellipse 65% 28% at 0% 43%, rgba(255,106,0,.055), transparent 75%),
-        var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6; -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; }
-    .container { width: min(var(--content), calc(100% - 48px)); margin-inline: auto; }
-    .site-header {
-      position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 24px;
-      padding: 16px max(24px, calc((100vw - var(--content)) / 2));
-      border-bottom: 1px solid rgba(255,255,255,.07);
-      background: rgba(8,7,6,.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-    }
-    .wordmark { flex: 0 0 auto; color: var(--text); font-size: 13px; font-weight: 750; letter-spacing: .16em; text-decoration: none; }
-    .nav { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 20px; }
-    .nav a { color: var(--muted); font-size: 12px; text-decoration: none; transition: color 160ms ease; }
-    .nav a:hover, .nav a:focus-visible { color: var(--text); }
-    .nav .login { padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--text); }
-    .hero { position: relative; display: flex; min-height: min(730px, calc(100svh - 64px)); align-items: center; padding: 100px 0 112px; overflow: hidden; }
-    .hero::after {
-      position: absolute; top: 13%; right: -150px; width: min(48vw,560px); aspect-ratio: 1;
-      border: 1px solid rgba(255,121,0,.14); border-radius: 50%;
-      box-shadow: 0 0 0 48px rgba(255,121,0,.018), 0 0 0 96px rgba(255,121,0,.014);
-      content: ""; pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 1; max-width: 850px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 25px; color: var(--accent); font-size: 11px; font-weight: 650; letter-spacing: .19em; text-transform: uppercase; }
-    .eyebrow::before { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px rgba(255,121,0,.65); content: ""; }
-    h1,h2,h3,p { margin-top: 0; }
-    h1 { max-width: 850px; margin-bottom: 26px; font-size: clamp(43px,7.2vw,88px); font-weight: 680; letter-spacing: -.065em; line-height: .99; }
-    h1 span, .gradient-text { color: transparent; background: linear-gradient(100deg,#fff0df 0%,#ff9b43 58%,#ff6900 100%); background-clip: text; -webkit-background-clip: text; }
-    .hero-copy { max-width: 670px; margin-bottom: 34px; color: var(--muted); font-size: clamp(16px,2vw,19px); line-height: 1.75; }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 10px; padding: 0 18px; border: 1px solid var(--line); border-radius: 6px; color: var(--text); font-size: 13px; font-weight: 650; text-decoration: none; transition: transform 160ms ease,border-color 160ms ease,background 160ms ease; }
-    .button:hover,.button:focus-visible { transform: translateY(-2px); border-color: rgba(255,121,0,.72); }
-    .button-primary { border-color: var(--accent); background: linear-gradient(110deg,#ff8a19,#ff6900); color: #170b02; }
-    .button-primary:hover,.button-primary:focus-visible { background: #ffa044; }
-    .button-secondary { background: rgba(255,255,255,.025); }
-    .section { padding: 88px 0; }
-    .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
-    .section-kicker { margin-bottom: 12px; color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
-    h2 { margin-bottom: 0; font-size: clamp(30px,4.2vw,48px); font-weight: 640; letter-spacing: -.045em; line-height: 1.08; }
-    .section-intro { max-width: 450px; margin: 0; color: var(--muted); font-size: 14px; }
-    .ecosystem-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
-    .ecosystem-card,.product,.step,.club-card {
-      border: 1px solid rgba(255,255,255,.095); border-radius: 10px;
-      background: linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
-    }
-    .ecosystem-card { min-height: 210px; padding: 24px; transition: transform 180ms ease,border-color 180ms ease,background 180ms ease; }
-    .ecosystem-card:hover { transform: translateY(-3px); border-color: var(--line); background: linear-gradient(145deg,rgba(255,121,0,.075),rgba(255,255,255,.015)); }
-    .card-number,.product-code { color: var(--muted); font-size: 10px; letter-spacing: .14em; }
-    .card-number { display: block; margin-bottom: 32px; color: var(--accent-soft); }
-    .ecosystem-card h3 { margin-bottom: 9px; font-size: 19px; font-weight: 630; letter-spacing: -.025em; }
-    .ecosystem-card p { margin: 0; color: var(--muted); font-size: 13px; }
-    .product-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
-    .product { position: relative; display: flex; min-height: 330px; flex-direction: column; align-items: flex-start; padding: clamp(24px,3vw,34px); }
-    .product-top { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 42px; }
-    .status { padding: 5px 9px; border: 1px solid rgba(255,121,0,.25); border-radius: 999px; color: var(--accent-soft); font-size: 10px; white-space: nowrap; }
-    .product h3 { margin-bottom: 12px; font-size: clamp(25px,3vw,34px); font-weight: 680; letter-spacing: -.045em; }
-    .product p { max-width: 460px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
-    .product-foot { width: 100%; margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.08); color: var(--muted); font-size: 12px; }
-    .product-foot strong { color: var(--accent-soft); font-weight: 650; }
-    .split-panel { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px; align-items: stretch; }
-    .feature-copy { padding: 18px 0; }
-    .feature-copy h2 { max-width: 600px; margin-bottom: 18px; }
-    .feature-copy > p:last-of-type { max-width: 590px; color: var(--muted); font-size: 15px; }
-    .feature-card { padding: 28px; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(135deg,rgba(255,121,0,.085),rgba(255,255,255,.018)); }
-    .feature-card h3 { margin-bottom: 20px; font-size: 17px; }
-    .feature-list { display: grid; gap: 15px; margin: 0; padding: 0; list-style: none; }
-    .feature-list li { display: flex; gap: 12px; color: var(--muted); font-size: 13px; }
-    .feature-list li::before { flex: 0 0 auto; color: var(--accent); content: "↗"; }
-    .steps { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 10px; counter-reset: stage; }
-    .step { min-height: 175px; padding: 20px 17px; counter-increment: stage; }
-    .step::before { display: block; margin-bottom: 25px; color: var(--accent); font-size: 11px; letter-spacing: .12em; content: "0" counter(stage); }
-    .step h3 { margin-bottom: 8px; font-size: 15px; line-height: 1.35; }
-    .step p { margin: 0; color: var(--muted); font-size: 12px; }
-    .note { margin: 18px 0 0; color: var(--muted); font-size: 12px; }\n    .project-actions { margin-top: 22px; }
-    .club-card { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 30px; overflow: hidden; padding: clamp(30px,5vw,54px); border-color: rgba(255,121,0,.24); background: radial-gradient(ellipse 55% 140% at 100% 50%,rgba(255,106,0,.14),transparent 75%),linear-gradient(120deg,rgba(255,121,0,.055),rgba(255,255,255,.018)); }
-    .club-card h2 { max-width: 650px; margin-bottom: 14px; }
-    .club-card p { max-width: 620px; margin-bottom: 0; color: var(--muted); font-size: 14px; }
-    .commercial { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: clamp(30px,5vw,54px); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(255,255,255,.025); }
-    .commercial h2 { max-width: 600px; margin-bottom: 12px; }
-    .commercial p { max-width: 590px; margin-bottom: 0; color: var(--muted); font-size: 14px; }
-    .commercial .button,.club-card .button { flex: 0 0 auto; }
-    .final-cta { padding: 105px 0 112px; text-align: center; }
-    .final-cta h2 { max-width: 800px; margin: 0 auto 25px; font-size: clamp(34px,5.5vw,62px); }
-    .final-cta p { max-width: 570px; margin: 0 auto 28px; color: var(--muted); font-size: 14px; }
-    .final-cta .actions { justify-content: center; }
-    .site-footer { margin-top: 20px; border-top: 1px solid rgba(255,255,255,.08); }
-    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 25px 0; }
-    .footer-brand { font-size: 11px; font-weight: 700; letter-spacing: .13em; }
-    .footer-note { margin: 0; color: var(--muted); font-size: 11px; }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
-    .footer-links a { color: var(--muted); font-size: 11px; text-decoration: none; }
-    .footer-links a:hover { color: var(--text); }
-    @media (max-width: 900px) {
-      .ecosystem-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .steps { grid-template-columns: repeat(3,minmax(0,1fr)); }
-      .split-panel { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 760px) {
-      .site-header { align-items: flex-start; padding: 15px 20px; }
-      .nav { gap: 11px 14px; }
-      .nav a { font-size: 11px; }
-      .nav a[data-hide-mobile] { display: none; }
-      .container { width: min(var(--content),calc(100% - 40px)); }
-      .hero { min-height: auto; padding: 100px 0 88px; }
-      .hero::after { top: 12%; right: -270px; width: 430px; }
-      .section { padding: 65px 0; }
-      .section-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
-      .product-grid,.split-panel { grid-template-columns: 1fr; }
-      .product { min-height: 290px; }
-      .product-top { margin-bottom: 32px; }
-      .club-card,.commercial { align-items: flex-start; flex-direction: column; }
-      .footer-inner { align-items: flex-start; flex-direction: column; }
-      .final-cta { padding: 78px 0 84px; }
-    }
-    @media (max-width: 520px) {
-      .site-header { gap: 12px; }
-      .wordmark { padding-top: 7px; font-size: 11px; letter-spacing: .1em; }
-      .nav { max-width: 66%; gap: 9px 12px; }
-      .nav a { font-size: 10px; }
-      .nav .login { padding: 6px 9px; }
-      .hero { padding-top: 82px; }
-      h1 { font-size: clamp(40px,11.5vw,54px); }
-      .actions { align-items: stretch; flex-direction: column; }
-      .button { width: 100%; }
-      .ecosystem-grid,.steps { grid-template-columns: 1fr; }
-      .ecosystem-card { min-height: 170px; }
-      .card-number { margin-bottom: 20px; }
-      .step { min-height: auto; }
-      .step::before { margin-bottom: 12px; }
-      .product { padding: 23px; }
-      .club-card,.commercial,.feature-card { padding: 23px; }
-      .final-cta .actions { align-items: center; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *,*::before,*::after { transition-duration: .01ms !important; }
-    }
+    :root{color-scheme:dark;--bg:#080706;--text:#f7f5f2;--muted:#aaa39b;--accent:#ff7900;--accent-soft:#ffb36e;--line:rgba(255,121,0,.28);--content:1120px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:82px;background:var(--bg)}
+    body{min-width:320px;margin:0;color:var(--text);background:radial-gradient(ellipse 75% 35% at 95% 0%,rgba(255,106,0,.13),transparent 70%),radial-gradient(ellipse 65% 28% at 0% 43%,rgba(255,106,0,.055),transparent 75%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+    a{color:inherit}.container{width:min(var(--content),calc(100% - 48px));margin-inline:auto}
+    .site-header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:14px max(24px,calc((100vw - var(--content))/2));border-bottom:1px solid rgba(255,255,255,.07);background:rgba(8,7,6,.9);backdrop-filter:blur(18px)}
+    .wordmark{flex:0 0 auto;font-size:13px;font-weight:750;letter-spacing:.16em;text-decoration:none}
+    .nav{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:18px}.nav a{color:var(--muted);font-size:12px;text-decoration:none}.nav a:hover{color:var(--text)}.nav .login{padding:7px 12px;border:1px solid var(--line);border-radius:999px;color:var(--text)}
+    h1,h2,h3,p{margin-top:0}h1 span,.gradient-text{color:transparent;background:linear-gradient(100deg,#fff0df,#ff9b43 58%,#ff6900);background-clip:text;-webkit-background-clip:text}
+    .hero{position:relative;display:flex;min-height:430px;align-items:center;padding:68px 0 74px;overflow:hidden}.hero:after{position:absolute;top:0;right:-130px;width:min(42vw,460px);aspect-ratio:1;border:1px solid rgba(255,121,0,.14);border-radius:50%;box-shadow:0 0 0 42px rgba(255,121,0,.018),0 0 0 84px rgba(255,121,0,.014);content:"";pointer-events:none}
+    .hero-content{position:relative;z-index:1;max-width:790px}.eyebrow,.section-kicker{color:var(--accent);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}.eyebrow{margin-bottom:18px}
+    h1{max-width:790px;margin-bottom:18px;font-size:clamp(42px,6.3vw,72px);font-weight:680;letter-spacing:-.06em;line-height:1.02}
+    .hero-copy{max-width:650px;margin-bottom:24px;color:var(--muted);font-size:16px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px}.button{display:inline-flex;min-height:43px;align-items:center;justify-content:center;gap:9px;padding:0 16px;border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:12px;font-weight:650;text-decoration:none;transition:transform .16s,border-color .16s}.button:hover{transform:translateY(-2px);border-color:rgba(255,121,0,.72)}.button-primary{border-color:var(--accent);background:linear-gradient(110deg,#ff8a19,#ff6900);color:#170b02}.button-secondary{background:rgba(255,255,255,.025)}
+    .section{padding:48px 0}.section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;margin-bottom:20px}.section-kicker{margin-bottom:8px}h2{margin-bottom:0;font-size:clamp(27px,3.5vw,40px);font-weight:640;letter-spacing:-.045em;line-height:1.1}.section-intro{max-width:420px;margin:0;color:var(--muted);font-size:13px}
+    .ecosystem-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.ecosystem-card,.product,.feature-card,.mini-card{border:1px solid rgba(255,255,255,.095);border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012))}
+    .ecosystem-card{padding:15px 17px}.card-number,.product-code{display:block;margin-bottom:9px;color:var(--accent-soft);font-size:9px;letter-spacing:.13em}.ecosystem-card h3{margin-bottom:4px;font-size:15px}.ecosystem-card p{margin:0;color:var(--muted);font-size:11px}
+    .product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.product{display:flex;min-height:205px;flex-direction:column;padding:20px 22px}.product-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.product-code{margin:0;color:var(--muted)}.status{padding:4px 8px;border:1px solid rgba(255,121,0,.25);border-radius:999px;color:var(--accent-soft);font-size:9px;white-space:nowrap}.product h3{margin-bottom:7px;font-size:23px;letter-spacing:-.04em}.product p{max-width:520px;margin-bottom:12px;color:var(--muted);font-size:12px}.product-foot{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:11px}.product-foot strong{color:var(--accent-soft)}
+    .collab-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.feature-card{padding:22px;border-color:var(--line);background:linear-gradient(135deg,rgba(255,121,0,.075),rgba(255,255,255,.018))}.feature-card h3{margin-bottom:8px;font-size:19px}.feature-card>p{margin-bottom:15px;color:var(--muted);font-size:12px}.feature-list{display:grid;gap:8px;margin:0 0 16px;padding:0;list-style:none}.feature-list li{display:flex;gap:9px;color:var(--muted);font-size:11px}.feature-list li:before{color:var(--accent);content:"↗"}
+    .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:14px 0}.step{padding:11px 10px;border:1px solid rgba(255,255,255,.09);border-radius:7px;background:rgba(255,255,255,.025)}.step b{display:block;margin-bottom:5px;color:var(--accent);font-size:10px}.step span{display:block;font-size:11px;font-weight:650;line-height:1.3}.step small{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}
+    .note{margin:10px 0 0;color:var(--muted);font-size:10px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px}.mini-card h3{margin-bottom:6px;font-size:19px}.mini-card p{margin:0;color:var(--muted);font-size:11px}.mini-card .status{flex:0 0 auto}
+    .site-footer{margin-top:20px;border-top:1px solid rgba(255,255,255,.08)}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 0}.footer-brand{font-size:11px;font-weight:700;letter-spacing:.13em}.footer-note{margin:0;color:var(--muted);font-size:10px}.footer-links{display:flex;flex-wrap:wrap;gap:15px}.footer-links a{color:var(--muted);font-size:10px;text-decoration:none}.footer-links a:hover{color:var(--text)}
+    @media(max-width:850px){.ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column;gap:9px}}
+    @media(max-width:650px){.container{width:calc(100% - 36px)}.site-header{padding:12px 18px;gap:10px}.wordmark{font-size:10px;letter-spacing:.1em}.nav{gap:8px 11px}.nav a{font-size:10px}.nav .login{padding:5px 8px}.hero{min-height:0;padding:70px 0 58px}.hero:after{right:-290px;width:390px}.hero-copy{font-size:14px}.section{padding:32px 0}.product-grid,.collab-grid,.mini-grid{grid-template-columns:1fr}.product{min-height:0}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.step:last-child{grid-column:1/-1}.mini-card{padding:17px}.footer-inner{align-items:flex-start;flex-direction:column;gap:10px}}
+    @media(max-width:390px){.nav{max-width:68%;gap:7px 9px}.nav a{font-size:9px}.ecosystem-grid{grid-template-columns:1fr}.actions{align-items:stretch;flex-direction:column}.button{width:100%}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important}}
   </style>
 </head>
 <body>
   <header class="site-header">
     <a class="wordmark" href="#top" aria-label="RAYMONDOVICH — главная">RAYMONDOVICH</a>
     <nav class="nav" aria-label="Основная навигация">
-      <a href="#ecosystem">Экосистема</a>
-      <a href="#products">Продукты</a>
-      <a href="#partnership">Партнёрство</a>
-      <a href="https://raymondovich.online/">Коммерция</a>
-      <a class="login" href="./auth.html">Войти</a>
+      <a href="#ecosystem">Экосистема</a><a href="#products">Продукты</a><a href="#partnership">Партнёрство</a><a href="https://raymondovich.online/">Коммерция</a><a class="login" href="./auth.html">Войти</a>
     </nav>
   </header>
-
   <main id="top">
     <section class="hero container" aria-labelledby="hero-title">
       <div class="hero-content">
         <p class="eyebrow">Цифровая экосистема</p>
-        <h1 id="hero-title">Создаём продукты.<br><span>Развиваем проекты.</span><br>Объединяем возможности.</h1>
-        <p class="hero-copy">RAYMONDOVICH объединяет собственные цифровые продукты, коммерческие направления и партнёрские проекты. Мы развиваем идеи, создаём практические решения и выстраиваем сотрудничество на понятных условиях.</p>
-        <div class="actions">
-          <a class="button button-primary" href="#ecosystem">Исследовать экосистему <span aria-hidden="true">↘</span></a>
-          <a class="button button-secondary" href="#partnership">Стать партнёром <span aria-hidden="true">↘</span></a>
-        </div>
+        <h1 id="hero-title">Создаём продукты.<br><span>Развиваем проекты.</span></h1>
+        <p class="hero-copy">RAYMONDOVICH объединяет собственные цифровые продукты, коммерческие направления и партнёрские проекты. Создаём решения и развиваем сотрудничество на понятных условиях.</p>
+        <div class="actions"><a class="button button-primary" href="#products">Наши продукты <span>↘</span></a><a class="button button-secondary" href="#partnership">Стать партнёром <span>↘</span></a></div>
       </div>
     </section>
-
     <section class="section container" id="ecosystem" aria-labelledby="ecosystem-title">
-      <div class="section-heading">
-        <div><p class="section-kicker">01 / Экосистема</p><h2 id="ecosystem-title">Больше, чем отдельные проекты.</h2></div>
-        <p class="section-intro">Четыре взаимосвязанных направления формируют основу Raymondovich — от разработки собственных решений до совместного развития проектов.</p>
-      </div>
+      <div class="section-heading"><div><p class="section-kicker">01 / Направления</p><h2 id="ecosystem-title">Единая экосистема</h2></div><p class="section-intro">Четыре направления — от разработки собственных решений до совместного развития проектов.</p></div>
       <div class="ecosystem-grid">
-        <article class="ecosystem-card"><span class="card-number">DIRECTION / 01</span><h3>Разработка</h3><p>Создание цифровых продуктов, сервисов и AI-систем.</p></article>
-        <article class="ecosystem-card"><span class="card-number">DIRECTION / 02</span><h3>Коммерция</h3><p>Развитие коммерческих направлений и работа с готовыми предложениями.</p></article>
-        <article class="ecosystem-card"><span class="card-number">DIRECTION / 03</span><h3>Партнёрство</h3><p>Совместное продвижение продуктов и сотрудничество на согласованных условиях.</p></article>
-        <article class="ecosystem-card"><span class="card-number">DIRECTION / 04</span><h3>Развитие проектов</h3><p>Оценка перспективных идей и выстраивание моделей их дальнейшего развития.</p></article>
+        <article class="ecosystem-card"><span class="card-number">01 / DEVELOPMENT</span><h3>Разработка</h3><p>Цифровые продукты, сервисы и AI-системы.</p></article>
+        <article class="ecosystem-card"><span class="card-number">02 / COMMERCE</span><h3>Коммерция</h3><p>Готовые продукты и коммерческие предложения.</p></article>
+        <article class="ecosystem-card"><span class="card-number">03 / PARTNERS</span><h3>Партнёрство</h3><p>Совместное продвижение на согласованных условиях.</p></article>
+        <article class="ecosystem-card"><span class="card-number">04 / PROJECTS</span><h3>Развитие проектов</h3><p>Оценка идей и моделей дальнейшего развития.</p></article>
       </div>
     </section>
-
     <section class="section container" id="products" aria-labelledby="products-title">
-      <div class="section-heading">
-        <div><p class="section-kicker">02 / Собственные продукты</p><h2 id="products-title">Проекты, которые мы создаём.</h2></div>
-        <p class="section-intro">Показываем назначение и фактическое состояние каждого продукта. Новые проекты будут появляться по мере развития экосистемы.</p>
-      </div>
+      <div class="section-heading"><div><p class="section-kicker">02 / Собственные продукты</p><h2 id="products-title">Что мы создаём</h2></div><p class="section-intro">Показываем назначение и фактический статус каждого продукта.</p></div>
       <div class="product-grid">
-        <article class="product">
-          <div class="product-top"><span class="product-code">PRODUCT / 001</span><span class="status">В разработке</span></div>
-          <h3>LIFE GAME</h3>
-          <p>Цифровая система для работы с финансами, здоровьем и личным развитием. Помогает собирать данные в одном пространстве и отслеживать изменения в ключевых сферах жизни.</p>
-          <div class="product-foot">Планируемый запуск: <strong>1 января 2027</strong></div>
-        </article>
-        <article class="product">
-          <div class="product-top"><span class="product-code">PRODUCT / 002</span><span class="status">Разработка приостановлена</span></div>
-          <h3>AI-SISTEM</h3>
-          <p>Концепция мультиагентной AI-системы, в которой специализированные ассистенты помогают организовывать задачи, анализировать решения и сопровождать разработку.</p>
-          <div class="product-foot">Текущий этап: <strong>пауза в разработке</strong></div>
-        </article>
+        <article class="product"><div class="product-top"><span class="product-code">PRODUCT / 001</span><span class="status">В разработке</span></div><h3>LIFE GAME</h3><p>Система для работы с финансами, здоровьем и личным развитием. Объединяет данные и помогает отслеживать изменения в ключевых сферах жизни.</p><div class="product-foot">Планируемый запуск: <strong>1 января 2027</strong></div></article>
+        <article class="product"><div class="product-top"><span class="product-code">PRODUCT / 002</span><span class="status">Разработка приостановлена</span></div><h3>AI-SISTEM</h3><p>Мультиагентная AI-система: специализированные ассистенты для организации задач, анализа решений и сопровождения разработки.</p><div class="product-foot">Текущий этап: <strong>пауза в разработке</strong></div></article>
       </div>
     </section>
-
     <section class="section container" id="partnership" aria-labelledby="partnership-title">
-      <div class="split-panel">
-        <div class="feature-copy">
-          <p class="section-kicker">03 / Партнёрство</p>
-          <h2 id="partnership-title">Развивай проекты вместе с <span class="gradient-text">Raymondovich.</span></h2>
-          <p>Чтобы стать партнёром, необязательно иметь собственный продукт или бизнес. Можно присоединиться к действующим партнёрским программам и помогать продвигать проекты экосистемы.</p>
-          <a class="button button-primary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Обсудить партнёрство <span aria-hidden="true">↗</span></a>
-        </div>
-        <aside class="feature-card" aria-label="Принципы партнёрства">
-          <h3>Как устроено сотрудничество</h3>
-          <ul class="feature-list">
-            <li>Участие в конкретных, утверждённых программах.</li>
-            <li>Заранее описанные условия и задачи партнёра.</li>
-            <li>Выбор доступных направлений продвижения.</li>
-            <li>Вознаграждение по правилам соответствующей программы.</li>
-          </ul>
-        </aside>
-      </div>
-      <p class="note">Размер и порядок вознаграждения зависят от конкретной программы. Доход не гарантируется.</p>
-    </section>
-
-    <section class="section container" id="projects" aria-labelledby="projects-title">
-      <div class="section-heading">
-        <div><p class="section-kicker">04 / Для владельцев проектов</p><h2 id="projects-title">Есть собственный продукт? Рассмотрим сотрудничество.</h2></div>
-        <p class="section-intro">Raymondovich открыта к предложениям от владельцев продуктов и проектов, которым интересна совместная работа.</p>
-      </div>
-      <div class="steps">
-        <article class="step"><h3>Представление проекта</h3><p>Вы рассказываете о продукте, его задачах и текущем состоянии.</p></article>
-        <article class="step"><h3>Рассмотрение</h3><p>Мы изучаем цели, аудиторию и перспективы проекта.</p></article>
-        <article class="step"><h3>Обсуждение модели</h3><p>Определяем возможный формат взаимодействия.</p></article>
-        <article class="step"><h3>Условия и договор</h3><p>Согласовываем коммерческие условия и оформляем договорённости.</p></article>
-        <article class="step"><h3>Публикация</h3><p>Размещаем проект после согласования и оформления сотрудничества.</p></article>
-      </div>
-      <p class="note">Подача предложения не означает автоматического принятия или публикации проекта. Каждая инициатива рассматривается индивидуально.</p>
-      <div class="actions project-actions"><a class="button button-secondary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Представить свой проект <span aria-hidden="true">↗</span></a></div>
-    </section>
-
-    <section class="section container" id="club" aria-labelledby="club-title">
-      <div class="club-card">
-        <div>
-          <p class="section-kicker">05 / Сообщество</p>
-          <h2 id="club-title">Клуб <span class="gradient-text">Raymondovich.</span></h2>
-          <p>Отдельное направление экосистемы, которое находится на этапе формирования. Информация о формате участия и условиях будет опубликована после утверждения концепции.</p>
-        </div>
-        <span class="status">Формируется</span>
+      <div class="section-heading"><div><p class="section-kicker">03 / Сотрудничество</p><h2 id="partnership-title">Два пути к партнёрству</h2></div><p class="section-intro">Можно присоединиться к нашим программам или предложить собственный продукт.</p></div>
+      <div class="collab-grid">
+        <article class="feature-card">
+          <h3>Стать партнёром</h3><p>Собственный продукт или бизнес не обязателен. Можно участвовать в продвижении действующих проектов экосистемы.</p>
+          <ul class="feature-list"><li>Участие в утверждённых партнёрских программах.</li><li>Заранее описанные задачи и условия.</li><li>Выбор доступных направлений продвижения.</li><li>Вознаграждение по правилам конкретной программы.</li></ul>
+          <a class="button button-primary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Обсудить партнёрство ↗</a>
+          <p class="note">Размер и порядок вознаграждения зависят от программы. Доход не гарантируется.</p>
+        </article>
+        <article class="feature-card" id="projects">
+          <h3>Предложить свой проект</h3><p>Рассматриваем предложения владельцев продуктов для возможного совместного развития.</p>
+          <div class="steps">
+            <div class="step"><b>01</b><span>Представление</span><small>Продукт, задачи и текущее состояние.</small></div>
+            <div class="step"><b>02</b><span>Рассмотрение</span><small>Цели, аудитория и перспективы.</small></div>
+            <div class="step"><b>03</b><span>Модель</span><small>Формат взаимодействия.</small></div>
+            <div class="step"><b>04</b><span>Договор</span><small>Коммерческие условия и оформление.</small></div>
+            <div class="step"><b>05</b><span>Публикация</span><small>После согласования и подписания.</small></div>
+          </div>
+          <a class="button button-secondary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Представить проект ↗</a>
+          <p class="note">Каждая инициатива рассматривается индивидуально. Подача предложения не гарантирует принятия или публикации.</p>
+        </article>
       </div>
     </section>
-
-    <section class="section container" id="commercial" aria-labelledby="commercial-title">
-      <div class="commercial">
-        <div>
-          <p class="section-kicker">06 / Коммерческая платформа</p>
-          <h2 id="commercial-title">Готовые продукты. Конкретные решения.</h2>
-          <p>На отдельной коммерческой площадке представлены продукты и предложения, доступные для изучения и приобретения.</p>
-        </div>
-        <a class="button button-primary" href="https://raymondovich.online/">Перейти на raymondovich.online <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
-
-    <section class="final-cta container" aria-labelledby="final-title">
-      <p class="section-kicker">RAYMONDOVICH / CONNECT</p>
-      <h2 id="final-title">Возможности начинаются <span class="gradient-text">с взаимодействия.</span></h2>
-      <p>Хотите участвовать в развитии проектов или предложить собственный продукт? Начните с разговора.</p>
-      <div class="actions">
-        <a class="button button-primary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Стать партнёром <span aria-hidden="true">↗</span></a>
-        <a class="button button-secondary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Предложить проект <span aria-hidden="true">↗</span></a>
+    <section class="section container" id="community" aria-label="Дополнительные направления">
+      <div class="mini-grid">
+        <article class="mini-card"><div><p class="section-kicker">04 / Сообщество</p><h3>Клуб Raymondovich</h3><p>Формат участия и условия будут опубликованы после утверждения концепции.</p></div><span class="status">Формируется</span></article>
+        <article class="mini-card" id="commercial"><div><p class="section-kicker">05 / Коммерческая платформа</p><h3>Готовые продукты. Конкретные решения.</h3><p>Отдельная площадка с предложениями, доступными для изучения и приобретения.</p></div><a class="button button-primary" href="https://raymondovich.online/">Перейти ↗</a></article>
       </div>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <span class="footer-brand">RAYMONDOVICH</span>
-      <p class="footer-note">Независимая цифровая экосистема.</p>
-      <div class="footer-links">
-        <a href="#products">Продукты</a>
-        <a href="https://raymondovich.online/">Коммерческая платформа</a>
-        <a href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Связаться</a>
-        <a href="./auth.html">Личный кабинет</a>
-      </div>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="container footer-inner"><span class="footer-brand">RAYMONDOVICH</span><p class="footer-note">Независимая цифровая экосистема.</p><div class="footer-links"><a href="#products">Продукты</a><a href="https://raymondovich.online/">Коммерческая платформа</a><a href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Связаться</a><a href="./auth.html">Личный кабинет</a></div></div></footer>
 </body>
 </html>
