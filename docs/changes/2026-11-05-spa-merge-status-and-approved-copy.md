@@ -40,6 +40,8 @@
 
 - Сохранён исходный SQL seed migration `20261009132738` (включая оба проекта `.ru` и `.online`) и исходная транзакционная граница `BEGIN/COMMIT` migration `20261104185802`; альтернативные branch-only варианты с семантическим дрейфом отклонены.
 
+- Добавлен `tests/architecture/migration-contracts.test.js`: проверяет 14-версионный migration inventory, запрет доступа к temporary admin function для `PUBLIC/anon/authenticated`, RLS/grants для projects, оба seeded проекта, транзакционную границу planning migration и отсутствие destructive `DROP TABLE`/`TRUNCATE`.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
