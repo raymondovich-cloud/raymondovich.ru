@@ -36,7 +36,7 @@
 
 Последний подтверждённый успешный полный pipeline на commit `f42562583d8095efaf0bf9597e2d9fbbe74d0b93`:
 - `npm ci` — SUCCESS.
-- `npm test` — **42 tests passed, 0 failed**.
+- `npm test` — **44 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
 - `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
