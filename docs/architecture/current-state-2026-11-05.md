@@ -1,4 +1,4 @@
-<!-- version 1.1 -->
+<!-- version 1.2 -->
 
 # Снимок текущего состояния Raymondovich.ru перед архитектурной переработкой
 
@@ -483,3 +483,104 @@ Account settings:
 | Публичные правовые страницы | `pages/legal/*.html` | статический контент | Public / соответствующие legal routes |
 
 Покрытие тестами по этой матрице пока не установлено. Для каждой строки требуется определить позитивные, негативные, permission, loading, error, empty и recovery states, а затем связать их с тестами.
+
+
+## 17. Публичные страницы, навигация, Auth routes и hosting
+
+### 17.1. Полная проверка HTML-контрактов
+
+Повторно просмотрены все 16 HTML-документов. Проверены DOM IDs, формы, элементы управления, ссылки, inline scripts и подключённые ES modules.
+
+| Страница | DOM/интерактивные контракты | Вывод |
+|---|---|---|
+| `index.html` | `side`, `top`, `private`, `contact`; кнопки бокового и мобильного меню; inline scripts; logout и sidebar modules | Публичная главная с якорной навигацией, ссылками на продукты, сотрудничество, профиль, настройки, вход и внешние каналы |
+| `pages/about/about.html` | Статический контент, ссылки на главную | Отдельная статическая страница без JS |
+| `pages/products/products.html` | `side`, `ecosystem`, `partners`, `external`; меню; inline script; sidebar modules | Три статических направления; собственных форм/динамических запросов не обнаружено |
+| `pages/cooperation/cooperation.html` | `side`, `own`, `partner`, `external`; меню; inline script; sidebar modules | Три формата развития проектов; статическая презентация |
+| `pages/profile/profile.html` | `side`; меню; inline script; sidebar modules | Демонстрационный профиль, реальные данные не загружаются и редактирование отсутствует |
+| `pages/settings/settings.html` | `profile-form`, `email-form`, `password-form`, сообщения статуса и timezone select | Три работающие по исходному коду формы: имя/фамилия/часовой пояс, смена email, смена пароля |
+| `pages/account/app.html` | Навигация Control Center, account panel, idea dialog/form, динамические dialogs | Закрытая панель владельца; основные представления и часть диалогов создаются в JS |
+| `pages/auth/auth.html` | `auth-form`, email/password, message | Вход |
+| `pages/auth/register.html` | `registration-form`, display-name/email/password, message | Регистрация |
+| `pages/auth/reset-password.html` | `reset-form`, email, message | Запрос письма восстановления |
+| `pages/auth/update-password.html` | `update-password-form`, password/confirmation, message | Установка нового пароля в recovery session |
+| `pages/auth/auth-callback.html` | `message` | Обмен authorization code на session |
+| Четыре `pages/legal/*.html` | Статический текст; у private-conditions есть ссылка на главную | Статические правовые страницы |
+
+Ни на одной из публичных страниц `about`, `products`, `cooperation`, `profile` не обнаружены формы отправки заявок, checkout или динамическое получение каталога. На главной присутствует цена RAYMONDOVICH Private (4 990 ₽, единоразовая оплата/бессрочный доступ), но в проверенном HTML не обнаружен checkout/payment flow: присутствуют ссылки на условия участия и внешние контакты. Это фиксирует только состояние исходников, а не фактический статус продаж.
+
+### 17.2. Профиль, настройки и боковая навигация
+
+- Профиль участника явно помечен как демонстрационная структура: имя, статус, дата регистрации и ID не загружаются из источника данных.
+- Settings page вызывает Application services. При отсутствии сессии показывает ссылку на вход; при ошибке загрузки показывает сообщение. Отдельной route guard/redirect-механики в этой странице не обнаружено.
+- Настройки читают/обновляют профиль через Auth metadata (см. раздел 15.6); формы блокируют submit на время операции и выводят inline-состояния успеха/ошибки.
+- Общая боковая навигация использует обычные ссылки на HTML-документы и локально управляет раскрытием секций/aria-current; SPA Router отсутствует.
+- В публичной навигации присутствуют ссылки на профиль и настройки независимо от текущей сессии. Доступ к settings фактически проверяется внутри страницы; профиль остаётся демонстрационным.
+- На публичной главной и страницах каталога/сотрудничества/профиля/настроек присутствует logout button, обрабатываемый отдельным ES module.
+
+### 17.3. Auth flow и выявленные проблемы переходов
+
+Подтверждены следующие маршруты текущего MPA:
+- Login: `/pages/auth/auth.html`.
+- Registration: `/pages/auth/register.html`.
+- Password reset request: `/pages/auth/reset-password.html`.
+- Password recovery completion: `/pages/auth/update-password.html`.
+- Email confirmation / code callback: `/pages/auth/auth-callback.html`.
+- Private Control Center: `/pages/account/app.html`.
+
+Application service использует callback URL `https://raymondovich.ru/pages/auth/auth-callback.html` и recovery URL `https://raymondovich.ru/pages/auth/update-password.html`.
+
+**Подтверждённый риск role redirect loop для обычного пользователя:**
+1. `getRole(session)` возвращает `session.user.app_metadata.role || "user"`.
+2. Login page проверяет `if (!getRole(data.session))`; значение `"user"` truthy, поэтому проверка не ограничивает вход по роли.
+3. После входа страница перенаправляет на `/pages/account/app.html`.
+4. Control Center допускает только `getRole(session) === "admin"`; для роли user перенаправляет обратно на login page.
+5. Login page при уже существующей сессии перенаправляет любого авторизованного пользователя обратно в Control Center.
+
+Следовательно, для авторизованного пользователя без admin role исходный код формирует цикл перенаправлений между login и Control Center. Наличие такого пользователя в production и фактическое проявление цикла не проверялись. Исправление не выполнялось; это отдельный пункт функциональной миграции и тестирования.
+
+Дополнительные наблюдения:
+- Registration при включённом подтверждении email показывает сообщение о необходимости проверить почту; при полученной сессии перенаправляет в Control Center без отдельной проверки роли.
+- Callback обменивает код на сессию и перенаправляет в Control Center.
+- Recovery page подписывается на `PASSWORD_RECOVERY`, самостоятельно читает session, обновляет пароль, затем вызывает signOut. Это подтверждает ранее зафиксированное нарушение границы Presentation → Infrastructure.
+- Login/register redirect logic не различает доступные пользователю пространства; текущая модель фактически построена вокруг одного admin-only Control Center.
+
+### 17.4. GitHub Pages, DNS и Cloudflare: read-only проверка
+
+Проверены дерево рабочей ветки и доступные read-only данные Cloudflare:
+- В репозитории присутствует корневой `CNAME` с доменом `raymondovich.ru`.
+- DNS zone `raymondovich.ru` в Cloudflare имеет статус active.
+- Четыре A-записи корневого домена указывают на GitHub Pages IP: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+- `www.raymondovich.ru` — CNAME на `raymondovich-cloud.github.io`.
+- Все пять проверенных DNS-записей имеют `proxied: false` (DNS only). Следовательно, HTTP-трафик этих записей не проходит через Cloudflare proxy; Cloudflare zone-level proxy features/rules не являются подтверждённым механизмом маршрутизации текущего сайта.
+- В Cloudflare Pages account project list не найдено проектов. Текущий DNS указывает на GitHub Pages, а не на Cloudflare Pages.
+- Для Cloudflare zone не найден entrypoint ruleset в фазе `http_request_dynamic_redirect`. Это не заменяет полный аудит всех возможных redirect/transform mechanisms, но при DNS-only трафике эти Cloudflare edge rules не обрабатывают запросы к указанным DNS-записям.
+- В проверенных DNS/zone settings `always_use_https` = off, `automatic_https_rewrites` = on, SSL = full. Поскольку DNS records не проксируются через Cloudflare, эти значения нельзя считать подтверждением фактической HTTPS-конфигурации GitHub Pages.
+- В репозитории нет `404.html`, `_redirects`, `_routes.json`, `.nojekyll`, `.github/workflows/` или deployment/build config.
+- GitHub Pages DNS и `CNAME` подтверждают целевую привязку к GitHub Pages, но не доказывают наличие SPA fallback или корректную обработку произвольных client-side routes.
+
+**Архитектурное следствие:** перед переходом на чистые SPA routes требуется отдельное hosting/routing решение. Нужно подтвердить и протестировать прямое открытие, refresh, неизвестный маршрут, query/hash и fallback. Нельзя считать, что GitHub Pages автоматически отдаст `index.html` для будущего URL вроде `/auth/login`. Способ реализации fallback пока не выбран.
+
+Ограничение проверки: GitHub Pages settings API не удалось прочитать через доступный GitHub connector; live HTTP/browser проверка домена через доступный инструмент также не состоялась. Поэтому фактические HTTP status/headers, certificate chain, redirects, cache headers и Pages build/deployment status не подтверждены.
+
+### 17.5. Тестовая и build-инфраструктура
+
+На проверенном commit дерево репозитория содержит 161 entry. Не обнаружены:
+- каталоги/файлы тестов или спецификаций;
+- Playwright, Cypress, Vitest, Jest или другая test runner configuration;
+- `package.json`, package lock или иной manifest зависимостей;
+- bundler/build config (Vite, Webpack, Rollup, Parcel и т. п.);
+- `.github/workflows/` и GitHub Actions workflow files;
+- конфигурации Vercel/Netlify/Cloudflare Pages;
+- `404.html` и SPA fallback config.
+
+Это означает, что тестовая и сборочная инфраструктура в проверенном дереве не зафиксирована. Это не доказывает отсутствие ручных проверок, внешнего CI или настроек вне репозитория.
+
+### 17.6. Границы достоверности и следующий шаг
+
+- HTML, JS и дерево файлов проверены статически в рабочей ветке `architecture/spa-rewrite-2026-11-05`.
+- Cloudflare проверен только GET/read-only API запросами. Никакие DNS, zone settings, rulesets или Pages ресурсы не изменялись.
+- Live browser/HTTP, accessibility, end-to-end, cross-browser и security tests не выполнены.
+- Production Supabase/Auth/data/RLS/grants/Edge Functions не проверялись и не изменялись.
+- `main`, backup branch и `raymondovich.online` не изменялись.
+- Следующий этап: закрыть оставшуюся инвентаризацию и построить полную матрицу переноса с состояниями и тест-кейсами; затем оформить отдельные ADR по hosting fallback/routing, frontend stack/bundler, state management и testing. Реализация SPA по-прежнему не разрешена и не начиналась.
