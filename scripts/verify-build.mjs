@@ -44,7 +44,7 @@ for (const file of htmlFiles(root)) {
   assert.doesNotMatch(html, /\\sstyle\\s*=/i, `Built HTML must not contain style attributes: ${file}`);
   assert.doesNotMatch(
     html,
-    /<script\\b(?![^>]*\\bsrc\\s*=)(?![^>]*type\\s*=\\s*["']application\\/ld\\+json["'])[^>]*>[\\s\\S]*?<\\/script>/i,
+    /<script\b(?![^>]*\bsrc\s*=)(?![^>]*type\s*=\s*["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/i,
     `Built HTML must not contain inline JavaScript (JSON-LD is allowed): ${file}`,
   );
 }
