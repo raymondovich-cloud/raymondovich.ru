@@ -66,7 +66,7 @@
 
 ### 4.2. Router
 
-Реализовать единый Router на базе History API либо выбрать проверенную библиотеку по результатам ADR. Требования:
+Реализовать единый Router через выбранную библиотеку после утверждения frontend ADR. Для временного размещения на GitHub Pages владелец утвердил Hash Router (05.11.2026); это hosting-compatible решение этапа разработки, а не обязательный URL-контракт production. При последующей смене hosting/router mode решение пересматривается через ADR и migration tests. Требования:
 - централизованный реестр маршрутов;
 - сопоставление статических и динамических сегментов пути;
 - query string и hash;
@@ -1360,13 +1360,13 @@ Privacy/legal requirements проверяются для реальных юри
 
 | Topic | Current position | Gate |
 |---|---|---|
-| Hosting and routing | Cloudflare Pages recommended candidate; ADR-001 PROPOSED | Owner decision + staging validation |
+| Hosting and routing | Temporary development: GitHub Pages + Hash Router approved; production hosting unresolved; Cloudflare Pages candidate | Separate production ADR decision + staging validation |
 | Frontend framework | Vue 3 + TypeScript recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
 | Bundler/build tool | Vite 8.x recommended candidate in ADR-002; not approved | Owner review of ADR-002 |
-| Router implementation | Vue Router 5.x recommended candidate if Vue is approved; mode depends on ADR-001 | Owner review + hosting compatibility |
+| Router implementation | Vue Router 5.x conditional candidate if Vue is approved; Hash mode approved for temporary GitHub Pages; production mode unresolved | Owner review of ADR-002 + production hosting compatibility |
 | State management library | Pinia 4.x recommended conditionally if Vue 3 is approved; restricted shared-state scope | Owner review of ADR-003 |
 | Testing toolchain | Vitest + Vue Test Utils + Playwright recommended conditionally; no tools installed | Owner review of ADR-004 |
-| Final physical repository tree | Conceptual boundaries fixed; final tree after ADRs and mapping | Final structure step |
+| Final physical repository tree | Responsibility map documented separately; framework-specific paths remain conditional | Owner review of final repository structure |
 | Ideas/Projects domain lifecycle | Separate tables observed; lifecycle/cardinality unresolved | Domain decision before schema/service refactor |
 | Production Supabase schema/RLS/grants | Not verified; no production read-only audit performed | Explicit read-only authorization |
 | Auth redirect migration | Existing callback/recovery URLs observed; no changes allowed | Compatibility map and E2E tests |
@@ -1386,7 +1386,7 @@ Privacy/legal requirements проверяются для реальных юри
 4. ADR-004 Testing Strategy.
 5. Final Repository Structure, documented separately after the ADR reviews.
 
-ADR-001 существует и остаётся PROPOSED. Его рекомендация Cloudflare Pages не является разрешением на внедрение. ADR-002–004 должны быть исследованы и документированы; framework, bundler, state library и test runner не считаются утверждёнными до соответствующего ADR. Окончательная структура репозитория следует после выбора стека и функционального mapping.
+ADR-001 частично решён: временная среда разработки GitHub Pages + Hash Router утверждена владельцем; production hosting остаётся открытым, а Cloudflare Pages — только кандидат. ADR-002–004 содержат условные рекомендации; framework, bundler, state library и test runner не считаются утверждёнными до решения владельца. Final Repository Structure описывает ответственность каталогов и модулей, при этом framework-specific детали явно помечены как условные.
 
 ### 24.2. Definition of architecture-document completion
 
@@ -1399,11 +1399,11 @@ ADR-001 существует и остаётся PROPOSED. Его рекомен
 Документы архитектурного пакета:
 1. docs/architecture/spa-rewrite-specification.md — консолидированная целевая архитектура и инфраструктурные требования; основной нормативный документ.
 2. docs/architecture/current-state-2026-11-05.md — статическая инвентаризация и migration matrix; доказательства относятся к проверенному Git baseline, а не к runtime certification.
-3. docs/architecture/decisions/adr-001-hosting-and-routing.md — варианты hosting и предложенная рекомендация; статус PROPOSED.
+3. docs/architecture/decisions/adr-001-hosting-and-routing.md — варианты hosting; временный GitHub Pages + Hash Router утверждён, production hosting не выбран.
 4. docs/architecture/decisions/adr-002-frontend-stack.md — сравнение и proposed frontend stack recommendation.
 5. docs/architecture/decisions/adr-003-state-management.md — proposed state management recommendation.
 6. docs/architecture/decisions/adr-004-testing-strategy.md — proposed testing/tooling recommendation.
-7. docs/architecture/final-repository-structure.md — proposed physical repository responsibility map.
+7. docs/architecture/final-repository-structure.md — предлагаемая карта структуры репозитория и ответственности каталогов.
 8. docs/architecture/target-architecture.md — прежняя концептуальная архитектура. Её MPA routing statements superseded данной спецификацией; принципы Clean Architecture остаются применимыми, если не противоречат ей.
 9. docs/changes/ — хронологический журнал решений и изменений.
 
