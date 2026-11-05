@@ -82,6 +82,7 @@ CI workflow работает только на migration branch и вручну�
 - У роли `anon` обнаружены table privileges на `ideas`, включая SELECT/INSERT/UPDATE/DELETE и TRUNCATE/TRIGGER/REFERENCES. Row access закрыт отсутствием anon RLS policy, но RLS не защищает от TRUNCATE; избыточные anon grants требуют отдельного security remediation и явного разрешения владельца.
 - Для `projects` обнаружены CRUD grants у `authenticated`, anon grants не обнаружены.
 - Security Advisor сообщил: **Leaked Password Protection Disabled**. Настройка Supabase Auth не менялась.
+- В `public` найден `SECURITY DEFINER` function `promote_raymondovich_admin(text)`, но `anon` и `authenticated` не имеют права `EXECUTE`; других public functions, доступных anon для `EXECUTE`, запрос не обнаружил.
 - Production Auth Redirect URL allowlist и email templates не проверялись через Dashboard/API и не менялись.
 - Изолированного Supabase test project для integration/RLS tests в рамках этой работы не использовали; реальные RLS tests с несколькими test identities остаются невыполненными.
 
