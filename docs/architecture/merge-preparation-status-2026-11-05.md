@@ -135,7 +135,7 @@ Read-only Cloudflare/DNS inspection:
 - Production cutover: NOT APPROVED.
 - Merge to main: NOT PERFORMED.
 
-**Conclusion:** executable SPA migration is prepared and automated checks are green, but the branch is not approved for production merge. Production hosting/routing, Partner/External scope and security findings require explicit owner decisions. No production or main changes have been made.
+**Conclusion:** executable SPA migration foundation is prepared; unit/build checks are green on the last tested revision, while Playwright E2E on the latest HEAD remains pending. The branch is not approved for production merge. Production hosting/routing, Partner/External scope and security findings require explicit owner decisions. No production or main changes have been made.
 
 
 ## Playwright browser verification — 2026-11-05
