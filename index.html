@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version 3.1 -->
+<!-- version 3.2 -->
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -51,6 +51,31 @@
     @media(max-width:850px){.ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column;gap:9px}}
     @media(max-width:650px){h1{font-size:clamp(18px,5.5vw,30px);line-height:1.12}.container{width:calc(100% - 36px)}.site-header{padding:12px 18px;gap:10px}.wordmark{font-size:10px;letter-spacing:.1em}.nav{gap:8px 11px}.nav a{font-size:10px}.nav .login{padding:5px 8px}.hero{min-height:0;padding:28px 0 30px}.hero:after{right:-290px;width:390px}.hero-copy{font-size:13px}.section{padding:24px 0}.product-grid,.collab-grid,.mini-grid{grid-template-columns:1fr}.product{min-height:0}.feature-card{padding:15px}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.step:last-child{grid-column:1/-1}.mini-card{padding:17px}.footer-inner{align-items:center;flex-direction:column;gap:12px}.footer-legal{align-items:center}.footer-note{text-align:center}.footer-links{justify-content:center;gap:8px 13px}}
     @media(max-width:390px){.nav{max-width:68%;gap:7px 9px}.nav a{font-size:9px}.ecosystem-grid{grid-template-columns:1fr}.actions{align-items:stretch;flex-direction:column}.button{width:100%}}
+
+    .menu-trigger{display:grid;width:34px;height:34px;place-items:center;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--accent-soft);cursor:pointer;font-size:18px;line-height:1;transition:border-color .16s,color .16s}
+    .menu-trigger:hover{border-color:var(--accent);color:var(--text)}
+    .drawer-backdrop{position:fixed;inset:0;z-index:39;background:rgba(0,0,0,.62);opacity:0;visibility:hidden;transition:opacity .24s,visibility .24s}
+    .product-drawer{position:fixed;top:0;bottom:0;left:0;z-index:40;width:30vw;min-width:320px;max-width:560px;padding:28px 22px 24px;overflow-y:auto;border-right:1px solid var(--line);background:linear-gradient(155deg,rgba(27,17,10,.99),rgba(8,7,6,.99) 48%);box-shadow:24px 0 70px rgba(0,0,0,.38);transform:translateX(-102%);transition:transform .28s cubic-bezier(.2,.75,.25,1)}
+    .drawer-open .drawer-backdrop{opacity:1;visibility:visible}
+    .drawer-open .product-drawer{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:30px}
+    .drawer-kicker{margin:0 0 9px;color:var(--accent);font-size:10px;font-weight:700;letter-spacing:.18em}
+    .drawer-title{margin:0;font-size:clamp(23px,2.5vw,34px);font-weight:640;letter-spacing:-.045em;line-height:1.08}
+    .drawer-close{display:grid;width:34px;height:34px;flex:0 0 auto;place-items:center;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--accent-soft);cursor:pointer;font-size:20px}
+    .drawer-intro{margin:0 0 22px;color:var(--muted);font-size:13px}
+    .drawer-products{display:grid;gap:12px}
+    .drawer-product{padding:17px 16px;border:1px solid rgba(255,121,0,.2);border-radius:9px;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.012))}
+    .drawer-product-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:17px}
+    .drawer-product-code{color:var(--muted);font-size:9px;letter-spacing:.13em}
+    .drawer-product .status{white-space:normal;text-align:center}
+    .drawer-product h3{margin:0 0 8px;font-size:22px;letter-spacing:-.04em}
+    .drawer-product p{margin:0 0 14px;color:var(--muted);font-size:12px}
+    .drawer-product-foot{padding-top:10px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:11px}
+    .drawer-product-foot strong{color:var(--accent-soft)}
+    body.drawer-open{overflow:hidden}
+    @media(max-width:900px){.product-drawer{width:30vw;min-width:300px}}
+    @media(max-width:650px){.product-drawer{width:30vw;min-width:0;max-width:none;padding:22px 14px 20px}.drawer-title{font-size:22px}.drawer-product{padding:13px 11px}.drawer-product-top{align-items:flex-start;flex-direction:column;gap:8px}.drawer-product h3{font-size:18px}.drawer-product p{font-size:11px}.drawer-intro{font-size:12px}}
+    @media(max-width:420px){.product-drawer{width:85vw;padding:22px 17px}.drawer-product-top{align-items:center;flex-direction:row}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important}}
   </style>
 </head>
@@ -73,13 +98,36 @@
     </div>
 
   </header>
+
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="product-drawer" id="product-drawer" aria-label="Собственные продукты" aria-hidden="true">
+    <div class="drawer-head">
+      <div><p class="drawer-kicker">02 / СОБСТВЕННЫЕ ПРОДУКТЫ</p><h2 class="drawer-title">Что мы создаём</h2></div>
+      <button class="drawer-close" type="button" aria-label="Закрыть меню" data-close-drawer>×</button>
+    </div>
+    <p class="drawer-intro">Показываем назначение и фактический статус каждого продукта.</p>
+    <div class="drawer-products">
+      <article class="drawer-product">
+        <div class="drawer-product-top"><span class="drawer-product-code">PRODUCT / 001</span><span class="status">В разработке</span></div>
+        <h3>LIFE GAME</h3>
+        <p>Система для работы с финансами, здоровьем и личным развитием. Объединяет данные и помогает отслеживать изменения в ключевых сферах жизни.</p>
+        <div class="drawer-product-foot">Планируемый запуск: <strong>1 января 2027</strong></div>
+      </article>
+      <article class="drawer-product">
+        <div class="drawer-product-top"><span class="drawer-product-code">PRODUCT / 002</span><span class="status">Разработка приостановлена</span></div>
+        <h3>AI-SISTEM</h3>
+        <p>Мультиагентная AI-система: специализированные ассистенты для организации задач, анализа решений и сопровождения разработки.</p>
+        <div class="drawer-product-foot">Текущий этап: <strong>пауза в разработке</strong></div>
+      </article>
+    </div>
+  </aside>
   <main id="top">
     <section class="hero container" aria-labelledby="hero-title">
       <div class="hero-content">
         <p class="eyebrow">Цифровая экосистема</p>
         <h1 id="hero-title">Создаём собственные продукты.<br><span>Развиваем перспективные проекты.</span></h1>
         <p class="hero-copy">RAYMONDOVICH — платформа для создания, развития и продвижения цифровых проектов.<br>Мы самостоятельно разрабатываем собственные продукты, открываем отдельные проекты для участия партнёров и рассматриваем перспективные разработки сторонних авторов для сотрудничества.<br>Здесь объединяются идеи, проекты и люди, готовые вместе создавать и развивать новые продукты.</p>
-        <div class="actions"><a class="button button-primary" href="#products">Наши продукты <span>↘</span></a></div>
+        <div class="actions"><button class="button button-primary" type="button" data-open-drawer>Наши продукты <span>↘</span></button></div>
       </div>
     </section>
     <section class="section container" id="ecosystem" aria-labelledby="ecosystem-title">
@@ -88,13 +136,6 @@
         <article class="ecosystem-card"><span class="card-number">01 / OWN PROJECTS</span><h3>Собственные проекты</h3><p>Продукты и цифровые решения, которые мы самостоятельно разрабатываем и развиваем.</p></article>
         <article class="ecosystem-card"><span class="card-number">02 / PARTNER PROJECTS</span><h3>Партнёрские проекты</h3><p>Направления, к которым можно присоединиться, чтобы совместно создавать, развивать и продвигать продукты.</p></article>
         <article class="ecosystem-card"><span class="card-number">03 / EXTERNAL PROJECTS</span><h3>Сторонние проекты</h3><p>Разработки независимых авторов, которые могут стать частью экосистемы после рассмотрения и согласования условий сотрудничества.</p></article>
-      </div>
-    </section>
-    <section class="section container" id="products" aria-labelledby="products-title">
-      <div class="section-heading"><div><p class="section-kicker">02 / Собственные продукты</p><h2 id="products-title">Что мы создаём</h2></div><p class="section-intro">Показываем назначение и фактический статус каждого продукта.</p></div>
-      <div class="product-grid">
-        <article class="product"><div class="product-top"><span class="product-code">PRODUCT / 001</span><span class="status">В разработке</span></div><h3>LIFE GAME</h3><p>Система для работы с финансами, здоровьем и личным развитием. Объединяет данные и помогает отслеживать изменения в ключевых сферах жизни.</p><div class="product-foot">Планируемый запуск: <strong>1 января 2027</strong></div></article>
-        <article class="product"><div class="product-top"><span class="product-code">PRODUCT / 002</span><span class="status">Разработка приостановлена</span></div><h3>AI-SISTEM</h3><p>Мультиагентная AI-система: специализированные ассистенты для организации задач, анализа решений и сопровождения разработки.</p><div class="product-foot">Текущий этап: <strong>пауза в разработке</strong></div></article>
       </div>
     </section>
     <section class="section container" id="partnership" aria-labelledby="partnership-title">
@@ -126,5 +167,28 @@
       </div>
     </div>
   </footer>
-</body>
+
+  <script>
+    (() => {
+      const body = document.body;
+      const trigger = document.querySelector('.menu-trigger');
+      const drawer = document.getElementById('product-drawer');
+      const openers = document.querySelectorAll('[data-open-drawer]');
+      const closers = document.querySelectorAll('[data-close-drawer]');
+      const setOpen = (open) => {
+        body.classList.toggle('drawer-open', open);
+        trigger.setAttribute('aria-expanded', String(open));
+        drawer.setAttribute('aria-hidden', String(!open));
+        if (open) drawer.querySelector('.drawer-close').focus();
+        else trigger.focus();
+      };
+      trigger.addEventListener('click', () => setOpen(true));
+      openers.forEach((button) => button.addEventListener('click', () => setOpen(true)));
+      closers.forEach((element) => element.addEventListener('click', () => setOpen(false)));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && body.classList.contains('drawer-open')) setOpen(false);
+      });
+    })();
+  </script>
+\n</body>
 </html>
