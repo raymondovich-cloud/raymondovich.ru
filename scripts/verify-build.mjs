@@ -1,9 +1,23 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(fileURLToPath(new URL("..", import.meta.url)), "dist");
+const repositoryRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const root = resolve(repositoryRoot, "dist");
+
+function readSource(relativePath) {
+  return readFileSync(resolve(repositoryRoot, relativePath), "utf8");
+}
+
+function sourceFiles(directory) {
+  return readdirSync(directory).flatMap((name) => {
+    const absolute = resolve(directory, name);
+    return statSync(absolute).isDirectory()
+      ? sourceFiles(absolute)
+      : absolute.endsWith(".js") || absolute.endsWith(".vue") ? [absolute] : [];
+  });
+}
 
 function read(relativePath) {
   const absolutePath = resolve(root, relativePath);
@@ -42,6 +56,22 @@ assert.match(callback, /src="[^"]*authCallback-[^"]+\.js"/, "Auth callback must 
 
 const passwordRecovery = read("pages/auth/update-password.html");
 assert.match(passwordRecovery, /src="[^"]*updatePassword-[^"]+\.js"/, "Password recovery must retain its legacy token-fragment bridge");
+
+const spaMain = readSource("source/presentation/spa/main.js");
+const legacyHashCompat = readSource("source/presentation/spa/legacy-hash-compat.js");
+assert.ok(spaMain.indexOf("legacy-hash-compat.js") < spaMain.indexOf("router/routes.js"), "Legacy hash normalization must run before router creation");
+assert.match(legacyHashCompat, /!legacyHash\.startsWith\("#\/"\)/, "Legacy anchor hashes must be normalized for Hash History");
+
+const routes = readSource("source/presentation/spa/router/routes.js");
+for (const requiredRoute of ["/", "/products", "/cooperation", "/about", "/profile", "/settings", "/legal/:slug", "/auth/login", "/auth/register", "/auth/reset-password", "/auth/callback", "/owner", "/partner", "/external/:projectId"]) {
+  assert.ok(routes.includes(`path: "${requiredRoute}"`), `Missing SPA route: ${requiredRoute}`);
+}
+assert.match(routes, /getRole\(session\) !== "admin"/, "Owner route must reject non-admin sessions");
+
+for (const file of sourceFiles(resolve(repositoryRoot, "source/application"))) {
+  const content = readFileSync(file, "utf8");
+  assert.doesNotMatch(content, /@supabase\/supabase-js|infrastructure\/supabase/, `Application layer must not depend on Supabase SDK: ${file}`);
+}
 
 const preview = read("spa.html");
 assert.match(preview, /noindex,nofollow/i, "The separate SPA preview entry must remain non-indexable");
