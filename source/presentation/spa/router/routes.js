@@ -100,7 +100,7 @@ export const routeRecords = [
     alias: "/pages/account/app.html",
     name: "owner-overview",
     component: () => import("../views/owner/OwnerOverview.vue"),
-    meta: { space: "owner", requiresAuth: true, title: "Owner Control Center" },
+    meta: { space: "owner", layout: "standalone", requiresAuth: true, title: "Owner Control Center" },
   },
   {
     path: "/partner",
