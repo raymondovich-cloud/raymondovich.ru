@@ -1,7 +1,7 @@
 import { onBeforeUnmount, onMounted } from "vue";
 import { logout as signOutAccount } from "../../runtime/auth.js";
 
-export function usePublicNavigation(root, { homePath = "/spa.html#/" } = {}) {
+export function usePublicNavigation(root, { homePath = "/#/" } = {}) {
   const cleanups = [];
 
   function listen(element, event, handler) {
