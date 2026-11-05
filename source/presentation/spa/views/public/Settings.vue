@@ -2,9 +2,9 @@
   <div ref="root" class="settings-page">
     <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-brand"><strong>RAYMONDOVICH</strong><em>Навигация</em></span></div>
     <nav class="side-body" aria-label="Основные разделы">
-    <a class="side-home" href="/spa.html#/" aria-label="Главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b><em>Обзор платформы</em></span></a>
-    <a class="side-home" href="/spa.html#/products" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Каталог продуктов</em></span></a>
-    <a class="side-home" href="/spa.html#/cooperation" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
+    <RouterLink class="side-home" to="/" aria-label="Главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главная страница</b><em>Обзор платформы</em></span></RouterLink>
+    <RouterLink class="side-home" to="/products" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Каталог продуктов</em></span></RouterLink>
+    <RouterLink class="side-home" to="/cooperation" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></RouterLink>
     <details class="p partner-guide">
       <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
       <div class="pd">
@@ -31,15 +31,15 @@
       </div>
     </details>
     <div class="side-divider" role="separator" aria-hidden="true"></div>
-    <a class="side-home profile-link" href="/spa.html#/profile" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
-    <a class="side-home settings-link" href="/spa.html#/settings" aria-current="page" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></a>
+    <RouterLink class="side-home profile-link" to="/profile" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></RouterLink>
+    <RouterLink class="side-home settings-link" to="/settings" aria-current="page" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></RouterLink>
     <div class="side-home help-link" aria-disabled="true"><span class="badge">HLP</span><span class="pn"><b>Помощь</b><em>Скоро</em></span></div>
     <div class="side-home tariffs-link" aria-disabled="true"><span class="badge">TRF</span><span class="pn"><b>Тарифы и пакеты</b><em>Скоро</em></span></div>
     <div class="side-home theme-link" aria-disabled="true"><span class="badge">THM</span><span class="pn"><b>Светлая тема</b><em>Скоро</em></span></div>
     <div class="side-divider" role="separator" aria-hidden="true"></div>
     <button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b><em>Завершить сеанс</em></span></button>
       </nav></aside><div class="scrim"></div>
-    <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/spa.html#/">RAYMONDOVICH</a><a href="/spa.html#/" class="back">Главная</a></div></header>
+    <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><RouterLink class="logo" to="/">RAYMONDOVICH</RouterLink><RouterLink to="/" class="back">Главная</RouterLink></div></header>
     <main class="wrap settings-main">
     <p class="eyebrow">Личный кабинет / Настройки</p>
     <h1>Настройки<br>аккаунта.</h1>
