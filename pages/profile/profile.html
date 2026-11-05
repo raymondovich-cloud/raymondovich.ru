@@ -75,6 +75,9 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 
 .theme-link{cursor:default;user-select:none}
 .theme-link .pn em{color:var(--mute)}
+
+.logout-link{appearance:none;-webkit-appearance:none;width:100%;padding:0;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.logout-link:disabled{opacity:.55;cursor:wait}
 </style></head>
 <body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
@@ -113,6 +116,8 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 <div class="side-home help-link" aria-disabled="true"><span class="badge">HLP</span><span class="pn"><b>Помощь</b><em>Скоро</em></span></div>
 <div class="side-home tariffs-link" aria-disabled="true"><span class="badge">TRF</span><span class="pn"><b>Тарифы и пакеты</b><em>Скоро</em></span></div>
 <div class="side-home theme-link" aria-disabled="true"><span class="badge">THM</span><span class="pn"><b>Светлая тема</b><em>Скоро</em></span></div>
+<div class="side-divider" role="separator" aria-hidden="true"></div>
+<button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b></span></button>
   </nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap profile-main">
@@ -132,4 +137,5 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 </section>
 </main>
 <footer><div class="wrap">© 2026 RAYMONDOVICH — цифровая экосистема.</div></footer>
-<script>(function(){var b=document.body,t=document.querySelector('.side-toggle'),m=document.querySelector('.mob-toggle'),s=document.querySelector('.scrim');function set(o){b.classList.toggle('side-open',o);t.setAttribute('aria-expanded',o);m.setAttribute('aria-expanded',o)}function flip(){set(!b.classList.contains('side-open'))}t.addEventListener('click',flip);m.addEventListener('click',flip);s.addEventListener('click',function(){set(false)});document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});if(window.innerWidth>1100)set(true)})();</script></body></html>
+<script>(function(){var b=document.body,t=document.querySelector('.side-toggle'),m=document.querySelector('.mob-toggle'),s=document.querySelector('.scrim');function set(o){b.classList.toggle('side-open',o);t.setAttribute('aria-expanded',o);m.setAttribute('aria-expanded',o)}function flip(){set(!b.classList.contains('side-open'))}t.addEventListener('click',flip);m.addEventListener('click',flip);s.addEventListener('click',function(){set(false)});document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});if(window.innerWidth>1100)set(true)})();</script><script type="module" src="/source/presentation/account/sidebar-logout.js"></script>
+</body></html>

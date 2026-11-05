@@ -252,6 +252,9 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 
 .theme-link{cursor:default;user-select:none}
 .theme-link .pn em{color:var(--mute)}
+
+.logout-link{appearance:none;-webkit-appearance:none;width:100%;padding:0;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.logout-link:disabled{opacity:.55;cursor:wait}
 </style>
 </head>
 <body>
@@ -292,6 +295,8 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 <div class="side-home help-link" aria-disabled="true"><span class="badge">HLP</span><span class="pn"><b>Помощь</b><em>Скоро</em></span></div>
 <div class="side-home tariffs-link" aria-disabled="true"><span class="badge">TRF</span><span class="pn"><b>Тарифы и пакеты</b><em>Скоро</em></span></div>
 <div class="side-home theme-link" aria-disabled="true"><span class="badge">THM</span><span class="pn"><b>Светлая тема</b><em>Скоро</em></span></div>
+<div class="side-divider" role="separator" aria-hidden="true"></div>
+<button class="side-home logout-link" type="button" aria-label="Выйти из аккаунта"><span class="badge">OUT</span><span class="pn"><b>Выйти</b></span></button>
   </nav>
 </aside>
 <div class="scrim"></div>
@@ -369,5 +374,6 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
   tabs.forEach(function(t,i){t.addEventListener('click',function(){pick(t)});t.addEventListener('keydown',function(e){var d=e.key==='ArrowDown'||e.key==='ArrowRight'?1:e.key==='ArrowUp'||e.key==='ArrowLeft'?-1:0;if(d){e.preventDefault();var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();pick(n)}})});
 })();
 </script>
+<script type="module" src="/source/presentation/account/sidebar-logout.js"></script>
 </body>
 </html>
