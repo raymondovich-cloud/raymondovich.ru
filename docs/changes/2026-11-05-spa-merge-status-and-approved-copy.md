@@ -22,6 +22,9 @@
 - Auth callback теперь обеспечивает создание/обновление `user_profiles` после подтверждения email; callback redirect выбирает `/owner` только для `app_metadata.role=admin`, обычный пользователь возвращается на публичную главную.
 - Разделы Owner Control Center получили стабильные маршруты `/owner`, `/owner/ideas`, `/owner/projects`; переключение представлений синхронизировано с Vue Router и Back/Forward. Добавлен архитектурный тест маршрутов и URL-state.
 
+- Исторические `functional-inventory-and-migration-matrix` и `deep-functional-and-data-migration-map` явно помечены как baseline-снимки до SPA-миграции; актуальный статус вынесен в merge-preparation status.
+- `final-repository-structure.md` синхронизирован с фактическим прогрессом и действующим разрешением на работу в migration branch; production/merge ограничения сохранены.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
