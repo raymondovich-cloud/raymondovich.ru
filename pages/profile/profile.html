@@ -64,6 +64,9 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 .profile-field strong{font-size:1rem;font-weight:500}
 .profile-note{margin:0;padding:18px 24px;color:var(--mute);font-size:.82rem}
 @media(max-width:560px){.profile-identity{align-items:flex-start;padding:26px 18px;gap:16px}.profile-avatar{width:58px;height:58px}.profile-fields{grid-template-columns:1fr}.profile-field:nth-child(odd){border-right:0}}
+
+/* account settings navigation */
+.settings-link .pn em{color:var(--or)}
 </style></head>
 <body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
@@ -97,7 +100,8 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
   </div>
 </details>
 <div class="side-divider" role="separator" aria-hidden="true"></div>
-<a class="side-home profile-link" href="/pages/profile/profile.html" aria-current="page" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
+<a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
+<a class="side-home settings-link" href="/pages/settings/settings.html" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></a>
   </nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap profile-main">

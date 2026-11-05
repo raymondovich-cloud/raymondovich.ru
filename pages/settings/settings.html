@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#080706">
+<meta name="description" content="Настройки профиля и безопасности аккаунта Raymondovich.">
+<title>Настройки — RAYMONDOVICH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080706;--text:#efeae1;--mute:#8f887c;--line:rgba(239,234,225,.13);--line2:rgba(239,234,225,.26);--or:#ff6a1f;--sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;padding-left:64px;background:var(--bg);color:var(--text);font:400 16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;transition:padding-left .35s cubic-bezier(.2,.7,.2,1);overflow-x:hidden}body.side-open{padding-left:340px}a{color:inherit;text-decoration:none}:focus-visible{outline:2px solid var(--or);outline-offset:3px}
+.wrap{width:min(1120px,100% - 48px);margin-inline:auto}header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(8,7,6,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}header .wrap{height:64px;display:flex;align-items:center;justify-content:space-between}.logo{font:700 1rem var(--sans);letter-spacing:.2em}.mob-toggle{display:none;width:52px;height:64px;background:none;border:0;color:var(--text);place-items:center}
+main{padding:clamp(76px,11vw,132px) 0 110px}.eyebrow{font:500 .74rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--or);margin:0 0 24px}h1{font-size:clamp(2.8rem,7vw,6rem);line-height:.96;letter-spacing:-.06em;font-weight:700;max-width:900px;margin:0}.intro{max-width:680px;color:var(--mute);font-size:clamp(1rem,2vw,1.2rem);margin:28px 0 64px}
+.formats{border-top:1px solid var(--line2)}.format{display:grid;grid-template-columns:100px minmax(0,1fr);gap:24px;padding:38px 0;border-bottom:1px solid var(--line2);transition:background .25s}.format:hover{background:linear-gradient(90deg,rgba(255,106,31,.07),transparent 78%)}.number{font:500 .8rem var(--mono);color:var(--or);padding-top:8px}.code{font:500 .7rem var(--mono);letter-spacing:.1em;color:var(--or);margin:0 0 10px}.format h2{font-size:clamp(1.8rem,4vw,3.4rem);line-height:1;letter-spacing:-.045em;margin:0 0 16px}.format p{max-width:680px;color:var(--mute);margin:0;font-size:1.05rem}
+footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);font:400 .72rem var(--mono)}
+.side{position:fixed;left:0;top:0;bottom:0;width:64px;z-index:20;background:#0b0a09;border-right:1px solid var(--line2);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);overflow:hidden;transition:width .35s cubic-bezier(.2,.7,.2,1),transform .35s cubic-bezier(.2,.7,.2,1)}body.side-open .side{width:340px}.side-top{display:flex;align-items:center;height:64px;flex:none;border-bottom:1px solid var(--line);min-width:340px}.side-toggle{width:64px;height:64px;flex:none;background:none;border:0;color:var(--text);cursor:pointer;display:grid;place-items:center;padding:0}.side-toggle:hover,.mob-toggle:hover{color:var(--or)}.burger,.burger::before,.burger::after{display:block;width:18px;height:1.5px;background:currentColor;position:relative;content:""}.burger::before{top:-6px;position:absolute}.burger::after{top:6px;position:absolute}.side-title{font:500 .74rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--or)}.side-body{flex:1;overflow-y:auto;min-width:340px}.side-home{display:flex;align-items:center;min-width:340px;border-bottom:1px solid var(--line);transition:background .2s,color .2s}.side-home:hover{background:linear-gradient(90deg,rgba(255,106,31,.08),transparent 85%)}.side-home:hover .badge{color:var(--or)}.badge{width:64px;height:72px;flex:none;display:grid;place-items:center;font:500 .68rem var(--mono);color:var(--text);letter-spacing:.04em}.pn{display:flex;flex-direction:column;gap:4px;flex:1}.pn b{font:700 1.1rem var(--sans);letter-spacing:-.02em}.pn em{font:500 .68rem var(--mono);text-transform:uppercase;letter-spacing:.06em;font-style:normal;color:var(--mute)}body:not(.side-open) .pn,body:not(.side-open) .side-title{visibility:hidden;opacity:0}.pn,.side-title{transition:opacity .25s .1s}.scrim{display:none}
+@media(max-width:820px){body,body.side-open{padding-left:0}.side{width:340px;transform:translateX(-100%)}body.side-open .side{transform:none}body:not(.side-open) .pn,body:not(.side-open) .side-title{visibility:visible;opacity:1}.mob-toggle{display:grid;margin-left:-20px}.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background:rgba(0,0,0,.6)}.format{grid-template-columns:44px minmax(0,1fr);gap:14px}}
+@media(min-width:1101px){body:not(.side-open){padding-left:340px}body:not(.side-open) .side{width:340px}body:not(.side-open) .pn,body:not(.side-open) .side-title{visibility:visible;opacity:1}}
+@media(max-width:520px){.wrap{width:calc(100% - 40px)}main{padding-top:76px}.intro{margin-bottom:44px}.format{padding:29px 0}}
+
+/* expandable partner guide in sidebar */
+.p{border-bottom:1px solid var(--line)}
+.p>summary{display:flex;align-items:center;gap:0;min-width:340px;height:72px;padding:0;cursor:pointer;list-style:none}
+.p>summary::-webkit-details-marker{display:none}
+.p>summary::after{content:"+";margin:0 24px 0 auto;color:var(--or);font:400 1.4rem/1 var(--mono);transition:transform .2s}
+.p[open]>summary::after{transform:rotate(45deg)}
+.p[open] .badge,.p>summary:hover .badge{color:var(--or)}
+.p .pd{padding:0 22px 20px 64px;font-size:.86rem;color:var(--mute);line-height:1.5}
+.p .ss{list-style:none;margin:0;padding:0;counter-reset:q}
+.p .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
+.p .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
+.p .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+.p .n{font:400 .7rem/1.5 var(--mono);color:var(--mute);margin:12px 0 0}
+
+/* FAQ in sidebar */
+.faq-sidebar>summary{display:flex;align-items:center;gap:0;min-width:340px;height:72px;padding:0;cursor:pointer;list-style:none}
+.faq-sidebar>summary::-webkit-details-marker{display:none}
+.faq-sidebar>summary::after{content:"+";margin:0 24px 0 auto;color:var(--or);font:400 1.4rem/1 var(--mono);transition:transform .2s}
+.faq-sidebar[open]>summary::after{transform:rotate(45deg)}
+.faq-sidebar[open] .badge,.faq-sidebar>summary:hover .badge{color:var(--or)}
+.faq-sidebar .pd{padding:0 22px 20px 64px;font-size:.86rem;color:var(--mute);line-height:1.5}
+.faq-sidebar .ss{list-style:none;margin:0;padding:0;counter-reset:q}
+.faq-sidebar .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
+.faq-sidebar .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
+.faq-sidebar .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
+
+/* profile navigation separator */
+.side-divider{height:1px;min-width:292px;margin:18px 24px;background:linear-gradient(90deg,rgba(255,106,31,.65),var(--line) 55%,transparent);flex:none}
+.profile-link .pn em{color:var(--or)}
+
+.profile-main{padding-top:clamp(76px,11vw,132px);padding-bottom:110px}
+.profile-card{border:1px solid var(--line2);background:linear-gradient(135deg,rgba(255,106,31,.055),transparent 48%);max-width:900px}
+.profile-card-head{display:flex;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid var(--line2);font:500 .7rem var(--mono);letter-spacing:.09em;color:var(--mute)}
+.profile-state{color:var(--or)}
+.profile-identity{display:flex;align-items:center;gap:24px;padding:34px 28px;border-bottom:1px solid var(--line)}
+.profile-avatar{width:76px;height:76px;flex:none;display:grid;place-items:center;border:1px solid rgba(255,106,31,.55);color:var(--or);font:500 .78rem var(--mono);background:rgba(255,106,31,.06)}
+.profile-caption{font:500 .68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 6px}
+.profile-identity h2{font-size:clamp(1.8rem,4vw,2.8rem)}
+.profile-hint{color:var(--mute);margin:8px 0 0;font-size:.92rem}
+.profile-fields{display:grid;grid-template-columns:1fr 1fr}
+.profile-field{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:7px}
+.profile-field:nth-child(odd){border-right:1px solid var(--line)}
+.profile-field span{font:500 .68rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.profile-field strong{font-size:1rem;font-weight:500}
+.profile-note{margin:0;padding:18px 24px;color:var(--mute);font-size:.82rem}
+@media(max-width:560px){.profile-identity{align-items:flex-start;padding:26px 18px;gap:16px}.profile-avatar{width:58px;height:58px}.profile-fields{grid-template-columns:1fr}.profile-field:nth-child(odd){border-right:0}}
+
+.settings-main{padding-top:clamp(76px,11vw,132px);padding-bottom:110px}
+.settings-section{padding:0 0 58px;margin:0 0 58px;border-bottom:1px solid var(--line2)}
+.settings-section-head{display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:24px}
+.settings-index{font:500 .72rem var(--mono);letter-spacing:.08em;color:var(--or);padding-top:8px}
+.settings-section-head h2{font-size:clamp(2rem,4vw,3.2rem);margin:0 0 8px}
+.settings-section-head p,.settings-card-title p{color:var(--mute);margin:0}
+.settings-card{max-width:900px;padding:28px;border:1px solid var(--line2);background:linear-gradient(135deg,rgba(255,106,31,.045),transparent 55%)}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.settings-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.settings-field>span{font:500 .68rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+.settings-field input,.settings-field select{width:100%;min-height:50px;padding:12px 14px;border:1px solid var(--line2);border-radius:0;background:#0b0a09;color:var(--text);font:400 .98rem var(--sans);color-scheme:dark}
+.settings-field input:focus,.settings-field select:focus{outline:1px solid var(--or);border-color:var(--or)}
+.settings-field-wide{grid-column:1/-1}
+.settings-actions{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.settings-submit{min-height:46px;padding:0 20px;border:1px solid var(--or);background:var(--or);color:#100b08;font:600 .82rem var(--sans);cursor:pointer;white-space:nowrap}
+.settings-submit:hover{background:var(--or2)}
+.settings-submit:disabled{opacity:.55;cursor:wait}
+.settings-message{margin:0;min-height:1.4em;color:var(--mute);font-size:.84rem}
+.settings-message[data-state="error"]{color:#ff8b78}
+.settings-message[data-state="success"]{color:#9bd6a7}
+.settings-card-title{margin-bottom:22px}
+.settings-card-title h3{font-size:1.35rem;margin:0 0 5px}
+.settings-card-title strong{color:var(--text);font-weight:500}
+.settings-form{margin-top:18px}
+.settings-access{max-width:900px;padding:24px;border:1px solid var(--line2);color:var(--mute)}
+.settings-access a{color:var(--or);text-decoration:underline;text-underline-offset:4px}
+@media(max-width:680px){.settings-section-head{grid-template-columns:1fr;gap:8px}.settings-grid{grid-template-columns:1fr}.settings-field-wide{grid-column:auto}.settings-card{padding:20px}.settings-actions{align-items:stretch;flex-direction:column-reverse}.settings-submit{width:100%}}
+</style></head>
+<body>
+<aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
+<nav class="side-body" aria-label="Основные разделы">
+<a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b></span></a>
+<a class="side-home" href="/pages/products/products.html" aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b></span></a>
+<a class="side-home" href="/pages/cooperation/cooperation.html" aria-label="Форматы сотрудничества"><span class="badge">COOP</span><span class="pn"><b>Форматы сотрудничества</b><em>Три формата</em></span></a>
+<details class="p partner-guide">
+  <summary aria-label="Как стать партнёром — четыре шага"><span class="badge">HOW</span><span class="pn"><b>Как стать партнёром</b><em>Четыре шага</em></span></summary>
+  <div class="pd">
+    <ol class="ss">
+      <li><div><b>Вступление</b>Получите доступ к RAYMONDOVICH Private и личному кабинету на raymondovich.ru.</div></li>
+      <li><div><b>Знакомство с проектами</b>Изучите доступные партнёрские предложения, условия участия и информацию о проектах.</div></li>
+      <li><div><b>Выбор проекта</b>Выберите подходящее направление и отправьте заявку на участие.</div></li>
+      <li><div><b>Сотрудничество</b>После рассмотрения заявки и взаимного согласия согласуйте условия и приступайте к работе с выбранным проектом.</div></li>
+    </ol>
+    <p class="n">Условия и вознаграждение определяются отдельно для каждого проекта.</p>
+  </div>
+</details>
+
+<details class="p faq-sidebar">
+  <summary aria-label="Частые вопросы — FAQ"><span class="badge">FAQ</span><span class="pn"><b>Частые вопросы</b><em>FAQ</em></span></summary>
+  <div class="pd">
+    <ol class="ss">
+      <li><div><b>Что я получаю в RAYMONDOVICH Private?</b>Доступ к закрытому пространству, партнёрским предложениям и личному кабинету с рабочей инфраструктурой подключённых проектов.</div></li>
+      <li><div><b>Гарантируется ли доход?</b>Нет. Доход не гарантируется: результат зависит от условий конкретного проекта, модели вознаграждения и результатов вашей работы.</div></li>
+      <li><div><b>Нужен ли собственный продукт или бизнес?</b>Нет. Вы можете присоединиться к развитию и продвижению действующих проектов экосистемы в качестве партнёра.</div></li>
+      <li><div><b>Сколько стоит доступ?</b>Доступ в RAYMONDOVICH Private будет платным. Стоимость и порядок оплаты будут объявлены отдельно.</div></li>
+      <li><div><b>Можно ли предложить свой проект?</b>Да. Вы можете представить свой проект для рассмотрения. Сначала мы обсудим его цели и условия возможного сотрудничества; публикация возможна после согласования условий и оформления договорённостей.</div></li>
+    </ol>
+  </div>
+</details>
+<div class="side-divider" role="separator" aria-hidden="true"></div>
+<a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
+  </nav></aside><div class="scrim"></div>
+<header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
+<main class="wrap settings-main">
+<p class="eyebrow">Личный кабинет / Настройки</p>
+<h1>Настройки<br>аккаунта.</h1>
+<p class="intro">Управление персональными данными, контактной информацией и безопасностью учётной записи.</p>
+<div class="settings-access" id="settings-access" role="status" hidden></div>
+<div id="settings-content" hidden>
+<section class="settings-section" aria-labelledby="settings-profile-title">
+  <div class="settings-section-head"><span class="settings-index">01 / PROFILE</span><div><h2 id="settings-profile-title">Профиль</h2><p>Персональные данные и часовой пояс.</p></div></div>
+  <form class="settings-card" id="profile-form">
+    <div class="settings-grid">
+      <label class="settings-field"><span>Имя</span><input name="first_name" autocomplete="given-name" maxlength="80" required></label>
+      <label class="settings-field"><span>Фамилия</span><input name="last_name" autocomplete="family-name" maxlength="80" required></label>
+      <label class="settings-field settings-field-wide"><span>Часовой пояс</span><select name="timezone" id="timezone" required></select></label>
+    </div>
+    <div class="settings-actions"><p class="settings-message" id="profile-message" aria-live="polite"></p><button class="settings-submit" type="submit">Сохранить изменения</button></div>
+  </form>
+</section>
+<section class="settings-section" aria-labelledby="settings-security-title">
+  <div class="settings-section-head"><span class="settings-index">02 / SECURITY</span><div><h2 id="settings-security-title">Безопасность</h2><p>Управление электронной почтой и паролем.</p></div></div>
+  <form class="settings-card settings-form" id="email-form">
+    <div class="settings-card-title"><h3>Электронная почта</h3><p>Текущий адрес: <strong id="current-email">—</strong></p></div>
+    <label class="settings-field"><span>Новый адрес электронной почты</span><input type="email" name="email" autocomplete="email" placeholder="name@example.com" required></label>
+    <div class="settings-actions"><p class="settings-message" id="email-message" aria-live="polite"></p><button class="settings-submit" type="submit">Изменить почту</button></div>
+  </form>
+  <form class="settings-card settings-form" id="password-form">
+    <div class="settings-card-title"><h3>Пароль</h3><p>Используйте не менее 8 символов.</p></div>
+    <div class="settings-grid">
+      <label class="settings-field"><span>Новый пароль</span><input type="password" name="password" autocomplete="new-password" minlength="8" required></label>
+      <label class="settings-field"><span>Повторите новый пароль</span><input type="password" name="password_confirmation" autocomplete="new-password" minlength="8" required></label>
+    </div>
+    <div class="settings-actions"><p class="settings-message" id="password-message" aria-live="polite"></p><button class="settings-submit" type="submit">Изменить пароль</button></div>
+  </form>
+</section>
+</div>
+</main>
+<footer><div class="wrap">© 2026 RAYMONDOVICH — цифровая экосистема.</div></footer>
+<script>(function(){var b=document.body,t=document.querySelector('.side-toggle'),m=document.querySelector('.mob-toggle'),s=document.querySelector('.scrim');function set(o){b.classList.toggle('side-open',o);t.setAttribute('aria-expanded',o);m.setAttribute('aria-expanded',o)}function flip(){set(!b.classList.contains('side-open'))}t.addEventListener('click',flip);m.addEventListener('click',flip);s.addEventListener('click',function(){set(false)});document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});if(window.innerWidth>1100)set(true)})();</script><script type="module" src="/source/presentation/account/settings-page.js"></script>
+</body></html>
