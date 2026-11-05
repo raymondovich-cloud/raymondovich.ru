@@ -1,4 +1,4 @@
-<!-- version 1.2 -->
+<!-- version 1.3 -->
 
 # Безопасность административного блока Raymondovich
 
@@ -101,3 +101,33 @@
 - Проверка grants подтвердила отсутствие SELECT для anon и отсутствие TRUNCATE у authenticated на новых таблицах.
 
 Это подтверждает работу RLS на уровне базы для проверенных сценариев. Это не заменяет тестирование реального браузерного входа, других SQL-операций, всех страниц и внешних интеграций.
+
+
+## 10. Повторный read-only аудит SPA migration — 05.11.2026
+
+Проверка выполнена SELECT-запросами к системным каталогам PostgreSQL и Security Advisor на проекте `yajybgdorhxebbigwjgi`. В рамках проверки не выполнялись DDL/DML, изменение grants/RLS/Auth settings или применение миграций.
+
+### Подтверждено в live schema
+
+- `public.ideas`, `public.projects`, `public.user_profiles`: RLS включён; FORCE RLS выключен.
+- `ideas`: policy `admin manages ideas` ограничивает операции ролью `authenticated`, JWT `app_metadata.role = 'admin'` и `auth.uid() = owner_id`.
+- `projects`: live policy `admin manages projects` использует аналогичные admin/owner predicates.
+- `user_profiles`: INSERT/SELECT/UPDATE ограничены собственным `user_id = auth.uid()`.
+- У `projects` обнаружены CRUD grants для `authenticated`; anon grants не обнаружены.
+- Таблиц с именами, содержащими `partner`, `external`, `member` или `workspace`, в проверенной public schema не обнаружено.
+
+### Новый риск: избыточные grants на ideas
+
+У роли `anon` обнаружены table privileges на `public.ideas`, включая SELECT/INSERT/UPDATE/DELETE, TRUNCATE, TRIGGER и REFERENCES. Отдельной anon RLS policy не обнаружено, поэтому обычный row-level доступ через RLS должен быть закрыт. Однако PostgreSQL RLS не ограничивает TRUNCATE; сам grant остаётся избыточным и требует отдельного устранения.
+
+**Решение:** в рамках SPA migration grants не менялись. Отзыв anon privileges должен выполняться отдельной согласованной миграцией после проверки SQL functions/RPC и безопасного тестирования в isolated environment. До устранения риска не считать grants posture полностью least-privilege.
+
+### Migration history gap
+
+Live policy `admin manages projects` обнаружена в базе, но среди checked-in migrations репозитория её создание не найдено. Необходимо отдельно сверить исторический baseline и обеспечить воспроизводимость схемы. Не создавать дублирующую/конфликтующую policy без проверки фактической migration history.
+
+### Auth Advisor
+
+Security Advisor продолжает сообщать **Leaked Password Protection Disabled**. Настройка не менялась. Включение требует отдельного доступа к Supabase Auth configuration и повторной проверки.
+
+Этот аудит подтверждает только перечисленные системные каталоги, grants и policies на момент проверки; он не является полным security certification.
