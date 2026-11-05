@@ -22,8 +22,17 @@ export async function getAccountSettings() {
 }
 
 export async function updateProfileSettings({ firstName, lastName, timezone }) {
+  const { data: current, error: currentError } = await supabase.auth.getUser();
+  if (currentError) throw normalizeError(currentError);
+  if (!current.user) throw new Error("Необходимо войти в аккаунт.");
+
   const { data, error } = await supabase.auth.updateUser({
-    data: { first_name: firstName.trim(), last_name: lastName.trim(), timezone },
+    data: {
+      ...(current.user.user_metadata || {}),
+      first_name: firstName.trim(),
+      last_name: lastName.trim(),
+      timezone,
+    },
   });
   if (error) throw normalizeError(error);
   return data.user;
