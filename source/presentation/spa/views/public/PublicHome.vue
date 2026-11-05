@@ -71,7 +71,7 @@
           <h2>RAYMONDOVICH Private</h2>
           <p class="intro">Закрытое пространство для участия в партнёрских проектах экосистемы: доступ к коммерческим предложениям и прямая связь с представителями.</p>
           <div class="pr"><strong>4 990 ₽</strong><span>Единоразовая оплата / бессрочный доступ</span></div>
-          <a class="btn" href="/pages/legal/private-conditions.html">Условия участия</a>
+          <RouterLink class="btn" to="/legal/private-conditions">Условия участия</RouterLink>
         </div>
       </section>
     
@@ -90,9 +90,9 @@
       <div class="wrap">
         <div>© 2026 raymondovich.ru (Раймондович.ру). Все права защищены.</div>
         <nav aria-label="Документы">
-          <a href="/pages/legal/privacy.html">Политика конфиденциальности</a>
-          <a href="/pages/legal/terms.html">Пользовательское соглашение</a>
-          <a href="/pages/legal/cookies.html">Файлы куки</a>
+          <RouterLink to="/legal/privacy">Политика конфиденциальности</RouterLink>
+          <RouterLink to="/legal/terms">Пользовательское соглашение</RouterLink>
+          <RouterLink to="/legal/cookies">Файлы куки</RouterLink>
         </nav>
       </div>
     </footer>
