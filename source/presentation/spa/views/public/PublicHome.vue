@@ -46,7 +46,7 @@
       <div class="wrap">
         <button class="mob-toggle" aria-label="Продукты" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="#top">RAYMONDOVICH</a>
         <nav aria-label="Разделы"><a href="#private">Private</a><a href="#contact">Контакты</a></nav>
-        <a class="login" href="/pages/auth/auth.html">Войти</a>
+        <RouterLink class="login" to="/auth/login">Войти</RouterLink>
       </div>
     </header>
     
