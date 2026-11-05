@@ -4,10 +4,8 @@ import { useRouter } from "vue-router";
 import { getRole, getSession, logout } from "../../../../application/auth/authentication.js";
 import {
   createIdea, deleteIdea, listIdeas, updateIdea,
-} from "../../../../application/ideas/idea-service.js";
-import {
   createProjectFromIdea, deleteProject, listProjects, updateProject,
-} from "../../../../application/projects/project-service.js";
+} from "../../../runtime/services.js";
 
 const router = useRouter();
 const user = ref(null);
