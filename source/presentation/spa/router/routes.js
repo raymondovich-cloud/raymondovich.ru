@@ -9,6 +9,7 @@ const About = () => import("../views/public/About.vue");
 const Profile = () => import("../views/public/Profile.vue");
 const Settings = () => import("../views/public/Settings.vue");
 const LegalPage = () => import("../views/public/LegalPage.vue");
+const AuthView = () => import("../views/public/AuthView.vue");
 
 export const routeRecords = [
   {
@@ -52,6 +53,36 @@ export const routeRecords = [
     name: "legal-document",
     component: LegalPage,
     meta: { space: "public", layout: "standalone", title: "Документы — RAYMONDOVICH" },
+  },
+  {
+    path: "/auth/login",
+    name: "auth-login",
+    component: AuthView,
+    meta: { space: "auth", layout: "standalone", authMode: "login", title: "Вход — RAYMONDOVICH" },
+  },
+  {
+    path: "/auth/register",
+    name: "auth-register",
+    component: AuthView,
+    meta: { space: "auth", layout: "standalone", authMode: "register", title: "Регистрация — RAYMONDOVICH" },
+  },
+  {
+    path: "/auth/reset-password",
+    name: "auth-reset",
+    component: AuthView,
+    meta: { space: "auth", layout: "standalone", authMode: "reset", title: "Сброс пароля — RAYMONDOVICH" },
+  },
+  {
+    path: "/auth/update-password",
+    name: "auth-update",
+    component: AuthView,
+    meta: { space: "auth", layout: "standalone", authMode: "update", title: "Новый пароль — RAYMONDOVICH" },
+  },
+  {
+    path: "/auth/callback",
+    name: "auth-callback",
+    component: AuthView,
+    meta: { space: "auth", layout: "standalone", authMode: "callback", title: "Авторизация — RAYMONDOVICH" },
   },
   {
     path: "/owner",
