@@ -39,7 +39,7 @@
 
 После этого commit в ветку добавлялись дальнейшие изменения и документация. Поэтому этот успешный запуск не заменяет обязательный успешный CI на точном финальном HEAD. Последний workflow на актуальном HEAD должен завершиться успешно после прекращения изменений.
 
-CI запускается push-событиями рабочей ветки и вручную; оба job имеют точный guard на `refs/heads/architecture/spa-rewrite-2026-11-05`, поэтому ручной запуск на `main` не выполняет jobs. Workflow не содержит production deploy step. Lockfile generation job имеет отдельное `contents:write` разрешение и коммитит lockfile только в рабочую ветку.
+CI запускается push-событиями рабочей ветки и вручную; единственный build job имеет точный guard на `refs/heads/architecture/spa-rewrite-2026-11-05`, поэтому ручной запуск на `main` не выполняет сборку. Workflow не содержит production deploy step. Lockfile generation/self-commit job удалён: workflow имеет только `contents:read`, использует проверенный `package-lock.json` через `npm ci` и не изменяет ветку из CI.
 
 ## 4. Public Space и утверждённый текст
 
@@ -49,7 +49,8 @@ CI запускается push-событиями рабочей ветки и �
   - PARTNER PROJECTS / «Партнёрские проекты» — «Направления, к которым можно присоединиться, чтобы совместно создавать, развивать и продвигать продукты.»
   - EXTERNAL PROJECTS / «Сторонние проекты» — «Разработки независимых авторов, которые могут стать частью экосистемы после рассмотрения и согласования условий сотрудничества.»
 - Privacy, Terms и Cookies в исходном `main` уже отображали «В разработке»; SPA не подменяет этот статус вымышленным юридическим текстом.
-- SEO отдельных SPA routes (canonical, уникальные description, индексируемый контент, prerender/SSR) остаётся отдельным production decision.
+- Для корневой публичной страницы добавлена техническая SEO-основа: title/description, robots directives, Open Graph и X/Twitter metadata, JSON-LD `Organization`/`WebSite`, `robots.txt` и консервативный `sitemap.xml` только с canonical homepage. Это не означает, что все SPA-маршруты независимо индексируются.
+- Route-specific SEO (canonical, уникальные descriptions, prerender/SSR) остаётся заблокированным до решения по production hosting/routing. Hash fragments не публикуются как отдельные sitemap URLs; подробности — `docs/architecture/seo-strategy.md`.
 
 ## 5. Owner Control Center
 
@@ -166,3 +167,13 @@ CI запускается push-событиями рабочей ветки и �
 - 50 tests passed; 0 failed.
 - This run includes idempotent concurrent idea launch and explicit reporting when project deletion succeeds but source-idea restoration fails.
 - Dependency lockfile install, production build and build-output smoke checks all passed.
+
+
+## SEO foundation — 2026-11-05
+
+- Root homepage metadata extended with Open Graph locale/site name, X/Twitter summary metadata, Googlebot directives and JSON-LD graph.
+- Added `robots.txt` and `sitemap.xml`; sitemap intentionally contains only `https://raymondovich.ru/`.
+- Added `docs/architecture/seo-strategy.md` documenting the Hash Router indexing limitation and production decision gates.
+- No approved social preview image or favicon asset exists in the branch; neither was invented.
+- Route-level SEO, prerender/SSR, canonical host and Search Console verification remain open until production routing/hosting is decided.
+- No production infrastructure was changed.
