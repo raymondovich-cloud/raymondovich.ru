@@ -1,92 +1,14 @@
-<!DOCTYPE html>
-<!-- version 4.13 -->
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://yajybgdorhxebbigwjgi.supabase.co; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; base-uri 'self'; form-action 'self'; object-src 'none'">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="Закрытый центр управления экосистемой Raymondovich.">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="theme-color" content="#050505">
-  <title>RAYMONDOVICH — Control</title>
-  <link rel="stylesheet" href="/source/design/app.css?v=4.13">
-</head>
-<body>
-  <div class="app-shell">
-    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Закрыть меню"></button>
-    <aside class="sidebar" id="main-sidebar" aria-label="Боковая навигация">
-      <p class="sidebar-label">РАБОЧЕЕ ПРОСТРАНСТВО</p>
-      <nav class="main-nav" aria-label="Основная навигация">
-        <button class="nav-item is-active" type="button" data-view="overview"><span class="nav-icon" aria-hidden="true">⌂</span><span>Обзор</span></button>
-        <button class="nav-item" type="button" data-view="ideas"><span class="nav-icon" aria-hidden="true">✳</span><span>Идеи</span><span class="nav-count" id="ideas-count">0</span></button>
-        <button class="nav-item" type="button" data-view="projects"><span class="nav-icon" aria-hidden="true">▦</span><span>Проекты</span><span class="nav-count" id="projects-count">0</span></button>
-      </nav>
-      <div class="sidebar-bottom"><span class="status-dot"></span><span>Личное пространство</span></div>
-    </aside>
-
-    <main class="main-area">
-      <header class="topbar">
-        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Открыть навигацию" aria-expanded="false"><span></span><span></span><span></span></button>
-        <div class="topbar-context"><span class="status-dot"></span>ECOSYSTEM ONLINE</div>
-        <div class="topbar-actions">
-          <div class="account-wrap">
-            <button class="account-trigger" id="account-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="account-trigger-name">RAYMONDOVICH</span><span class="account-avatar">R</span></button>
-            <section class="account-panel" id="account-panel" aria-label="Личный кабинет" hidden>
-              <div class="account-panel-heading"><span class="account-avatar account-avatar-large" id="account-panel-avatar">R</span><div><strong id="account-name">Загрузка профиля…</strong><small id="account-role">Определяем статус…</small></div></div>
-              <div class="account-panel-item"><span>Электронная почта</span><small id="account-email">Загрузка…</small></div>
-              <button class="account-panel-item" type="button" disabled><span>Управление аккаунтом</span><small>СКОРО</small></button>
-              <div class="account-panel-divider"></div>
-              <button class="account-logout" id="logout-button" type="button">↗ <span>Выйти из аккаунта</span></button>
-            </section>
-          </div>
-        </div>
-      </header>
-
-      <section class="page-content" id="workspace-content" aria-live="polite">
-        <div class="loading-state">Подключаем рабочее пространство…</div>
-      </section>
-      <p class="app-status" id="control-status" role="status" aria-live="polite"></p>
-      <footer class="app-footer">RAYMONDOVICH DIGITAL ECOSYSTEM <span>·</span> PRIVATE WORKSPACE</footer>
-    </main>
-  </div>
-
-  <dialog class="idea-dialog" id="idea-dialog">
-    <form id="idea-form" class="idea-form">
-      <div class="dialog-heading">
-        <div><p class="eyebrow">БЫСТРАЯ ФИКСАЦИЯ</p><h2>Новая идея</h2></div>
-        <button class="icon-button" id="close-idea-dialog" type="button" aria-label="Закрыть">×</button>
-      </div>
-      <label class="field-label" for="idea-title">О чём идея?</label>
-      <input id="idea-title" name="title" type="text" maxlength="120" placeholder="Коротко запиши мысль…" autocomplete="off" required>
-      <label class="field-label" for="idea-description">Краткое описание <span>необязательно</span></label>
-      <textarea id="idea-description" name="description" rows="3" maxlength="3000" placeholder="Контекст, детали или просто голосом позже…"></textarea>
-
-      <details class="idea-extra-parameters" id="idea-additional-parameters">
-        <summary><span class="idea-extra-icon" aria-hidden="true">＋</span><span><strong>Дополнительные параметры</strong><small>Цель, доход, расходы и модель заработка</small></span><span class="idea-extra-chevron" aria-hidden="true">⌄</span></summary>
-        <div class="idea-extra-fields">
-          <label class="field-label" for="idea-goal">Цель проекта <span>необязательно</span></label>
-          <textarea id="idea-goal" name="goal" rows="2" maxlength="2000" placeholder="Какой результат должен дать проект?"></textarea>
-          <label class="field-label" for="idea-expected-revenue">Желаемый доход <span>необязательно</span></label>
-          <div class="idea-money-field"><input id="idea-expected-revenue" name="expected_revenue" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Например, 150000"><span>₽</span></div>
-          <label class="field-label" for="idea-estimated-cost">Примерные расходы <span>необязательно</span></label>
-          <div class="idea-money-field"><input id="idea-estimated-cost" name="estimated_cost" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Например, 50000"><span>₽</span></div>
-          <label class="field-label" for="idea-business-model">Модель заработка <span>необязательно</span></label>
-          <textarea id="idea-business-model" name="business_model" rows="2" maxlength="3000" placeholder="За счёт чего проект будет приносить деньги?"></textarea>
-          <label class="field-label" for="idea-concept">Подробное описание концепции <span>необязательно</span></label>
-          <textarea id="idea-concept" name="concept" rows="4" maxlength="8000" placeholder="Как ты видишь проект, его реализацию, аудиторию и развитие?"></textarea>
-          <label class="field-label" for="idea-additional-info">Дополнительная информация <span>необязательно</span></label>
-          <textarea id="idea-additional-info" name="additional_info" rows="3" maxlength="3000" placeholder="Любые важные детали, ограничения или предположения…"></textarea>
-        </div>
-      </details>
-
-      <div class="dialog-actions">
-        <button class="button button-quiet" id="cancel-idea" type="button">Отмена</button>
-        <button class="button button-primary" id="save-idea" type="submit">Сохранить идею</button>
-      </div>
-    </form>
-  </dialog>
-
-  <script type="module" src="/source/presentation/app/app-page.js?v=4.13"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="cache-control" content="no-store" />
+    <title>RAYMONDOVICH — Owner Control Center</title>
+  </head>
+  <body data-spa-route="/pages/account/app.html">
+    <main><p>Перенаправляем в RAYMONDOVICH…</p><a href="/#/pages/account/app.html">Продолжить</a></main>
+    <script type="module" src="/source/presentation/legacy/redirect-to-spa.js"></script>
+  </body>
 </html>
