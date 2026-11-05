@@ -19,6 +19,7 @@ The root document (`index.html`) contains the metadata for the public homepage:
 
 Crawler files:
 
+- Source files live in Vite's `public/` directory: `public/robots.txt` and `public/sitemap.xml`. Vite copies them to the build output root as `/robots.txt` and `/sitemap.xml`.
 - `robots.txt` allows crawling and points to the sitemap.
 - `sitemap.xml` currently lists only the canonical homepage.
 
@@ -73,6 +74,6 @@ This work does not:
 
 - Root metadata is internally consistent with the public homepage.
 - Canonical URL points to the root document.
-- robots.txt and sitemap.xml are syntactically valid and conservative.
+- `public/robots.txt` and `public/sitemap.xml` are copied by Vite to the output root and verified by the build smoke test.
 - Sitemap does not list fragment-only routes as independent canonical URLs.
 - Production route-specific SEO remains explicitly blocked on the hosting/rendering decision.
