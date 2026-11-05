@@ -14,7 +14,7 @@
   border-radius: 22px;
   background: rgba(255,255,255,.02);
 }
-.legal-eyebrow { margin: 0 0 14px; color: #ff8a32; font-size: 11px; font-weight: 700; letter-spacing: .16em; }
+.legal-eyebrow { margin: 0 0 14px; color: var(--rv-color-legal-accent); font-size: 11px; font-weight: 700; letter-spacing: .16em; }
 .legal-card h1 {
   margin: 0 0 22px;
   color: transparent;
