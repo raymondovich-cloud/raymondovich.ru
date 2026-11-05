@@ -8,7 +8,7 @@ export const routeRecords = [
     path: "/",
     name: "public-home",
     component: PublicHome,
-    meta: { space: "public", title: "RAYMONDOVICH" },
+    meta: { space: "public", layout: "standalone", title: "RAYMONDOVICH" },
   },
   {
     path: "/owner",
