@@ -1,7 +1,6 @@
 // version 4.13
 import { getSession, getRole, logout } from "../../application/auth/authentication.js";
-import { createIdea, deleteIdea, listIdeas, updateIdea } from "../../application/ideas/idea-service.js";
-import { createProjectFromIdea, deleteProject, listProjects, updateProject } from "../../application/projects/project-service.js";
+import { createIdea, deleteIdea, listIdeas, updateIdea, createProjectFromIdea, deleteProject, listProjects, updateProject } from "../runtime/services.js";
 
 const content = document.querySelector("#workspace-content");
 const status = document.querySelector("#control-status");
