@@ -74,15 +74,30 @@ export function createAuthenticationService({
 
     async completeAuthCallback(search = "") {
       const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+      let session;
+
       if (!params.has("code")) {
         const { data, error } = await authGateway.getSession();
         if (error) throw normalizeError(error);
-        return data.session;
+        session = data.session;
+      } else {
+        const { data, error } = await authGateway.exchangeCodeForSession(search);
+        if (error) throw normalizeError(error);
+        session = data.session;
       }
 
-      const { data, error } = await authGateway.exchangeCodeForSession(search);
-      if (error) throw normalizeError(error);
-      return data.session;
+      if (session?.user) {
+        try {
+          await profileGateway.ensureProfile(
+            session.user,
+            session.user.user_metadata?.display_name || "",
+          );
+        } catch (profileError) {
+          throw normalizeError(profileError);
+        }
+      }
+
+      return session || null;
     },
 
     subscribeToPasswordRecovery(callback) {
