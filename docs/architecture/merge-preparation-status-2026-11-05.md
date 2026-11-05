@@ -96,7 +96,7 @@ CI запускается push-событиями рабочей ветки и �
   - `20261008184746_temporary_promote_admin`;
   - `20261008185014_lock_temporary_admin_function`;
   - `20261008195529_create_project_management`.
-- Для расширения projects live history содержит `20261104131912_extend_projects_for_idea_inbox`, тогда как в репозитории лежит файл `20261104120000_extend_projects_for_idea_inbox.sql`. Это timestamp/history mismatch, который нужно reconciliate до утверждения, что чистое staging-развёртывание воспроизводит live schema.
+- Для расширения projects live history и имя checked-in файла теперь используют версию `20261104131912_extend_projects_for_idea_inbox`. Само переименование не доказывает идентичность SQL с оригинальным применённым migration из Supabase; это подтверждается только clean staging replay/сопоставлением исходного SQL.
 - Live function `public.promote_raymondovich_admin(target_email text)` имеет `SECURITY DEFINER`, но ACL ограничен `postgres` и `service_role`; роли `anon` и `authenticated` не имеют EXECUTE. Функция не изменялась.
 - Отсутствующие migration files и privilege mismatch не исправлялись в production. Необходимо отдельно восстановить/согласовать migration history, не перезапуская старые миграции вслепую.
 
@@ -126,7 +126,7 @@ CI запускается push-событиями рабочей ветки и �
 ## 10. Текущий статус
 
 **SPA foundation:** IMPLEMENTED IN WORKING BRANCH.  
-**Public routes:** IMPLEMENTED; SEO and browser parity remain.  
+**Public routes:** IMPLEMENTED; homepage technical SEO foundation added; route-level SEO and browser parity remain.  
 **Owner Control Center:** IMPLEMENTED; browser parity and transaction/concurrency verification remain.  
 **Authentication/account:** MIGRATED WITH LEGACY BRIDGES; real Supabase E2E remains.  
 **Partner Workspace:** PLACEHOLDER — NOT OPERATIONAL.  
@@ -177,3 +177,16 @@ CI запускается push-событиями рабочей ветки и �
 - No approved social preview image or favicon asset exists in the branch; neither was invented.
 - Route-level SEO, prerender/SSR, canonical host and Search Console verification remain open until production routing/hosting is decided.
 - No production infrastructure was changed.
+
+
+## Latest CI after SEO and workflow hardening
+
+- Run: `42104763907`
+- Exact tested HEAD: `c9c4502dea4b211ce2a07193ad1fc3a78a3ac53c`
+- Result: SUCCESS.
+- `npm ci --ignore-scripts --no-audit --no-fund`: SUCCESS.
+- `npm test`: **50 passed, 0 failed**.
+- `npm run build`: SUCCESS.
+- `npm run test:build`: SUCCESS (`SPA build smoke checks passed`).
+- The workflow now has a single read-only build job; no CI-side lockfile generation or branch write permission.
+- This CI run verifies the homepage metadata, sitemap and crawler files are present in the branch checkout only insofar as the build includes the root output; the JSON-LD and sitemap were separately syntax-checked in the repository content. It does not validate live production crawl/indexing or route-specific SEO.
