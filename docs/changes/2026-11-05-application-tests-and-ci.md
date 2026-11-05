@@ -17,13 +17,13 @@ Date: 2026-11-05
 
 ## Latest verification
 
-- Workflow run: `42102546920`
-- Tested code commit: `73e6a9d79f464b35ed4455b8f4408625560ab008`
+- Workflow run: `42102770536`
+- Tested code commit: `0d14503d1bd84bb5c60a54e18114a7290d6318fb`
 - Result: success.
-- Unit tests: 42 passed, 0 failed.
+- Unit tests: 44 passed, 0 failed.
 - Production build: passed.
 - Built-output smoke checks: passed.
-- The current branch head subsequently received a documentation-only commit `95525b30f61f0944af16f68f6fac5375007b4815`; executable source and package files were unchanged by that commit.
+- The current branch head subsequently received documentation-only commits; executable source, tests and package files are unchanged from the tested code commit.
 
 ## Scope
 
