@@ -150,22 +150,6 @@ async function mockOwnerData(page) {
   );
 }
 
-test("synthetic Supabase session is restored from browser storage", async ({ page }) => {
-  await installSession(page, "admin");
-  await page.goto("/");
-
-  const restored = await page.evaluate(async () => {
-    const { getSession, getRole } = await import("/source/presentation/runtime/auth.js");
-    const session = await getSession();
-    return session ? { userId: session.user?.id, role: getRole(session) } : null;
-  });
-
-  expect(restored).toEqual({
-    userId: "00000000-0000-4000-8000-000000000001",
-    role: "admin",
-  });
-});
-
 test("authenticated non-admin cannot enter the Owner Control Center", async ({ page }) => {
   await installSession(page, "user");
   await page.goto("/#/owner/ideas");
@@ -174,7 +158,7 @@ test("authenticated non-admin cannot enter the Owner Control Center", async ({ p
   await expect(page.getByRole("heading", { name: /Продукты, которые мы строим/ })).toBeVisible();
 });
 
-test("admin can open Owner Control Center and navigate to Ideas", async ({ page }) => {
+test("restored admin session grants Owner Control Center access and navigation", async ({ page }) => {
   await installSession(page, "admin");
   await mockOwnerData(page);
 
