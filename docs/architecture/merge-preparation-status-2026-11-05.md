@@ -75,7 +75,9 @@ CI workflow работает только на migration branch и вручну�
 - `ideas`: policy `admin manages ideas`, роль `authenticated`, условие — JWT `app_metadata.role = 'admin'` и `auth.uid() = owner_id`; тот же предикат в `WITH CHECK`.
 - `projects`: live policy `admin manages projects` с аналогичными admin/owner predicates.
 - `user_profiles`: отдельные policies ограничивают INSERT/SELECT/UPDATE собственным `user_id = auth.uid()`.
-- В checked-in migrations policy `admin manages projects` не обнаружена, хотя в live schema она есть. Это gap воспроизводимости схемы, который следует закрыть отдельным migration-history review; production не менялся.
+- В live migration history обнаружены четыре версии, отсутствующие в repo: `20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`.
+- Live migration `20261104131912_extend_projects_for_idea_inbox` не совпадает по timestamp с checked-in `20261104120000_extend_projects_for_idea_inbox.sql`.
+- Policy `admin manages projects` присутствует в live schema, но не обнаружена в checked-in migrations. Совокупно это означает, что текущая migration history не воспроизводит live schema и требует отдельной reconciliation до clean staging deployment; production не менялся.
 
 ### Grants и security findings
 
