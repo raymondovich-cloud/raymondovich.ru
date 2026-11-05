@@ -19,7 +19,7 @@
 
 ## Добавлена браузерная матрица
 
-`tests/e2e/access.e2e.js` расширен сценариями:
+`tests/e2e/public-and-routing.e2e.js` расширен сценариями:
 
 - неавторизованный посетитель перенаправляется на login при входе в Owner Control Center;
 - авторизованный пользователь без admin role не получает доступ к Owner Control Center;
