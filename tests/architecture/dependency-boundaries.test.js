@@ -101,12 +101,12 @@ test("Every shared Design token reference is declared and loaded before SPA styl
   const sources = await Promise.all(files.map((path) => readFile(path, "utf8")));
   const tokens = await readFile(join(designRoot, "tokens.css"), "utf8");
   const declared = new Set(
-    [...tokens.matchAll(/(--rv-[\\w-]+)\\s*:/g)].map((match) => match[1]),
+    [...tokens.matchAll(/(--rv-[\w-]+)\s*:/g)].map((match) => match[1]),
   );
 
   for (const source of sources) {
-    for (const match of source.matchAll(/var\\((--rv-[\\w-]+)/g)) {
-      assert.ok(declared.has(match[1]), `Undeclared Design token: ${match[1]}`);
+    for (const match of source.matchAll(/var\((--rv-[\w-]+)/g)) {
+      assert.ok(declared.has(match[1]), \`Undeclared Design token: \${match[1]}\`);
     }
   }
 
