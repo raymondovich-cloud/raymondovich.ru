@@ -1,4 +1,4 @@
-<!-- version 1.2 -->
+<!-- version 1.3 -->
 # Архитектура Raymondovich
 
 ## Принципы
@@ -24,7 +24,9 @@
 
 `presentation → application → domain`
 
-`application → infrastructure / memory` через определённые контракты.
+`infrastructure → application ports` — Infrastructure реализует контракты, определённые Application. Application не импортирует Infrastructure.
+
+Composition root находится в `source/presentation/runtime/` и связывает use cases с Supabase gateways/repositories. Это единственная точка, где Presentation composition может импортировать конкретные Infrastructure adapters.
 
 `domain` не импортирует `presentation`, `infrastructure` или `memory`.
 
