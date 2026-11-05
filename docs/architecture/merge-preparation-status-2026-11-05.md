@@ -31,9 +31,9 @@
 
 Сравнение GitHub Compare выполняется повторно перед финальным PR; текущие значения HEAD/ahead/behind не следует переносить из этого документа без свежей проверки. Base `main` на последнем подтверждённом чтении: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
 
-Последний подтверждённый успешный полный pipeline: workflow run `42104225677`, build job checkout SHA `6148c7f5ccf044b0911e44787f002bf62098ed47`:
+Последний подтверждённый успешный полный pipeline: workflow run `42105782576`, build job checkout SHA `9fd037c900d5c9e2e371ec6783c4e176a622cd9a`:
 - `npm ci` — SUCCESS.
-- `npm test` — **50 tests passed, 0 failed**.
+- `npm test` — **56 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
 - `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
