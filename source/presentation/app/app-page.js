@@ -1,5 +1,5 @@
 // version 4.13
-import { getSession, getRole, logout } from "../../application/auth/authentication.js";
+import { getSession, getRole, logout } from "../runtime/auth.js";
 import { createIdea, deleteIdea, listIdeas, updateIdea, createProjectFromIdea, deleteProject, listProjects, updateProject } from "../runtime/services.js";
 
 const content = document.querySelector("#workspace-content");
