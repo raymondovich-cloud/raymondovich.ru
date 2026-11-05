@@ -31,7 +31,7 @@
 
 Сравнение GitHub Compare выполняется повторно перед финальным PR; текущие значения HEAD/ahead/behind не следует переносить из этого документа без свежей проверки. Base `main` на последнем подтверждённом чтении: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
 
-Последний подтверждённый успешный полный pipeline: workflow run `42105782576`, build job checkout SHA `9fd037c900d5c9e2e371ec6783c4e176a622cd9a`:
+Последний подтверждённый успешный полный pipeline: workflow run `42105900028`, точный HEAD `4b9ca6b65a2b80e6ff1080ef5c02214763d562f2`:
 - `npm ci` — SUCCESS.
 - `npm test` — **56 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
@@ -137,7 +137,7 @@ CI запускается push-событиями рабочей ветки и �
 **Live Supabase RLS:** READ-ONLY SNAPSHOT OBTAINED; integration tests and grant remediation remain.  
 **Security Advisor:** password leak protection warning remains unresolved.  
 **iOS Safari:** NOT VERIFIED.  
-**CI on latest HEAD:** MUST BE RECONFIRMED.  
+**CI on tested HEAD `4b9ca6b65a2b80e6ff1080ef5c02214763d562f2`:** PASSED (run `42105900028`; 56/56 tests). Any subsequent commit requires a new run.  
 **Merge readiness:** NOT READY.  
 **Merge to main / production deployment:** NOT PERFORMED; explicit owner approval required.
 
@@ -192,7 +192,7 @@ CI запускается push-событиями рабочей ветки и �
 - `npm run build`: SUCCESS.
 - `npm run test:build`: SUCCESS (`SPA build smoke checks passed`).
 - The workflow now has a single read-only build job; no CI-side lockfile generation or branch write permission.
-- This CI run verifies the homepage metadata, sitemap and crawler files are present in the branch checkout only insofar as the build includes the root output; the JSON-LD and sitemap were separately syntax-checked in the repository content. It does not validate live production crawl/indexing or route-specific SEO.
+- This earlier CI run predates the final Vite public-asset smoke checks. The current smoke test now verifies that `dist/robots.txt` and `dist/sitemap.xml` match the canonical files in `public/`; it does not validate live production crawl/indexing or route-specific SEO.
 
 
 ## SEO asset build-path correction — 2026-11-05
@@ -201,3 +201,15 @@ CI запускается push-событиями рабочей ветки и �
 - Duplicate root-level copies were removed to prevent source/output ambiguity.
 - Build smoke checks now compare `dist/robots.txt` and `dist/sitemap.xml` with `public/robots.txt` and `public/sitemap.xml`.
 - This verifies build artifact presence, not live HTTP availability; production deployment and crawler access remain unverified.
+
+
+## Latest verified branch checkpoint — 2026-11-05
+
+- Exact tested branch HEAD: `4b9ca6b65a2b80e6ff1080ef5c02214763d562f2`.
+- Workflow run: `42105900028` — SUCCESS.
+- `npm ci --ignore-scripts --no-audit --no-fund` — SUCCESS.
+- `npm test` — **56 passed, 0 failed**.
+- `npm run build` — SUCCESS.
+- `npm run test:build` — SUCCESS, including crawler asset output checks and legacy/Auth bridge checks.
+- Added migration contract tests for the 14-file inventory, historical admin function ACL lock, project RLS/grants, seed records, transaction boundary and destructive DDL guard.
+- The successful run is tied to the exact SHA above; further commits require another CI run.
