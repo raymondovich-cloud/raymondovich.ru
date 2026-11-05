@@ -23,6 +23,13 @@
 - Latest confirmed complete CI before this documentation update: run `42104225677`, build job checkout SHA `6148c7f5ccf044b0911e44787f002bf62098ed47`; 50 tests passed, 0 failed, build and built-output smoke checks passed.
 - CI lockfile generation and installation use a committed `package-lock.json` and `npm ci`.
 
+## Repository-side migration reconciliation
+
+- Restored four migration files missing from the repository using the SQL statements stored in the live migration ledger.
+- Aligned the project extension migration filename to live version `20261104131912`.
+- Compared all 14 checked-in migration files with the live `supabase_migrations.schema_migrations.statements`: versions/names match and SQL statement differences are zero.
+- No migration was applied to production. A clean local replay remains outstanding because seed migrations require isolated admin/LifeGame fixtures.
+
 ## Read-only production Supabase audit
 
 No production changes were made. Read-only schema/policy/grant inspection found:
