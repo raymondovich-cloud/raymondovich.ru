@@ -1,5 +1,5 @@
-// version 1.0
-import { supabase } from "../../infrastructure/supabase/client.js";
+// version 2.0
+import { completeAuthCallback } from "../runtime/auth.js";
 
 const message = document.querySelector("#message");
 
@@ -9,14 +9,12 @@ function setMessage(text, state = "normal") {
 }
 
 async function init() {
-  const { error } = await supabase.auth.exchangeCodeForSession(window.location.search);
-
-  if (error) {
+  try {
+    await completeAuthCallback(window.location.search);
+    window.location.replace("/spa.html#/owner");
+  } catch {
     setMessage("Ссылка авторизации недействительна или срок её действия истёк.", "error");
-    return;
   }
-
-  window.location.replace("/spa.html#/owner");
 }
 
 init();
