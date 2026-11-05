@@ -46,8 +46,21 @@ jobs:
       - name: Verify built routes and authentication bridges
         run: npm run test:build
 
+      - name: Verify Playwright CLI installation
+        run: |
+          node -e "const p = require('./node_modules/playwright/package.json'); console.log('Playwright package:', p.version)"
+          test -f node_modules/playwright/cli.js
+          node --version
+          npm --version
+          npm config get bin-links
+          if [ -x node_modules/.bin/playwright ]; then
+            echo "Playwright executable link is present."
+          else
+            echo "Playwright executable link is absent; invoking the installed CLI entry point directly."
+          fi
+
       - name: Install Chromium and WebKit test browsers
-        run: npx playwright install --with-deps chromium webkit
+        run: node ./node_modules/playwright/cli.js install --with-deps chromium webkit
 
       - name: Run browser end-to-end tests
         run: npm run test:e2e
