@@ -10,7 +10,8 @@ function setMessage(text, state = "normal") {
 
 async function init() {
   try {
-    await completeAuthCallback(window.location.search);
+    const session = await completeAuthCallback(window.location.search);
+    if (!session) throw new Error("Сессия авторизации не создана.");
     window.location.replace("/#/owner");
   } catch {
     setMessage("Ссылка авторизации недействительна или срок её действия истёк.", "error");
