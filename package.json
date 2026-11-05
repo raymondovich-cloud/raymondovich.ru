@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "vue": "^3.5.0",
-    "vue-router": "^5.0.0"
+    "vue-router": "^5.0.0",
+    "@supabase/supabase-js": "^2.117.3"
   },
   "devDependencies": {
     "vite": "^8.0.0",
