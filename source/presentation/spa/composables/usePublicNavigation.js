@@ -1,5 +1,5 @@
 import { onBeforeUnmount, onMounted } from "vue";
-import { signOutAccount } from "../../../application/account/account-session.js";
+import { logout } from "../../runtime/auth.js";
 
 export function usePublicNavigation(root, { homePath = "/spa.html#/" } = {}) {
   const cleanups = [];
@@ -37,7 +37,7 @@ export function usePublicNavigation(root, { homePath = "/spa.html#/" } = {}) {
     button.setAttribute("aria-busy", "true");
     label.textContent = "Выходим…";
     try {
-      await signOutAccount();
+      await logout();
       window.location.assign(homePath);
     } catch (error) {
       label.textContent = originalLabel;
