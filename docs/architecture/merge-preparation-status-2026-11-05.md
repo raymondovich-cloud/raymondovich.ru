@@ -29,19 +29,15 @@
 
 ## 3. Git и CI
 
-На момент последнего сравнения до этого обновления:
-- Base `main`: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
-- Рабочая ветка: ahead **251 commits**, behind **0**.
-- GitHub Compare: **117 changed paths**.
-- Точный HEAD и ahead/behind являются динамическими; их нужно заново проверить непосредственно перед созданием PR.
+Сравнение GitHub Compare выполняется повторно перед финальным PR; текущие значения HEAD/ahead/behind не следует переносить из этого документа без свежей проверки. Base `main` на последнем подтверждённом чтении: `89cf01f7e70a2a421fbe9e431ddf4d1a3644b9a4`.
 
-Последний подтверждённый успешный полный pipeline на commit `f42562583d8095efaf0bf9597e2d9fbbe74d0b93`:
+Последний подтверждённый успешный полный pipeline: workflow run `42102770536`, build job checkout SHA `98d62f7d1b65b69f340cf38a4ebd63017e379393`:
 - `npm ci` — SUCCESS.
 - `npm test` — **44 tests passed, 0 failed**.
 - `npm run build` — SUCCESS.
 - `npm run test:build` — SUCCESS; проверены SPA entry, legacy URL handoffs, Auth bridges, hash compatibility, route registry и dependency boundaries.
 
-После этого commit в ветку добавлялись дальнейшие изменения и документация. Поэтому успешный запуск на `f425625...` не заменяет обязательный успешный CI на точном финальном HEAD. Последний workflow на актуальном HEAD должен завершиться успешно после прекращения изменений.
+После этого commit в ветку добавлялись дальнейшие изменения и документация. Поэтому этот успешный запуск не заменяет обязательный успешный CI на точном финальном HEAD. Последний workflow на актуальном HEAD должен завершиться успешно после прекращения изменений.
 
 CI workflow работает только на migration branch и вручную; он не содержит production deploy step. Lockfile generation job имеет отдельное `contents:write` разрешение и коммитит lockfile только в рабочую ветку.
 
