@@ -125,7 +125,7 @@
 
 ### Migration history gap
 
-Live policy `admin manages projects` обнаружена в базе, но среди checked-in migrations репозитория её создание не найдено. Необходимо отдельно сверить исторический baseline и обеспечить воспроизводимость схемы. Не создавать дублирующую/конфликтующую policy без проверки фактической migration history.
+Live policy `admin manages projects` обнаружена в базе, но среди checked-in migrations репозитория её создание не найдено. Live `supabase_migrations.schema_migrations` также содержит четыре версии, отсутствующие в repo: `20261008184130_create_user_profiles_rls`, `20261008184746_temporary_promote_admin`, `20261008185014_lock_temporary_admin_function`, `20261008195529_create_project_management`. Live migration `20261104131912_extend_projects_for_idea_inbox` отличается timestamp от checked-in `20261104120000_extend_projects_for_idea_inbox.sql`. Необходимо отдельно сверить исторический baseline и обеспечить воспроизводимость схемы. Не создавать дублирующие/конфликтующие migrations или policies без проверки фактической migration history.
 
 ### Auth Advisor
 
