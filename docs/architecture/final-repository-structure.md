@@ -293,24 +293,24 @@ Runbooks обязаны различать проверенные процеду
 
 Фактический список файлов определяется current-state audit. Здесь не утверждается, что целевые модули уже существуют.
 
-## 12. Migration sequence
+## 12. Migration sequence and current progress
 
-1. Владелец рассматривает архитектуру и unresolved ADR.
-2. Завершить functional inventory и route/legacy URL compatibility map.
-3. Утвердить frontend stack, build tool, Router library/mode и test tooling.
-4. Создать минимальный app shell и один vertical slice в изолированной ветке.
-5. Добавить architecture boundary checks и CI до широкой миграции.
-6. Переносить по одному функциональному вертикальному срезу, сохраняя поведение и тесты.
-7. Проверить Auth callback/recovery и permissions на isolated backend.
-8. Перенести остальные модули и четыре workspace.
-9. Проверить accessibility, mobile Safari, performance и failure/recovery.
-10. Staging acceptance и owner review.
-11. Production hosting, DNS и deployment — только отдельное решение и approval.
+1. Architecture and unresolved ADR review — **IN PROGRESS**. ADR-002 frontend stack accepted with scope; ADR-003 state management and ADR-004 full testing strategy remain proposed.
+2. Functional inventory and legacy URL compatibility map — **BASELINE COMPLETED**. Runtime parity verification remains open.
+3. Frontend stack/build/router selection — **COMPLETED FOR THE APPROVED SCOPE**: Vue 3, Vue Router 5, Vite 8, JavaScript ES modules, temporary Hash Router.
+4. SPA shell and first vertical slice — **IMPLEMENTED** in the approved migration branch.
+5. Architecture boundary checks and CI — **IMPLEMENTED**; latest exact-HEAD CI must still be reconfirmed after final edits.
+6. Feature migration — **PARTIALLY COMPLETED**: Public Space, Owner Control Center, Auth and Account Settings have SPA implementations; full browser parity and real Auth end-to-end checks remain.
+7. Auth callback/recovery and permissions on isolated backend — **NOT COMPLETED**; legacy bridges exist, but isolated Supabase integration tests are outstanding.
+8. Four workspaces — **PARTIALLY COMPLETED**: Public and Owner are implemented; Partner and External Project workspaces remain non-operational placeholders pending an approved data/membership/authorization model.
+9. Accessibility, mobile Safari, performance and failure/recovery — **PARTIALLY COMPLETED**: static/architecture checks exist; real-device iOS Safari and browser E2E are outstanding.
+10. Staging acceptance and owner review — **NOT COMPLETED**.
+11. Production hosting, DNS and deployment — separate decision and explicit approval only; no production changes are authorized by this document.
 
-До прямого разрешения владельца implementation stages не начинаются.
+The owner explicitly authorized preparation of the migration branch. That authorization does not approve the unresolved architecture decisions, production infrastructure changes, deployment or merge.
 
-## 13. Unresolved decisions / no authorization
+## 13. Unresolved decisions / authorization boundaries
 
-Открыты: ADR-002 frontend framework/build stack; ADR-003 state library; ADR-004 test/CI tooling; production hosting и route mode; public SEO rendering; Ideas/Projects domain lifecycle/cardinality; ownership Supabase migrations/functions; CI/staging credentials; фактические backup/restore, monitoring, SLO/RPO/RTO.
+Open: ADR-003 state library; ADR-004 full test strategy; production hosting and route mode; public SEO rendering; Partner/External membership and project-scoped authorization model; transactional Ideas/Projects lifecycle; reproducible Supabase migration history and least-privilege grants; isolated CI/staging credentials; verified backup/restore, monitoring, SLO/RPO/RTO.
 
-Документ не разрешает package installation, folder migration, code changes, file deletion, SQL/schema/RLS/grants changes, Edge Functions changes, DNS/Cloudflare/hosting changes, production deployment, merge to `main` или любые действия в `raymondovich.online`.
+This document does not authorize production SQL/schema/RLS/grants changes, Edge Functions changes, Auth dashboard changes, DNS/Cloudflare/hosting changes, production deployment, merge to `main`, or any work in `raymondovich.online`. Approved migration-branch implementation and tests may continue within the existing scope and constraints.
