@@ -102,6 +102,18 @@ export const routeRecords = [
     meta: { space: "owner", layout: "standalone", requiresAuth: true, title: "Owner Control Center" },
   },
   {
+    path: "/owner/ideas",
+    name: "owner-ideas",
+    component: () => import("../views/owner/OwnerOverview.vue"),
+    meta: { space: "owner", layout: "standalone", requiresAuth: true, title: "Ideas — Owner Control Center" },
+  },
+  {
+    path: "/owner/projects",
+    name: "owner-projects",
+    component: () => import("../views/owner/OwnerOverview.vue"),
+    meta: { space: "owner", layout: "standalone", requiresAuth: true, title: "Projects — Owner Control Center" },
+  },
+  {
     path: "/partner",
     name: "partner-workspace",
     component: () => import("../views/partner/PartnerWorkspace.vue"),
