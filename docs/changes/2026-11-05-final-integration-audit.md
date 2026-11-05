@@ -9,9 +9,8 @@
 - Kept `spa.html` as a noindex legacy handoff, not a second SPA.
 - Converted public/account/auth landing pages to explicit SPA route handoffs.
 - Retained the existing Supabase email callback and password-recovery HTML bridges because current implicit-flow links can contain token fragments that conflict with Hash Router.
-- Added support for both implicit session callbacks and PKCE code callbacks; confirmed-user profile provisioning runs after callback completion.
+- Added support for both implicit session callbacks and PKCE code callbacks; after email confirmation, the `user_profiles` row is ensured and redirects are role-aware.
 - Added owner workspace routes for Overview, Ideas and Projects (`/owner`, `/owner/ideas`, `/owner/projects`), with route state reflected in browser history and Back/Forward.
-- Callback completion supports PKCE and existing implicit-flow sessions; after email confirmation, the `user_profiles` row is ensured and redirects are role-aware.
 - Added legacy anchor/hash compatibility before Router initialization.
 
 ## Architecture and quality
@@ -20,7 +19,7 @@
 - Kept Supabase SDK access behind Infrastructure gateways/repositories and Presentation runtime composition.
 - Added unit tests for Domain and Application services, architecture boundary tests and build-output smoke checks.
 - Added Node.js built-in `node:test` runner and CI execution.
-- Latest confirmed complete CI before this documentation update: run `42103202430`, 48 tests passed, build and built-output smoke checks passed.
+- Latest confirmed complete CI before this documentation update: run `42103202430`, build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`; 48 tests passed, 0 failed, build and built-output smoke checks passed.
 - CI lockfile generation and installation use a committed `package-lock.json` and `npm ci`.
 
 ## Read-only production Supabase audit
