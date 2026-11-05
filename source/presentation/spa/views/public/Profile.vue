@@ -50,8 +50,8 @@
       <div class="profile-fields">
         <div class="profile-field"><span>Статус партнёра</span><strong>Не определён</strong></div>
         <div class="profile-field"><span>Участие в Private</span><strong>Не подключено</strong></div>
-        <div class="profile-field"><span>Дата регистрации</span><strong>—</strong></div>
-        <div class="profile-field"><span>ID пользователя</span><strong>—</strong></div>
+        <div class="profile-field"><span>Дата регистрации</span><strong>{{ registrationDate }}</strong></div>
+        <div class="profile-field"><span>ID пользователя</span><strong>{{ user?.id || "—" }}</strong></div>
       </div>
       <p class="profile-note">Статус партнёра и подключение RAYMONDOVICH Private будут отображаться после реализации соответствующих модулей.</p>
     </section>
