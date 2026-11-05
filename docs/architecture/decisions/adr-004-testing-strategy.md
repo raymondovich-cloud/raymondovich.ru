@@ -3,7 +3,7 @@
 **Статус:** PROPOSED — рекомендация для рассмотрения владельцем; не утверждено.  
 **Дата исследования:** 05.11.2026  
 **Область:** только Raymondovich.ru  
-**Зависимости:** ADR-002 (Vue 3 + Vite candidate) and ADR-003 (Pinia candidate) remain PROPOSED.
+**Зависимости:** ADR-002 (Vue 3 + Vue Router 5 + Vite) ACCEPTED WITH SCOPE; ADR-003 (state management) remains PROPOSED.
 
 ## 1. Цель
 
@@ -232,3 +232,18 @@ No test runner, CI workflow, Supabase test resource or deployment configuration 
 - Vitest 4.1 Vite 8 support announcement: https://vitest.dev/blog/vitest-4-1.html
 - Playwright browser support: https://playwright.dev/docs/browsers
 - Playwright device emulation: https://playwright.dev/docs/emulation
+
+
+## 5. Текущий implementation baseline (05.11.2026)
+
+ADR-002 принят с ограничениями: Vue 3, Vue Router 5 и Vite выбраны; TypeScript не утверждён. ADR-003 остаётся PROPOSED, Pinia в текущую реализацию не добавлена.
+
+На migration branch реализован начальный проверяемый baseline:
+
+- Unit tests используют встроенный Node.js `node:test`; отдельная test-runner dependency не требуется.
+- Покрыты Domain rules для Ideas/Projects и Application services для Ideas, Projects, Authentication и Account Settings.
+- Architecture tests проверяют направление зависимостей Domain/Application/Presentation и запрет CSS bindings через `:style`.
+- Build-output smoke checks проверяют корневой SPA entry, legacy URL handoffs, Auth callback/recovery bridges, hash compatibility и route registry.
+- Последний подтверждённый полный pipeline `42102398276` завершился успешно: 42 tests passed, production build и build-output smoke checks — SUCCESS.
+
+Это начальный unit/architecture/build baseline, а не принятие всей стратегии из ADR. Vitest, Vue Test Utils, Playwright, isolated Supabase integration/RLS tests и real-device iOS Safari validation пока не внедрены. Стратегия остаётся PROPOSED до отдельного review владельца и выполнения оставшихся quality gates.
