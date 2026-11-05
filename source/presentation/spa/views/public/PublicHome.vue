@@ -136,7 +136,7 @@ async function logout() {
   label.textContent = "Выходим…";
   try {
     await signOut();
-    window.location.assign("/spa.html#/");
+    window.location.assign("/#/");
   } catch (error) {
     label.textContent = originalLabel;
     button.disabled = false;
