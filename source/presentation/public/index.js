@@ -34,6 +34,8 @@
   const route=currentRoute();
   const template=document.querySelector('#page-'+route);
   if(!template){main.innerHTML='<section class="section bordered"><h1>Страница не найдена</h1><a class="button primary" href="#/">На главную</a></section>';return;}
+  const previousIntro=main.querySelector('[data-system-intro]');
+  if(previousIntro&&previousIntro.open)previousIntro.close();
   main.replaceChildren(template.content.cloneNode(true));
   document.title=routeMeta[route].title;
   if(routeDescription)routeDescription.setAttribute('content',routeMeta[route].description);
@@ -52,6 +54,39 @@
  document.addEventListener('keydown',event=>{if(event.key==='Escape')setOpen(false)});
  window.addEventListener('hashchange',renderRoute);
  window.addEventListener('resize',()=>{if(!mobile()){scrim.classList.remove('visible');body.classList.remove('expanded')}});
+ document.addEventListener('click',event=>{
+  const target=event.target instanceof Element?event.target:null;
+  if(!target)return;
+  const openTrigger=target.closest('[data-intro-open]');
+  if(openTrigger){
+   const dialog=main.querySelector('[data-system-intro]');
+   if(dialog&&!dialog.open){setIntroStep(dialog,1);dialog.showModal();}
+   return;
+  }
+  const dialog=target.closest('[data-system-intro]');
+  if(dialog){
+   if(target.closest('[data-intro-close],[data-intro-skip]')){dialog.close();return;}
+   if(target.closest('[data-intro-prev]')){setIntroStep(dialog,Math.max(1,Number(dialog.dataset.step||1)-1));return;}
+   if(target.closest('[data-intro-next]')){setIntroStep(dialog,Math.min(3,Number(dialog.dataset.step||1)+1));return;}
+   if(target.closest('[data-intro-finish]')){dialog.close();return;}
+   if(target===dialog){dialog.close();return;}
+  }
+ });
+ function setIntroStep(dialog,step){
+  const visual=dialog.querySelector('.system-intro__visual');
+  dialog.dataset.step=String(step);
+  visual.dataset.step=String(step);
+  visual.querySelectorAll('.intro-node').forEach((node,index)=>node.classList.toggle('is-active',index<step));
+  visual.querySelectorAll('.intro-link').forEach((link,index)=>link.classList.toggle('is-active',index<step));
+  dialog.querySelectorAll('[data-intro-slide]').forEach(slide=>{slide.hidden=Number(slide.dataset.introSlide)!==step});
+  dialog.querySelector('[data-intro-count]').textContent=String(step).padStart(2,'0')+' / 03';
+  dialog.querySelector('[data-intro-progress]').setAttribute('aria-valuenow',String(step));
+  dialog.querySelectorAll('.system-intro__progress-track i').forEach((item,index)=>item.classList.toggle('is-active',index<step));
+  dialog.querySelector('[data-intro-prev]').hidden=step===1;
+  dialog.querySelector('[data-intro-next]').hidden=step===3;
+  dialog.querySelector('[data-intro-finish]').hidden=step!==3;
+  dialog.querySelector('[data-intro-skip]').hidden=step===3;
+ }
  document.addEventListener('click',event=>{
   const link=event.target.closest('a[href^="#/"]');
   if(link&&mobile())setOpen(false);
