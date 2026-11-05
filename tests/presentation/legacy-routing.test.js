@@ -22,7 +22,7 @@ test("legacy public URLs hand off to the matching SPA route", () => {
   );
 });
 
-test("legacy redirect preserves query strings and fragment anchors", () => {
+test("legacy redirect carries query strings into router state and preserves fragment anchors", () => {
   assert.equal(
     redirect({
       route: "/pages/products/products.html",
