@@ -60,7 +60,7 @@ form.addEventListener("submit", async (event) => {
   try {
     await updatePassword(passwordInput.value);
     await supabase.auth.signOut();
-    window.location.replace("./auth.html?password=updated");
+    window.location.replace("/pages/auth/auth.html?password=updated");
   } catch (error) {
     setMessage(error.message || "Не удалось изменить пароль.", "error");
   } finally {

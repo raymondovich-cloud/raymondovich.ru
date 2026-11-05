@@ -16,7 +16,7 @@ async function init() {
     return;
   }
 
-  window.location.replace("./app.html");
+  window.location.replace("/pages/account/app.html");
 }
 
 init();

@@ -607,7 +607,7 @@ logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
   try {
     await logout();
-    window.location.replace("./auth.html");
+    window.location.replace("/pages/auth/auth.html");
   } catch (error) {
     logoutButton.disabled = false;
     showStatus(error.message || "Не удалось завершить сеанс.", true);
@@ -618,7 +618,7 @@ async function init() {
   try {
     const session = await getSession();
     if (!session || getRole(session) !== "admin") {
-      window.location.replace("./auth.html");
+      window.location.replace("/pages/auth/auth.html");
       return;
     }
     state.user = session.user;

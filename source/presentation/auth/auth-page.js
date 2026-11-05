@@ -14,7 +14,7 @@ function setMessage(text, state = "normal") {
 
 async function redirectIfAuthenticated() {
   const session = await getSession();
-  if (session) window.location.replace("./app.html");
+  if (session) window.location.replace("/pages/account/app.html");
 }
 
 form.addEventListener("submit", async (event) => {
@@ -28,7 +28,7 @@ form.addEventListener("submit", async (event) => {
       password: passwordInput.value,
     });
     if (!getRole(data.session)) throw new Error("Не удалось определить роль пользователя.");
-    window.location.replace("./app.html");
+    window.location.replace("/pages/account/app.html");
   } catch (error) {
     setMessage(error.message || "Не удалось выполнить вход.", "error");
   } finally {
