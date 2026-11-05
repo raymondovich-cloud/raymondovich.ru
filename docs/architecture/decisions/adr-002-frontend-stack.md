@@ -1,6 +1,6 @@
 # ADR-002: Frontend framework, language and build tooling
 
-**Статус:** PROPOSED — рекомендация для рассмотрения владельцем; не утверждено.  
+**Статус:** ACCEPTED WITH SCOPE — Vue 3 и Vue Router 5 утверждены владельцем 05.11.2026; Vite выбран как build tool для Vue SPA. TypeScript отложен и не считается утверждённым.  
 **Дата исследования:** 05.11.2026  
 **Область:** только Raymondovich.ru  
 **Зависимости:** целевая архитектура SPA/Modular Monolith; ADR-001 частично решён: временный GitHub Pages + Hash Router утверждён, production hosting остаётся открытым.
@@ -153,11 +153,19 @@ Vite не является backend, router, state manager или security bounda
 
 ## 6. Предлагаемый frontend baseline
 
-**Рекомендуемый кандидат для дальнейшего утверждения:**
+**Утверждённая основа:**
 - Vue 3;
-- TypeScript;
-- Vite 8.x;
 - Vue Router 5.x, без experimental APIs;
+- Vite 8.x как build tool для разработки и сборки Vue SPA;
+- обычные CSS files / CSS Modules / scoped styles в рамках Design System; CSS-in-JS не является обязательным;
+- framework-independent Domain and Application layers;
+- route-level lazy loading;
+- static build output для выбранного hosting.
+
+**Отдельно не утверждено:**
+- TypeScript — не включать в обязательный baseline до отдельного решения; первоначальную миграцию допускается вести на JavaScript ES modules;
+- Pinia/state manager — решение остаётся в ADR-003;
+- production hosting, production routing и SEO/prerender — остаются отдельными решениями.
 - обычные CSS files / CSS Modules / scoped styles в рамках Design System; CSS-in-JS не является обязательным;
 - framework-independent Domain and Application layers;
 - route-level lazy loading;
@@ -213,20 +221,22 @@ Vite production browser target must be explicitly checked against the supported 
 
 ## 10. Decision and unresolved points
 
-**Статус:** PROPOSED.
+**Статус:** ACCEPTED WITH SCOPE.
 
-**Рекомендация:** Vue 3 + TypeScript + Vite 8.x + Vue Router 5.x, with framework-independent Domain/Application.
+**Решение владельца от 05.11.2026:** использовать Vue 3 и Vue Router 5 для Presentation и навигации SPA. Vite 8.x принят как build tool, необходимый для SFC compilation, dependency management и static production build. Domain/Application остаются независимыми от Vue.
 
-Before acceptance:
-1. Confirm that owner accepts a framework-based presentation layer rather than native DOM-only modules.
-2. Confirm browser support matrix, especially iOS Safari minimum version.
-3. Verify Vite 8 / Vue / Vue Router compatibility and supported Node.js version at implementation start.
-4. Verify selected Vue Router major release stability and avoid experimental APIs.
-5. Determine public SEO/prerender strategy.
-6. Confirm Vue Router mode supports the approved temporary Hash Router deployment and can be switched for production only after hosting decision.
-7. Create a small isolated proof-of-concept only after owner authorizes implementation/testing; do not touch production.
+**Ограничение решения:** TypeScript не утверждён. Не вводить TypeScript как обязательную технологию без отдельного согласования; JavaScript ES modules остаются допустимым языком реализации. State manager не утверждён и рассматривается отдельно в ADR-003.
 
-ADR-002 does not authorize package installation, config creation, code migration, hosting change or production deployment.
+Остаются обязательными перед/во время реализации:
+1. Проверить совместимость выбранных patch versions Vue, Vue Router и Vite, а также поддерживаемую версию Node.js.
+2. Зафиксировать версии зависимостей в package manifest и lockfile; не использовать плавающий latest.
+3. Использовать стабильные API Vue Router 5, без experimental APIs.
+4. Проверить целевые версии iOS Safari и остальные browser targets.
+5. Сохранить утверждённый для временной тестовой среды GitHub Pages + Hash Router.
+6. Не менять production hosting, DNS, Supabase/Auth, backend или deployment без отдельного разрешения.
+7. SEO/prerender для Public routes решить отдельно до production.
+
+Решение разрешает начать изолированную SPA-реализацию в рабочей ветке и тестовой среде. Оно не разрешает merge в main или production deployment.
 
 ## 11. References
 
