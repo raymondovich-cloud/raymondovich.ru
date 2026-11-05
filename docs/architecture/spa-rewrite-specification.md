@@ -1243,9 +1243,9 @@ Supabase/server остаётся source of truth. Client cache — оптими�
 
 ### 18.2. Hosting and routing status
 
-ADR-001 docs/architecture/decisions/adr-001-hosting-and-routing.md сравнивает GitHub Pages + Hash Router, GitHub Pages 404 fallback, Cloudflare Pages, Worker + GitHub Pages и альтернативный hosting. Cloudflare Pages рекомендован как кандидат для staging, но ADR остаётся PROPOSED. Это не утверждает, что Cloudflare Pages выбран или создан.
+ADR-001 docs/architecture/decisions/adr-001-hosting-and-routing.md сравнивает GitHub Pages + Hash Router, GitHub Pages 404 fallback, Cloudflare Pages, Worker + GitHub Pages и альтернативный hosting. Частичное решение владельца: текущий GitHub Pages сохраняется как временная среда разработки и используется Hash Router. Production hosting остаётся открытым; Cloudflare Pages — только кандидат, не выбранный и не созданный.
 
-До решения текущий hosting не меняется; DNS, Cloudflare zone, Pages, Workers, SSL/TLS и GitHub Pages settings не меняются; production custom domain не переключается; Auth callback/recovery URLs не меняются.
+Текущая конфигурация GitHub Pages сохраняется без изменений. DNS, Cloudflare zone, Pages, Workers, SSL/TLS, production custom domain и Auth callback/recovery URLs не меняются.
 
 После отдельного утверждения hosting ADR требуются staging build, direct URL/refresh tests, static asset 404 tests, TLS/headers/cache tests, Auth E2E, SEO review and rollback rehearsal.
 
