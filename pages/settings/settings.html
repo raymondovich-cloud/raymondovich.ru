@@ -93,6 +93,8 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 .settings-access a{color:var(--or);text-decoration:underline;text-underline-offset:4px}
 @media(max-width:680px){.settings-section-head{grid-template-columns:1fr;gap:8px}.settings-grid{grid-template-columns:1fr}.settings-field-wide{grid-column:auto}.settings-card{padding:20px}.settings-actions{align-items:stretch;flex-direction:column-reverse}.settings-submit{width:100%}}
 .settings-link .pn em{color:var(--or)}
+.help-link{cursor:default;user-select:none}
+.help-link .pn em{color:var(--mute)}
 </style></head>
 <body>
 <aside class="side" id="side" aria-label="Основная навигация"><div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть меню" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Навигация</span></div>
@@ -128,6 +130,7 @@ footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--mute);fo
 <div class="side-divider" role="separator" aria-hidden="true"></div>
 <a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
 <a class="side-home settings-link" href="/pages/settings/settings.html" aria-current="page" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></a>
+<div class="side-home help-link" aria-disabled="true"><span class="badge">HLP</span><span class="pn"><b>Помощь</b><em>Скоро</em></span></div>
   </nav></aside><div class="scrim"></div>
 <header><div class="wrap"><button class="mob-toggle" aria-label="Открыть меню" aria-expanded="false"><i class="burger"></i></button><a class="logo" href="/">RAYMONDOVICH</a><a href="/" class="back">Главная</a></div></header>
 <main class="wrap settings-main">
