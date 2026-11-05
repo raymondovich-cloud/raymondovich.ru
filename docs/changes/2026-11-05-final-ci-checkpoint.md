@@ -5,15 +5,15 @@ Branch: `architecture/spa-rewrite-2026-11-05`
 
 ## Verified executable revision
 
-- Code commit: `b9ce6002d4e0a6f79b9a6784a8b6034c9edfe7be`
-- GitHub Actions run: `42105782576`
+- Code commit: `4b9ca6b65a2b80e6ff1080ef5c02214763d562f2`
+- GitHub Actions run: `42105900028`
 - Result: success.
 - Unit tests: 56 passed, 0 failed.
 - Locked dependency installation: passed.
 - Vite production build: passed.
 - Built-output and architecture smoke checks: passed.
 
-The current branch head after this checkpoint update is `fa061cf83ee99e24450d06fb30df5b49158c2e91`. A comparison against the tested code commit shows documentation-only changes after `b9ce6002`; no source, test, package manifest, lockfile or migration files changed after the successful run.
+The current branch head after this checkpoint update is `f9eb5e4addf271142fa232efed0536869bb4cd2e`. A comparison against the tested code commit shows documentation-only changes after `4b9ca6b6`; no source, test, package manifest, lockfile or migration files changed after the successful run.
 
 ## Repository isolation
 
