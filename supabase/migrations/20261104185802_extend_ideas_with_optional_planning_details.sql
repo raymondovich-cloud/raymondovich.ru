@@ -1,3 +1,8 @@
+-- version 1.0
+-- Add optional planning details to ideas and preserve them when an idea becomes a project.
+
+begin;
+
 alter table public.ideas
   add column if not exists goal text not null default '',
   add column if not exists estimated_cost numeric(14,2),
@@ -24,3 +29,5 @@ comment on column public.ideas.estimated_cost is 'Optional estimated project cos
 comment on column public.ideas.additional_info is 'Additional planning context for the idea.';
 comment on column public.projects.estimated_cost is 'Estimated project cost carried over from the source idea.';
 comment on column public.projects.additional_info is 'Additional planning context carried over from the source idea.';
+
+commit;
