@@ -40,13 +40,14 @@ assert.equal(read("sitemap.xml"), readSource("public/sitemap.xml"), "Vite output
 
 for (const file of htmlFiles(root)) {
   const html = readFileSync(file, "utf8");
-  assert.doesNotMatch(html, /<style\\b/i, `Built HTML must not contain inline CSS: ${file}`);
-  assert.doesNotMatch(html, /\\sstyle\\s*=/i, `Built HTML must not contain style attributes: ${file}`);
-  assert.doesNotMatch(
-    html,
-    /<script\b(?![^>]*\bsrc\s*=)(?![^>]*type\s*=\s*["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/i,
-    `Built HTML must not contain inline JavaScript (JSON-LD is allowed): ${file}`,
-  );
+  assert.doesNotMatch(html, /<style\b/i, \`Built HTML must not contain inline CSS: \${file}\`);
+  assert.doesNotMatch(html, /\sstyle\s*=/i, \`Built HTML must not contain style attributes: \${file}\`);
+
+  const scriptTags = html.match(/<script\b[^>]*>/gi) || [];
+  for (const tag of scriptTags) {
+    if (/type=["']application\/ld\+json["']/i.test(tag)) continue;
+    assert.match(tag, /\bsrc\s*=/i, \`Built HTML must not contain inline JavaScript: \${file}\`);
+  }
 }
 
 const index = read("index.html");
