@@ -6,9 +6,30 @@
 **Дата:** 05.11.2026  
 **Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`  
 **Основная спецификация:** `docs/architecture/spa-rewrite-specification.md`  
-**Связанные решения:** ADR-001 частично утверждён (временный GitHub Pages + Hash Router); ADR-002–004 остаются PROPOSED.
+**Связанные решения:** ADR-001 частично утверждён (временный GitHub Pages + Hash Router); ADR-002 ACCEPTED WITH SCOPE (Vue 3, Vue Router 5, Vite 8; TypeScript не утверждён); ADR-003 и ADR-004 остаются PROPOSED.
 
-> Документ задаёт целевое распределение ответственности. Он не является командой немедленно создать все каталоги. Framework/toolchain ADR-002–004 остаются PROPOSED. Vue/Vite/Pinia/Vitest/Playwright-пути являются условными. Создавать только каталоги с реальными файлами; пустые директории не коммитить.
+ > Документ задаёт целевое распределение ответственности. Он не является командой немедленно создать все каталоги. Vue 3, Vue Router 5 и Vite 8 уже выбраны для текущей SPA реализации. TypeScript не утверждён; Pinia, Vitest, Vue Test Utils и Playwright остаются кандидатами, а не внедрёнными зависимостями. Текущий тестовый baseline использует встроенный Node.js `node:test`. Создавать только каталоги с реальными файлами; пустые директории не коммитить.
+
+
+## 0. Фактическая реализация на 05.11.2026
+
+Этот раздел фиксирует текущую migration branch, а не меняет статус PROPOSED у целевой карты ниже.
+
+| Responsibility | Current implementation |
+|---|---|
+| SPA entry | `index.html` |
+| Router and route registry | `source/presentation/spa/router/routes.js` |
+| SPA composition | `source/presentation/spa/main.js`, `App.vue` |
+| Hosting/hash compatibility | `source/presentation/spa/legacy-hash-compat.js`, legacy redirect module |
+| Presentation runtime composition | `source/presentation/runtime/` |
+| Domain rules | `source/domain/ideas/`, `source/domain/projects/` |
+| Application use cases | `source/application/ideas/`, `projects/`, `auth/`, `account/` |
+| Supabase adapters | `source/infrastructure/supabase/gateways/`, `repositories/` |
+| Design system CSS | `source/design/` |
+| Unit and architecture tests | `tests/application/`, `tests/domain/`, `tests/architecture/` |
+| Build-output checks | `scripts/verify-build.mjs` |
+
+Partner Workspace and External Project Workspace are placeholders. Their membership model and server-side project authorization are not implemented. The legacy Auth callback and password-recovery pages remain compatibility bridges for existing Supabase redirect contracts.
 
 ## 1. Принципы
 
