@@ -4,7 +4,7 @@ import {
   updateProfileSettings,
   updateAccountEmail,
   updateAccountPassword,
-} from "../../application/account/account-settings.js";
+} from "../runtime/account-settings.js";
 
 const access = document.querySelector("#settings-access");
 const content = document.querySelector("#settings-content");
