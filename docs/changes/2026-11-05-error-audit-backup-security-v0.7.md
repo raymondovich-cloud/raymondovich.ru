@@ -151,3 +151,31 @@
 - `main`, backup branch и `raymondovich.online` не затрагивались.
 - Production Supabase, Auth, пользовательские данные, RLS, grants, Edge Functions, DNS, Cloudflare и hosting не затрагивались.
 - SQL не исполнялся; runtime- и browser-тесты не запускались.
+
+
+## Дополнение: функциональная инвентаризация — этап 3
+
+**Дата:** 05.11.2026  
+**Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`
+
+В документ аудита добавлен раздел 17: статическая проверка всех 16 HTML-документов, DOM IDs, форм, кнопок, ссылок, inline scripts и ES modules; уточнены Profile/Settings, sidebar navigation и Auth redirects.
+
+Выявлено:
+- Profile page остаётся демонстрационной и не подключена к реальным данным.
+- На главной показана цена RAYMONDOVICH Private, но checkout/payment flow в проверенном HTML не обнаружен.
+- Обычный пользователь с активной сессией потенциально попадает в redirect loop: login page перенаправляет его в Control Center, а Control Center допускает только admin и возвращает на login.
+- Текущие Auth URL используют отдельные HTML-файлы; SPA route fallback ещё не существует.
+- DNS корневого домена и www указывают на GitHub Pages; записи Cloudflare DNS-only, Cloudflare Pages projects не обнаружены.
+- В репозитории не обнаружены test runner, тестовые файлы, package manifest, bundler/build config, GitHub Actions workflows, `404.html` или SPA fallback config.
+- Hosting fallback/routing должен быть решён и проверен до внедрения чистых SPA routes.
+
+Cloudflare проверялся read-only. Настройки DNS, Cloudflare, hosting, GitHub Pages и production не изменялись. Live HTTP/browser проверка не состоялась, поэтому фактические status/headers/redirects/certificate и runtime поведение не подтверждены.
+
+## Границы изменений
+
+- Изменены только документ аудита и этот changelog в рабочей ветке.
+- Прикладные HTML/CSS/JS, SQL, тесты и hosting config не изменялись.
+- `main`, backup branch и `raymondovich.online` не затрагивались.
+- Production Supabase/Auth/data/RLS/grants/Edge Functions не затрагивались.
+- Cloudflare DNS, zone settings, rulesets и Pages resources не изменялись.
+- SPA implementation не начиналась.
