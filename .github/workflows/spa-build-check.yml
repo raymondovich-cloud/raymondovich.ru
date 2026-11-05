@@ -14,44 +14,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  lockfile:
-    if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
-    name: Generate and commit dependency lockfile
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Check out migration branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Generate npm lockfile
-        run: npm install --package-lock-only --package-lock=true --ignore-scripts --no-audit --no-fund
-
-      - name: Commit lockfile when changed
-        run: |
-          git add package-lock.json
-          if ! git diff --cached --quiet -- package-lock.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "build: lock frontend dependencies"
-            git fetch origin "${GITHUB_REF_NAME}"
-            git rebase "origin/${GITHUB_REF_NAME}"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
-
   build:
     if: github.ref == 'refs/heads/architecture/spa-rewrite-2026-11-05'
-    needs: lockfile
-    name: Run tests and production build
+    name: Run tests, production build and browser E2E
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -63,7 +28,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.18.0
           cache: npm
 
       - name: Install locked dependencies
@@ -80,23 +45,6 @@ jobs:
 
       - name: Verify built routes and authentication bridges
         run: npm run test:build
-
-      - name: Install Playwright Chromium and WebKit browsers
-        run: npx playwright install --with-deps chromium webkit
-
-      - name: Run browser end-to-end tests
-        run: npm run test:e2e
-
-      - name: Upload Playwright diagnostics on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-diagnostics
-          path: |
-            test-results/
-            playwright-report/
-          if-no-files-found: ignore
-          retention-days: 7
 
       - name: Install Chromium and WebKit test browsers
         run: npx playwright install --with-deps chromium webkit
