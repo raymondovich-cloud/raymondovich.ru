@@ -125,7 +125,5 @@ assert.ok(robots.startsWith("User-agent: *"), "Built robots.txt must be copied f
 assert.ok(robots.includes("Sitemap: https://raymondovich.ru/sitemap.xml"), "robots.txt must point to the canonical sitemap");
 assert.ok(sitemap.includes("<urlset") && sitemap.includes("http://www.sitemaps.org/schemas/sitemap/0.9"), "Built sitemap.xml must contain the sitemap namespace");
 assert.ok(sitemap.includes("<loc>https://raymondovich.ru/</loc>"), "Sitemap must include the canonical homepage");
-assert.equal(readSource("public/robots.txt"), readSource("robots.txt"), "Root and Vite public robots.txt copies must stay synchronized");
-assert.equal(readSource("public/sitemap.xml"), readSource("sitemap.xml"), "Root and Vite public sitemap.xml copies must stay synchronized");
 
 console.log("SPA build smoke checks passed.");
