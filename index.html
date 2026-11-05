@@ -37,11 +37,23 @@
     .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:14px 0}.step{padding:11px 10px;border:1px solid rgba(255,255,255,.09);border-radius:7px;background:rgba(255,255,255,.025)}.step b{display:block;margin-bottom:5px;color:var(--accent);font-size:10px}.step span{display:block;font-size:11px;font-weight:650;line-height:1.3}.step small{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}
     .note{margin:10px 0 0;color:var(--muted);font-size:10px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 17px}.mini-card h3{margin-bottom:6px;font-size:19px}.mini-card p{margin:0;color:var(--muted);font-size:11px}.mini-card .status{flex:0 0 auto}.community-card{flex-direction:column;align-items:center;text-align:center;gap:12px}.community-card h3{margin-bottom:8px}
     #community .mini-grid{grid-template-columns:1fr}
-    .private-description{max-width:680px;margin:0 auto;color:var(--muted);font-size:13px;line-height:1.65}
+    .private-heading{max-width:780px}
+    .private-description{max-width:780px;margin:0 auto;color:var(--muted);font-size:13px;line-height:1.7}
     .private-price{margin:2px 0 0;color:var(--text);font-size:clamp(28px,4vw,38px);font-weight:700;letter-spacing:-.045em}
     .private-price small{display:block;margin-top:3px;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
-    .private-terms{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin:4px 0 0;padding:0;list-style:none;color:var(--muted);font-size:11px}
-    .private-terms li:before{margin-right:6px;color:var(--accent);content:"•"}
+    .private-benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:820px;text-align:left}
+    .private-benefit{display:flex;align-items:flex-start;gap:13px;padding:16px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.015)}
+    .private-benefit-number{flex:0 0 auto;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.08em}
+    .private-benefit h4{margin:0 0 5px;color:var(--text);font-size:13px;font-weight:650}
+    .private-benefit p{margin:0;color:var(--muted);font-size:11px;line-height:1.6}
+    .private-conditions{width:100%;max-width:820px;text-align:left}
+    .private-conditions summary{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border:1px solid var(--border);border-radius:999px;color:var(--text);font-size:11px;cursor:pointer;list-style:none;transition:border-color .2s,color .2s}
+    .private-conditions summary::-webkit-details-marker{display:none}
+    .private-conditions summary:after{content:"+";margin-left:9px;color:var(--accent);font-size:15px}
+    .private-conditions[open] summary:after{content:"−"}
+    .private-conditions summary:hover{border-color:var(--accent);color:var(--accent-soft)}
+    .private-conditions p{max-width:780px;margin:12px auto 0;color:var(--muted);font-size:11px;line-height:1.65}
+    @media(max-width:600px){.private-benefits{grid-template-columns:1fr}.private-benefit{padding:14px}}
     .site-footer{margin-top:20px;border-top:1px solid rgba(255,255,255,.08)}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 0}.footer-brand{font-size:11px;font-weight:700;letter-spacing:.13em}.footer-note{margin:0;color:var(--muted);font-size:10px}.footer-links{display:flex;flex-wrap:wrap;gap:15px}.footer-links a{color:var(--muted);font-size:10px;text-decoration:none}.footer-links a:hover{color:var(--text)}
     .footer-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px 0}
     .footer-socials{display:flex;align-items:center;gap:13px;flex:0 0 auto}
@@ -159,18 +171,33 @@
     <section class="section container" id="community" aria-label="Дополнительные направления">
       <div class="mini-grid">
         <article class="mini-card community-card">
-          <div>
-            <h3 class="gradient-text">RAYMONDOVICH| PRIVATE</h3>
-            <p class="private-description">Доступ к закрытым партнёрским предложениям экосистемы Raymondovich. Выбирайте подходящие проекты, присоединяйтесь к их развитию и получайте доход от совместной работы.</p>
+          <div class="private-heading">
+            <h3 class="gradient-text">RAYMONDOVICH | PRIVATE</h3>
+            <p class="private-description">Закрытое пространство для участия в партнёрских проектах экосистемы Raymondovich. Получайте доступ к коммерческим предложениям, выбирайте подходящие направления и присоединяйтесь к развитию проектов на индивидуальных условиях.</p>
           </div>
           <div class="private-price">4 990 ₽<small>Единоразовая оплата · бессрочный доступ</small></div>
-          <ul class="private-terms">
-            <li>Партнёрские проекты по согласованию</li>
-            <li>Индивидуальный процент по каждому проекту</li>
-            <li>Общение через владельца и бота</li>
-            <li>Доступ при соблюдении условий сотрудничества</li>
-          </ul>
-          <p class="private-description">Покупка доступа не гарантирует предоставление проекта или доход. Условия участия и распределение вознаграждения согласовываются отдельно до начала каждого проекта.</p>
+          <div class="private-benefits">
+            <div class="private-benefit">
+              <span class="private-benefit-number">01</span>
+              <div><h4>Доступ к проектам</h4><p>Знакомство с партнёрскими предложениями экосистемы Raymondovich.</p></div>
+            </div>
+            <div class="private-benefit">
+              <span class="private-benefit-number">02</span>
+              <div><h4>Индивидуальные условия</h4><p>Персональное согласование формата сотрудничества и размера вознаграждения.</p></div>
+            </div>
+            <div class="private-benefit">
+              <span class="private-benefit-number">03</span>
+              <div><h4>Прямое взаимодействие</h4><p>Возможность обсуждать участие и условия работы непосредственно с представителями экосистемы.</p></div>
+            </div>
+            <div class="private-benefit">
+              <span class="private-benefit-number">04</span>
+              <div><h4>Выбор направлений</h4><p>Возможность присоединяться к проектам, соответствующим вашим интересам и возможностям.</p></div>
+            </div>
+          </div>
+          <details class="private-conditions">
+            <summary>Условия</summary>
+            <p>Покупка доступа не гарантирует предоставление проекта или доход. Условия участия и распределение вознаграждения согласовываются отдельно до начала каждого проекта.</p>
+          </details>
           <span class="status">Закрытое сообщество</span>
         </article>
         </div>
