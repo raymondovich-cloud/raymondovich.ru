@@ -1,5 +1,5 @@
 // version 2.0
-import { completeAuthCallback } from "../runtime/auth.js";
+import { completeAuthCallback, getRole } from "../runtime/auth.js";
 
 const message = document.querySelector("#message");
 
@@ -12,7 +12,7 @@ async function init() {
   try {
     const session = await completeAuthCallback(window.location.search);
     if (!session) throw new Error("Сессия авторизации не создана.");
-    window.location.replace("/#/owner");
+    window.location.replace(getRole(session) === "admin" ? "/#/owner" : "/#/");
   } catch {
     setMessage("Ссылка авторизации недействительна или срок её действия истёк.", "error");
   }
