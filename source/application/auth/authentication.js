@@ -72,7 +72,14 @@ export function createAuthenticationService({
       return session?.user?.app_metadata?.role || "user";
     },
 
-    async completeAuthCallback(search) {
+    async completeAuthCallback(search = "") {
+      const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+      if (!params.has("code")) {
+        const { data, error } = await authGateway.getSession();
+        if (error) throw normalizeError(error);
+        return data.session;
+      }
+
       const { data, error } = await authGateway.exchangeCodeForSession(search);
       if (error) throw normalizeError(error);
       return data.session;
