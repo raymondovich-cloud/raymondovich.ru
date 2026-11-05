@@ -40,6 +40,13 @@ No production changes were made. Read-only schema/policy/grant inspection found:
 - Security Advisor reports Leaked Password Protection is disabled.
 - No partner/external membership tables were found.
 
+## Read-only production hosting audit
+
+- Cloudflare Pages project list is empty for the connected account.
+- DNS apex A records for `raymondovich.ru` point to GitHub Pages IPs; `www` CNAME points to `raymondovich-cloud.github.io`; records are DNS-only.
+- No `gh-pages` branch or repository deploy workflow was found. GitHub Pages publishing source setting was not independently readable.
+- Therefore merge into the configured Pages source may publish the new root SPA. Production hosting/routing is unresolved; Hash Router remains temporary-test-only and the cutover requires explicit owner approval.
+
 ## Not completed / not authorized
 
 - Partner Workspace and External Project Workspace remain non-operational placeholders; read-only live schema inspection found no partner/external membership model.
