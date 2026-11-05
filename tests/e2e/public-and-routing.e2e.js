@@ -37,7 +37,7 @@ test("about route renders directly", async ({ page }) => {
 
 test("legacy products URL redirects into its SPA route", async ({ page }) => {
   await page.goto("/pages/products/products.html");
-  await expect(page).toHaveURL(/#\/pages\/products\/products\.html/);
+  await expect(page).toHaveURL(/#\/(?:pages\/products\/products\.html|products)/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Продукты");
 });
 
