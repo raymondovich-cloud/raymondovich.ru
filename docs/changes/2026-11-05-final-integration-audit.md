@@ -19,7 +19,7 @@
 - Kept Supabase SDK access behind Infrastructure gateways/repositories and Presentation runtime composition.
 - Added unit tests for Domain and Application services, architecture boundary tests and build-output smoke checks.
 - Added Node.js built-in `node:test` runner and CI execution.
-- Latest confirmed complete CI before this documentation update: run `42102398276`, 42 tests passed, build and built-output smoke checks passed.
+- Latest confirmed complete CI before this documentation update: run `42102398276`, 44 tests passed, build and built-output smoke checks passed.
 - CI lockfile generation and installation use a committed `package-lock.json` and `npm ci`.
 
 ## Read-only production Supabase audit
