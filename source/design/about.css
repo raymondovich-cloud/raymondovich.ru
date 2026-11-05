@@ -1,5 +1,5 @@
 
-    .about-page { color-scheme: dark; --bg:#080706; --text:#f7f5f2; --muted:#aaa39b; --accent:#ff7900; --line:rgba(255,121,0,.28); --content:960px; }
+    .about-page { color-scheme: dark; --bg:#080706; --text:#f7f5f2; --muted:#aaa39b; --accent:var(--rv-color-about-accent); --line:rgba(255,121,0,.28); --content:960px; }
     * { box-sizing:border-box; }
     .about-page { background:var(--bg); }
     .about-page { margin:0; min-width:320px; color:var(--text); background:radial-gradient(ellipse 75% 35% at 95% 0%,rgba(255,106,0,.14),transparent 70%),var(--bg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.65; -webkit-font-smoothing:antialiased; }
