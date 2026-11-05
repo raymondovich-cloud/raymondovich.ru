@@ -32,8 +32,8 @@
       </div>
     </details>
     <div class="side-divider" role="separator" aria-hidden="true"></div>
-    <a class="side-home profile-link" href="/pages/profile/profile.html" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
-    <a class="side-home settings-link" href="/pages/settings/settings.html" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></a>
+    <a class="side-home profile-link" href="/spa.html#/profile" aria-label="Профиль пользователя"><span class="badge">USR</span><span class="pn"><b>Профиль</b><em>Личный кабинет</em></span></a>
+    <a class="side-home settings-link" href="/spa.html#/settings" aria-label="Настройки аккаунта"><span class="badge">SET</span><span class="pn"><b>Настройки</b><em>Профиль и безопасность</em></span></a>
     <div class="side-home help-link" aria-disabled="true"><span class="badge">HLP</span><span class="pn"><b>Помощь</b><em>Скоро</em></span></div>
     <div class="side-home tariffs-link" aria-disabled="true"><span class="badge">TRF</span><span class="pn"><b>Тарифы и пакеты</b><em>Скоро</em></span></div>
     <div class="side-home theme-link" aria-disabled="true"><span class="badge">THM</span><span class="pn"><b>Светлая тема</b><em>Скоро</em></span></div>
