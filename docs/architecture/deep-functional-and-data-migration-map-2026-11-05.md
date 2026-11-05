@@ -2,7 +2,9 @@
 
 **Date:** 2026-11-05  
 **Scope:** Raymondovich.ru working branch only  
-**Evidence:** Static source inspection of the current branch. No runtime behavior, live Supabase schema, policies, or production configuration was modified or certified.
+**Evidence:** Static source inspection of the legacy MPA baseline before SPA migration. No runtime behavior or production configuration was modified by this baseline inventory.
+
+> **Historical baseline document.** Sections 1–5 capture legacy MPA behavior and initial repository/database evidence before the SPA rewrite. They are not a description of the current application implementation. The migration sequence and gates in sections 6–7 are the original plan and are superseded where they conflict with current decisions or implementation. For current routes, adapters, CI results, read-only Supabase findings and remaining merge blockers, see `docs/architecture/merge-preparation-status-2026-11-05.md` and `docs/architecture/final-repository-structure.md`. No live Supabase state was certified by this baseline document; the later read-only audit is recorded in the merge-preparation status.
 
 ## 1. Owner Control Center: behavior that must survive migration
 
@@ -116,7 +118,7 @@ No SQL, RLS, grants, live database, Edge Function, or production data was change
 
 Recommended future backend hardening: make launch and delete/restore transitions atomic using a database transaction exposed through a narrowly scoped RPC or server-side use case, with explicit authorization checks and idempotency. This is a recommendation only; no backend change is authorized by this document.
 
-## 6. Migration sequence after frontend-stack approval
+## 6. Original migration sequence (historical; partially superseded)
 
 1. Establish package/build/test configuration and the single SPA entry point.
 2. Add the app composition root, centralized route registry and Hash Router for the approved temporary GitHub Pages environment.
@@ -129,7 +131,7 @@ Recommended future backend hardening: make launch and delete/restore transitions
 9. Add backward-compatible legacy URL redirects/entry shims only where required, then retire legacy page implementations after parity verification.
 10. Reconcile the migration matrix and provide a complete diff and verification report before requesting merge approval.
 
-## 7. Explicit non-goals and gates
+## 7. Original non-goals and gates (historical; current gates live in merge-preparation-status)
 
 - This document does not approve Vue, React, Svelte or any other framework.
 - This document does not authorize dependency installation, application code migration, database changes, Supabase dashboard changes, DNS/hosting changes or deployment.
