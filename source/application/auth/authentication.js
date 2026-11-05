@@ -72,3 +72,16 @@ async function ensureProfile(user, displayName) {
     }, { onConflict: "user_id" });
   if (error) throw normalizeError(error);
 }
+
+export async function completeAuthCallback(search = window.location.search) {
+  const { data, error } = await supabase.auth.exchangeCodeForSession(search);
+  if (error) throw normalizeError(error);
+  return data.session;
+}
+
+export function subscribeToPasswordRecovery(callback) {
+  const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") callback(session);
+  });
+  return () => data.subscription.unsubscribe();
+}
