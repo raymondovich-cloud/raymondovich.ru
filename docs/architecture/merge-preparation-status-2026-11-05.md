@@ -18,6 +18,7 @@
 - `spa.html` — noindex compatibility handoff, а не вторая SPA.
 - Старые публичные HTML URL перенаправляются в SPA через общий redirect module и route aliases.
 - Старые Supabase Auth callback и password recovery страницы сохранены как отдельные compatibility bridges: текущие ссылки могут содержать implicit-flow token fragments, которые нельзя без дополнительной миграции помещать в Hash Router fragment.
+- Callback use case поддерживает и PKCE query code, и существующую implicit token-fragment session; после подтверждения email создаётся/проверяется профиль пользователя. Admin направляется в Owner Control Center, обычный пользователь — на публичную главную.
 - Реализованы Public views: главная, продукты, сотрудничество, подход, профиль, настройки и legal pages.
 - Реализован Owner Control Center: Overview, Ideas, Projects. Разделы доступны по маршрутам `/owner`, `/owner/ideas`, `/owner/projects`; внутреннее переключение синхронизировано с Router и browser history.
 - Partner Workspace и External Project Workspace пока являются placeholders; рабочие операции и project-scoped membership не реализованы.
