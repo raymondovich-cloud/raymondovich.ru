@@ -19,7 +19,7 @@ Branch: `architecture/spa-rewrite-2026-11-05`
 
 ## Verification completed
 
-- Application and domain unit tests: 48 passed, 0 failed.
+- Application and domain unit tests: 49 passed, 0 failed.
 - Vite production build: passed.
 - Built-output smoke checks: passed, including root SPA entry, legacy route handoffs, auth bridge outputs, route registry, Domain/Application/Presentation boundaries and CSS separation.
 - A successful complete CI run was recorded for commit `ef0701a9be2ad160037f6b1835a6384685e9318c` (run `42103202430`). The branch head is newer only by documentation commits; source, tests and package files are unchanged from the tested code commit.
