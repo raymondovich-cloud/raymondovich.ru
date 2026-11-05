@@ -106,7 +106,7 @@ test("Every shared Design token reference is declared and loaded before SPA styl
 
   for (const source of sources) {
     for (const match of source.matchAll(/var\((--rv-[\w-]+)/g)) {
-      assert.ok(declared.has(match[1]), \`Undeclared Design token: \${match[1]}\`);
+      assert.ok(declared.has(match[1]), "Undeclared Design token: " + match[1]);
     }
   }
 
