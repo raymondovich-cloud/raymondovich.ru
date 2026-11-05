@@ -5,6 +5,7 @@ const PublicHome = () => import("../views/public/PublicHome.vue");
 const NotFound = () => import("../views/system/NotFound.vue");
 const Products = () => import("../views/public/Products.vue");
 const Cooperation = () => import("../views/public/Cooperation.vue");
+const About = () => import("../views/public/About.vue");
 
 export const routeRecords = [
   {
@@ -24,6 +25,12 @@ export const routeRecords = [
     name: "cooperation",
     component: Cooperation,
     meta: { space: "public", layout: "standalone", title: "Три формата развития проектов — RAYMONDOVICH" },
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: About,
+    meta: { space: "public", layout: "standalone", title: "Подход к разработке — RAYMONDOVICH" },
   },
   {
     path: "/owner",
