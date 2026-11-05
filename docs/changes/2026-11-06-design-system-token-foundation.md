@@ -51,3 +51,6 @@
 - `legal.css`: accent заголовка-метки переведён на `--rv-color-legal-accent`.
 - Оба файла повторно получены после записи; SHA проверены, содержимое совпадает с отправленным.
 - Остальные legacy colors не заменялись автоматически: часть из них имеет собственные alpha/gradient значения и требует отдельного решения, чтобы не изменить визуальную семантику.
+
+- Усилен `tests/architecture/dependency-boundaries.test.js`: проверяется, что каждая ссылка `var(--rv-...)` объявлена в `tokens.css`, а tokens подключаются раньше SPA foundation.
+- `spa-build-check.yml` теперь запускается и для `rebuild/foundation-2026-11-06`; production deployment workflow не запускался и не менялся.
