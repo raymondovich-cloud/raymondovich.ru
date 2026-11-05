@@ -94,3 +94,25 @@ test("Design System remains independent from business layers and UI frameworks",
   assert.match(tokens, /--rv-color-public-background:\s*#/);
   assert.match(tokens, /--rv-color-owner-accent:\s*#/);
 });
+
+test("Every shared Design token reference is declared and loaded before SPA styles", async () => {
+  const designRoot = join(root, "design");
+  const files = await designFiles(designRoot);
+  const sources = await Promise.all(files.map((path) => readFile(path, "utf8")));
+  const tokens = await readFile(join(designRoot, "tokens.css"), "utf8");
+  const declared = new Set(
+    [...tokens.matchAll(/(--rv-[\\w-]+)\\s*:/g)].map((match) => match[1]),
+  );
+
+  for (const source of sources) {
+    for (const match of source.matchAll(/var\\((--rv-[\\w-]+)/g)) {
+      assert.ok(declared.has(match[1]), `Undeclared Design token: ${match[1]}`);
+    }
+  }
+
+  const entry = await readFile(join(root, "presentation", "spa", "main.js"), "utf8");
+  assert.ok(
+    entry.indexOf("../../design/tokens.css") < entry.indexOf("../../design/spa.css"),
+    "tokens.css must load before global SPA styles",
+  );
+});
