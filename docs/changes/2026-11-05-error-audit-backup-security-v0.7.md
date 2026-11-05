@@ -216,3 +216,35 @@ Cloudflare проверялся read-only. Настройки DNS, Cloudflare, h
 - Production Supabase/Auth/data/RLS/grants/Edge Functions не проверялись и не изменялись.
 - Cloudflare/GitHub Pages/DNS configuration не изменялись.
 - SPA implementation не начиналась.
+
+
+## Дополнение: ADR-001 — Hosting и маршрутизация SPA
+
+**Дата:** 05.11.2026  
+**Рабочая ветка:** `architecture/spa-rewrite-2026-11-05`
+
+Создан документ `docs/architecture/decisions/adr-001-hosting-and-routing.md`.
+
+Рассмотрены варианты:
+- GitHub Pages + Hash Router;
+- GitHub Pages + `404.html` fallback;
+- Cloudflare Pages со штатным SPA fallback;
+- GitHub Pages за Cloudflare Worker;
+- альтернативный hosting с поддержкой rewrites.
+
+Предварительно рекомендован Cloudflare Pages как наиболее прямой кандидат для чистых SPA URL, direct load и refresh. Рекомендация не является утверждением production-миграции: ADR имеет статус PROPOSED и требует отдельного решения владельца.
+
+Зафиксированы:
+- текущее подтверждённое состояние GitHub Pages / DNS / Cloudflare;
+- ограничения GitHub Pages 404 workaround;
+- требование не добавлять top-level `404.html` при использовании штатного SPA fallback Cloudflare Pages;
+- требования к сохранению старых URL и Supabase Auth callback/recovery;
+- staging, HTTP, functional и rollback проверки;
+- нерешённые вопросы и запреты на изменение hosting/DNS/Cloudflare.
+
+**Границы изменений**
+- Добавлен только архитектурный ADR и эта запись changelog в рабочей ветке.
+- Прикладной код, HTML, CSS, SQL, тесты и hosting config не изменялись.
+- `main`, backup branch и `raymondovich.online` не затрагивались.
+- Production Supabase/Auth, DNS, Cloudflare, GitHub Pages и hosting не изменялись.
+- SPA implementation не начиналась.
