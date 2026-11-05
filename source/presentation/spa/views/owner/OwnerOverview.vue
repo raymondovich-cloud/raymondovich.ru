@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { getRole, getSession, logout } from "../../../../application/auth/authentication.js";
+import { getRole, getSession, logout } from "../../../runtime/auth.js";
 import {
   createIdea, deleteIdea, listIdeas, updateIdea,
   createProjectFromIdea, deleteProject, listProjects, updateProject,
