@@ -40,3 +40,7 @@
 
 ## Следующий этап
 Завершить перенос оставшихся повторяемых legacy tokens, затем спроектировать первые framework-independent visual primitives и общий Public navigation/layout contract.
+
+## Дополнительная статическая проверка
+- Сопоставлены все ссылки `var(--rv-*)` в 8 подключённых stylesheet с объявлениями в `tokens.css`.
+- Неопределённых shared tokens: 0.
