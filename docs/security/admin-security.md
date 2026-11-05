@@ -115,6 +115,7 @@
 - `user_profiles`: INSERT/SELECT/UPDATE ограничены собственным `user_id = auth.uid()`.
 - У `projects` обнаружены CRUD grants для `authenticated`; anon grants не обнаружены.
 - Таблиц с именами, содержащими `partner`, `external`, `member` или `workspace`, в проверенной public schema не обнаружено.
+- Среди public functions найден `promote_raymondovich_admin(text)` с `SECURITY DEFINER`; `anon` и `authenticated` не имеют права `EXECUTE`. В проверенном public schema других функций, доступных anon для EXECUTE, не обнаружено.
 
 ### Новый риск: избыточные grants на ideas
 
