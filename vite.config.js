@@ -3,12 +3,12 @@ import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
   plugins: [vue()],
-  base: "./",
+  base: "/",
   build: {
     rollupOptions: {
       input: {
-        home: "index.html",
-        spa: "spa.html",
+        main: "index.html",
+        legacySpa: "spa.html",
         about: "pages/about/about.html",
         products: "pages/products/products.html",
         cooperation: "pages/cooperation/cooperation.html",
