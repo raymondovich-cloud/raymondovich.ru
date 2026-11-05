@@ -119,7 +119,7 @@ onMounted(async () => {
   }
   if (mode.value === "callback") {
     try {
-      const session = await completeAuthCallback();
+      const session = await completeAuthCallback(window.location.search);
       await router.replace(getRole(session) === "admin" ? "/owner" : "/");
     } catch {
       setMessage("Ссылка авторизации недействительна или срок её действия истёк.", true);
