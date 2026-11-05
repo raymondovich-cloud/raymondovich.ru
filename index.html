@@ -227,6 +227,16 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 .partner-guide .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
 .partner-guide .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
 .partner-guide .n{font:400 .7rem/1.5 var(--mono);color:var(--mute);margin:12px 0 0}
+
+/* FAQ in sidebar */
+.faq-sidebar>summary{display:flex;align-items:center;padding:0;gap:0;font:inherit;letter-spacing:0}
+.faq-sidebar>summary::after{display:none}
+.faq-sidebar[open] .badge,.faq-sidebar>summary:hover .badge{color:var(--or)}
+.faq-sidebar .pd{padding:0 22px 20px 64px}
+.faq-sidebar .ss{list-style:none;margin:0;padding:0;counter-reset:q}
+.faq-sidebar .ss li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;padding:13px 0;border-top:1px solid var(--line);font-size:.86rem;line-height:1.5;color:var(--mute)}
+.faq-sidebar .ss li::before{content:counter(q,decimal-leading-zero);font:500 .7rem/1.9 var(--mono);color:var(--or)}
+.faq-sidebar .ss b{display:block;color:var(--text);font-weight:600;font-size:.95rem;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -246,6 +256,19 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
       <li><div><b>Сотрудничество</b>После рассмотрения заявки и взаимного согласия согласуйте условия и приступайте к работе с выбранным проектом.</div></li>
     </ol>
     <p class="n">Условия и вознаграждение определяются отдельно для каждого проекта.</p>
+  </div>
+</details>
+
+<details class="p faq-sidebar">
+  <summary aria-label="Частые вопросы — FAQ"><span class="badge">FAQ</span><span class="pn"><b>Частые вопросы</b><em>FAQ</em></span></summary>
+  <div class="pd">
+    <ol class="ss">
+      <li><div><b>Что я получаю в RAYMONDOVICH Private?</b>Доступ к закрытому пространству, партнёрским предложениям и личному кабинету с рабочей инфраструктурой подключённых проектов.</div></li>
+      <li><div><b>Гарантируется ли доход?</b>Нет. Доход не гарантируется: результат зависит от условий конкретного проекта, модели вознаграждения и результатов вашей работы.</div></li>
+      <li><div><b>Нужен ли собственный продукт или бизнес?</b>Нет. Вы можете присоединиться к развитию и продвижению действующих проектов экосистемы в качестве партнёра.</div></li>
+      <li><div><b>Сколько стоит доступ?</b>Доступ в RAYMONDOVICH Private будет платным. Стоимость и порядок оплаты будут объявлены отдельно.</div></li>
+      <li><div><b>Можно ли предложить свой проект?</b>Да. Вы можете представить свой проект для рассмотрения. Сначала мы обсудим его цели и условия возможного сотрудничества; публикация возможна после согласования условий и оформления договорённостей.</div></li>
+    </ol>
   </div>
 </details>
   </nav>
