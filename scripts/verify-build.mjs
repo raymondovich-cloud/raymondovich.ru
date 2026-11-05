@@ -120,10 +120,10 @@ assert.match(preview, /noindex,nofollow/i, "The separate SPA preview entry must 
 
 const robots = read("robots.txt");
 const sitemap = read("sitemap.xml");
-assert.match(robots, /^User-agent: \\*/m, "Built robots.txt must be copied from the public directory");
-assert.match(robots, /Sitemap: https:\\/\\/raymondovich\\.ru\\/sitemap\\.xml/, "robots.txt must point to the canonical sitemap");
-assert.match(sitemap, /<urlset[^>]+sitemaps\\.org\\/schemas\\/sitemap\\/0\\.9/, "Built sitemap.xml must be valid sitemap XML");
-assert.match(sitemap, /https:\\/\\/raymondovich\\.ru\\//, "Sitemap must include the canonical homepage");
+assert.ok(robots.startsWith("User-agent: *"), "Built robots.txt must be copied from the public directory");
+assert.ok(robots.includes("Sitemap: https://raymondovich.ru/sitemap.xml"), "robots.txt must point to the canonical sitemap");
+assert.ok(sitemap.includes("<urlset") && sitemap.includes("http://www.sitemaps.org/schemas/sitemap/0.9"), "Built sitemap.xml must contain the sitemap namespace");
+assert.ok(sitemap.includes("<loc>https://raymondovich.ru/</loc>"), "Sitemap must include the canonical homepage");
 assert.equal(readSource("public/robots.txt"), readSource("robots.txt"), "Root and Vite public robots.txt copies must stay synchronized");
 assert.equal(readSource("public/sitemap.xml"), readSource("sitemap.xml"), "Root and Vite public sitemap.xml copies must stay synchronized");
 
