@@ -39,7 +39,7 @@
 
 После этого commit в ветку добавлялись дальнейшие изменения и документация. Поэтому этот успешный запуск не заменяет обязательный успешный CI на точном финальном HEAD. Последний workflow на актуальном HEAD должен завершиться успешно после прекращения изменений.
 
-CI workflow работает только на migration branch и вручную; он не содержит production deploy step. Lockfile generation job имеет отдельное `contents:write` разрешение и коммитит lockfile только в рабочую ветку.
+CI запускается push-событиями рабочей ветки и вручную; оба job имеют точный guard на `refs/heads/architecture/spa-rewrite-2026-11-05`, поэтому ручной запуск на `main` не выполняет jobs. Workflow не содержит production deploy step. Lockfile generation job имеет отдельное `contents:write` разрешение и коммитит lockfile только в рабочую ветку.
 
 ## 4. Public Space и утверждённый текст
 
@@ -55,7 +55,7 @@ CI workflow работает только на migration branch и вручну�
 
 - Перенесены создание/редактирование идей, статусы, приоритеты, архив, восстановление, запуск идеи в проект, pin, pause/resume, complete, delete, dialogs и контекстные действия.
 - Доменная валидация и unit tests добавлены.
-- Launch idea → project и delete project → restore idea по-прежнему состоят из нескольких запросов с компенсационным поведением, а не из одной серверной транзакции. Конкурентность и partial failures требуют отдельного integration-level подтверждения.
+- Launch idea → project и delete project → restore idea по-прежнему состоят из нескольких запросов с компенсационным поведением, а не из одной серверной транзакции. Конкурентный launch обрабатывает unique violation `23505` повторным чтением существующего проекта и не создаёт дубль. Если проект удалён, но исходную идею не удалось вернуть, ошибка явно сообщает о частичном успехе. Атомарность и partial failures всё ещё требуют отдельного integration-level подтверждения.
 - Build и unit tests не доказывают полную UI parity: необходима browser-level проверка всех сценариев, включая мобильный Safari.
 
 ## 6. Partner Workspace и External Project Workspace
