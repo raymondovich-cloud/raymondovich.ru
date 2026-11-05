@@ -244,6 +244,6 @@ ADR-002 принят с ограничениями: Vue 3, Vue Router 5 и Vite 
 - Покрыты Domain rules для Ideas/Projects и Application services для Ideas, Projects, Authentication и Account Settings.
 - Architecture tests проверяют направление зависимостей Domain/Application/Presentation и запрет CSS bindings через `:style`.
 - Build-output smoke checks проверяют корневой SPA entry, legacy URL handoffs, Auth callback/recovery bridges, hash compatibility и route registry.
-- Последний подтверждённый полный pipeline `42103202430` завершился успешно; build job checkout SHA `c0c19c0cf0f4d3ccd63be5543a5eba21179b3543`: 48 tests passed, 0 failed; production build и build-output smoke checks — SUCCESS.
+- Последний подтверждённый полный pipeline `42104225677` завершился успешно; build job checkout SHA `6148c7f5ccf044b0911e44787f002bf62098ed47`: 50 tests passed, 0 failed; production build и build-output smoke checks — SUCCESS.
 
 Это начальный unit/architecture/build baseline, а не принятие всей стратегии из ADR. Vitest, Vue Test Utils, Playwright, isolated Supabase integration/RLS tests и real-device iOS Safari validation пока не внедрены. Стратегия остаётся PROPOSED до отдельного review владельца и выполнения оставшихся quality gates.
