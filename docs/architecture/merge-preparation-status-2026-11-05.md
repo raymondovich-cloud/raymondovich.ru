@@ -133,3 +133,15 @@ CI workflow работает только на migration branch и вручну�
 **CI on latest HEAD:** MUST BE RECONFIRMED.  
 **Merge readiness:** NOT READY.  
 **Merge to main / production deployment:** NOT PERFORMED; explicit owner approval required.
+
+
+## Latest CI checkpoint — 2026-11-05
+
+- Successful complete CI run: `42103202430`.
+- Tested executable code and test commit: `ef0701a9be2ad160037f6b1835a6384685e9318c`.
+- 48 tests passed; 0 failed.
+- Locked dependency installation, production build and built-output smoke checks passed.
+- The current branch head is newer only through documentation commits; source, tests, package manifest and lockfile are unchanged from the tested commit.
+- The legacy redirect test now verifies that generic handoff query parameters are moved into router query state. The Supabase PKCE/implicit callback remains a separate HTML bridge.
+
+**Security note:** the live `anon` grants on `public.ideas` include `TRUNCATE`. RLS does not protect TRUNCATE. This is a critical existing least-privilege issue and remains unremediated because no production grants were changed.
