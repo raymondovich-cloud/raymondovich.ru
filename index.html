@@ -150,6 +150,10 @@ body.side-open .side{width:340px}
 .burger::before{top:-6px;position:absolute}.burger::after{top:6px;position:absolute}
 .side-title{font:500 .74rem var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--or)}
 .side-body{flex:1;overflow-y:auto;min-width:340px}
+.side-home{display:flex;align-items:center;min-width:340px;border-bottom:1px solid var(--line);transition:background .2s,color .2s}
+.side-home:hover{background:linear-gradient(90deg,rgba(255,106,31,.08),transparent 85%)}
+.side-home:hover .badge{color:var(--or)}
+.side-home .pn b{font-size:1.1rem}
 .p{border-bottom:1px solid var(--line)}
 .p summary{display:flex;align-items:center;padding:0;gap:0;font:inherit;letter-spacing:0}
 .p summary::after{display:none}
@@ -214,6 +218,7 @@ body.side-open .scrim{display:block;position:fixed;inset:0;z-index:15;background
 <aside class="side" id="side" aria-label="Продукты">
   <div class="side-top"><button class="side-toggle" aria-label="Открыть или закрыть список продуктов" aria-expanded="false"><i class="burger"></i></button><span class="side-title">Продукты</span></div>
   <div class="side-body">
+    <a class="side-home" href="/" aria-label="Главное — главная страница raymondovich.ru"><span class="badge">HOME</span><span class="pn"><b>Главное</b><em>Главная страница</em></span></a>
     <details class="p" name="sec" open>
       <summary aria-label="Продукты экосистемы"><span class="badge">PRD</span><span class="pn"><b>Продукты экосистемы</b><em>Собственные</em></span></summary>
       <div class="pd">
