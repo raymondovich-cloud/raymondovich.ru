@@ -38,6 +38,8 @@
 
 - Восстановлены четыре отсутствовавших migration files по версиям live history и выровнен timestamp migration расширения projects. Восстановление сделано только в рабочей ветке; byte-for-byte identity исходного SQL не подтверждена, требуется clean isolated staging replay. Production migrations не запускались.
 
+- Сохранён исходный SQL seed migration `20261009132738` (включая оба проекта `.ru` и `.online`) и исходная транзакционная граница `BEGIN/COMMIT` migration `20261104185802`; альтернативные branch-only варианты с семантическим дрейфом отклонены.
+
 ## Проверки и ограничения
 
 - Изменённые файлы повторно получены из GitHub после записи.
