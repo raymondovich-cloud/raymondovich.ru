@@ -38,10 +38,10 @@ for (const [file, route] of Object.entries(legacyRoutes)) {
 }
 
 const callback = read("pages/auth/auth-callback.html");
-assert.match(callback, /callback-page[^"]*\.js|callback-page-[^"]*\.js/, "Auth callback must retain its token-exchange bridge");
+assert.match(callback, /src="[^"]*authCallback-[^"]+\.js"/, "Auth callback must retain its token-exchange bridge");
 
 const passwordRecovery = read("pages/auth/update-password.html");
-assert.match(passwordRecovery, /update-password-page[^"]*\.js|update-password-page-[^"]*\.js/, "Password recovery must retain its legacy token-fragment bridge");
+assert.match(passwordRecovery, /src="[^"]*updatePassword-[^"]+\.js"/, "Password recovery must retain its legacy token-fragment bridge");
 
 const preview = read("spa.html");
 assert.match(preview, /noindex,nofollow/i, "The separate SPA preview entry must remain non-indexable");
