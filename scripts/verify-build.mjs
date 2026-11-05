@@ -118,4 +118,13 @@ for (const file of sourceFiles(resolve(repositoryRoot, "source/presentation"))) 
 const preview = read("spa.html");
 assert.match(preview, /noindex,nofollow/i, "The separate SPA preview entry must remain non-indexable");
 
+const robots = read("robots.txt");
+const sitemap = read("sitemap.xml");
+assert.match(robots, /^User-agent: \\*/m, "Built robots.txt must be copied from the public directory");
+assert.match(robots, /Sitemap: https:\\/\\/raymondovich\\.ru\\/sitemap\\.xml/, "robots.txt must point to the canonical sitemap");
+assert.match(sitemap, /<urlset[^>]+sitemaps\\.org\\/schemas\\/sitemap\\/0\\.9/, "Built sitemap.xml must be valid sitemap XML");
+assert.match(sitemap, /https:\\/\\/raymondovich\\.ru\\//, "Sitemap must include the canonical homepage");
+assert.equal(readSource("public/robots.txt"), readSource("robots.txt"), "Root and Vite public robots.txt copies must stay synchronized");
+assert.equal(readSource("public/sitemap.xml"), readSource("sitemap.xml"), "Root and Vite public sitemap.xml copies must stay synchronized");
+
 console.log("SPA build smoke checks passed.");
