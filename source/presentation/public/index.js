@@ -73,15 +73,16 @@
   }
  });
  const presentationPhases=[
-  {at:0,phase:0,caption:'СИСТЕМА ЗАПУСКАЕТСЯ',description:'Единая экосистема, объединённая системой управления проектами.'},
-  {at:3,phase:1,caption:'RAYMONDOVICH / ЦИФРОВАЯ ЭКОСИСТЕМА',description:'В центре — RAYMONDOVICH. Экосистема связывает проекты и участников.'},
-  {at:6,phase:2,caption:'ЧЕТЫРЕ НАПРАВЛЕНИЯ · ОДНА ЭКОСИСТЕМА',description:'Собственные, партнёрские и сторонние проекты связаны с системой управления.'},
-  {at:12,phase:3,caption:'СОБСТВЕННЫЕ ПРОДУКТЫ',description:'LIFE GAME готовится к запуску. AI-SISTEM временно на паузе.'},
-  {at:20,phase:4,caption:'СИСТЕМА УПРАВЛЕНИЯ ПРОЕКТОМ',description:'Внутри — финансы, подключённые сервисы, маркетинг и статистика.'},
-  {at:30,phase:5,caption:'ПАРТНЁРСКИЕ ПРОЕКТЫ',description:'Участие в программах, заранее описанные условия и выбор направлений.'},
-  {at:36,phase:6,caption:'RAYMONDOVICH | PRIVATE',description:'Участникам доступны инструменты системы через личный кабинет.'},
-  {at:41,phase:7,caption:'ЕДИНАЯ СИСТЕМА. ЧЕТЫРЕ НАПРАВЛЕНИЯ.',description:'Проекты, продукты и инструменты управления связаны в одну экосистему.'},
-  {at:45,phase:8,caption:'ОБСУДИМ ПАРТНЁРСТВО',description:'Свяжитесь с RAYMONDOVICH, чтобы обсудить возможный формат участия.'}
+  {at:0,phase:0,detail:'none',caption:'СИСТЕМА ЗАПУСКАЕТСЯ',description:'Единая экосистема, объединённая системой управления проектами.'},
+  {at:3,phase:1,detail:'none',caption:'RAYMONDOVICH / ЦИФРОВАЯ ЭКОСИСТЕМА',description:'В центре — RAYMONDOVICH. Экосистема связывает проекты и участников.'},
+  {at:6,phase:2,detail:'overview',caption:'ЧЕТЫРЕ НАПРАВЛЕНИЯ · ОДНА ЭКОСИСТЕМА',description:'Четыре направления работают в рамках единой системы.'},
+  {at:12,phase:3,detail:'own',caption:'СОБСТВЕННЫЕ ПРОЕКТЫ',description:'Два собственных продукта RAYMONDOVICH: LIFE GAME и AI-SISTEM.'},
+  {at:19,phase:4,detail:'management',caption:'СИСТЕМА УПРАВЛЕНИЯ ПРОЕКТОМ',description:'Четыре базовых модуля объединены в одном рабочем пространстве.'},
+  {at:27,phase:5,detail:'partner',caption:'ПАРТНЁРСКИЕ ПРОЕКТЫ',description:'Партнёры подключаются к развитию проектов на согласованных условиях.'},
+  {at:34,phase:6,detail:'external',caption:'СТОРОННИЕ ПРОЕКТЫ',description:'Внешние проекты проходят предварительное рассмотрение до публикации.'},
+  {at:39,phase:7,detail:'private',caption:'RAYMONDOVICH | PRIVATE',description:'Закрытая рабочая среда для управления проектами и участия в экосистеме.'},
+  {at:42,phase:8,detail:'overview',caption:'ЕДИНАЯ СИСТЕМА. ЧЕТЫРЕ НАПРАВЛЕНИЯ.',description:'Все форматы развития связаны общей системой управления.'},
+  {at:45,phase:9,detail:'final',caption:'ОБСУДИМ ПАРТНЁРСТВО',description:'Свяжитесь с RAYMONDOVICH, чтобы обсудить возможный формат участия.'}
  ];
  function stopPresentation(dialog){
   if(dialog._presentationTimer){clearInterval(dialog._presentationTimer);dialog._presentationTimer=null;}
@@ -91,6 +92,13 @@
   const item=[...presentationPhases].reverse().find(entry=>seconds>=entry.at)||presentationPhases[0];
   const stage=dialog.querySelector('[data-intro-stage]');
   stage.dataset.phase=String(item.phase);
+  stage.dataset.detail=item.detail;
+  const detail=stage.querySelector('.intro-detail');
+  if(detail){
+   detail.querySelector('[data-detail-kicker]').textContent=item.detail==='none'?'RAYMONDOVICH / DIGITAL ECOSYSTEM':item.caption;
+   detail.querySelector('[data-detail-title]').textContent=({own:'Собственные проекты',management:'Система управления проектом',partner:'Партнёрские проекты',external:'Сторонние проекты',private:'Личное пространство',overview:'Четыре направления',final:'Следующий шаг'})[item.detail]||'Единая экосистема';
+   detail.querySelector('[data-detail-description]').textContent=item.description;
+  }
   dialog.querySelector('[data-intro-caption]').textContent=item.caption;
   dialog.querySelector('[data-intro-description]').textContent=item.description;
   dialog.querySelector('[data-intro-time]').textContent='00:'+String(Math.min(45,Math.floor(seconds))).padStart(2,'0');
