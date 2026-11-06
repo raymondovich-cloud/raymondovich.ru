@@ -66,29 +66,6 @@
  .footer-top{margin-bottom:26px}
  .footer-bottom{gap:12px;line-height:1.6}
  .footer-bottom nav{gap:12px}
- .system-intro{width:calc(100% - 12px);max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px);margin:auto}
- .system-intro__panel{padding:clamp(13px,4vw,18px)}
- .system-intro__header{gap:12px;padding-bottom:13px}
- .system-intro__eyebrow{font-size:.48rem;letter-spacing:.09em}
- .system-intro__header h2{font-size:1.45rem}
- .system-intro__close{width:38px;height:38px}
- .system-intro__content{gap:6px;padding:12px 0 16px}
- .system-intro__visual{width:100%;min-height:220px;max-width:360px}
- .system-intro__core{width:76px}
- .system-intro__core b{font-size:1.9rem}
- .intro-node{font-size:.4rem;letter-spacing:.025em;gap:5px}
- .intro-node i{width:6px;height:6px}
- .system-intro__visual-caption{font-size:.38rem}
- .system-intro__slide .overline{font-size:.5rem;margin-bottom:9px}
- .system-intro__slide h3{font-size:1.5rem;margin-bottom:9px}
- .system-intro__slide>p:last-child{font-size:.83rem;line-height:1.55}
- .system-intro__footer{padding-top:13px;gap:9px}
- .system-intro__progress{gap:10px}
- .system-intro__progress-track{width:76px}
- .system-intro__controls{gap:8px}
- .system-intro__text-button,.system-intro__back{font-size:.52rem;padding-inline:4px}
- .system-intro__step-controls{gap:7px}
- .system-intro__next,.system-intro__finish{min-height:42px;padding-inline:12px;font-size:.72rem;gap:10px}
 }
 @media(max-width:360px){
  .header-inner{padding-inline:11px;gap:7px}
@@ -97,16 +74,5 @@
  .hero{padding-top:28px}
  h1{font-size:clamp(2.2rem,10vw,2.65rem)}
  .hero-bottom{font-size:.39rem}
- .system-intro__visual{min-height:195px}
- .intro-node{font-size:.36rem}
- .system-intro__slide h3{font-size:1.35rem}
- .system-intro__slide>p:last-child{font-size:.78rem}
 }
-@media(max-height:700px) and (max-width:700px){
- .system-intro{overflow-y:auto}
- .system-intro__content{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:8px}
- .system-intro__visual{min-height:180px}
- .system-intro__copy{max-width:none}
- .system-intro__footer{flex-direction:row;align-items:center}
- .system-intro__controls{width:auto}
-}
+
