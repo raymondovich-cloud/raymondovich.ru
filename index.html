@@ -59,52 +59,45 @@
   <div class="hero-bottom"><span>01 — PLATFORM OVERVIEW</span><span>SCROLL TO EXPLORE ↓</span></div>
 </section>
 <dialog class="system-intro" data-system-intro aria-labelledby="system-intro-title">
-  <div class="system-intro__panel">
-    <header class="system-intro__header">
-      <div><p class="system-intro__eyebrow">RAYMONDOVICH / SYSTEM OVERVIEW</p><h2 id="system-intro-title">Знакомство с системой</h2></div>
-      <button class="system-intro__close" type="button" data-intro-close aria-label="Закрыть знакомство" autofocus>×</button>
+  <div class="system-intro__stage" data-intro-stage data-phase="0">
+    <div class="system-intro__grid" aria-hidden="true"></div>
+    <header class="system-intro__topbar">
+      <div><p>RAYMONDOVICH / DIGITAL ECOSYSTEM</p><h2 id="system-intro-title">Как устроена экосистема</h2></div>
+      <button class="system-intro__close" type="button" data-intro-close aria-label="Закрыть презентацию">×</button>
     </header>
-    <div class="system-intro__content">
-      <div class="system-intro__visual" data-step="1" aria-hidden="true">
-        <div class="system-intro__orbit system-intro__orbit--outer"></div>
-        <div class="system-intro__orbit system-intro__orbit--inner"></div>
-        <svg class="system-intro__connections" viewBox="0 0 520 340" preserveAspectRatio="xMidYMid meet">
-          <path class="intro-link intro-link--own" d="M260 170 L260 35"></path>
-          <path class="intro-link intro-link--partner" d="M260 170 L455 205"></path>
-          <path class="intro-link intro-link--external" d="M260 170 L75 292"></path>
-        </svg>
-        <div class="system-intro__core"><b>R.</b><small>ECOSYSTEM</small></div>
-        <div class="intro-node intro-node--own"><i></i><span>OWN PROJECTS</span></div>
-        <div class="intro-node intro-node--partner"><i></i><span>PARTNER PROJECTS</span></div>
-        <div class="intro-node intro-node--external"><i></i><span>EXTERNAL PROJECTS</span></div>
-        <span class="system-intro__visual-caption">ONE PLATFORM / THREE DIRECTIONS</span>
+    <div class="system-intro__scene" aria-label="Анимированная схема цифровой экосистемы">
+      <div class="system-intro__orbit system-intro__orbit--outer" aria-hidden="true"></div>
+      <div class="system-intro__orbit system-intro__orbit--inner" aria-hidden="true"></div>
+      <svg class="system-intro__connections" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+        <path class="intro-link intro-link--own" d="M500 310 L500 62"/>
+        <path class="intro-link intro-link--partner" d="M500 310 L824 210"/>
+        <path class="intro-link intro-link--external" d="M500 310 L690 548"/>
+        <path class="intro-link intro-link--management" d="M500 310 L176 210"/>
+        <path class="intro-link intro-link--product-life" d="M176 210 L95 80"/>
+        <path class="intro-link intro-link--product-ai" d="M176 210 L95 340"/>
+        <path class="intro-link intro-link--private" d="M176 210 L500 570"/>
+      </svg>
+      <div class="system-intro__brand"><b>RAYMONDOVICH</b><span>ЦИФРОВАЯ ЭКОСИСТЕМА</span></div>
+      <div class="intro-node intro-node--own"><i></i><span>Собственные проекты</span></div>
+      <div class="intro-node intro-node--partner"><i></i><span>Партнёрские проекты</span><small class="intro-node__partner-card">СТАТЬ ПАРТНЁРОМ<br>Программы участия · Условия<br>Выбор направлений</small></div>
+      <div class="intro-node intro-node--external"><i></i><span>Сторонние проекты</span></div>
+      <div class="intro-node intro-node--management"><i></i><span>Система управления проектом</span><small>ГЛАВНОЕ ПРЕИМУЩЕСТВО</small></div>
+      <div class="intro-product intro-product--life"><b>LIFE GAME</b><span>Запуск 1 января 2027</span></div>
+      <div class="intro-product intro-product--ai"><b>AI-SISTEM</b><span>Пауза в разработке</span></div>
+      <div class="intro-modules" aria-label="Модули системы управления">
+        <div class="intro-module intro-module--finance"><i>₽</i><b>Бухгалтерия</b><span>Финансы проектов в одном месте</span></div>
+        <div class="intro-module intro-module--services"><i>⌁</i><b>Подключённые сервисы</b><span>Инструменты в единой системе</span></div>
+        <div class="intro-module intro-module--marketing"><i>↗</i><b>Маркетинг</b><span>Продвижение из одного кабинета</span></div>
+        <div class="intro-module intro-module--stats"><i>▥</i><b>Статистика</b><span>Ключевые показатели проектов</span></div>
       </div>
-      <div class="system-intro__copy" aria-live="polite">
-        <article class="system-intro__slide" data-intro-slide="1">
-          <p class="overline">01 / OWN PROJECTS</p><h3>Собственные проекты</h3>
-          <p>RAYMONDOVICH самостоятельно создаёт цифровые продукты, формирует продуктовый портфель и отвечает за их развитие внутри экосистемы.</p>
-        </article>
-        <article class="system-intro__slide" data-intro-slide="2" hidden>
-          <p class="overline">02 / PARTNER PROJECTS</p><h3>Партнёрские проекты</h3>
-          <p>Мы объединяем людей вокруг конкретных задач и направлений. Роли, ответственность и условия участия согласуются до начала совместной работы.</p>
-        </article>
-        <article class="system-intro__slide" data-intro-slide="3" hidden>
-          <p class="overline">03 / EXTERNAL PROJECTS</p><h3>Сторонние проекты</h3>
-          <p>Рассматриваем проекты независимых авторов и команд. Сотрудничество начинается после обсуждения целей, согласования коммерческих условий и оформления договорённостей.</p>
-        </article>
-      </div>
+      <div class="intro-private"><span>ЛИЧНЫЙ КАБИНЕТ</span><b>RAYMONDOVICH <strong>| PRIVATE</strong></b><small>Инструменты для участников экосистемы</small></div>
+      <div class="system-intro__caption" data-intro-caption>СИСТЕМА ЗАПУСКАЕТСЯ</div>
     </div>
     <footer class="system-intro__footer">
-      <div class="system-intro__progress"><span data-intro-count aria-live="polite">01 / 03</span>
-        <div class="system-intro__progress-track" role="progressbar" aria-label="Прогресс знакомства с системой" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1" data-intro-progress><i class="is-active"></i><i></i><i></i></div>
-      </div>
+      <div class="system-intro__timeline"><span data-intro-time>00:00</span><div><i data-intro-progress></i></div><span>00:45</span></div>
       <div class="system-intro__controls">
-        <button class="system-intro__text-button" type="button" data-intro-skip>Пропустить</button>
-        <div class="system-intro__step-controls">
-          <button class="system-intro__back" type="button" data-intro-prev hidden>Назад</button>
-          <button class="button primary system-intro__next" type="button" data-intro-next>Далее <span>→</span></button>
-          <a class="button primary system-intro__finish" href="#/products" data-intro-finish hidden>Перейти к проектам <span>↗</span></a>
-        </div>
+        <p data-intro-description>Единая экосистема, объединённая системой управления проектами.</p>
+        <div><button class="system-intro__text-button" type="button" data-intro-pause>Пауза</button><button class="system-intro__text-button" type="button" data-intro-replay>Сначала</button><button class="button primary" type="button" data-intro-skip>Пропустить <span>↗</span></button></div>
       </div>
     </footer>
   </div>
