@@ -24,8 +24,8 @@
 .system-intro__close:hover{border-color:var(--accent);background:rgba(255,112,40,.08);color:var(--accent)}
 .system-intro__scene{position:relative;align-self:center;justify-self:center;width:min(100%,1160px);height:min(100%,690px);min-height:340px;aspect-ratio:1160/690;transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
 .system-intro__orbit{position:absolute;left:50%;top:49%;border:1px solid rgba(255,255,255,.095);border-radius:50%;pointer-events:none;opacity:0;transition:opacity 1.5s}
-.system-intro__orbit--outer{width:68%;height:79%;transform:translate(-50%,-50%) rotate(-12deg);animation:intro-orbit 180s linear infinite}
-.system-intro__orbit--inner{left:50%;top:51%;width:38%;height:48%;border-color:rgba(255,112,40,.19);transform:translate(-50%,-50%);animation:intro-orbit-reverse 220s linear infinite}
+.system-intro__orbit--outer{width:68%;height:79%;transform:translate(-50%,-50%) rotate(-12deg);animation:intro-orbit var(--motion-duration-orbit) linear infinite}
+.system-intro__orbit--inner{left:50%;top:51%;width:38%;height:48%;border-color:rgba(255,112,40,.19);transform:translate(-50%,-50%);animation:intro-orbit-reverse var(--motion-duration-orbit-reverse) linear infinite}
 .system-intro__connections{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .intro-link{fill:none;stroke:rgba(255,255,255,.17);stroke-width:1.15;stroke-dasharray:2 9;stroke-linecap:round;stroke-dashoffset:1000;opacity:0;transition:stroke-dashoffset 2.2s cubic-bezier(.16,1,.3,1),opacity 1.4s}
 .intro-link--management{stroke:rgba(255,112,40,.72);stroke-width:1.8}
