@@ -203,6 +203,7 @@
 .system-intro__stage[data-detail="private"] .intro-detail__content--private,
 .system-intro__stage[data-detail="overview"] .intro-detail__content--overview,
 .system-intro__stage[data-detail="final"] .intro-detail__content--final{display:grid}
+.system-intro__stage[data-phase="2"] .intro-detail,
 .system-intro__stage[data-phase="3"] .intro-detail,
 .system-intro__stage[data-phase="4"] .intro-detail,
 .system-intro__stage[data-phase="5"] .intro-detail,
