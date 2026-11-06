@@ -60,33 +60,79 @@
   const openTrigger=target.closest('[data-intro-open]');
   if(openTrigger){
    const dialog=main.querySelector('[data-system-intro]');
-   if(dialog&&!dialog.open){setIntroStep(dialog,1);dialog.showModal();}
+   if(dialog&&!dialog.open){startPresentation(dialog);dialog.showModal();}
    return;
   }
   const dialog=target.closest('[data-system-intro]');
   if(dialog){
-   if(target.closest('[data-intro-close],[data-intro-skip]')){dialog.close();return;}
-   if(target.closest('[data-intro-prev]')){setIntroStep(dialog,Math.max(1,Number(dialog.dataset.step||1)-1));return;}
-   if(target.closest('[data-intro-next]')){const nextStep=Math.min(3,Number(dialog.dataset.step||1)+1);setIntroStep(dialog,nextStep);if(nextStep===3)dialog.querySelector('[data-intro-finish]').focus();return;}
-   if(target.closest('[data-intro-finish]')){dialog.close();return;}
-   if(target===dialog){dialog.close();return;}
+   if(target.closest('[data-intro-close]')){stopPresentation(dialog);dialog.close();return;}
+   if(target.closest('[data-intro-skip]')){finishPresentation(dialog);return;}
+   if(target.closest('[data-intro-pause]')){togglePresentation(dialog);return;}
+   if(target.closest('[data-intro-replay]')){startPresentation(dialog);return;}
+   if(target===dialog){stopPresentation(dialog);dialog.close();return;}
   }
  });
- function setIntroStep(dialog,step){
-  const visual=dialog.querySelector('.system-intro__visual');
-  dialog.dataset.step=String(step);
-  visual.dataset.step=String(step);
-  visual.querySelectorAll('.intro-node').forEach((node,index)=>node.classList.toggle('is-active',index<step));
-  visual.querySelectorAll('.intro-link').forEach((link,index)=>link.classList.toggle('is-active',index<step));
-  dialog.querySelectorAll('[data-intro-slide]').forEach(slide=>{slide.hidden=Number(slide.dataset.introSlide)!==step});
-  dialog.querySelector('[data-intro-count]').textContent=String(step).padStart(2,'0')+' / 03';
-  dialog.querySelector('[data-intro-progress]').setAttribute('aria-valuenow',String(step));
-  dialog.querySelectorAll('.system-intro__progress-track i').forEach((item,index)=>item.classList.toggle('is-active',index<step));
-  dialog.querySelector('[data-intro-prev]').hidden=step===1;
-  dialog.querySelector('[data-intro-next]').hidden=step===3;
-  dialog.querySelector('[data-intro-finish]').hidden=step!==3;
-  dialog.querySelector('[data-intro-skip]').hidden=step===3;
+ const presentationPhases=[
+  {at:0,phase:0,caption:'СИСТЕМА ЗАПУСКАЕТСЯ',description:'Единая экосистема, объединённая системой управления проектами.'},
+  {at:3,phase:1,caption:'RAYMONDOVICH / ЦИФРОВАЯ ЭКОСИСТЕМА',description:'В центре — RAYMONDOVICH. Экосистема связывает проекты и участников.'},
+  {at:6,phase:2,caption:'ЧЕТЫРЕ НАПРАВЛЕНИЯ · ОДНА ЭКОСИСТЕМА',description:'Собственные, партнёрские и сторонние проекты связаны с системой управления.'},
+  {at:12,phase:3,caption:'СОБСТВЕННЫЕ ПРОДУКТЫ',description:'LIFE GAME готовится к запуску. AI-SISTEM временно на паузе.'},
+  {at:20,phase:4,caption:'СИСТЕМА УПРАВЛЕНИЯ ПРОЕКТОМ',description:'Внутри — финансы, подключённые сервисы, маркетинг и статистика.'},
+  {at:30,phase:5,caption:'ПАРТНЁРСКИЕ ПРОЕКТЫ',description:'Участие в программах, заранее описанные условия и выбор направлений.'},
+  {at:36,phase:6,caption:'RAYMONDOVICH | PRIVATE',description:'Участникам доступны инструменты системы через личный кабинет.'},
+  {at:41,phase:7,caption:'ЕДИНАЯ СИСТЕМА. ЧЕТЫРЕ НАПРАВЛЕНИЯ.',description:'Проекты, продукты и инструменты управления связаны в одну экосистему.'},
+  {at:45,phase:8,caption:'ОБСУДИМ ПАРТНЁРСТВО',description:'Свяжитесь с RAYMONDOVICH, чтобы обсудить возможный формат участия.'}
+ ];
+ function stopPresentation(dialog){
+  if(dialog._presentationTimer){clearInterval(dialog._presentationTimer);dialog._presentationTimer=null;}
+  dialog._presentationRunning=false;
  }
+ function renderPresentation(dialog,seconds){
+  const item=[...presentationPhases].reverse().find(entry=>seconds>=entry.at)||presentationPhases[0];
+  const stage=dialog.querySelector('[data-intro-stage]');
+  stage.dataset.phase=String(item.phase);
+  dialog.querySelector('[data-intro-caption]').textContent=item.caption;
+  dialog.querySelector('[data-intro-description]').textContent=item.description;
+  dialog.querySelector('[data-intro-time]').textContent='00:'+String(Math.min(45,Math.floor(seconds))).padStart(2,'0');
+  dialog.querySelector('[data-intro-progress]').style.width=(Math.min(45,seconds)/45*100)+'%';
+  const skip=dialog.querySelector('[data-intro-skip]');
+  const contact=dialog.querySelector('[data-intro-contact]');
+  skip.hidden=seconds>=45;
+  contact.hidden=seconds<45;
+  if(seconds>=45)stopPresentation(dialog);
+ }
+ function startPresentation(dialog){
+  stopPresentation(dialog);
+  dialog.querySelector('[data-intro-pause]').textContent='Пауза';
+  dialog.querySelector('[data-intro-contact]').hidden=true;
+  dialog.querySelector('[data-intro-skip]').hidden=false;
+  dialog._presentationElapsed=0;
+  dialog._presentationStarted=Date.now();
+  dialog._presentationRunning=true;
+  renderPresentation(dialog,0);
+  if(!dialog.open)dialog.showModal();
+  dialog._presentationTimer=setInterval(()=>{
+   if(!dialog._presentationRunning)return;
+   const elapsed=dialog._presentationElapsed+(Date.now()-dialog._presentationStarted)/1000;
+   renderPresentation(dialog,elapsed);
+  },100);
+ }
+ function togglePresentation(dialog){
+  if(dialog._presentationRunning){
+   dialog._presentationElapsed+=(Date.now()-dialog._presentationStarted)/1000;
+   dialog._presentationRunning=false;
+   dialog.querySelector('[data-intro-pause]').textContent='Продолжить';
+  }else if(dialog._presentationElapsed<45){
+   dialog._presentationStarted=Date.now();
+   dialog._presentationRunning=true;
+   dialog.querySelector('[data-intro-pause]').textContent='Пауза';
+  }
+ }
+ function finishPresentation(dialog){
+  stopPresentation(dialog);
+  renderPresentation(dialog,45);
+ }
+
  document.addEventListener('click',event=>{
   const link=event.target.closest('a[href^="#/"]');
   if(link&&mobile())setOpen(false);
