@@ -60,7 +60,7 @@
   const openTrigger=target.closest('[data-intro-open]');
   if(openTrigger){
    const dialog=main.querySelector('[data-system-intro]');
-   if(dialog&&!dialog.open){startPresentation(dialog);dialog.showModal();}
+   if(dialog&&!dialog.open){startPresentation(dialog);}
    return;
   }
   const dialog=target.closest('[data-system-intro]');
@@ -103,6 +103,7 @@
  }
  function startPresentation(dialog){
   stopPresentation(dialog);
+  if(!dialog.dataset.closeHandler){dialog.addEventListener('close',()=>stopPresentation(dialog));dialog.dataset.closeHandler='true';}
   dialog.querySelector('[data-intro-pause]').textContent='Пауза';
   dialog.querySelector('[data-intro-contact]').hidden=true;
   dialog.querySelector('[data-intro-skip]').hidden=false;
