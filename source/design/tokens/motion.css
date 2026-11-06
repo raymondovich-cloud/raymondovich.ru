@@ -3,8 +3,8 @@
   --motion-duration-fast:160ms;
   --motion-duration-standard:240ms;
   --motion-duration-slow:420ms;
-  --motion-duration-orbit:24s;
-  --motion-duration-orbit-reverse:32s;
+  --motion-duration-orbit:90s;
+  --motion-duration-orbit-reverse:110s;
   --motion-ease-standard:cubic-bezier(.2,.8,.2,1);
   --motion-ease-enter:cubic-bezier(.16,1,.3,1);
   --motion-ease-exit:cubic-bezier(.7,0,.84,0);
