@@ -10,7 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/source/presentation/public/index.css">
+<link rel="stylesheet" href="/source/presentation/public/ecosystem-film.css">
 <script src="/source/presentation/public/index.js" defer></script>
+<script src="/source/presentation/public/ecosystem-film.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -58,71 +60,31 @@
   </div>
   <div class="hero-bottom"><span>01 — PLATFORM OVERVIEW</span><span>SCROLL TO EXPLORE ↓</span></div>
 </section>
-<dialog class="system-intro" data-system-intro aria-labelledby="system-intro-title">
-  <div class="system-intro__stage" data-intro-stage data-phase="0">
-    <div class="system-intro__grid" aria-hidden="true"></div>
-    <header class="system-intro__topbar">
-      <div><p>RAYMONDOVICH / DIGITAL ECOSYSTEM</p><h2 id="system-intro-title">Как устроена экосистема</h2></div>
-      <button class="system-intro__close" type="button" data-intro-close aria-label="Закрыть презентацию">×</button>
-    </header>
-    <div class="system-intro__scene" aria-label="Анимированная схема цифровой экосистемы">
-      <div class="system-intro__orbit system-intro__orbit--outer" aria-hidden="true"></div>
-      <div class="system-intro__orbit system-intro__orbit--inner" aria-hidden="true"></div>
-      <svg class="system-intro__connections" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
-        <path class="intro-link intro-link--own" d="M500 310 L500 62"/>
-        <path class="intro-link intro-link--partner" d="M500 310 L824 210"/>
-        <path class="intro-link intro-link--external" d="M500 310 L690 548"/>
-        <path class="intro-link intro-link--management" d="M500 310 L176 210"/>
-        <path class="intro-link intro-link--product-life" d="M500 62 L95 80"/>
-        <path class="intro-link intro-link--product-ai" d="M500 62 L95 340"/>
-        <path class="intro-link intro-link--private" d="M176 210 L500 570"/>
-      </svg>
-      <div class="system-intro__brand"><b>RAYMONDOVICH</b><span>ЦИФРОВАЯ ЭКОСИСТЕМА</span></div>
-      <div class="intro-node intro-node--own"><i></i><span>Собственные проекты</span></div>
-      <div class="intro-node intro-node--partner"><i></i><span>Партнёрские проекты</span></div>
-      <div class="intro-node intro-node--external"><i></i><span>Сторонние проекты</span></div>
-      <div class="intro-node intro-node--management"><i></i><span>Система управления проектом</span><small>ГЛАВНОЕ ПРЕИМУЩЕСТВО</small></div>
-      <section class="intro-detail" aria-live="polite" aria-label="Раскрытие направления экосистемы">
-        <header class="intro-detail__header"><span data-detail-kicker>RAYMONDOVICH / ECOSYSTEM</span><h3 data-detail-title>Единая экосистема</h3><p data-detail-description>Проекты и инструменты объединены общей системой.</p></header>
-        <div class="intro-detail__content intro-detail__content--own">
-          <article class="intro-detail__item"><span>01 / PRODUCT</span><b>LIFE GAME</b><small>Запуск 1 января 2027</small></article>
-          <article class="intro-detail__item"><span>02 / PRODUCT</span><b>AI-SISTEM</b><small>Разработка приостановлена</small></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--management">
-          <article class="intro-detail__item"><span>01</span><b>Бухгалтерия</b><small>Финансовый учёт проектов</small></article>
-          <article class="intro-detail__item"><span>02</span><b>Подключённые сервисы</b><small>Единая среда инструментов</small></article>
-          <article class="intro-detail__item"><span>03</span><b>Маркетинг</b><small>Продвижение и развитие</small></article>
-          <article class="intro-detail__item"><span>04</span><b>Статистика</b><small>Ключевые показатели</small></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--partner">
-          <article class="intro-detail__item intro-detail__item--feature"><span>PARTNER PROGRAM</span><b>Стать партнёром</b><small>Выберите направление, обсудите задачи и согласуйте условия участия.</small></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--external">
-          <article class="intro-detail__item intro-detail__item--feature"><span>PROJECT REVIEW</span><b>Предварительное рассмотрение</b><small>Обсуждение целей проекта, согласование коммерческих условий и оформление договорённостей до публикации.</small></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--private">
-          <article class="intro-detail__item intro-detail__item--feature"><span>PRIVATE WORKSPACE</span><b>RAYMONDOVICH <strong>| PRIVATE</strong></b><small>Закрытая рабочая среда и инструменты управления проектами.</small></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--overview">
-          <article class="intro-detail__item intro-detail__item--summary"><span>01</span><b>Собственные проекты</b></article>
-          <article class="intro-detail__item intro-detail__item--summary"><span>02</span><b>Партнёрские проекты</b></article>
-          <article class="intro-detail__item intro-detail__item--summary"><span>03</span><b>Сторонние проекты</b></article>
-          <article class="intro-detail__item intro-detail__item--summary"><span>04</span><b>Система управления</b></article>
-        </div>
-        <div class="intro-detail__content intro-detail__content--final">
-          <article class="intro-detail__item intro-detail__item--feature"><span>LET'S BUILD SOMETHING</span><b>Идеи становятся действующими проектами.</b><small>Обсудим возможный формат сотрудничества.</small></article>
-        </div>
-      </section>
-      <div class="system-intro__caption" data-intro-caption>СИСТЕМА ЗАПУСКАЕТСЯ</div>
-    </div>
-    <footer class="system-intro__footer">
-      <div class="system-intro__timeline"><span data-intro-time>00:00</span><div><i data-intro-progress></i></div><span>00:45</span></div>
-      <div class="system-intro__controls">
-        <p data-intro-description>Единая экосистема, объединённая системой управления проектами.</p>
-        <div><button class="system-intro__text-button" type="button" data-intro-pause>Пауза</button><button class="system-intro__text-button" type="button" data-intro-replay>Сначала</button><button class="button primary" type="button" data-intro-skip>Пропустить <span>↗</span></button><a class="button primary" data-intro-contact href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer" hidden>Обсудить партнёрство <span>↗</span></a></div>
-      </div>
-    </footer>
-  </div>
+<dialog class="ecosystem-film" data-system-intro aria-labelledby="film-title">
+ <canvas data-film-canvas aria-hidden="true"></canvas>
+ <div class="film-shell" data-scene="0">
+  <header class="film-head"><div><small>R / DIGITAL ECOSYSTEM</small><h2 id="film-title">RAYMONDOVICH</h2></div><p><b data-scene-number>01</b><span data-scene-name>Ядро экосистемы</span></p><button data-intro-close aria-label="Закрыть">×</button></header>
+  <main class="film-main">
+   <div class="film-visual" data-film-visual>
+    <svg viewBox="0 0 1000 620" role="img" aria-label="Интерактивная схема экосистемы RAYMONDOVICH">
+     <defs><linearGradient id="film-stroke"><stop stop-color="#ff7028"/><stop offset="1" stop-color="#ffb078" stop-opacity=".12"/></linearGradient><filter id="film-light"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+     <g class="film-links"><path data-link="own" d="M500 270V120"/><path data-link="partner" d="M575 300L800 220"/><path data-link="external" d="M555 365L760 500"/><path data-link="management" d="M425 300L195 220"/><path data-link="private" d="M195 265Q300 490 500 535"/><path data-link="life" d="M500 110L215 115"/><path data-link="ai" d="M500 110L785 115"/></g>
+     <g class="film-orbits"><ellipse cx="500" cy="310" rx="340" ry="225"/><ellipse cx="500" cy="310" rx="220" ry="145"/></g>
+     <g class="film-core" data-node="core"><circle cx="500" cy="310" r="76"/><circle class="halo" cx="500" cy="310" r="90"/><text x="500" y="306" text-anchor="middle">RAYMONDOVICH</text><text class="tiny" x="500" y="329" text-anchor="middle">DIGITAL ECOSYSTEM</text></g>
+     <g class="film-node" data-node="own" tabindex="0" role="button" aria-label="Собственные проекты"><circle cx="500" cy="110" r="38"/><text x="500" y="106" text-anchor="middle">OWN</text><text class="tiny" x="500" y="123" text-anchor="middle">PROJECTS</text></g>
+     <g class="film-node" data-node="partner" tabindex="0" role="button" aria-label="Партнёрские проекты"><circle cx="800" cy="215" r="39"/><text x="800" y="211" text-anchor="middle">PARTNER</text><text class="tiny" x="800" y="228" text-anchor="middle">PROJECTS</text></g>
+     <g class="film-node" data-node="external" tabindex="0" role="button" aria-label="Сторонние проекты"><circle cx="760" cy="500" r="39"/><text x="760" y="496" text-anchor="middle">EXTERNAL</text><text class="tiny" x="760" y="513" text-anchor="middle">PROJECTS</text></g>
+     <g class="film-node management" data-node="management" tabindex="0" role="button" aria-label="Система управления"><circle cx="195" cy="215" r="43"/><text x="195" y="211" text-anchor="middle">SYSTEM</text><text class="tiny" x="195" y="229" text-anchor="middle">MANAGEMENT</text></g>
+     <g class="film-node private" data-node="private" tabindex="0" role="button" aria-label="Закрытая среда"><circle cx="500" cy="535" r="33"/><text x="500" y="539" text-anchor="middle">PRIVATE</text></g>
+     <g class="film-product" data-node="life" tabindex="0" role="button" aria-label="LIFE GAME"><rect x="125" y="78" width="145" height="54" rx="4"/><text x="197" y="101" text-anchor="middle">LIFE GAME</text><text class="tiny" x="197" y="117" text-anchor="middle">01.01.2027</text></g>
+     <g class="film-product" data-node="ai" tabindex="0" role="button" aria-label="AI-SISTEM"><rect x="730" y="78" width="145" height="54" rx="4"/><text x="802" y="101" text-anchor="middle">AI-SISTEM</text><text class="tiny" x="802" y="117" text-anchor="middle">ON HOLD</text></g>
+    </svg>
+    <aside class="film-inspector" data-film-inspector aria-live="polite"><button data-inspector-close aria-label="Закрыть описание">×</button><small data-inspector-label>ECOSYSTEM</small><h3 data-inspector-title>Единая система</h3><p data-inspector-copy>Проекты и инструменты объединены общей экосистемой.</p></aside>
+   </div>
+   <section class="film-story"><small data-scene-kicker>01 / FOUNDATION</small><h3 data-scene-title>Идеи становятся действующими проектами.</h3><p data-scene-copy>Экосистема для создания, развития и коммерциализации цифровых продуктов.</p><div class="film-story-foot"><span data-scene-counter>SCENE 01 — 08</span><span>RAYMONDOVICH / 2026</span></div></section>
+  </main>
+  <footer class="film-footer"><nav class="film-chapters" aria-label="Сцены"><button data-scene="0" aria-current="step">Ядро</button><button data-scene="1">Форматы</button><button data-scene="2">Система</button><button data-scene="3">Вход</button><button data-scene="4">Модули</button><button data-scene="5">Продукты</button><button data-scene="6">Партнёры</button><button data-scene="7">Финал</button></nav><div class="film-progress"><i data-film-progress></i></div><div class="film-controls"><div><button data-film-prev aria-label="Предыдущая сцена">←</button><button data-film-play aria-label="Пауза">Ⅱ</button><button data-film-next aria-label="Следующая сцена">→</button><button data-film-repeat aria-label="Повторить">↻</button></div><span data-film-time>00:00 / 01:04</span><div><button data-film-zoom aria-pressed="false">Увеличить схему</button><button data-film-fullscreen>На весь экран ↗</button><a href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer" data-film-contact hidden>Обсудить проект ↗</a></div></div></footer>
+ </div>
 </dialog>
 <section class="section contact" id="contact"><div><p class="overline">LET'S BUILD SOMETHING</p><h2>Есть идея или проект?</h2><p>Обсудим задачу, возможный формат сотрудничества и следующие шаги.</p></div><a class="button dark" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Связаться с RAYMONDOVICH ↗</a></section>
 </template>
