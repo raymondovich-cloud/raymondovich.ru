@@ -83,6 +83,7 @@
 .system-intro__stage[data-phase="6"] .intro-private,.system-intro__stage[data-phase="7"] .intro-private,.system-intro__stage[data-phase="8"] .intro-private{opacity:1;transform:translate(-50%,0)}
 .system-intro__stage[data-phase="7"] .system-intro__scene,.system-intro__stage[data-phase="8"] .system-intro__scene{transform:scale(.88)}
 .system-intro__stage[data-phase="7"] .system-intro__caption,.system-intro__stage[data-phase="8"] .system-intro__caption{opacity:1}
+.system-intro__stage[data-phase="4"] .intro-module--finance,.system-intro__stage[data-phase="5"] .intro-module--finance,.system-intro__stage[data-phase="6"] .intro-module--finance,.system-intro__stage[data-phase="7"] .intro-module--finance,.system-intro__stage[data-phase="8"] .intro-module--finance,.system-intro__stage[data-phase="4"] .intro-module--marketing,.system-intro__stage[data-phase="5"] .intro-module--marketing,.system-intro__stage[data-phase="6"] .intro-module--marketing,.system-intro__stage[data-phase="7"] .intro-module--marketing,.system-intro__stage[data-phase="8"] .intro-module--marketing{transform:translateX(-50%) scale(1)}
 @keyframes motion-dialog-enter{from{opacity:0}to{opacity:1}}
 @keyframes motion-orbit-turn{from{rotate:0deg}to{rotate:360deg}}
 @keyframes motion-orbit-turn-reverse{from{rotate:0deg}to{rotate:-360deg}}
