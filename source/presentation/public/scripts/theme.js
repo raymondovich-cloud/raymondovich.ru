@@ -1,9 +1,15 @@
 const root = document.documentElement;
 const themeButtons = document.querySelectorAll('[data-theme-toggle]');
-const storedTheme = localStorage.getItem('raymondovich-theme');
-const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
-  ? storedTheme
-  : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+function readStoredTheme() {
+  try {
+    const value = localStorage.getItem('raymondovich-theme');
+    return value === 'light' || value === 'dark' ? value : null;
+  } catch {
+    return null;
+  }
+}
+const initialTheme = readStoredTheme()
+  || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 function applyTheme(theme) {
   root.dataset.theme = theme;
   themeButtons.forEach((button) => {
@@ -15,6 +21,10 @@ function applyTheme(theme) {
 applyTheme(initialTheme);
 themeButtons.forEach((button) => button.addEventListener('click', () => {
   const nextTheme = root.dataset.theme === 'light' ? 'dark' : 'light';
-  localStorage.setItem('raymondovich-theme', nextTheme);
+  try {
+    localStorage.setItem('raymondovich-theme', nextTheme);
+  } catch {
+    // Тема продолжает работать до перезагрузки страницы, если хранилище недоступно.
+  }
   applyTheme(nextTheme);
 }));
