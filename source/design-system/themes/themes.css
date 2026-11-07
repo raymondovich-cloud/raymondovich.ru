@@ -1,0 +1,12 @@
+:root[data-theme="light"]{
+  color-scheme:light;
+  --color-bg:#f3f4f6;
+  --color-surface:#fff;
+  --color-surface-raised:#e9ebef;
+  --color-text:#17191d;
+  --color-muted:#555d68;
+  --color-subtle:#707782;
+  --color-line:rgba(20,24,30,.14);
+  --shadow-panel:0 24px 80px rgba(22,28,38,.09);
+  --gradient-text:linear-gradient(100deg,#191b20 8%,#d65b1f 82%);
+}
