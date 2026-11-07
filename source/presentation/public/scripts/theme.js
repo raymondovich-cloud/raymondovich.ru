@@ -6,7 +6,6 @@ const initialTheme = storedTheme === 'light' || storedTheme === 'dark'
   : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 function applyTheme(theme) {
   root.dataset.theme = theme;
-  root.style.colorScheme = theme;
   themeButtons.forEach((button) => {
     button.setAttribute('aria-pressed', String(theme === 'light'));
     const label = button.querySelector('[data-theme-label]');
