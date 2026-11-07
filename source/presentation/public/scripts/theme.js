@@ -1,30 +1,35 @@
 const root = document.documentElement;
-const themeButtons = document.querySelectorAll('[data-theme-toggle]');
+
 function readStoredTheme() {
   try {
-    const value = localStorage.getItem('raymondovich-theme');
-    return value === 'light' || value === 'dark' ? value : null;
+    const value = localStorage.getItem("raymondovich-theme");
+    return value === "light" || value === "dark" ? value : null;
   } catch {
     return null;
   }
 }
-const initialTheme = readStoredTheme()
-  || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
 function applyTheme(theme) {
   root.dataset.theme = theme;
-  themeButtons.forEach((button) => {
-    button.setAttribute('aria-pressed', String(theme === 'light'));
-    const label = button.querySelector('[data-theme-label]');
-    if (label) label.textContent = theme === 'light' ? 'Тёмная тема' : 'Светлая тема';
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(theme === "light"));
+    const label = button.querySelector("[data-theme-label]");
+    if (label) label.textContent = theme === "light" ? "Тёмная тема" : "Светлая тема";
   });
 }
+
+const initialTheme = readStoredTheme()
+  || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
 applyTheme(initialTheme);
-themeButtons.forEach((button) => button.addEventListener('click', () => {
-  const nextTheme = root.dataset.theme === 'light' ? 'dark' : 'light';
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-theme-toggle]");
+  if (!button) return;
+  const nextTheme = root.dataset.theme === "light" ? "dark" : "light";
   try {
-    localStorage.setItem('raymondovich-theme', nextTheme);
+    localStorage.setItem("raymondovich-theme", nextTheme);
   } catch {
-    // Тема продолжает работать до перезагрузки страницы, если хранилище недоступно.
+    // Тема остаётся активной до перезагрузки, если хранилище недоступно.
   }
   applyTheme(nextTheme);
-}));
+});
