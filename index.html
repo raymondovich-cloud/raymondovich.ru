@@ -2,134 +2,50 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090909">
-<meta id="route-description" name="description" content="RAYMONDOVICH — платформа для создания, развития и коммерциализации цифровых проектов.">
-<title>RAYMONDOVICH — платформа развития проектов</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/source/presentation/public/index.css">
-<link rel="stylesheet" href="/source/presentation/public/ecosystem-film.css">
-<script src="/source/presentation/public/index.js" defer></script>
-<script src="/source/presentation/public/ecosystem-film.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Raymondovich — цифровая экосистема собственных, партнёрских и сторонних проектов.">
+<meta name="theme-color" content="#08090b">
+<title>RAYMONDOVICH — цифровая экосистема</title>
+<link rel="stylesheet" href="/source/design-system/tokens/tokens.css">
+<link rel="stylesheet" href="/source/design-system/foundations/foundations.css">
+<link rel="stylesheet" href="/source/design-system/themes/themes.css">
+<link rel="stylesheet" href="/source/design-system/components/components.css">
+<link rel="stylesheet" href="/source/design-system/patterns/public-layout.css">
+<script type="module" src="/source/presentation/public/navigation/navigation.js"></script>
+<script type="module" src="/source/presentation/public/scripts/theme.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Перейти к содержимому</a>
-<aside class="sidebar" id="sidebar" aria-label="Навигация платформы">
-  <div class="sidebar-head">
-    <button class="sidebar-toggle" type="button" aria-label="Открыть меню" aria-expanded="false"><span class="menu-icon"></span></button>
-    <a class="sidebar-brand" href="#/"><strong>RAYMONDOVICH</strong><small>НАВИГАЦИЯ</small></a>
-  </div>
-  <nav class="sidebar-nav" aria-label="Основные разделы">
-    <a class="nav-item active" href="#/" aria-current="page"><span class="code">HOME</span><span class="copy"><b>Главная страница</b><small>Обзор платформы</small></span></a>
-    <a class="nav-item" href="#/products"><span class="code">PRD</span><span class="copy"><b>Продукты экосистемы</b><small>Каталог продуктов</small></span></a>
-    <a class="nav-item" href="#/cooperation"><span class="code">COOP</span><span class="copy"><b>Форматы сотрудничества</b><small>Три формата</small></span></a>
-    <a class="nav-item" href="#/steps"><span class="code">HOW</span><span class="copy"><b>Как стать партнёром</b><small>Четыре шага</small></span></a>
-    <a class="nav-item" href="#/faq"><span class="code">FAQ</span><span class="copy"><b>Частые вопросы</b><small>FAQ</small></span></a>
-    <div class="nav-divider"></div>
-    <a class="nav-item" href="/account/"><span class="code">USR</span><span class="copy"><b>Профиль</b><small>Личный кабинет</small></span></a>
-    <a class="nav-item" href="/account/settings/"><span class="code">SET</span><span class="copy"><b>Настройки</b><small>Профиль и безопасность</small></span></a>
-    <div class="nav-item disabled" aria-disabled="true"><span class="code">HLP</span><span class="copy"><b>Помощь</b><small>Скоро</small></span></div>
-    <div class="nav-item disabled" aria-disabled="true"><span class="code">TRF</span><span class="copy"><b>Тарифы и пакеты</b><small>Скоро</small></span></div>
-    <div class="nav-item disabled" aria-disabled="true"><span class="code">THM</span><span class="copy"><b>Светлая тема</b><small>Скоро</small></span></div>
-    <div class="nav-divider"></div>
-    <button class="nav-item logout" type="button" disabled aria-disabled="true"><span class="code">OUT</span><span class="copy"><b>Выйти</b><small>Завершить сеанс</small></span></button>
-  </nav>
-  <div class="sidebar-foot">PLATFORM INTERFACE <span>01 / 01</span></div>
+<aside class="sidebar" aria-label="Навигация платформы">
+<div class="sidebar-head"><button class="sidebar-toggle" type="button" data-menu-toggle aria-label="Открыть меню" aria-expanded="false"><span class="menu-icon"></span></button><a class="sidebar-brand" href="/index.html"><strong>RAYMONDOVICH</strong><small>DIGITAL ECOSYSTEM</small></a></div>
+<nav class="sidebar-nav" aria-label="Основные разделы">
+<a class="nav-item" href="/index.html" aria-current="page"><span class="code">01</span><span class="copy"><b>Главная страница</b><small>Обзор экосистемы</small></span></a>
+<a class="nav-item" href="/pages/ecosystem-projects.html" ><span class="code">02</span><span class="copy"><b>Проекты экосистемы</b><small>Собственные продукты</small></span></a>
+<a class="nav-item" href="/pages/partner-projects.html" ><span class="code">03</span><span class="copy"><b>Партнёрские проекты</b><small>Совместное развитие</small></span></a>
+<a class="nav-item" href="/pages/advertising-projects.html" ><span class="code">04</span><span class="copy"><b>Рекламные проекты</b><small>Внешние предложения</small></span></a>
+<a class="nav-item" href="/pages/how-to-join.html" ><span class="code">05</span><span class="copy"><b>Как подключиться</b><small>Порядок участия</small></span></a>
+<div class="nav-divider"></div>
+<a class="nav-item" href="/pages/settings.html" ><span class="code">06</span><span class="copy"><b>Настройки</b><small>Настройки интерфейса</small></span></a>
+<a class="nav-item" href="/pages/help.html" ><span class="code">07</span><span class="copy"><b>Помощь</b><small>Информация и поддержка</small></span></a>
+<a class="nav-item" href="/pages/plans.html" ><span class="code">08</span><span class="copy"><b>Тарифы и пакеты</b><small>Условия участия</small></span></a>
+<div class="nav-divider"></div>
+<button class="nav-item theme-control" type="button" data-theme-toggle aria-pressed="false"><span class="code">UI</span><span class="copy"><b data-theme-label>Светлая тема</b><small>Переключить оформление</small></span><span class="theme-switch" aria-hidden="true"></span></button>
+<div class="sidebar-bottom"><a class="nav-item" href="/pages/authorization.html"><span class="code">ID</span><span class="copy"><b>Авторизация</b><small>Раздел готовится</small></span></a></div></nav>
+<div class="sidebar-foot"><span>PLATFORM / PUBLIC</span><span>V1.0</span></div>
 </aside>
-<div class="scrim" data-close-menu></div>
+<div class="scrim" data-menu-close></div>
 <div class="page-shell">
-<header class="site-header">
-  <div class="header-inner">
-    <button class="mobile-toggle" type="button" aria-label="Открыть навигацию" aria-expanded="false"><span class="menu-icon"></span></button>
-    <a class="wordmark" href="#/">RAYMONDOVICH<span>.</span></a>
-    <nav class="header-nav"><a href="#/products">Продукты</a><a href="#/cooperation">Сотрудничество</a><a href="#/contact">Контакты</a></nav>
-    <a class="header-account" href="/account/">Личный кабинет <span>↗</span></a>
-  </div>
-</header>
-<main id="main" tabindex="-1" aria-live="polite"></main>
-<template id="page-home">
-<section class="hero section" id="home">
-  <div class="eyebrow"><i></i>DIGITAL PROJECT PLATFORM <span>EST. / RAYMONDOVICH</span></div>
-  <div class="hero-copy">
-    <p class="overline">СОЗДАНИЕ · РАЗВИТИЕ · МАСШТАБИРОВАНИЕ</p>
-    <h1>Идеи становятся<br><span>действующими проектами.</span></h1>
-    <p class="lead">RAYMONDOVICH — платформа для создания, развития и коммерциализации цифровых продуктов. Мы объединяем собственные разработки, партнёрские команды и отобранные внешние проекты в единую экосистему.</p>
-    <div class="actions"><button class="button primary" type="button" data-intro-open>Знакомство с системой <span>↗</span></button></div>
-  </div>
-  <div class="hero-bottom"><span>01 — PLATFORM OVERVIEW</span><span>SCROLL TO EXPLORE ↓</span></div>
-</section>
-<dialog class="ecosystem-film" data-system-intro aria-labelledby="film-title">
- <canvas data-film-canvas aria-hidden="true"></canvas>
- <div class="film-shell" data-scene="0">
-  <header class="film-head"><div><small>R / DIGITAL ECOSYSTEM</small><h2 id="film-title">RAYMONDOVICH</h2></div><p><b data-scene-number>01</b><span data-scene-name>Ядро экосистемы</span></p><button data-intro-close aria-label="Закрыть">×</button></header>
-  <main class="film-main">
-   <div class="film-visual" data-film-visual>
-    <svg viewBox="0 0 1000 620" role="img" aria-label="Интерактивная схема экосистемы RAYMONDOVICH">
-     <defs><linearGradient id="film-stroke"><stop stop-color="#ff7028"/><stop offset="1" stop-color="#ffb078" stop-opacity=".12"/></linearGradient><filter id="film-light"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-     <g class="film-links"><path data-link="own" d="M500 270V120"/><path data-link="partner" d="M575 300L800 220"/><path data-link="external" d="M555 365L760 500"/><path data-link="management" d="M425 300L195 220"/><path data-link="private" d="M195 265Q300 490 500 535"/><path data-link="life" d="M500 110L215 115"/><path data-link="ai" d="M500 110L785 115"/></g>
-     <g class="film-orbits"><ellipse cx="500" cy="310" rx="340" ry="225"/><ellipse cx="500" cy="310" rx="220" ry="145"/></g>
-     <g class="film-core" data-node="core"><circle cx="500" cy="310" r="76"/><circle class="halo" cx="500" cy="310" r="90"/><text x="500" y="306" text-anchor="middle">RAYMONDOVICH</text><text class="tiny" x="500" y="329" text-anchor="middle">DIGITAL ECOSYSTEM</text></g>
-     <g class="film-node" data-node="own" tabindex="0" role="button" aria-label="Собственные проекты"><circle cx="500" cy="110" r="38"/><text x="500" y="106" text-anchor="middle">OWN</text><text class="tiny" x="500" y="123" text-anchor="middle">PROJECTS</text></g>
-     <g class="film-node" data-node="partner" tabindex="0" role="button" aria-label="Партнёрские проекты"><circle cx="800" cy="215" r="39"/><text x="800" y="211" text-anchor="middle">PARTNER</text><text class="tiny" x="800" y="228" text-anchor="middle">PROJECTS</text></g>
-     <g class="film-node" data-node="external" tabindex="0" role="button" aria-label="Сторонние проекты"><circle cx="760" cy="500" r="39"/><text x="760" y="496" text-anchor="middle">EXTERNAL</text><text class="tiny" x="760" y="513" text-anchor="middle">PROJECTS</text></g>
-     <g class="film-node management" data-node="management" tabindex="0" role="button" aria-label="Система управления"><circle cx="195" cy="215" r="43"/><text x="195" y="211" text-anchor="middle">SYSTEM</text><text class="tiny" x="195" y="229" text-anchor="middle">MANAGEMENT</text></g>
-     <g class="film-node private" data-node="private" tabindex="0" role="button" aria-label="Закрытая среда"><circle cx="500" cy="535" r="33"/><text x="500" y="539" text-anchor="middle">PRIVATE</text></g>
-     <g class="film-product" data-node="life" tabindex="0" role="button" aria-label="LIFE GAME"><rect x="125" y="78" width="145" height="54" rx="4"/><text x="197" y="101" text-anchor="middle">LIFE GAME</text><text class="tiny" x="197" y="117" text-anchor="middle">01.01.2027</text></g>
-     <g class="film-product" data-node="ai" tabindex="0" role="button" aria-label="AI-SISTEM"><rect x="730" y="78" width="145" height="54" rx="4"/><text x="802" y="101" text-anchor="middle">AI-SISTEM</text><text class="tiny" x="802" y="117" text-anchor="middle">ON HOLD</text></g>
-    </svg>
-    <aside class="film-inspector" data-film-inspector aria-live="polite"><button data-inspector-close aria-label="Закрыть описание">×</button><small data-inspector-label>ECOSYSTEM</small><h3 data-inspector-title>Единая система</h3><p data-inspector-copy>Проекты и инструменты объединены общей экосистемой.</p></aside>
-   </div>
-   <section class="film-story"><small data-scene-kicker>01 / FOUNDATION</small><h3 data-scene-title>Идеи становятся действующими проектами.</h3><p data-scene-copy>Экосистема для создания, развития и коммерциализации цифровых продуктов.</p><div class="film-story-foot"><span data-scene-counter>SCENE 01 — 08</span><span>RAYMONDOVICH / 2026</span></div></section>
-  </main>
-  <footer class="film-footer"><nav class="film-chapters" aria-label="Сцены"><button data-scene="0" aria-current="step">Ядро</button><button data-scene="1">Форматы</button><button data-scene="2">Система</button><button data-scene="3">Вход</button><button data-scene="4">Модули</button><button data-scene="5">Продукты</button><button data-scene="6">Партнёры</button><button data-scene="7">Финал</button></nav><div class="film-progress"><i data-film-progress></i></div><div class="film-controls"><div><button data-film-prev aria-label="Предыдущая сцена">←</button><button data-film-play aria-label="Пауза">Ⅱ</button><button data-film-next aria-label="Следующая сцена">→</button><button data-film-repeat aria-label="Повторить">↻</button></div><span data-film-time>00:00 / 01:04</span><div><button data-film-zoom aria-pressed="false">Увеличить схему</button><button data-film-fullscreen>На весь экран ↗</button><a href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer" data-film-contact hidden>Обсудить проект ↗</a></div></div></footer>
- </div>
-</dialog>
-<section class="section contact" id="contact"><div><p class="overline">LET'S BUILD SOMETHING</p><h2>Есть идея или проект?</h2><p>Обсудим задачу, возможный формат сотрудничества и следующие шаги.</p></div><a class="button dark" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Связаться с RAYMONDOVICH ↗</a></section>
-</template>
-<template id="page-products">
-<section class="section bordered" id="products">
-  <div class="section-heading"><div class="kicker"><span>02</span> ЭКОСИСТЕМА</div><div><p class="overline">PRODUCT PORTFOLIO</p><h2>Продукты экосистемы</h2><p class="section-lead">Каталог действующих и разрабатываемых продуктов RAYMONDOVICH, их статусы и возможности участия.</p></div></div>
-  <div class="placeholder"><b>R/</b><div><strong>Каталог формируется</strong><p>Карточки продуктов и подробные страницы будут добавляться по мере подготовки каждого направления к публикации.</p></div><small>IN DEVELOPMENT</small></div>
-</section>
-</template>
-<template id="page-cooperation">
-<section class="section bordered" id="cooperation">
-  <div class="section-heading"><div class="kicker"><span>03</span> СОТРУДНИЧЕСТВО</div><div><p class="overline">THREE PROJECT FORMATS</p><h2>Три формата развития проектов</h2><p class="section-lead">Формат участия зависит от того, кому принадлежит проект и какую роль вы хотите в нём выполнять.</p></div></div>
-  <div class="formats">
-    <article><span>01</span><div><p class="overline">OWN PROJECTS</p><h3>Собственные проекты</h3><p>Продукты, которые RAYMONDOVICH самостоятельно создаёт, развивает и выводит на рынок. Для отдельных задач и направлений могут привлекаться партнёры.</p></div><b>↗</b></article>
-    <article><span>02</span><div><p class="overline">PARTNER PROJECTS</p><h3>Партнёрские проекты</h3><p>Совместная работа над проектами RAYMONDOVICH. Партнёры подключаются к конкретным задачам, направлениям продвижения или развития на согласованных условиях.</p></div><b>↗</b></article>
-    <article><span>03</span><div><p class="overline">EXTERNAL PROJECTS</p><h3>Сторонние проекты</h3><p>Проекты независимых авторов и команд, которые проходят предварительное рассмотрение. Условия сотрудничества согласуются до публикации и начала совместной работы.</p></div><b>↗</b></article>
-  </div>
-  <p class="note">Публикация стороннего проекта не является автоматической: сначала обсуждаются цели, формат участия и коммерческие условия, затем оформляются договорённости.</p>
-</section>
-</template>
-<template id="page-steps">
-<section class="section bordered" id="steps">
-  <div class="section-heading"><div class="kicker"><span>04</span> СТАРТ</div><div><p class="overline">HOW TO JOIN</p><h2>Как стать партнёром</h2><p class="section-lead">Понятный процесс от знакомства с платформой до согласованного начала работы.</p></div></div>
-  <ol class="steps"><li><span>01</span><h3>Знакомство</h3><p>Изучите платформу, направления экосистемы и доступные форматы сотрудничества.</p></li><li><span>02</span><h3>Выбор направления</h3><p>Определите интересующий проект и роль, в которой хотите участвовать.</p></li><li><span>03</span><h3>Обсуждение условий</h3><p>Обсудите задачи, ответственность и модель вознаграждения с командой.</p></li><li><span>04</span><h3>Начало работы</h3><p>После согласования условий и оформления договорённостей приступайте к работе.</p></li></ol>
-</section>
-</template>
-<template id="page-faq">
-<section class="section bordered faq" id="faq">
-  <div class="section-heading"><div class="kicker"><span>05</span> ИНФОРМАЦИЯ</div><div><p class="overline">FREQUENTLY ASKED QUESTIONS</p><h2>Частые вопросы</h2></div></div>
-  <div class="faq-list">
-    <details><summary>Нужно ли иметь собственный продукт, чтобы стать партнёром?</summary><p>Нет. Можно присоединиться к развитию собственных проектов RAYMONDOVICH в качестве партнёра, если для выбранного направления открыт набор участников.</p></details>
-    <details><summary>Можно ли предложить собственный проект?</summary><p>Да. Проект можно представить для рассмотрения. До публикации обсуждаются его цели, формат сотрудничества и коммерческие условия; размещение возможно после согласования и оформления договорённостей.</p></details>
-    <details><summary>Гарантируется ли доход партнёрам?</summary><p>Нет. Доход не гарантируется. Вознаграждение, критерии результата и порядок выплат определяются условиями конкретного проекта.</p></details>
-    <details><summary>Как узнать, какие проекты открыты для участия?</summary><p>Актуальные предложения будут размещаться в каталоге продуктов и на страницах соответствующих проектов.</p></details>
-  </div>
-</section>
-</template>
-<template id="page-contact">
-<section class="section contact" id="contact"><div><p class="overline">LET'S BUILD SOMETHING</p><h2>Есть идея или проект?</h2><p>Обсудим задачу, возможный формат сотрудничества и следующие шаги.</p></div><a class="button dark" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Связаться с RAYMONDOVICH ↗</a></section>
-</template>
-
-<footer class="footer">
-  <div class="footer-top"><a class="wordmark" href="#/">RAYMONDOVICH<span>.</span></a><p>Платформа для создания и развития цифровых проектов.</p><a href="#/">НАВЕРХ ↑</a></div>
-  <div class="footer-bottom"><span>© 2026 RAYMONDOVICH. Все права защищены.</span><nav><a href="/pages/legal/privacy.html">Конфиденциальность</a><a href="/pages/legal/terms.html">Условия использования</a></nav><span>RAYMONDOVICH DIGITAL ECOSYSTEM</span></div>
-</footer>
-</div>
-</body>
-</html>
+<header class="site-header"><div class="header-inner"><button class="mobile-toggle" type="button" data-menu-toggle aria-label="Открыть навигацию" aria-expanded="false"><span class="menu-icon"></span></button><a class="wordmark" href="/index.html">RAYMONDOVICH<span>.</span></a><nav class="header-nav" aria-label="Быстрая навигация"><a href="/pages/ecosystem-projects.html">Проекты</a><a href="/pages/partner-projects.html">Партнёрство</a><a href="#contact">Контакты</a></nav><a class="header-account" href="/pages/authorization.html">Авторизация <span>↗</span></a></div></header>
+<main id="main" tabindex="-1">
+<section class="section hero"><div class="eyebrow"><i></i>DIGITAL PROJECT ECOSYSTEM <span>RAYMONDOVICH / 2026</span></div><div class="hero-copy"><p class="overline">СОЗДАНИЕ · РАЗВИТИЕ · СОТРУДНИЧЕСТВО</p><h1>Идеи становятся<br><span>действующими проектами.</span></h1><p class="lead">Создавать, развивать и коммерциализировать цифровые продукты, объединяя собственные компетенции, партнёрское участие и отобранные внешние проекты в управляемой экосистеме.</p><a class="button primary" href="/pages/how-to-join.html">Как подключиться <span>↗</span></a></div><div class="hero-bottom"><span>01 / DIGITAL ECOSYSTEM</span><span>SCROLL TO EXPLORE ↓</span></div></section>
+<section class="section bordered"><div class="section-heading"><div class="kicker"><span>01</span> НАПРАВЛЕНИЯ</div><div><p class="overline">THREE PROJECT FORMATS</p><h2>Три формата развития проектов</h2><p class="section-lead">Raymondovich объединяет собственные разработки, проекты с открытым партнёрским участием и перспективные продукты сторонних авторов.</p></div></div>
+<div class="formats">
+<article><span>01</span><div><p class="overline">OWN PROJECTS</p><h3>Собственные проекты</h3><p>Продукты и цифровые решения, которые мы самостоятельно разрабатываем и развиваем.</p></div><b>↗</b></article>
+<article><span>02</span><div><p class="overline">PARTNER PROJECTS</p><h3>Партнёрские проекты</h3><p>Направления, к которым можно присоединиться, чтобы совместно создавать, развивать и продвигать продукты.</p></div><b>↗</b></article>
+<article><span>03</span><div><p class="overline">EXTERNAL PROJECTS</p><h3>Сторонние проекты</h3><p>Разработки независимых авторов, которые могут стать частью экосистемы после рассмотрения и согласования условий сотрудничества.</p></div><b>↗</b></article>
+</div></section>
+<section class="cta-band"><div><p class="overline">COOPERATION</p><h2>Есть проект или желание присоединиться?</h2><p>Начнём с обсуждения идеи, задач и формата взаимодействия.</p></div><a class="button primary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Обсудить сотрудничество ↗</a></section>
+<section class="section contact" id="contact"><div><p class="overline">RAYMONDOVICH / CONTACT</p><h2>Создаём и развиваем вместе.</h2><p>По вопросам сотрудничества и предложениям по проектам свяжитесь напрямую.</p></div><a class="button secondary" href="https://t.me/BillionsMone" target="_blank" rel="noopener noreferrer">Telegram ↗</a></section>
+</main>
+<footer class="footer"><div class="footer-top"><a class="wordmark" href="/index.html">RAYMONDOVICH<span>.</span></a><p>Создавать. Развивать. Объединять.</p><a href="#main">НАВЕРХ ↑</a></div><div class="footer-bottom"><span>© 2026 RAYMONDOVICH. Все права защищены.</span><span>RAYMONDOVICH DIGITAL ECOSYSTEM</span></div></footer>
+</div></body></html>
