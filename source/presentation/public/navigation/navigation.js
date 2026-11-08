@@ -98,7 +98,17 @@ function goBack(fallbackRoute) {
     return;
   }
   const fallback = current?.parentRoute || fallbackRoute || parentForDirectRoute(routeFromLocation());
-  navigateRoute(fallback, { replace: true });
+  const parent = parentForDirectRoute(fallback);
+  writeState({
+    route: fallback,
+    screen: "route",
+    data: null,
+    parentRoute: parent,
+    parentScreen: "route",
+    direct: true
+  }, fallback === rootRoute ? "/" : fallback, true);
+  setMenu(false);
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function syncNativeHashChange() {
