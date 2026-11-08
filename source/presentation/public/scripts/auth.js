@@ -108,7 +108,7 @@ function renderSignedOut(root) {
 }
 
 function renderSignedIn(root, user) {
-  const shell = root.querySelector("[data-auth-shell]");
+  const shell = root.matches?.("[data-auth-shell]") ? root : root.querySelector("[data-auth-shell]");
   if (!shell) return;
   const role = user.app_metadata?.role || "user";
   if (role === "admin") {
