@@ -208,7 +208,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
           <label>Приоритет<select name="priority">${Object.entries(PRIORITY).map(([k,v])=>`<option value="${k}" ${(current.priority||"normal")===k?"selected":""}>${v}</option>`).join("")}</select></label>
         </div>
         <div class="ideas-form-grid">
-          <label>Статус<select name="status">${Object.entries(STATUS).filter(([k])=>k!=="launched" && (k!=="converted" || current.status==="converted")).map(([k,v])=>`<option value="${k}" ${(current.status||"new")===k?"selected":""}>${v}</option>`).join("")}</select></label>
+          <label>Статус<select name="status">${Object.entries(STATUS).filter(([k])=>(k!=="launched" || current.status==="launched") && (k!=="converted" || current.status==="converted")).map(([k,v])=>`<option value="${k}" ${(current.status||"new")===k?"selected":""}>${v}</option>`).join("")}</select></label>
           <label>Модель бизнеса<input name="business_model" maxlength="500" value="${escape(current.business_model)}"></label>
         </div>
         <div class="ideas-form-grid">
@@ -328,8 +328,11 @@ export async function renderIdeasWorkspace(root, user, onBack) {
         window.alert("Идея сохранена, но история изменений не записалась: "+activityError.message);
       }
       await load();
-      if (id) showDetail(ideas.find(item=>item.id===saved.id));
-      else showRegistry();
+      if (id) {
+        if (saved.status === "archived") setTab("archive");
+        else if (previous?.status === "archived") setTab("active");
+        showDetail(ideas.find(item=>item.id===saved.id));
+      } else showRegistry();
     } catch(error) {
       errorNode.textContent=error?.message || "Не удалось сохранить идею.";
       errorNode.hidden=false;
