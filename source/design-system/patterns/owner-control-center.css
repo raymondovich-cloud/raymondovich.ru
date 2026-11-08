@@ -82,7 +82,7 @@
 }
 .owner-console-card.is-active{
   border:2px solid var(--color-accent);
-  padding:13px 17px;
+  padding:15px 15px;
 }
 .owner-console-code{
   width:48px;height:48px;
