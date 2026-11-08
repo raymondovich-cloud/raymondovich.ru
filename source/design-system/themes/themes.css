@@ -13,6 +13,7 @@
   --color-atmosphere-tertiary: rgba(214, 91, 31, .032);
   --color-atmosphere-sidebar: rgba(214, 91, 31, .042);
   --gradient-text:linear-gradient(100deg,#191b20 8%,#d65b1f 82%);
+  --gradient-home-atmosphere: radial-gradient(circle 280px at 88% 20%, rgba(214,91,31,.15), transparent 68%);
   --color-owner-panel:rgba(255,255,255,.48);
   --color-owner-panel-text:#17191d;
   --color-owner-surface:rgba(255,255,255,.64);
