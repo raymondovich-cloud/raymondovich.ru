@@ -14,8 +14,7 @@ const routes = {
 
 const legacySlug = Object.keys(routes).find((slug) => location.pathname === routes[slug]);
 if (legacySlug) {
-  window.RaymondovichNavigation?.navigateRoute(`#${legacySlug}`, { replace: true });
-  if (!window.RaymondovichNavigation) location.replace(`/#${legacySlug}`);
+  location.replace(`/#${legacySlug}`);
 } else {
   let renderSequence = 0;
   let renderedRoute = null;
