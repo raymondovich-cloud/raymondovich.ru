@@ -1,19 +1,44 @@
-/* Shared top navigation for nested account workspaces. */
-.workspace-back{
+/* Global back navigation control in the shared application header. */
+.header-back-toggle{
   display:inline-flex;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
   align-items:center;
-  min-height:20px;
-  margin:0;
-  padding:0 0 20px;
-  border:0;
+  justify-content:center;
+  padding:0;
+  border:1px solid var(--color-line);
+  border-radius:50%;
   background:transparent;
-  color:#ff7133;
-  font:500 14px/1.4 var(--font-sans);
-  text-align:left;
+  color:var(--color-accent);
   cursor:pointer;
+  transition:border-color .2s ease,background-color .2s ease,color .2s ease;
 }
-.workspace-back:focus-visible{
-  outline:2px solid rgba(255,137,54,.7);
-  outline-offset:4px;
-  border-radius:3px;
+.header-back-toggle[hidden]{display:none}
+.header-back-toggle:hover{
+  border-color:var(--color-accent);
+  background:color-mix(in srgb,var(--color-accent) 9%,transparent);
+}
+.header-back-toggle svg{
+  width:19px;
+  height:19px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.header-back-toggle:focus-visible{
+  outline:2px solid var(--color-accent);
+  outline-offset:3px;
+}
+@media(max-width:760px){
+  .header-back-toggle{
+    flex-basis:38px;
+    width:38px;
+    height:38px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .header-back-toggle{transition:none}
 }
