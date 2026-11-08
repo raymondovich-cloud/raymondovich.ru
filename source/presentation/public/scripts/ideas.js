@@ -160,6 +160,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       business_model: String(value.business_model || ""),
       estimated_cost: value.estimated_cost === "" ? null : Number(value.estimated_cost),
       expected_revenue: value.expected_revenue === "" ? null : Number(value.expected_revenue),
+      archived_at: value.status === "archived" ? (ideas.find(item => item.id === id)?.archived_at || new Date().toISOString()) : null,
       updated_at: new Date().toISOString()
     };
     const button = form.querySelector('[type="submit"]');
@@ -173,12 +174,14 @@ export async function renderIdeasWorkspace(root, user, onBack) {
         if (result.error) throw result.error;
         saved = result.data;
         const eventType = previous.status !== saved.status ? "status_changed" : previous.priority !== saved.priority ? "priority_changed" : previous.category_id !== saved.category_id ? "category_changed" : "updated";
-        await supabase.from("idea_activity").insert({idea_id:id,owner_id:user.id,actor_id:user.id,event_type:eventType,details:{status:saved.status,priority:saved.priority}});
+        const activityResult = await supabase.from("idea_activity").insert({idea_id:id,owner_id:user.id,actor_id:user.id,event_type:eventType,details:{status:saved.status,priority:saved.priority}});
+        if (activityResult.error) console.error("Idea activity was not recorded:", activityResult.error.message);
       } else {
         const result = await supabase.from("ideas").insert({...payload,owner_id:user.id}).select("*").single();
         if (result.error) throw result.error;
         saved = result.data;
-        await supabase.from("idea_activity").insert({idea_id:saved.id,owner_id:user.id,actor_id:user.id,event_type:"created",details:{name:saved.name}});
+        const activityResult = await supabase.from("idea_activity").insert({idea_id:saved.id,owner_id:user.id,actor_id:user.id,event_type:"created",details:{name:saved.name}});
+        if (activityResult.error) console.error("Idea activity was not recorded:", activityResult.error.message);
       }
       formHost.hidden = true;
       await load();
