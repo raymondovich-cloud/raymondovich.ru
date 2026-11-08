@@ -1,6 +1,6 @@
 const sections = [
   { code: "01", icon: "⌂", title: "Обзор", description: "Состояние экосистемы и ключевые показатели", status: "active", href: "#control-center" },
-  { code: "02", icon: "◇", title: "Проекты", description: "Собственные, партнёрские и сторонние проекты", status: "active", href: "/#ecosystem-projects" },
+  { code: "02", icon: "◇", title: "Проекты", description: "Собственные, партнёрские и сторонние проекты", status: "planned", href: "#projects" },
   { code: "03", icon: "◎", title: "Пользователи", description: "Аккаунты, роли и разрешения", status: "planned" },
   { code: "04", icon: "↗", title: "Партнёры", description: "Партнёрские профили и взаимодействие", status: "planned" },
   { code: "05", icon: "₽", title: "Финансы", description: "Доходы, расходы и финансовые операции", status: "planned" },
