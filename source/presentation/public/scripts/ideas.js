@@ -10,16 +10,16 @@ const STATUS = {
   launched: "Запущена"
 };
 const PRIORITY = { low: "Низкий", normal: "Обычный", high: "Высокий", critical: "Критический" };
+let activeIdeasController = null;
 
-export async function renderIdeasWorkspace(root, user, onBack) {
-  root._ideasController?.abort();
+export async function renderIdeasWorkspace(root, user) {
+  activeIdeasController?.abort();
   const controller = new AbortController();
-  root._ideasController = controller;
+  activeIdeasController = controller;
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <section class="ideas-workspace" aria-labelledby="ideas-title">
       <header class="ideas-header">
-        <button class="workspace-back" type="button" data-ideas-back>← Центр управления</button>
         <p class="overline">RAYMONDOVICH / OWNER CONTROL CENTER</p>
         <h1 id="ideas-title">Идеи</h1>
         <p class="ideas-subtitle">Реестр идей экосистемы</p>
@@ -148,7 +148,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     const archived = isArchived(idea);
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
-      <div class="ideas-detail-top"><button class="workspace-back" type="button" data-idea-close>← К реестру идей</button><span class="ideas-detail-code">IDEA / ${escape(idea.id.slice(0,8).toUpperCase())}</span></div>
+      <div class="ideas-detail-top"><span class="ideas-detail-code">IDEA / ${escape(idea.id.slice(0,8).toUpperCase())}</span></div>
       <article class="ideas-detail">
         <div class="ideas-detail-meta"><span>${escape(categoryName)}</span><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
         <h2>${escape(idea.name)}</h2>
@@ -179,7 +179,6 @@ export async function renderIdeasWorkspace(root, user, onBack) {
           <button type="button" class="ideas-primary" data-idea-edit="${escape(idea.id)}">Редактировать идею</button>
           ${converted ? '<button type="button" class="ideas-secondary" disabled>Уже в проекте</button>' : archived ? '<button type="button" class="ideas-secondary" data-idea-restore>Восстановить</button>' : '<button type="button" class="ideas-secondary" data-idea-convert>Запустить как проект</button>'}
           ${!converted && !archived ? '<button type="button" class="ideas-danger" data-idea-archive>Архивировать</button>' : ""}
-          <button type="button" class="ideas-secondary" data-idea-close>Закрыть</button>
         </div>
       </article>`;
     window.scrollTo({top:0,behavior:"smooth"});
@@ -192,7 +191,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     formHost.hidden = false;
     formHost.innerHTML = `
       <form class="ideas-form" data-idea-form data-idea-id="${escape(current.id || "")}">
-        <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2><button type="button" class="ideas-secondary" data-idea-return>← Назад</button></div>
+        <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2></div>
         <label>Название<input name="name" required maxlength="120" value="${escape(current.name)}"></label>
         <label>Описание<textarea name="description" rows="3">${escape(current.description)}</textarea></label>
         <div class="ideas-form-grid">
@@ -213,14 +212,17 @@ export async function renderIdeasWorkspace(root, user, onBack) {
           <label>Ожидаемая выручка<input name="expected_revenue" type="number" min="0" step="0.01" value="${current.expected_revenue ?? ""}"></label>
         </div>
         <p class="ideas-form-error" data-idea-error hidden></p>
-        <div class="ideas-form-actions"><button type="button" class="ideas-secondary" data-idea-return>Отмена</button><button type="submit" class="ideas-primary">Сохранить</button></div>
+        <div class="ideas-form-actions"><button type="submit" class="ideas-primary">Сохранить</button></div>
       </form>`;
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
   root.addEventListener("click", async event => {
-    if (event.target.closest("[data-ideas-back]")) { onBack(); return; }
-    if (event.target.closest("[data-idea-create]")) { showForm(); return; }
+    const navigation = window.RaymondovichNavigation;
+    if (event.target.closest("[data-idea-create]")) {
+      navigation?.navigateScreen("idea-form", { ideaId: null });
+      return;
+    }
     const filterToggle = event.target.closest("[data-ideas-filter-toggle]");
     if (filterToggle) {
       const panel = root.querySelector("[data-ideas-filters]");
@@ -229,16 +231,16 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       return;
     }
     const open = event.target.closest("[data-idea-open]");
-    if (open) { showDetail(ideas.find(i=>i.id===open.dataset.ideaOpen)); return; }
-    if (event.target.closest("[data-idea-close]")) { showRegistry(); return; }
-    if (event.target.closest("[data-idea-return]")) {
-      const origin = currentIdeaId ? ideas.find(item => item.id === currentIdeaId) : null;
-      if (origin) showDetail(origin); else showRegistry();
+    if (open) {
+      navigation?.navigateScreen("idea-detail", { ideaId: open.dataset.ideaOpen });
       return;
     }
 
     const edit = event.target.closest("[data-idea-edit]");
-    if (edit) { const idea=ideas.find(i=>i.id===edit.dataset.ideaEdit); if (idea) showForm(idea); return; }
+    if (edit) {
+      navigation?.navigateScreen("idea-form", { ideaId: edit.dataset.ideaEdit });
+      return;
+    }
 
     if (event.target.closest("[data-idea-convert]")) {
       const panel=detailHost.querySelector("[data-convert-confirm]");
@@ -335,8 +337,10 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       }
       await load();
       if (id) {
-        showDetail(ideas.find(item=>item.id===saved.id));
-      } else showRegistry();
+        window.RaymondovichNavigation?.navigateScreen("idea-detail", { ideaId: saved.id }, { replace: true });
+      } else {
+        window.RaymondovichNavigation?.back();
+      }
     } catch(error) {
       errorNode.textContent=error?.message || "Не удалось сохранить идею.";
       errorNode.hidden=false;
@@ -344,5 +348,33 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     }
   }, listenerOptions);
 
+  document.addEventListener("raymondovich:navigation", (event) => {
+    const state = event.detail;
+    if (state?.route !== "#authorization/ideas") {
+      controller.abort();
+      if (activeIdeasController === controller) activeIdeasController = null;
+      return;
+    }
+    renderNavigationScreen(state);
+  }, listenerOptions);
+
+  function renderNavigationScreen(state) {
+    const screen = state?.screen || "ideas-registry";
+    if (screen === "idea-detail") {
+      showDetail(ideas.find(item => item.id === state.data?.ideaId));
+    } else if (screen === "idea-form") {
+      showForm(state.data?.ideaId ? ideas.find(item => item.id === state.data.ideaId) : null);
+    } else {
+      showRegistry();
+    }
+  }
+
   await load();
+  const navigation = window.RaymondovichNavigation;
+  const state = navigation?.getState();
+  if (!state || state.route !== "#authorization/ideas" || state.screen === "route") {
+    navigation?.navigateScreen("ideas-registry", {}, { replace: true });
+  } else {
+    renderNavigationScreen(state);
+  }
 }

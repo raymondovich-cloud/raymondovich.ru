@@ -17,6 +17,7 @@ if (legacySlug) {
   location.replace(`/#${legacySlug}`);
 } else {
   let renderSequence = 0;
+  let renderedRoute = null;
 
   function updateNavigation(slug) {
     document.querySelectorAll(".sidebar-nav a").forEach((link) => {
@@ -30,12 +31,12 @@ if (legacySlug) {
     });
   }
 
-  async function renderRoute() {
+  async function renderRoute(route = location.hash || "home") {
     if (!main) return;
     if (window.RaymondovichPinGuard?.ready) {
       await window.RaymondovichPinGuard.ready;
     }
-    const slug = location.hash.slice(1) || "home";
+    const slug = route === "/" ? "home" : route.replace(/^#/, "") || "home";
     const routeSlug = slug.startsWith("authorization/") ? "authorization" : slug;
     const sequence = ++renderSequence;
     main.setAttribute("aria-busy", "true");
@@ -57,21 +58,27 @@ if (legacySlug) {
         main.innerHTML = pageMain.innerHTML;
         document.title = page.title || "RAYMONDOVICH";
         const description = page.querySelector('meta[name="description"]')?.content;
-        let descriptionTag = document.querySelector('meta[name="description"]');
+        const descriptionTag = document.querySelector('meta[name="description"]');
         if (description && descriptionTag) descriptionTag.content = description;
       }
+      if (sequence !== renderSequence) return;
+      renderedRoute = route;
       updateNavigation(routeSlug);
       document.body.classList.remove("menu-open");
       window.scrollTo({ top: 0, behavior: "auto" });
       main.focus({ preventScroll: true });
     } catch (error) {
       if (sequence !== renderSequence) return;
-      main.innerHTML = `<section class="section"><div class="page-intro"><p class="overline">PAGE ERROR</p><h1>Не удалось открыть страницу</h1><p>${error.message}</p><a class="button secondary" href="/">Вернуться на главную</a></div></section>`;
+      main.innerHTML = `<section class="section"><div class="page-intro"><p class="overline">PAGE ERROR</p><h1>Не удалось открыть страницу</h1><p>${String(error.message || "Неизвестная ошибка")}</p><a class="button secondary" href="/">Вернуться на главную</a></div></section>`;
     } finally {
       if (sequence === renderSequence) main.removeAttribute("aria-busy");
     }
   }
 
-  window.addEventListener("hashchange", renderRoute);
-  renderRoute();
+  document.addEventListener("raymondovich:navigation", (event) => {
+    const route = event.detail?.route || location.hash || "/";
+    if (route !== renderedRoute) renderRoute(route);
+  });
+
+  renderRoute(window.RaymondovichNavigation?.getState()?.route || location.hash || "/");
 }

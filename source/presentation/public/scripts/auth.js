@@ -113,10 +113,7 @@ function renderSignedIn(root, user) {
   const role = user.app_metadata?.role || "user";
   if (role === "admin") {
     if (location.hash === "#authorization/ideas") {
-      renderIdeasWorkspace(shell, user, () => {
-        location.hash = "#authorization";
-        renderSignedIn(root, user);
-      });
+      renderIdeasWorkspace(shell, user);
     } else {
       shell.innerHTML = renderOwnerControlCenter(user);
     }
@@ -161,13 +158,8 @@ function bindForms(root) {
     const ideasModule = event.target.closest("[data-owner-module='ideas']");
     if (ideasModule) {
       event.preventDefault();
-      location.hash = "#authorization/ideas";
-      if (currentSession?.user?.app_metadata?.role === "admin") {
-        renderIdeasWorkspace(root, currentSession.user, () => {
-          location.hash = "#authorization";
-          renderSignedIn(root, currentSession.user);
-        });
-      }
+      window.RaymondovichNavigation?.navigateRoute("#authorization/ideas");
+      if (!window.RaymondovichNavigation) location.hash = "#authorization/ideas";
       return;
     }
     const ownerTab = event.target.closest("[data-owner-tab]");
