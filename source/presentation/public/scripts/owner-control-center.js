@@ -17,7 +17,7 @@ const groups = [
       { code: "02", icon: "◎", title: "Пользователи", description: "Аккаунты и доступы" },
       { code: "03", icon: "↗", title: "Партнёры", description: "Программа партнёров" },
       { code: "04", icon: "₽", title: "Финансы", description: "Выплаты и доходы" },
-      { code: "05", icon: "✧", title: "Идеи", description: "Задумки и предложения" }
+      { code: "05", icon: "✧", title: "Идеи", description: "Задумки и предложения", active: true, href: "#authorization/ideas", module: "ideas" }
     ]
   },
   {
@@ -67,7 +67,7 @@ export function renderOwnerControlCenter(user) {
           <nav class="owner-console-grid" aria-label="Разделы: ${group.label}">
             ${group.sections.map((section) => `
               <a class="owner-console-card ${section.active ? "is-active" : "is-planned"}"
-                href="${section.href || "#"}" ${section.active ? "" : 'aria-disabled="true" data-coming-soon="true"'}>
+                href="${section.href || "#"}" ${section.active ? (section.module ? `data-owner-module="${section.module}"` : "") : 'aria-disabled="true" data-coming-soon="true"'}>
                 <span class="owner-console-code">${section.code}</span>
                 <span class="owner-console-card-content">
                   <span class="owner-console-card-title">${section.title}</span>
