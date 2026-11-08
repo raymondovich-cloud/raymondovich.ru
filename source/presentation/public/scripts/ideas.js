@@ -350,7 +350,11 @@ export async function renderIdeasWorkspace(root, user) {
 
   document.addEventListener("raymondovich:navigation", (event) => {
     const state = event.detail;
-    if (state?.route !== "#authorization/ideas") return;
+    if (state?.route !== "#authorization/ideas") {
+      controller.abort();
+      if (activeIdeasController === controller) activeIdeasController = null;
+      return;
+    }
     renderNavigationScreen(state);
   }, listenerOptions);
 
