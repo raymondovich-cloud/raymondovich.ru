@@ -1,47 +1,198 @@
-.owner-console{max-width:1240px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(18px,4vw,48px)}
-.owner-console-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:24px;border-bottom:1px solid var(--color-line)}
-.owner-console-heading h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1;letter-spacing:-.06em;margin:12px 0}
-.owner-console-heading>div:first-child>p:last-child{max-width:580px;color:var(--color-muted);line-height:1.6;margin-bottom:0}
-.owner-console-identity{display:grid;gap:8px;text-align:right;overflow-wrap:anywhere}
-.owner-console-identity strong{font-size:13px;font-weight:500}
-.owner-console-status{display:flex;align-items:center;justify-content:flex-end;gap:8px;font:10px var(--font-mono);letter-spacing:.12em;color:var(--color-muted)}
-.owner-console-status i{width:7px;height:7px;border-radius:50%;background:#65c994;box-shadow:0 0 12px rgba(101,201,148,.6)}
-.owner-console-section-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:24px 0 14px}
-.owner-console-section-heading>div>span,.owner-console-version{font:10px var(--font-mono);letter-spacing:.13em;color:var(--color-subtle)}
-.owner-console-section-heading h2{font-size:clamp(1.25rem,2.5vw,1.7rem);letter-spacing:-.04em;margin:6px 0 0}
-.owner-console-grid{display:flex;flex-direction:column;gap:0;overflow:hidden;border:1px solid var(--color-line);border-radius:var(--radius-md);background:linear-gradient(120deg,rgba(255,123,48,.045),transparent 45%)}
-.owner-console-card{min-height:68px;display:grid;grid-template-columns:34px 36px minmax(150px,.85fr) minmax(180px,1.5fr) auto;align-items:center;column-gap:14px;padding:10px 16px;border:0;border-bottom:1px solid var(--color-line);border-radius:0;background:transparent;color:var(--color-text);text-decoration:none;transition:background .2s,color .2s}
-.owner-console-card:last-child{border-bottom:0}
-.owner-console-card[href]:not([aria-disabled=true]):hover{background:rgba(255,123,48,.09)}
-.owner-console-card-top{display:contents}
-.owner-console-code{font:10px var(--font-mono);letter-spacing:.12em;color:var(--color-subtle)}
-.owner-console-icon{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--color-line);border-radius:9px;color:var(--color-accent);font-size:16px}
-.owner-console-card-title{font-size:14px;font-weight:600;letter-spacing:-.02em}
-.owner-console-card-description{color:var(--color-muted);font-size:11px;line-height:1.4}
-.owner-console-card-status{justify-self:end;white-space:nowrap;font:9px var(--font-mono);letter-spacing:.08em;color:var(--color-accent)}
-.owner-console-card.is-planned{opacity:.58;cursor:default}
-.owner-console-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;padding-top:14px;border-top:1px solid var(--color-line)}
-.owner-console-footer>span{font:9px var(--font-mono);letter-spacing:.1em;color:var(--color-subtle)}
+.owner-console{
+  width:min(100%,1100px);
+  margin:0 auto;
+  padding:clamp(22px,4vw,40px) clamp(18px,4vw,36px);
+  border-radius:30px;
+  background:#09090b;
+  color:#f4f3f5;
+}
+.owner-console-heading{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:28px;
+}
+.owner-console-heading .overline{
+  margin:0 0 18px;
+  color:#85838c;
+  font:500 12px/1.4 var(--font-mono);
+  letter-spacing:.17em;
+}
+.owner-console-heading h1{
+  margin:0;
+  font-size:clamp(2rem,5vw,3.35rem);
+  line-height:1.08;
+  font-weight:400;
+  letter-spacing:-.055em;
+}
+.owner-console-identity{
+  display:grid;
+  gap:7px;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+.owner-console-identity strong{font-size:12px;font-weight:500;color:#aaa8b0}
+.owner-console-status{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  color:#aaa8b0;
+  font:9px var(--font-mono);
+  letter-spacing:.1em;
+}
+.owner-console-status i{
+  width:6px;height:6px;border-radius:50%;
+  background:#65c994;box-shadow:0 0 10px rgba(101,201,148,.55);
+}
+.owner-console-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  padding:5px;
+  margin-bottom:30px;
+  border:1px solid #29282d;
+  border-radius:19px;
+  background:#131215;
+}
+.owner-console-tab{
+  min-height:54px;
+  padding:10px 8px;
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:#96939d;
+  font:500 15px/1.2 var(--font-sans);
+  cursor:pointer;
+  transition:background .18s ease,color .18s ease;
+}
+.owner-console-tab[aria-selected="true"]{
+  background:#242327;
+  color:#ff7133;
+}
+.owner-console-tab:focus-visible,.owner-console-card:focus-visible{
+  outline:2px solid #ff7133;
+  outline-offset:3px;
+}
+.owner-console-panel[hidden]{display:none}
+.owner-console-section-heading{
+  display:flex;
+  align-items:center;
+  margin:0 0 16px;
+  color:#85838c;
+  font:500 11px/1.4 var(--font-mono);
+  letter-spacing:.16em;
+}
+.owner-console-section-heading i{padding:0 7px;font-style:normal;color:#5e5b64}
+.owner-console-grid{
+  display:grid;
+  gap:12px;
+}
+.owner-console-card{
+  min-height:88px;
+  display:grid;
+  grid-template-columns:58px minmax(0,1fr) auto;
+  align-items:center;
+  gap:16px;
+  padding:14px 18px;
+  border:1px solid #29282e;
+  border-radius:21px;
+  background:#131215;
+  color:#f2f0f3;
+  text-decoration:none;
+  transition:border-color .18s ease,background .18s ease;
+}
+.owner-console-card.is-active{
+  border:2px solid #ff7133;
+  padding:13px 17px;
+}
+.owner-console-code{
+  width:48px;height:48px;
+  display:grid;place-items:center;
+  border:1px solid #333139;
+  border-radius:13px;
+  color:#92909a;
+  font:13px var(--font-mono);
+}
+.owner-console-card-content{min-width:0;display:grid;gap:3px}
+.owner-console-card-title{
+  font-size:17px;
+  line-height:1.25;
+  font-weight:500;
+  letter-spacing:-.025em;
+}
+.owner-console-card-description{
+  color:#92909a;
+  font-size:13px;
+  line-height:1.35;
+}
+.owner-console-card-status{
+  justify-self:end;
+  white-space:nowrap;
+  color:#ff7133;
+  font:10px var(--font-mono);
+  letter-spacing:.1em;
+}
+.owner-console-card.is-planned{cursor:default}
+.owner-console-card.is-planned .owner-console-card-title{color:#d0ced3}
+.owner-console-card:hover.is-active{background:#19171a}
+.owner-console-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-top:28px;
+  padding-top:18px;
+  border-top:1px solid #29282e;
+}
+.owner-console-footer>span{
+  color:#85838c;
+  font:10px var(--font-mono);
+  letter-spacing:.13em;
+}
+.owner-console-footer .auth-text-button{
+  padding:0;
+  color:#ff7133;
+  font-size:14px;
+}
+@media(min-width:900px){
+  .owner-console{padding:38px 42px}
+  .owner-console-card{min-height:92px}
+}
 @media(max-width:760px){
-.owner-console{padding:24px 16px}
-.owner-console-heading{align-items:flex-start;flex-direction:column;gap:14px}
-.owner-console-identity{text-align:left}
-.owner-console-status{justify-content:flex-start}
-.owner-console-card{min-height:60px;grid-template-columns:24px 30px minmax(0,1fr) auto;column-gap:10px;padding:9px 11px}
-.owner-console-icon{width:26px;height:26px;font-size:14px;border-radius:8px}
-.owner-console-card-title{font-size:13px}
-.owner-console-card-description{display:none}
-.owner-console-card-status{font-size:8px;letter-spacing:.04em}
-.owner-console-section-heading{align-items:flex-end}
-.owner-console-footer{align-items:flex-start;flex-direction:column;gap:8px}
+  .owner-console{padding:22px 16px;border-radius:25px}
+  .owner-console-heading{margin-bottom:25px}
+  .owner-console-heading .overline{margin-bottom:15px;font-size:10px;letter-spacing:.15em}
+  .owner-console-identity{display:none}
+  .owner-console-tabs{margin-bottom:26px;border-radius:17px}
+  .owner-console-tab{min-height:48px;font-size:14px;border-radius:12px}
+  .owner-console-section-heading{margin-bottom:14px;font-size:10px}
+  .owner-console-grid{gap:10px}
+  .owner-console-card{
+    min-height:82px;
+    grid-template-columns:52px minmax(0,1fr) auto;
+    gap:12px;
+    padding:12px 14px;
+    border-radius:19px;
+  }
+  .owner-console-card.is-active{padding:11px 13px}
+  .owner-console-code{width:44px;height:44px;border-radius:12px}
+  .owner-console-card-title{font-size:16px}
+  .owner-console-card-description{font-size:12px}
+  .owner-console-card-status{font-size:9px;letter-spacing:.07em}
+  .owner-console-footer{margin-top:24px;padding-top:16px}
 }
-@media(max-width:380px){
-.owner-console-card{grid-template-columns:20px 26px minmax(0,1fr) auto;column-gap:7px;padding-inline:8px}
-.owner-console-card-title{font-size:12px}
-.owner-console-card-status{font-size:7px}
+@media(max-width:390px){
+  .owner-console{padding-inline:14px}
+  .owner-console-card{grid-template-columns:46px minmax(0,1fr) auto;gap:9px;padding-inline:10px}
+  .owner-console-card.is-active{padding-inline:9px}
+  .owner-console-code{width:40px;height:40px;font-size:11px}
+  .owner-console-card-title{font-size:14px}
+  .owner-console-card-description{font-size:11px}
+  .owner-console-card-status{font-size:8px;letter-spacing:.035em}
 }
-
-/* Owner Control Center: remove the generic page and auth-container top spacing. */
+/* Keep the owner console close to the site header. */
 main > .section:has(.owner-console){padding-top:8px}
 .auth-layout:has(.owner-console){padding-top:0}
 .owner-console{padding-top:0}
