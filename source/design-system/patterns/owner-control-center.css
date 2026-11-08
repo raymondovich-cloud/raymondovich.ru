@@ -32,7 +32,7 @@
   text-align:right;
   overflow-wrap:anywhere;
 }
-.owner-console-identity strong{font-size:12px;font-weight:500;color:#aaa8b0}
+.owner-console-identity strong{font-size:12px;font-weight:500;color:var(--color-owner-secondary)}
 .owner-console-status{
   display:flex;
   align-items:center;
@@ -44,7 +44,7 @@
 }
 .owner-console-status i{
   width:6px;height:6px;border-radius:50%;
-  background:#65c994;box-shadow:0 0 10px rgba(101,201,148,.55);
+  background:var(--color-owner-success);box-shadow:var(--shadow-owner-success);
 }
 .owner-console-tabs{
   display:grid;
@@ -69,10 +69,10 @@
 }
 .owner-console-tab[aria-selected="true"]{
   background:var(--color-owner-surface-raised);
-  color:#ff7133;
+  color:var(--color-accent);
 }
 .owner-console-tab:focus-visible,.owner-console-card:focus-visible{
-  outline:2px solid #ff7133;
+  outline:2px solid var(--color-accent);
   outline-offset:3px;
 }
 .owner-console-panel[hidden]{display:none}
@@ -84,7 +84,7 @@
   font:500 11px/1.4 var(--font-mono);
   letter-spacing:.16em;
 }
-.owner-console-section-heading i{padding:0 7px;font-style:normal;color:#5e5b64}
+.owner-console-section-heading i{padding:0 7px;font-style:normal;color:var(--color-owner-separator)}
 .owner-console-grid{
   display:grid;
   gap:12px;
@@ -104,7 +104,7 @@
   transition:border-color .18s ease,background .18s ease;
 }
 .owner-console-card.is-active{
-  border:2px solid #ff7133;
+  border:2px solid var(--color-accent);
   padding:13px 17px;
 }
 .owner-console-code{
@@ -130,13 +130,13 @@
 .owner-console-card-status{
   justify-self:end;
   white-space:nowrap;
-  color:#ff7133;
+  color:var(--color-accent);
   font:10px var(--font-mono);
   letter-spacing:.1em;
 }
 .owner-console-card.is-planned{cursor:default}
-.owner-console-card.is-planned .owner-console-card-title{color:#d0ced3}
-.owner-console-card:hover.is-active{background:#19171a}
+.owner-console-card.is-planned .owner-console-card-title{color:var(--color-owner-planned)}
+.owner-console-card:hover.is-active{background:var(--color-owner-hover)}
 .owner-console-footer{
   display:flex;
   justify-content:space-between;
@@ -144,7 +144,7 @@
   gap:16px;
   margin-top:28px;
   padding-top:18px;
-  border-top:1px solid #29282e;
+  border-top:1px solid var(--color-owner-line);
 }
 .owner-console-footer>span{
   color:var(--color-owner-muted);
@@ -153,7 +153,7 @@
 }
 .owner-console-footer .auth-text-button{
   padding:0;
-  color:#ff7133;
+  color:var(--color-accent);
   font-size:14px;
 }
 @media(min-width:900px){
