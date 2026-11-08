@@ -178,8 +178,8 @@ function bindForms(root) {
           await ensureProfile(result.user);
           renderSignedIn(root, result.user);
         } else {
-          setNotice(root, "Аккаунт создан. Проверьте электронную почту и подтвердите адрес по ссылке из письма.", "success");
           showPanel(root, "login");
+          setNotice(root, "Аккаунт создан. Проверьте электронную почту и подтвердите адрес по ссылке из письма.", "success");
         }
       } else if (panel === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -194,8 +194,8 @@ function bindForms(root) {
         const { error } = await supabase.auth.updateUser({ password });
         if (error) throw error;
         recoveryMode = false;
-        setNotice(root, "Пароль успешно изменён. Теперь можно пользоваться аккаунтом.", "success");
         showPanel(root, "login");
+        setNotice(root, "Пароль успешно изменён. Теперь можно пользоваться аккаунтом.", "success");
       }
     } catch (error) {
       setNotice(root, errorText(error), "error");
@@ -239,9 +239,15 @@ function watchMain() {
 supabase.auth.onAuthStateChange((event, session) => {
   currentSession = session;
   if (event === "PASSWORD_RECOVERY") recoveryMode = true;
-  if (location.hash.startsWith("#authorization")) {
-    queueMicrotask(() => renderAuth());
-  }
+  if (!location.hash.startsWith("#authorization")) return;
+  queueMicrotask(() => {
+    const root = document.querySelector("#main");
+    const shell = root?.querySelector("[data-auth-shell]");
+    if (!shell) return;
+    if (event === "PASSWORD_RECOVERY") renderSignedOut(root);
+    else if (session?.user) renderSignedIn(root, session.user);
+    else renderSignedOut(root);
+  });
 });
 
 watchMain();
