@@ -36,15 +36,16 @@ if (legacySlug) {
       await window.RaymondovichPinGuard.ready;
     }
     const slug = location.hash.slice(1) || "home";
+    const routeSlug = slug.startsWith("authorization/") ? "authorization" : slug;
     const sequence = ++renderSequence;
     main.setAttribute("aria-busy", "true");
 
     try {
-      if (slug === "home") {
+      if (routeSlug === "home") {
         main.innerHTML = homeMarkup;
         document.title = "RAYMONDOVICH — цифровая экосистема";
       } else {
-        const path = routes[slug];
+        const path = routes[routeSlug];
         if (!path) throw new Error("Страница не найдена");
         const response = await fetch(path, { headers: { Accept: "text/html" } });
         if (!response.ok) throw new Error(`Не удалось загрузить страницу (${response.status})`);
@@ -59,7 +60,7 @@ if (legacySlug) {
         let descriptionTag = document.querySelector('meta[name="description"]');
         if (description && descriptionTag) descriptionTag.content = description;
       }
-      updateNavigation(slug);
+      updateNavigation(routeSlug);
       document.body.classList.remove("menu-open");
       window.scrollTo({ top: 0, behavior: "auto" });
       main.focus({ preventScroll: true });
