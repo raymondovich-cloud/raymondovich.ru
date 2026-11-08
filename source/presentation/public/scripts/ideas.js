@@ -44,6 +44,9 @@ export async function renderIdeasWorkspace(root, user, onBack) {
 
   const list = root.querySelector("[data-ideas-list]");
   const formHost = root.querySelector("[data-ideas-form]");
+  const toolbar = root.querySelector(".ideas-toolbar");
+  const filters = root.querySelector(".ideas-filters");
+  const footer = root.querySelector(".ideas-footer");
   let ideas = [];
   let categories = [];
 
@@ -99,10 +102,14 @@ export async function renderIdeasWorkspace(root, user, onBack) {
 
   function showForm(idea = null) {
     const current = idea || {};
+    toolbar.hidden = true;
+    filters.hidden = true;
+    list.hidden = true;
+    footer.hidden = true;
     formHost.hidden = false;
     formHost.innerHTML = `
       <form class="ideas-form" data-idea-form data-idea-id="${escape(current.id || "")}">
-        <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2><button type="button" data-idea-cancel aria-label="Закрыть">×</button></div>
+        <div class="ideas-form-heading"><button type="button" class="ideas-back" data-idea-return>← К списку идей</button><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2></div>
         <label>Название<input name="name" required maxlength="120" value="${escape(current.name)}"></label>
         <label>Описание<textarea name="description" rows="3">${escape(current.description)}</textarea></label>
         <div class="ideas-form-grid">
@@ -130,9 +137,19 @@ export async function renderIdeasWorkspace(root, user, onBack) {
   root.addEventListener("click", async event => {
     if (event.target.closest("[data-ideas-back]")) { onBack(); return; }
     if (event.target.closest("[data-idea-create]")) { showForm(); formHost.scrollIntoView({behavior:"smooth",block:"start"}); return; }
-    if (event.target.closest("[data-idea-cancel]")) { formHost.hidden = true; return; }
+    if (event.target.closest("[data-idea-cancel],[data-idea-return]")) {
+      formHost.hidden = true;
+      toolbar.hidden = false;
+      filters.hidden = false;
+      list.hidden = false;
+      footer.hidden = false;
+      return;
+    }
     const edit = event.target.closest("[data-idea-edit]");
-    if (edit) { showForm(ideas.find(i=>i.id===edit.dataset.ideaEdit)); formHost.scrollIntoView({behavior:"smooth",block:"start"}); }
+    if (edit) {
+      const selectedIdea = ideas.find(i=>i.id===edit.dataset.ideaEdit);
+      if (selectedIdea) { showForm(selectedIdea); window.scrollTo({top:0,behavior:"smooth"}); }
+    }
   }, listenerOptions);
 
   root.addEventListener("input", event => {
