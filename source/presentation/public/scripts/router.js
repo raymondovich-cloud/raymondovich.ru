@@ -32,6 +32,9 @@ if (legacySlug) {
 
   async function renderRoute() {
     if (!main) return;
+    if (window.RaymondovichPinGuard?.ready) {
+      await window.RaymondovichPinGuard.ready;
+    }
     const slug = location.hash.slice(1) || "home";
     const sequence = ++renderSequence;
     main.setAttribute("aria-busy", "true");
