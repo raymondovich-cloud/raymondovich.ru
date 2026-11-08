@@ -231,7 +231,7 @@ async function initialize() {
     return;
   }
 
-  if (storageGet(UNLOCKED_KEY) === session.user.id && localStorage.getItem(RESET_FLAG) !== "1") {
+  if (storageGet(UNLOCKED_KEY) === session.user.id && !isResetRequested()) {
     removeGate();
     return;
   }
