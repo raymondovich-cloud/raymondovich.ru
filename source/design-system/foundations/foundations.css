@@ -9,3 +9,14 @@ img,svg{display:block;max-width:100%}
 button:focus-visible,a:focus-visible{outline:2px solid var(--color-accent-bright);outline-offset:4px}
 ::selection{background:rgba(255,118,47,.3);color:var(--color-text)}
 [hidden]{display:none!important}
+
+/*
+ * iOS Safari form-control zoom prevention.
+ * Keep every editable control at a computed font size of at least 16 CSS px.
+ * max() preserves intentionally larger typography (for example, the PIN field).
+ */
+input,
+select,
+textarea {
+  font-size: max(16px, 1em) !important;
+}
