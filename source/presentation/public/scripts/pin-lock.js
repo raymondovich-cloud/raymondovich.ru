@@ -8,6 +8,23 @@ let gateRoot = null;
 let initSequence = 0;
 let resolveReady;
 let changeMode = false;
+let resetRequested = false;
+
+function storageGet(key) {
+  try { return sessionStorage.getItem(key); } catch { return null; }
+}
+
+function storageSet(key, value) {
+  try { sessionStorage.setItem(key, value); } catch { /* A blocked storage area must not break authentication. */ }
+}
+
+function storageRemove(key) {
+  try { sessionStorage.removeItem(key); } catch { /* A blocked storage area must not break authentication. */ }
+}
+
+function isResetRequested() {
+  return resetRequested || storageGet(RESET_FLAG) === "1";
+}
 
 const ready = new Promise((resolve) => {
   resolveReady = resolve;
@@ -130,7 +147,7 @@ function renderGate(mode, notice = "") {
   root.querySelector("[data-pin-gate-form]")?.addEventListener("submit", onGateSubmit);
   root.querySelector("[data-pin-forgot]")?.addEventListener("click", requestPinReset);
   root.querySelector("[data-pin-signout]")?.addEventListener("click", async () => {
-    sessionStorage.removeItem(UNLOCKED_KEY);
+    storageRemove(UNLOCKED_KEY);
     await supabase.auth.signOut();
     location.hash = "#authorization";
   });
@@ -157,7 +174,7 @@ async function onGateSubmit(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const submit = form.querySelector("button[type=submit]");
-  const mode = form.querySelector('[name="pin"]') ? "verify" : (localStorage.getItem(RESET_FLAG) === "1" ? "reset" : "setup");
+  const mode = form.querySelector('[name="pin"]') ? "verify" : (isResetRequested() ? "reset" : "setup");
   const values = pinValues(form);
 
   if (mode !== "verify" && values.newPin !== values.confirmPin) {
@@ -177,8 +194,8 @@ async function onGateSubmit(event) {
       await invoke(mode, { newPin: values.newPin });
     }
     const { data } = await supabase.auth.getSession();
-    if (data.session?.user) sessionStorage.setItem(UNLOCKED_KEY, data.session.user.id);
-    localStorage.removeItem(RESET_FLAG);
+    if (data.session?.user) storageSet(UNLOCKED_KEY, data.session.user.id);
+    resetRequested = false; storageRemove(RESET_FLAG);
     removeGate();
   } catch (error) {
     showNotice(messageFor(error));
@@ -192,8 +209,8 @@ async function onGateSubmit(event) {
 }
 
 async function requestPinReset() {
-  localStorage.setItem(RESET_FLAG, "1");
-  sessionStorage.removeItem(UNLOCKED_KEY);
+  resetRequested = true; storageSet(RESET_FLAG, "1");
+  storageRemove(UNLOCKED_KEY);
   await supabase.auth.signOut();
   location.hash = "#authorization";
 }
@@ -209,12 +226,12 @@ async function initialize() {
 
   const session = data.session;
   if (!session?.user) {
-    sessionStorage.removeItem(UNLOCKED_KEY);
+    storageRemove(UNLOCKED_KEY);
     removeGate();
     return;
   }
 
-  if (sessionStorage.getItem(UNLOCKED_KEY) === session.user.id && localStorage.getItem(RESET_FLAG) !== "1") {
+  if (storageGet(UNLOCKED_KEY) === session.user.id && localStorage.getItem(RESET_FLAG) !== "1") {
     removeGate();
     return;
   }
@@ -223,7 +240,7 @@ async function initialize() {
     const status = await invoke("status");
     if (sequence !== initSequence) return;
 
-    if (localStorage.getItem(RESET_FLAG) === "1") {
+    if (isResetRequested()) {
       if (!hasRecentPasswordAuth(session)) {
         renderGate("verify", "Для сброса PIN необходимо заново войти по электронной почте и паролю.");
         const form = gateRoot.querySelector("[data-pin-gate-form]");
@@ -258,7 +275,7 @@ async function initialize() {
 async function lock() {
   const { data } = await supabase.auth.getSession();
   if (!data.session?.user) return;
-  sessionStorage.removeItem(UNLOCKED_KEY);
+  storageRemove(UNLOCKED_KEY);
   renderGate("verify");
 }
 
@@ -305,7 +322,7 @@ async function changePin() {
     try {
       await invoke("change", { currentPin, newPin });
       const session = (await supabase.auth.getSession()).data.session;
-      if (session?.user) sessionStorage.setItem(UNLOCKED_KEY, session.user.id);
+      if (session?.user) storageSet(UNLOCKED_KEY, session.user.id);
       removeGate();
     } catch (error) {
       showNotice(messageFor(error));
