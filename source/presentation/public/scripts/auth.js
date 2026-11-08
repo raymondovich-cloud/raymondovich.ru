@@ -62,6 +62,7 @@ function showPanel(root, panel) {
 }
 
 function renderSignedOut(root) {
+  document.body.dataset.page = "authorization";
   const shell = root.querySelector("[data-auth-shell]");
   if (!shell) return;
   shell.innerHTML = `
@@ -113,12 +114,15 @@ function renderSignedIn(root, user) {
   const role = user.app_metadata?.role || "user";
   if (role === "admin") {
     if (location.hash === "#authorization/ideas") {
+      document.body.dataset.page = "owner-ideas";
       renderIdeasWorkspace(shell, user);
     } else {
+      document.body.dataset.page = "owner-control-center";
       shell.innerHTML = renderOwnerControlCenter(user);
     }
     return;
   }
+  document.body.dataset.page = "authorization";
   const roleLabels = { admin: "Владелец / администратор", partner: "Партнёр", student: "Ученик", user: "Пользователь" };
   shell.innerHTML = `
     <div class="auth-heading">
