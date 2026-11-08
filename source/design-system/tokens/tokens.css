@@ -20,6 +20,8 @@
   --color-owner-separator: #5e5b64;
   --color-owner-planned: #d0ced3;
   --color-owner-hover: #19171a;
+  --color-owner-success: #65c994;
+  --shadow-owner-success: 0 0 10px rgba(101,201,148,.55);
   --color-accent: #ff762f;
   --color-accent-bright: #ff9a5b;
   --gradient-accent: linear-gradient(110deg,#ff6a27 0%,#ffb078 100%);
