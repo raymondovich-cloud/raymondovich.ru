@@ -1,51 +1,25 @@
-.owner-console{
+.owner-console-shell{
   width:min(100%,1100px);
+  margin:0 auto;
+}
+.owner-console-page-title{
+  margin:0 0 24px;
+  color:var(--color-owner-panel-text);
+  text-align:center;
+  font-family:var(--font-sans);
+  font-size:clamp(1.1rem,3vw,1.5rem);
+  line-height:1.2;
+  font-weight:700;
+  letter-spacing:.035em;
+}
+.owner-console{
+  width:100%;
   margin:0 auto;
   padding:clamp(22px,4vw,40px) clamp(18px,4vw,36px);
   border:1px solid var(--color-owner-line-strong);
   border-radius:30px;
   background:var(--color-owner-panel);
   color:var(--color-owner-panel-text);
-}
-.owner-console-heading{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:20px;
-  margin-bottom:28px;
-}
-.owner-console-heading .overline{
-  margin:0 0 18px;
-  color:var(--color-owner-muted);
-  font:500 12px/1.4 var(--font-mono);
-  letter-spacing:.17em;
-}
-.owner-console-heading h1{
-  margin:0;
-  font-size:clamp(2rem,5vw,3.35rem);
-  line-height:1.08;
-  font-weight:400;
-  letter-spacing:-.055em;
-}
-.owner-console-identity{
-  display:grid;
-  gap:7px;
-  text-align:right;
-  overflow-wrap:anywhere;
-}
-.owner-console-identity strong{font-size:12px;font-weight:500;color:var(--color-owner-secondary)}
-.owner-console-status{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:7px;
-  color:var(--color-owner-secondary);
-  font:9px var(--font-mono);
-  letter-spacing:.1em;
-}
-.owner-console-status i{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--color-owner-success);box-shadow:var(--shadow-owner-success);
 }
 .owner-console-tabs{
   display:grid;
@@ -156,10 +130,8 @@
   .owner-console-card{min-height:92px}
 }
 @media(max-width:760px){
+  .owner-console-page-title{margin-bottom:20px;font-size:clamp(1rem,4vw,1.25rem)}
   .owner-console{padding:22px 16px;border-radius:25px}
-  .owner-console-heading{margin-bottom:25px}
-  .owner-console-heading .overline{margin-bottom:15px;font-size:10px;letter-spacing:.15em}
-  .owner-console-identity{display:none}
   .owner-console-tabs{margin-bottom:26px;border-radius:17px}
   .owner-console-tab{min-height:48px;font-size:14px;border-radius:12px}
   .owner-console-section-heading{margin-bottom:14px;font-size:10px}
