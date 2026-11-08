@@ -1,0 +1,184 @@
+/*
+ * Page atmosphere — shared background language for every application space.
+ * Page identity is supplied as a semantic body[data-page] state.
+ * Color values are theme tokens; this file only composes their placement.
+ */
+body {
+  --page-atmosphere-primary-position: 86% 14%;
+  --page-atmosphere-secondary-position: 8% 82%;
+  --page-atmosphere-tertiary-position: 52% 100%;
+  --page-atmosphere-primary-size: 66rem 52rem;
+  --page-atmosphere-secondary-size: 48rem 40rem;
+  --page-atmosphere-tertiary-size: 58rem 46rem;
+  --page-sidebar-position: 8% 8%;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(
+      ellipse var(--page-atmosphere-primary-size) at var(--page-atmosphere-primary-position),
+      var(--color-atmosphere-primary),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse var(--page-atmosphere-secondary-size) at var(--page-atmosphere-secondary-position),
+      var(--color-atmosphere-secondary),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse var(--page-atmosphere-tertiary-size) at var(--page-atmosphere-tertiary-position),
+      var(--color-atmosphere-tertiary),
+      transparent 74%
+    );
+  background-repeat: no-repeat;
+}
+
+/* Public Space — restrained, expansive compositions. */
+body[data-page="home"] {
+  --page-atmosphere-primary-position: 88% 12%;
+  --page-atmosphere-secondary-position: 7% 76%;
+  --page-atmosphere-tertiary-position: 72% 100%;
+  --page-atmosphere-primary-size: 72rem 56rem;
+  --page-atmosphere-secondary-size: 42rem 34rem;
+  --page-sidebar-position: 18% 4%;
+}
+
+body[data-page="ecosystem-projects"] {
+  --page-atmosphere-primary-position: 16% 18%;
+  --page-atmosphere-secondary-position: 88% 78%;
+  --page-atmosphere-tertiary-position: 54% 4%;
+  --page-atmosphere-primary-size: 58rem 48rem;
+  --page-atmosphere-secondary-size: 52rem 42rem;
+  --page-sidebar-position: 86% 14%;
+}
+
+body[data-page="partner-projects"] {
+  --page-atmosphere-primary-position: 78% 24%;
+  --page-atmosphere-secondary-position: 8% 62%;
+  --page-atmosphere-tertiary-position: 94% 96%;
+  --page-atmosphere-primary-size: 62rem 54rem;
+  --page-atmosphere-secondary-size: 46rem 38rem;
+  --page-sidebar-position: 10% 82%;
+}
+
+body[data-page="advertising-projects"] {
+  --page-atmosphere-primary-position: 28% 78%;
+  --page-atmosphere-secondary-position: 88% 16%;
+  --page-atmosphere-tertiary-position: 6% 12%;
+  --page-atmosphere-primary-size: 68rem 50rem;
+  --page-atmosphere-secondary-size: 42rem 36rem;
+  --page-sidebar-position: 84% 18%;
+}
+
+body[data-page="how-to-join"] {
+  --page-atmosphere-primary-position: 84% 66%;
+  --page-atmosphere-secondary-position: 16% 12%;
+  --page-atmosphere-tertiary-position: 52% 94%;
+  --page-atmosphere-primary-size: 60rem 48rem;
+  --page-atmosphere-secondary-size: 50rem 42rem;
+  --page-sidebar-position: 12% 72%;
+}
+
+body[data-page="settings"] {
+  --page-atmosphere-primary-position: 14% 42%;
+  --page-atmosphere-secondary-position: 86% 10%;
+  --page-atmosphere-tertiary-position: 72% 94%;
+  --page-atmosphere-primary-size: 54rem 48rem;
+  --page-atmosphere-secondary-size: 44rem 38rem;
+  --page-sidebar-position: 86% 88%;
+}
+
+body[data-page="help"] {
+  --page-atmosphere-primary-position: 74% 8%;
+  --page-atmosphere-secondary-position: 14% 86%;
+  --page-atmosphere-tertiary-position: 96% 56%;
+  --page-atmosphere-primary-size: 58rem 48rem;
+  --page-atmosphere-secondary-size: 48rem 40rem;
+  --page-sidebar-position: 12% 12%;
+}
+
+body[data-page="plans"] {
+  --page-atmosphere-primary-position: 44% 6%;
+  --page-atmosphere-secondary-position: 92% 74%;
+  --page-atmosphere-tertiary-position: 8% 52%;
+  --page-atmosphere-primary-size: 66rem 46rem;
+  --page-atmosphere-secondary-size: 44rem 38rem;
+  --page-sidebar-position: 82% 78%;
+}
+
+body[data-page="authorization"] {
+  --page-atmosphere-primary-position: 86% 42%;
+  --page-atmosphere-secondary-position: 12% 12%;
+  --page-atmosphere-tertiary-position: 48% 96%;
+  --page-atmosphere-primary-size: 58rem 52rem;
+  --page-atmosphere-secondary-size: 42rem 36rem;
+  --page-sidebar-position: 14% 86%;
+}
+
+/* Owner Control Center and its nested Ideas workspace. */
+body[data-page="owner-control-center"] {
+  --page-atmosphere-primary-position: 10% 12%;
+  --page-atmosphere-secondary-position: 86% 38%;
+  --page-atmosphere-tertiary-position: 54% 98%;
+  --page-atmosphere-primary-size: 64rem 52rem;
+  --page-atmosphere-secondary-size: 48rem 42rem;
+  --page-sidebar-position: 88% 12%;
+}
+
+body[data-page="owner-ideas"] {
+  --page-atmosphere-primary-position: 90% 18%;
+  --page-atmosphere-secondary-position: 12% 70%;
+  --page-atmosphere-tertiary-position: 52% 100%;
+  --page-atmosphere-primary-size: 56rem 48rem;
+  --page-atmosphere-secondary-size: 50rem 42rem;
+  --page-sidebar-position: 12% 18%;
+}
+
+/* Dedicated identities are ready for the corresponding workspaces. */
+body[data-page="partner-workspace"] {
+  --page-atmosphere-primary-position: 18% 22%;
+  --page-atmosphere-secondary-position: 84% 82%;
+  --page-atmosphere-tertiary-position: 56% 4%;
+  --page-atmosphere-primary-size: 68rem 54rem;
+  --page-atmosphere-secondary-size: 46rem 40rem;
+  --page-sidebar-position: 86% 78%;
+}
+
+body[data-page="external-workspace"] {
+  --page-atmosphere-primary-position: 82% 72%;
+  --page-atmosphere-secondary-position: 14% 16%;
+  --page-atmosphere-tertiary-position: 46% 96%;
+  --page-atmosphere-primary-size: 60rem 50rem;
+  --page-atmosphere-secondary-size: 48rem 38rem;
+  --page-sidebar-position: 12% 14%;
+}
+
+/* The navigation panel receives a quiet, page-specific echo of the atmosphere. */
+.sidebar {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(
+      ellipse 34rem 32rem at var(--page-sidebar-position),
+      var(--color-atmosphere-sidebar),
+      transparent 72%
+    );
+  background-repeat: no-repeat;
+}
+
+/* Keep the atmosphere subtle and correctly framed on narrow viewports. */
+@media (max-width: 760px) {
+  body {
+    --page-atmosphere-primary-size: 38rem 34rem;
+    --page-atmosphere-secondary-size: 30rem 28rem;
+    --page-atmosphere-tertiary-size: 34rem 30rem;
+  }
+
+  .sidebar {
+    background-position: center top;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    scroll-behavior: auto;
+  }
+}
