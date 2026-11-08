@@ -14,6 +14,16 @@ const messages = {
   rate_limit: "Слишком много попыток. Подождите и попробуйте позже."
 };
 
+function syncHeaderAccount(session) {
+  const accountLink = document.querySelector("[data-header-account]");
+  if (!accountLink) return;
+  const signedIn = Boolean(session?.user);
+  accountLink.href = "/#authorization";
+  accountLink.innerHTML = signedIn
+    ? 'Личный кабинет <span aria-hidden="true">↗</span>'
+    : 'Авторизация <span aria-hidden="true">↗</span>';
+}
+
 function errorText(error) {
   const message = String(error?.message || "").toLowerCase();
   const match = Object.entries(messages).find(([key]) => message.includes(key));
@@ -238,6 +248,7 @@ function watchMain() {
 
 supabase.auth.onAuthStateChange((event, session) => {
   currentSession = session;
+  syncHeaderAccount(session);
   if (event === "PASSWORD_RECOVERY") recoveryMode = true;
   if (!location.hash.startsWith("#authorization")) return;
   queueMicrotask(() => {
@@ -253,5 +264,11 @@ supabase.auth.onAuthStateChange((event, session) => {
 });
 
 watchMain();
+supabase.auth.getSession().then(({ data, error }) => {
+  if (!error) {
+    currentSession = data.session;
+    syncHeaderAccount(data.session);
+  }
+});
 window.addEventListener("hashchange", renderAuth);
 if (location.hash.startsWith("#authorization")) renderAuth();
