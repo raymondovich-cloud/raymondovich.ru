@@ -1,4 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
+import { renderOwnerControlCenter } from "./owner-control-center.js";
 
 const AUTH_REDIRECT_URL = "https://raymondovich.ru/#authorization";
 const main = document.querySelector("#main");
@@ -109,6 +110,10 @@ function renderSignedIn(root, user) {
   const shell = root.querySelector("[data-auth-shell]");
   if (!shell) return;
   const role = user.app_metadata?.role || "user";
+  if (role === "admin") {
+    shell.innerHTML = renderOwnerControlCenter(user);
+    return;
+  }
   const roleLabels = { admin: "Владелец / администратор", partner: "Партнёр", student: "Ученик", user: "Пользователь" };
   shell.innerHTML = `
     <div class="auth-heading">
