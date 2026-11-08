@@ -22,4 +22,6 @@
   --color-owner-separator:#8a929d;
   --color-owner-planned:#555d68;
   --color-owner-hover:#f0f1f4;
+  --color-owner-success:#218653;
+  --shadow-owner-success:0 0 8px rgba(33,134,83,.35);
 }
