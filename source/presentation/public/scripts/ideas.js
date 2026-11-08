@@ -23,7 +23,6 @@ export async function renderIdeasWorkspace(root, user) {
       <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
         <div class="ideas-workspace" aria-labelledby="ideas-title">
       <header class="ideas-header">
-        <p class="overline">RAYMONDOVICH / OWNER CONTROL CENTER</p>
         <h1 id="ideas-title">Идеи</h1>
         <p class="ideas-subtitle">Реестр идей экосистемы</p>
       </header>
