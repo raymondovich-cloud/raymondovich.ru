@@ -97,7 +97,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     const current = idea || {};
     formHost.hidden = false;
     formHost.innerHTML = `
-      <form class="ideas-form" data-idea-form>
+      <form class="ideas-form" data-idea-form data-idea-id="${escape(current.id || "")}">
         <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2><button type="button" data-idea-cancel aria-label="Закрыть">×</button></div>
         <label>Название<input name="name" required maxlength="120" value="${escape(current.name)}"></label>
         <label>Описание<textarea name="description" rows="3">${escape(current.description)}</textarea></label>
