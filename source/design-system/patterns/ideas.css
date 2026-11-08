@@ -55,3 +55,18 @@
 .ideas-form-heading{flex-wrap:wrap}.ideas-form-heading [data-idea-return]{flex:0 1 auto;max-width:100%;padding:9px 12px;border:1px solid var(--color-ideas-form-back-border);border-radius:10px;background:transparent;color:var(--color-ideas-accent);font:500 13px/1.35 var(--font-sans);white-space:normal;text-align:center}
 @media(max-width:800px){.ideas-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.ideas-list{grid-template-columns:1fr}.idea-card{min-height:180px}.ideas-filters{grid-template-columns:1fr;padding:13px}.ideas-form-grid,.ideas-detail-fields{grid-template-columns:1fr}.ideas-form{padding:14px}.ideas-form-heading{align-items:flex-start}.ideas-form-heading h2{min-width:0;overflow-wrap:anywhere}.ideas-form-actions{flex-wrap:wrap}.ideas-form-actions button{flex:1 1 140px}.ideas-detail{padding:16px}.ideas-detail-top{align-items:flex-start;flex-direction:column}.ideas-detail-actions>*{flex:1 1 100%}}
+
+
+/*
+ * Surface hierarchy rule:
+ * A detail screen replaces its registry workspace; it must not retain a framed
+ * parent surface around the detail surface. Keep exactly one visible content frame.
+ */
+.owner-console-workspace.is-detail-view{
+  padding:0;
+  border:0;
+  background:transparent;
+}
+.ideas-workspace.is-detail-view .ideas-header{display:none}
+.ideas-workspace.is-detail-view .ideas-detail-host{margin-top:0}
+.ideas-detail{background:var(--color-ideas-card-gradient)}
