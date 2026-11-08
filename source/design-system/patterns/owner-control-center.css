@@ -192,11 +192,5 @@
   .owner-console-card-description{font-size:11px}
   .owner-console-card-status{font-size:8px;letter-spacing:.035em}
 }
-/* Keep the owner console close to the site header. */
-main > .section:has(.owner-console){padding-top:8px}
-.auth-layout:has(.owner-console){padding-top:0}
+/* The shared account layout controls the top spacing. */
 .owner-console{padding-top:0}
-@media(max-width:760px){
-  main > .section:has(.owner-console){padding-top:8px}
-  .owner-console{padding-top:0}
-}
