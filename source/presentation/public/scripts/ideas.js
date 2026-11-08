@@ -155,7 +155,16 @@ export async function renderIdeasWorkspace(root, user) {
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
       <article class="ideas-detail">
-        <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
+        <header class="ideas-detail-top">
+          <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
+          <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
+            <button type="button" class="ideas-icon-action" data-idea-edit="${escape(idea.id)}" aria-label="Редактировать идею" title="Редактировать идею">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+            </button>
+            ${converted ? '<button type="button" class="ideas-icon-action" disabled aria-label="Идея уже преобразована в проект" title="Уже в проекте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>' : archived ? '<button type="button" class="ideas-icon-action" data-idea-restore aria-label="Восстановить идею" title="Восстановить"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>' : '<button type="button" class="ideas-icon-action" data-idea-convert aria-label="Запустить как проект" title="Запустить как проект"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c4-1 8-5 10-10 1-2 1-5 1-5s-3 0-5 1C6 7 2 11 1 15l4 4Z"/><path d="m9 15 4-4"/><path d="M5 19v-5l-3-3"/><path d="M5 19h5l3 3"/></svg></button>'}
+            ${!converted && !archived ? '<button type="button" class="ideas-icon-action is-danger" data-idea-archive aria-label="Архивировать идею" title="Архивировать"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v4H3z"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/></svg></button>' : ""}
+          </div>
+        </header>
         <h2>${escape(idea.name)}</h2>
         <p class="ideas-detail-description">${escape(idea.description || "Описание пока не добавлено.")}</p>
         <div class="ideas-detail-fields">
@@ -179,11 +188,6 @@ export async function renderIdeasWorkspace(root, user) {
           <p class="ideas-confirm-warning">Идея сохранится в реестре со статусом «Преобразована в проект».</p>
           <p class="ideas-form-error" data-convert-error hidden></p>
           <div class="ideas-detail-actions"><button type="button" class="ideas-secondary" data-convert-cancel>Отмена</button><button type="button" class="ideas-primary" data-convert-confirmed>Подтвердить запуск</button></div>
-        </div>
-        <div class="ideas-detail-actions" data-idea-actions>
-          <button type="button" class="ideas-primary" data-idea-edit="${escape(idea.id)}">Редактировать идею</button>
-          ${converted ? '<button type="button" class="ideas-secondary" disabled>Уже в проекте</button>' : archived ? '<button type="button" class="ideas-secondary" data-idea-restore>Восстановить</button>' : '<button type="button" class="ideas-secondary" data-idea-convert>Запустить как проект</button>'}
-          ${!converted && !archived ? '<button type="button" class="ideas-danger" data-idea-archive>Архивировать</button>' : ""}
         </div>
       </article>`;
     window.scrollTo({top:0,behavior:"smooth"});
