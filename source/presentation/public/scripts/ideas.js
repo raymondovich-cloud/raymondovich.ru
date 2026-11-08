@@ -338,7 +338,7 @@ export async function renderIdeasWorkspace(root, user) {
       if (id) {
         window.RaymondovichNavigation?.navigateScreen("idea-detail", { ideaId: saved.id }, { replace: true });
       } else {
-        window.RaymondovichNavigation?.navigateScreen("ideas-registry", {}, { replace: true });
+        window.RaymondovichNavigation?.back();
       }
     } catch(error) {
       errorNode.textContent=error?.message || "Не удалось сохранить идею.";
