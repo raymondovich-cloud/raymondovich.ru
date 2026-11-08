@@ -218,3 +218,9 @@
   .ideas-icon-action{flex-basis:36px;width:36px;height:36px}
   .ideas-detail-fields{grid-template-columns:1fr}
 }
+
+
+/* Keep the Ideas registry on the same surface gradient as an opened idea. */
+.owner-console-workspace:not(.is-detail-view) {
+  background: var(--gradient-ideas-surface);
+}
