@@ -1,5 +1,6 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
 import { renderOwnerControlCenter } from "./owner-control-center.js";
+import { renderIdeasWorkspace } from "./ideas.js";
 
 const AUTH_REDIRECT_URL = "https://raymondovich.ru/#authorization";
 const main = document.querySelector("#main");
@@ -111,7 +112,14 @@ function renderSignedIn(root, user) {
   if (!shell) return;
   const role = user.app_metadata?.role || "user";
   if (role === "admin") {
-    shell.innerHTML = renderOwnerControlCenter(user);
+    if (location.hash === "#authorization/ideas") {
+      renderIdeasWorkspace(shell, user, () => {
+        location.hash = "#authorization";
+        renderSignedIn(root, user);
+      });
+    } else {
+      shell.innerHTML = renderOwnerControlCenter(user);
+    }
     return;
   }
   const roleLabels = { admin: "Владелец / администратор", partner: "Партнёр", student: "Ученик", user: "Пользователь" };
@@ -150,6 +158,18 @@ async function ensureProfile(user) {
 
 function bindForms(root) {
   root.addEventListener("click", async (event) => {
+    const ideasModule = event.target.closest("[data-owner-module='ideas']");
+    if (ideasModule) {
+      event.preventDefault();
+      location.hash = "#authorization/ideas";
+      if (currentSession?.user?.app_metadata?.role === "admin") {
+        renderIdeasWorkspace(root.querySelector("[data-auth-shell]"), currentSession.user, () => {
+          location.hash = "#authorization";
+          renderSignedIn(root, currentSession.user);
+        });
+      }
+      return;
+    }
     const ownerTab = event.target.closest("[data-owner-tab]");
     if (ownerTab) {
       const selectedGroup = ownerTab.dataset.ownerTab;
