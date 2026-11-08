@@ -18,7 +18,10 @@ export async function renderIdeasWorkspace(root, user) {
   activeIdeasController = controller;
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
-    <section class="ideas-workspace" aria-labelledby="ideas-title">
+    <div class="owner-console-shell">
+      <h1 class="owner-console-page-title">RAYMONDOVICH / CONTROL CENTER</h1>
+      <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
+        <div class="ideas-workspace" aria-labelledby="ideas-title">
       <header class="ideas-header">
         <p class="overline">RAYMONDOVICH / OWNER CONTROL CENTER</p>
         <h1 id="ideas-title">Идеи</h1>
@@ -56,7 +59,9 @@ export async function renderIdeasWorkspace(root, user) {
 
       <section class="ideas-detail-host" data-ideas-detail hidden aria-live="polite"></section>
       <div class="ideas-form-host" data-ideas-form hidden></div>
-    </section>`;
+        </div>
+      </section>
+    </div>`;
 
   const registry = root.querySelector("[data-ideas-registry]");
   const list = root.querySelector("[data-ideas-list]");
