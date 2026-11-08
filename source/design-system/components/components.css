@@ -43,3 +43,24 @@
 /* Keep the account action on one line in the compact header. */
 .header-account{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;white-space:nowrap;flex:0 0 auto;margin-left:auto}
 .header-account span{margin-left:0}
+
+
+/* Header account: force label and arrow to remain side by side. */
+.site-header .header-inner > .header-account {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: max-content;
+  white-space: nowrap;
+  gap: .35rem;
+}
+.site-header .header-inner > .header-account > span {
+  display: inline;
+  position: static;
+  flex: 0 0 auto;
+  margin: 0;
+  line-height: 1;
+}
