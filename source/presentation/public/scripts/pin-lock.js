@@ -266,8 +266,8 @@ async function initialize() {
     const retry = document.createElement("button");
     retry.className = "pin-lock-submit";
     retry.type = "button";
-    retry.textContent = "Повторить проверку";
-    retry.addEventListener("click", initialize);
+    retry.textContent = "Ввести PIN-код";
+    retry.addEventListener("click", () => renderGate("verify"));
     form.after(retry);
   }
 }
