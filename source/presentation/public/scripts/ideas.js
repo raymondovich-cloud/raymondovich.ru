@@ -228,7 +228,12 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     if (tab) { setTab(tab.dataset.ideasTab); return; }
     const open = event.target.closest("[data-idea-open]");
     if (open) { showDetail(ideas.find(i=>i.id===open.dataset.ideaOpen)); return; }
-    if (event.target.closest("[data-idea-close],[data-idea-return]")) { showRegistry(); return; }
+    if (event.target.closest("[data-idea-close]")) { showRegistry(); return; }
+    if (event.target.closest("[data-idea-return]")) {
+      const origin = currentIdeaId ? ideas.find(item => item.id === currentIdeaId) : null;
+      if (origin) showDetail(origin); else showRegistry();
+      return;
+    }
 
     const edit = event.target.closest("[data-idea-edit]");
     if (edit) { const idea=ideas.find(i=>i.id===edit.dataset.ideaEdit); if (idea) showForm(idea); return; }
