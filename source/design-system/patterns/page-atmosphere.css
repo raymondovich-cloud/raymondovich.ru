@@ -34,6 +34,8 @@ body {
 
 /* Public Space — restrained, expansive compositions. */
 body[data-page="home"] {
+  /* The homepage already has its approved hero glow; do not stack another page layer. */
+  background-image: none;
   --page-atmosphere-primary-position: 88% 12%;
   --page-atmosphere-secondary-position: 7% 76%;
   --page-atmosphere-tertiary-position: 72% 100%;
