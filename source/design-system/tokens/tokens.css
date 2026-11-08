@@ -92,6 +92,7 @@
   --gradient-owner-input: linear-gradient(145deg, rgba(255,118,47,.07), rgba(16,18,22,.72));
 
   /* Ideas keeps its own semantic accent and surface identity. */
+  --gradient-ideas-surface: linear-gradient(145deg, rgba(255,113,51,.12), rgba(23,26,32,.86) 48%, rgba(16,18,22,.76));
   --gradient-ideas-control: linear-gradient(115deg, color-mix(in srgb, var(--color-ideas-accent) 12%, transparent), color-mix(in srgb, var(--color-ideas-accent-soft) 4%, var(--color-ideas-surface)));
   --gradient-ideas-input: linear-gradient(145deg, color-mix(in srgb, var(--color-ideas-accent) 6%, var(--color-ideas-surface)), var(--color-ideas-surface));
   --gradient-ideas-button: linear-gradient(110deg, var(--color-ideas-accent), var(--color-ideas-accent-soft));
