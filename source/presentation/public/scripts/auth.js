@@ -245,8 +245,10 @@ supabase.auth.onAuthStateChange((event, session) => {
     const shell = root?.querySelector("[data-auth-shell]");
     if (!shell) return;
     if (event === "PASSWORD_RECOVERY") renderSignedOut(root);
-    else if (session?.user) renderSignedIn(root, session.user);
-    else renderSignedOut(root);
+    else if (session?.user) {
+      ensureProfile(session.user);
+      renderSignedIn(root, session.user);
+    } else renderSignedOut(root);
   });
 });
 
