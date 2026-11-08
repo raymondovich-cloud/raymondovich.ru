@@ -11,12 +11,17 @@ body {
   background-repeat: no-repeat;
 }
 
+/* The site header intentionally remains solid black without the shared glow. */
+.site-header {
+  background-color: #08090b;
+  background-image: none;
+}
+
 /*
  * Every major page layer, panel and card uses the exact same background layer.
  * Borders, spacing, typography and interactive control states remain component-specific.
  */
 :is(
-  .site-header,
   .sidebar,
   .hero,
   .cta-band,
@@ -53,7 +58,6 @@ body {
 @media (max-width: 760px) {
   body,
   :is(
-    .site-header,
     .sidebar,
     .hero,
     .cta-band,
