@@ -10,11 +10,12 @@ const STATUS = {
   launched: "Запущена"
 };
 const PRIORITY = { low: "Низкий", normal: "Обычный", high: "Высокий", critical: "Критический" };
+let activeIdeasController = null;
 
 export async function renderIdeasWorkspace(root, user) {
-  root._ideasController?.abort();
+  activeIdeasController?.abort();
   const controller = new AbortController();
-  root._ideasController = controller;
+  activeIdeasController = controller;
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <section class="ideas-workspace" aria-labelledby="ideas-title">
