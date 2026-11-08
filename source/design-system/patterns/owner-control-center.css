@@ -3,8 +3,8 @@
   margin:0 auto;
   padding:clamp(22px,4vw,40px) clamp(18px,4vw,36px);
   border-radius:30px;
-  background:#09090b;
-  color:#f4f3f5;
+  background:var(--color-owner-panel);
+  color:var(--color-owner-panel-text);
 }
 .owner-console-heading{
   display:flex;
@@ -15,7 +15,7 @@
 }
 .owner-console-heading .overline{
   margin:0 0 18px;
-  color:#85838c;
+  color:var(--color-owner-muted);
   font:500 12px/1.4 var(--font-mono);
   letter-spacing:.17em;
 }
@@ -38,7 +38,7 @@
   align-items:center;
   justify-content:flex-end;
   gap:7px;
-  color:#aaa8b0;
+  color:var(--color-owner-secondary);
   font:9px var(--font-mono);
   letter-spacing:.1em;
 }
@@ -52,9 +52,9 @@
   gap:5px;
   padding:5px;
   margin-bottom:30px;
-  border:1px solid #29282d;
+  border:1px solid var(--color-owner-line);
   border-radius:19px;
-  background:#131215;
+  background:var(--color-owner-surface);
 }
 .owner-console-tab{
   min-height:54px;
@@ -62,13 +62,13 @@
   border:0;
   border-radius:14px;
   background:transparent;
-  color:#96939d;
+  color:var(--color-owner-muted);
   font:500 15px/1.2 var(--font-sans);
   cursor:pointer;
   transition:background .18s ease,color .18s ease;
 }
 .owner-console-tab[aria-selected="true"]{
-  background:#242327;
+  background:var(--color-owner-surface-raised);
   color:#ff7133;
 }
 .owner-console-tab:focus-visible,.owner-console-card:focus-visible{
@@ -80,7 +80,7 @@
   display:flex;
   align-items:center;
   margin:0 0 16px;
-  color:#85838c;
+  color:var(--color-owner-muted);
   font:500 11px/1.4 var(--font-mono);
   letter-spacing:.16em;
 }
@@ -96,10 +96,10 @@
   align-items:center;
   gap:16px;
   padding:14px 18px;
-  border:1px solid #29282e;
+  border:1px solid var(--color-owner-line);
   border-radius:21px;
-  background:#131215;
-  color:#f2f0f3;
+  background:var(--color-owner-surface);
+  color:var(--color-owner-text);
   text-decoration:none;
   transition:border-color .18s ease,background .18s ease;
 }
@@ -110,9 +110,9 @@
 .owner-console-code{
   width:48px;height:48px;
   display:grid;place-items:center;
-  border:1px solid #333139;
+  border:1px solid var(--color-owner-line-strong);
   border-radius:13px;
-  color:#92909a;
+  color:var(--color-owner-subtle);
   font:13px var(--font-mono);
 }
 .owner-console-card-content{min-width:0;display:grid;gap:3px}
@@ -123,7 +123,7 @@
   letter-spacing:-.025em;
 }
 .owner-console-card-description{
-  color:#92909a;
+  color:var(--color-owner-subtle);
   font-size:13px;
   line-height:1.35;
 }
@@ -147,7 +147,7 @@
   border-top:1px solid #29282e;
 }
 .owner-console-footer>span{
-  color:#85838c;
+  color:var(--color-owner-muted);
   font:10px var(--font-mono);
   letter-spacing:.13em;
 }
