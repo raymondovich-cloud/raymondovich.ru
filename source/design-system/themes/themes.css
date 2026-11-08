@@ -65,3 +65,12 @@
   --color-ideas-error:#b33e32;
   --color-ideas-form-back-border:rgba(20,24,30,.24);
 }
+
+/* Owner Control Center gradient language — light theme mapping. */
+:root[data-theme="light"] {
+  --gradient-owner-panel: linear-gradient(145deg, rgba(214,91,31,.075) 0%, rgba(255,255,255,.91) 48%, rgba(241,243,246,.84) 100%);
+  --gradient-owner-surface: linear-gradient(145deg, rgba(214,91,31,.065), rgba(255,255,255,.88) 54%, rgba(241,243,246,.82));
+  --gradient-owner-control: linear-gradient(115deg, rgba(214,91,31,.10), rgba(214,91,31,.025));
+  --gradient-owner-control-active: linear-gradient(115deg, rgba(214,91,31,.18), rgba(255,176,120,.10));
+  --gradient-owner-input: linear-gradient(145deg, rgba(214,91,31,.055), rgba(255,255,255,.82));
+}

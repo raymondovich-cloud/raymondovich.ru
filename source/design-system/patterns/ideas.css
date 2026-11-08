@@ -70,3 +70,80 @@
 .owner-console-workspace.is-detail-view .ideas-header{display:none}
 .owner-console-workspace.is-detail-view .ideas-detail-host{margin-top:0}
 .ideas-detail{background:var(--color-ideas-card-gradient)}
+
+/* Ideas uses the same component grammar while retaining its own gradient palette. */
+.ideas-create-row,
+.ideas-filters,
+.ideas-detail,
+.ideas-form,
+.ideas-convert-confirm {
+  background: var(--color-ideas-card-gradient);
+}
+.ideas-create-row {
+  border-color: var(--color-ideas-card-border);
+  transition: border-color .18s ease, background .18s ease;
+}
+.ideas-create-row:hover {
+  border-color: var(--color-ideas-card-hover-border);
+}
+.ideas-create-icon {
+  background: var(--gradient-ideas-button);
+}
+.ideas-tabs button {
+  border-radius: 9px 9px 0 0;
+  background: var(--gradient-ideas-control);
+  transition: color .18s ease, background .18s ease;
+}
+.ideas-tabs button[aria-selected="true"] {
+  background: var(--gradient-ideas-control);
+}
+.ideas-search,
+.ideas-filters select,
+.ideas-form input,
+.ideas-form textarea,
+.ideas-form select {
+  border-color: var(--color-ideas-control-border);
+  background: var(--gradient-ideas-input);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+}
+.ideas-search:focus,
+.ideas-filters select:focus,
+.ideas-form input:focus,
+.ideas-form textarea:focus,
+.ideas-form select:focus {
+  outline: 2px solid color-mix(in srgb, var(--color-ideas-accent) 48%, transparent);
+  outline-offset: 2px;
+}
+.ideas-filter-toggle {
+  background: var(--gradient-ideas-control);
+  border-left-color: var(--color-ideas-control-border);
+}
+.ideas-primary,
+.ideas-secondary,
+.ideas-danger {
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.ideas-primary {
+  border-color: transparent;
+  background: var(--gradient-ideas-button);
+}
+.ideas-secondary {
+  background: var(--gradient-ideas-control);
+}
+.ideas-danger {
+  background: linear-gradient(110deg, color-mix(in srgb, var(--color-ideas-danger) 15%, transparent), color-mix(in srgb, var(--color-ideas-danger) 4%, transparent));
+}
+.ideas-primary:hover,
+.ideas-secondary:hover,
+.ideas-danger:hover {
+  border-color: var(--color-ideas-accent-soft);
+}
+.ideas-form-heading [data-idea-return] {
+  background: var(--gradient-ideas-control);
+}
+.ideas-convert-confirm {
+  border-color: var(--color-ideas-confirm-border);
+}
+.ideas-empty {
+  background: var(--gradient-ideas-control);
+}
