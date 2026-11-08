@@ -39,6 +39,7 @@ function emitNavigation(source = "navigation") {
     backButton.setAttribute("aria-hidden", String(isRoot));
     backButton.tabIndex = isRoot ? -1 : 0;
   }
+  header?.classList.toggle("has-back-navigation", !isRoot);
 }
 
 function setMenu(open) {
