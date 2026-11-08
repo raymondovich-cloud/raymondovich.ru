@@ -132,7 +132,7 @@
   .owner-console-card{min-height:92px}
 }
 @media(max-width:760px){
-  .owner-console-page-title{margin-bottom:20px;font-size:clamp(1rem,4vw,1.25rem)}
+  .owner-console-page-title{margin-bottom:var(--space-3);font-size:clamp(1rem,4vw,1.25rem)}
   .owner-console{padding:var(--space-3) var(--space-2);border-radius:25px}
   .owner-console-workspace{padding:var(--space-3) var(--space-2)}
   .owner-console-tabs{margin-bottom:var(--space-3);border-radius:17px}
