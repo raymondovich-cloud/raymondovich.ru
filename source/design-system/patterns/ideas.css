@@ -62,7 +62,6 @@
   border:0;
   background:transparent;
 }
-.owner-console-workspace.is-detail-view .ideas-header{display:none}
 .owner-console-workspace.is-detail-view .ideas-detail-host{margin-top:0}
 .ideas-detail{background:var(--gradient-ideas-surface)}
 
