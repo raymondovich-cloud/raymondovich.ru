@@ -65,6 +65,7 @@ export async function renderIdeasWorkspace(root, user) {
   const registry = root.querySelector("[data-ideas-registry]");
   const list = root.querySelector("[data-ideas-list]");
   const detailHost = root.querySelector("[data-ideas-detail]");
+  const workspace = root.querySelector(".owner-console-workspace");
   const formHost = root.querySelector("[data-ideas-form]");
   let ideas = [];
   let categories = [];
@@ -132,6 +133,7 @@ export async function renderIdeasWorkspace(root, user) {
   }
 
   function showRegistry() {
+    workspace.classList.remove("is-detail-view");
     detailHost.hidden = true;
     formHost.hidden = true;
     registry.hidden = false;
@@ -145,16 +147,15 @@ export async function renderIdeasWorkspace(root, user) {
   function showDetail(idea) {
     if (!idea) return showRegistry();
     currentIdeaId = idea.id;
+    workspace.classList.add("is-detail-view");
     registry.hidden = true;
     formHost.hidden = true;
     detailHost.hidden = false;
-    const categoryName = categories.find(c=>c.id===idea.category_id)?.name || "Без категории";
     const archived = isArchived(idea);
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
-      <div class="ideas-detail-top"><span class="ideas-detail-code">IDEA / ${escape(idea.id.slice(0,8).toUpperCase())}</span></div>
       <article class="ideas-detail">
-        <div class="ideas-detail-meta"><span>${escape(categoryName)}</span><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
+        <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
         <h2>${escape(idea.name)}</h2>
         <p class="ideas-detail-description">${escape(idea.description || "Описание пока не добавлено.")}</p>
         <div class="ideas-detail-fields">
@@ -189,6 +190,7 @@ export async function renderIdeasWorkspace(root, user) {
   }
 
   function showForm(idea = null) {
+    workspace.classList.remove("is-detail-view");
     const current = idea || {};
     registry.hidden = true;
     detailHost.hidden = true;
