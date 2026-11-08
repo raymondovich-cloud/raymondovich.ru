@@ -163,7 +163,7 @@ function bindForms(root) {
       event.preventDefault();
       location.hash = "#authorization/ideas";
       if (currentSession?.user?.app_metadata?.role === "admin") {
-        renderIdeasWorkspace(root.querySelector("[data-auth-shell]"), currentSession.user, () => {
+        renderIdeasWorkspace(root, currentSession.user, () => {
           location.hash = "#authorization";
           renderSignedIn(root, currentSession.user);
         });
