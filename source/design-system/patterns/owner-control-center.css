@@ -1,4 +1,4 @@
-.owner-console{max-width:1240px;margin:0 auto;padding:8px clamp(18px,4vw,48px) 24px}
+.owner-console{max-width:1240px;margin:0 auto;padding:clamp(24px,4vw,48px) clamp(18px,4vw,48px)}
 .owner-console-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:24px;border-bottom:1px solid var(--color-line)}
 .owner-console-heading h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1;letter-spacing:-.06em;margin:12px 0}
 .owner-console-heading>div:first-child>p:last-child{max-width:580px;color:var(--color-muted);line-height:1.6;margin-bottom:0}
@@ -23,7 +23,7 @@
 .owner-console-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;padding-top:14px;border-top:1px solid var(--color-line)}
 .owner-console-footer>span{font:9px var(--font-mono);letter-spacing:.1em;color:var(--color-subtle)}
 @media(max-width:760px){
-.owner-console{padding:6px 16px 24px}
+.owner-console{padding:24px 16px}
 .owner-console-heading{align-items:flex-start;flex-direction:column;gap:14px}
 .owner-console-identity{text-align:left}
 .owner-console-status{justify-content:flex-start}
@@ -39,4 +39,13 @@
 .owner-console-card{grid-template-columns:20px 26px minmax(0,1fr) auto;column-gap:7px;padding-inline:8px}
 .owner-console-card-title{font-size:12px}
 .owner-console-card-status{font-size:7px}
+}
+
+/* Owner Control Center: remove the generic page and auth-container top spacing. */
+main > .section:has(.owner-console){padding-top:8px}
+.auth-layout:has(.owner-console){padding-top:0}
+.owner-console{padding-top:0}
+@media(max-width:760px){
+  main > .section:has(.owner-console){padding-top:8px}
+  .owner-console{padding-top:0}
 }
