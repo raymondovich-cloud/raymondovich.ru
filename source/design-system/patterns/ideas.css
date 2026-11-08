@@ -1,23 +1,18 @@
 .ideas-workspace{width:100%;margin:0;padding:0;color:var(--color-ideas-text)}
-.ideas-header{margin-bottom:var(--space-3)}
-.ideas-header .overline{margin:0 0 12px;color:var(--color-ideas-muted);font:500 11px var(--font-mono);letter-spacing:.15em}
-.ideas-header h1{margin:0;font-size:clamp(2rem,5vw,3rem);font-weight:400;letter-spacing:-.05em}.ideas-subtitle{color:var(--color-ideas-subtle);margin:8px 0 0}
-.ideas-create-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 19px;border:1px solid var(--color-ideas-border);border-radius:15px;background:var(--color-ideas-surface);color:var(--color-ideas-text);text-align:left;font:500 15px var(--font-sans);cursor:pointer}
-.ideas-create-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--color-ideas-accent);color:var(--color-ideas-accent-contrast);font-size:23px;line-height:1}
 .ideas-tabs{display:flex;gap:24px;margin:var(--space-3) 0 var(--space-2);border-bottom:1px solid var(--color-ideas-divider)}
 .ideas-tabs button{position:relative;padding:0 2px 13px;border:0;background:none;color:var(--color-ideas-muted);font:500 14px var(--font-sans);cursor:pointer}
 .ideas-tabs button[aria-selected="true"]{color:var(--color-ideas-accent-soft)}
 .ideas-tabs button[aria-selected="true"]::after{position:absolute;right:0;bottom:-1px;left:0;height:2px;background:var(--color-ideas-accent);content:""}
-.ideas-toolbar{position:relative;display:flex;gap:0;margin:0 0 var(--space-2);width:100%}
+.ideas-toolbar{display:flex;align-items:center;gap:8px;margin:0 0 var(--space-2);width:100%}
 .ideas-search,.ideas-filters select,.ideas-form input,.ideas-form textarea,.ideas-form select{min-width:0;width:100%;background:var(--color-ideas-surface);color:var(--color-ideas-text);border:1px solid var(--color-ideas-control-border);border-radius:12px;padding:13px 14px;font:16px/1.4 var(--font-sans)}
-.ideas-search{padding-right:58px;border-radius:13px}
-.ideas-filter-toggle{position:absolute;top:1px;right:1px;bottom:1px;width:50px;display:grid;place-items:center;border:0;border-left:1px solid var(--color-ideas-control-border);border-radius:0 12px 12px 0;background:var(--color-ideas-control-hover);color:var(--color-ideas-accent-soft);cursor:pointer}
-.ideas-filter-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ideas-search{flex:1 1 auto;border-radius:13px}
+.ideas-toolbar-actions{display:flex;flex:0 0 auto;align-items:center;gap:8px}
+.ideas-filter-toggle,.ideas-create-toggle{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;padding:0;border:1px solid var(--color-ideas-control-border);border-radius:12px;background:var(--color-ideas-control-hover);color:var(--color-ideas-accent-soft);cursor:pointer}
+.ideas-filter-toggle svg,.ideas-create-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .ideas-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 14px;padding:16px;border:1px solid var(--color-ideas-border);border-radius:13px;background:var(--color-ideas-panel)}
 .ideas-filters[hidden]{display:none}
 .ideas-filters label{display:grid;gap:7px;min-width:0;color:var(--color-ideas-label);font-size:12px}
 .ideas-filters select{font-size:14px}
-.ideas-create-row{margin:0 0 var(--space-2)}
 .ideas-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2)}
 .idea-card{min-width:0;min-height:220px;display:flex;flex-direction:column;align-items:stretch;padding:17px;border:1px solid var(--color-ideas-divider);border-radius:17px;background:var(--color-ideas-card-gradient);color:var(--color-ideas-text);text-align:left;cursor:pointer;transition:border-color .18s ease,transform .18s ease}
 .idea-card:active{transform:scale(.99)}.idea-card:hover{border-color:var(--color-ideas-card-hover-border)}
@@ -72,22 +67,23 @@
 .ideas-detail{background:var(--gradient-ideas-surface)}
 
 /* Ideas uses the same component grammar while retaining its own gradient palette. */
-.ideas-create-row,
 .ideas-filters,
 .ideas-detail,
 .ideas-form,
 .ideas-convert-confirm {
   background: var(--gradient-ideas-surface);
 }
-.ideas-create-row {
-  border-color: var(--color-ideas-card-border);
-  transition: border-color .18s ease, background .18s ease;
-}
-.ideas-create-row:hover {
-  border-color: var(--color-ideas-card-hover-border);
-}
-.ideas-create-icon {
+.ideas-create-toggle {
   background: var(--gradient-ideas-button);
+  color: var(--color-ideas-accent-contrast);
+  border-color: transparent;
+}
+.ideas-filter-toggle {
+  background: var(--gradient-ideas-control);
+}
+.ideas-filter-toggle:hover,
+.ideas-create-toggle:hover {
+  border-color: var(--color-ideas-accent-soft);
 }
 .ideas-tabs button {
   border-radius: 9px 9px 0 0;
