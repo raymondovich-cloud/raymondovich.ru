@@ -29,6 +29,23 @@ function emitNavigation(source = "navigation") {
     parentScreen: "route",
     direct: true
   };
+  const routeKey = String(state.route || rootRoute).replace(/^#/, "").split("/")[0];
+  const pageByRoute = {
+    "ecosystem-projects": "ecosystem-projects",
+    "partner-projects": "partner-projects",
+    "advertising-projects": "advertising-projects",
+    "how-to-join": "how-to-join",
+    "settings": "settings",
+    "help": "help",
+    "plans": "plans",
+    "authorization": state.route === "#authorization/ideas" ? "owner-ideas" : "authorization",
+    "owner": "owner-control-center",
+    "partner-workspace": "partner-workspace",
+    "external-workspace": "external-workspace"
+  };
+  document.body.dataset.page = state.route === rootRoute
+    ? "home"
+    : (pageByRoute[routeKey] || "home");
   document.dispatchEvent(new CustomEvent("raymondovich:navigation", {
     detail: { ...state, source }
   }));
