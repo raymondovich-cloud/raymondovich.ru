@@ -19,7 +19,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
   root.innerHTML = `
     <section class="ideas-workspace" aria-labelledby="ideas-title">
       <header class="ideas-header">
-        <button class="ideas-back" type="button" data-ideas-back>← Центр управления</button>
+        <button class="workspace-back" type="button" data-ideas-back>← Центр управления</button>
         <p class="overline">RAYMONDOVICH / OWNER CONTROL CENTER</p>
         <h1 id="ideas-title">Идеи</h1>
         <p class="ideas-subtitle">Реестр идей экосистемы</p>
@@ -148,7 +148,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     const archived = isArchived(idea);
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
-      <div class="ideas-detail-top"><button class="ideas-back" type="button" data-idea-close>← К реестру идей</button><span class="ideas-detail-code">IDEA / ${escape(idea.id.slice(0,8).toUpperCase())}</span></div>
+      <div class="ideas-detail-top"><button class="workspace-back" type="button" data-idea-close>← К реестру идей</button><span class="ideas-detail-code">IDEA / ${escape(idea.id.slice(0,8).toUpperCase())}</span></div>
       <article class="ideas-detail">
         <div class="ideas-detail-meta"><span>${escape(categoryName)}</span><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
         <h2>${escape(idea.name)}</h2>

@@ -1,0 +1,19 @@
+/* Shared top navigation for nested account workspaces. */
+.workspace-back{
+  display:inline-flex;
+  align-items:center;
+  min-height:20px;
+  margin:0;
+  padding:0 0 20px;
+  border:0;
+  background:transparent;
+  color:#ff7133;
+  font:500 14px/1.4 var(--font-sans);
+  text-align:left;
+  cursor:pointer;
+}
+.workspace-back:focus-visible{
+  outline:2px solid rgba(255,137,54,.7);
+  outline-offset:4px;
+  border-radius:3px;
+}
