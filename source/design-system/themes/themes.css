@@ -24,4 +24,40 @@
   --color-owner-hover:#f0f1f4;
   --color-owner-success:#218653;
   --shadow-owner-success:0 0 8px rgba(33,134,83,.35);
+
+  /* Ideas workspace semantic palette — light theme. */
+  --color-ideas-text:#17191d;
+  --color-ideas-muted:#626b77;
+  --color-ideas-subtle:#626b77;
+  --color-ideas-border:rgba(20,24,30,.18);
+  --color-ideas-surface:#ffffff;
+  --color-ideas-accent:#d65b1f;
+  --color-ideas-accent-contrast:#ffffff;
+  --color-ideas-divider:rgba(20,24,30,.14);
+  --color-ideas-accent-soft:#b94c19;
+  --color-ideas-control-border:rgba(20,24,30,.2);
+  --color-ideas-control-hover:#f0f1f4;
+  --color-ideas-panel:#f7f8fa;
+  --color-ideas-label:#555d68;
+  --color-ideas-card-gradient:linear-gradient(145deg,#ffffff,#f1f3f6);
+  --color-ideas-card-border:rgba(20,24,30,.15);
+  --color-ideas-card-hover-border:#c47750;
+  --color-ideas-priority:#a6531d;
+  --color-ideas-description:#555d68;
+  --color-ideas-empty-border:rgba(20,24,30,.22);
+  --color-ideas-footer-border:rgba(20,24,30,.16);
+  --color-ideas-code:#707782;
+  --color-ideas-detail-description:#414852;
+  --color-ideas-field-label:#626b77;
+  --color-ideas-field-value:#242a32;
+  --color-ideas-button-border:#c9a18d;
+  --color-ideas-danger:#b33e32;
+  --color-ideas-danger-border:#d6a29b;
+  --color-ideas-confirm-border:#d49b7c;
+  --color-ideas-confirm-bg:#fff5ef;
+  --color-ideas-confirm-title:#a94b20;
+  --color-ideas-confirm-text:#5c514c;
+  --color-ideas-form-label:#414852;
+  --color-ideas-error:#b33e32;
+  --color-ideas-form-back-border:rgba(20,24,30,.24);
 }
