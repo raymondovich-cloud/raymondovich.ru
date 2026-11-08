@@ -109,7 +109,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     formHost.hidden = false;
     formHost.innerHTML = `
       <form class="ideas-form" data-idea-form data-idea-id="${escape(current.id || "")}">
-        <div class="ideas-form-heading"><button type="button" class="ideas-back" data-idea-return>← К списку идей</button><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2></div>
+        <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2><button type="button" class="ideas-secondary" data-idea-return>← К списку идей</button></div>
         <label>Название<input name="name" required maxlength="120" value="${escape(current.name)}"></label>
         <label>Описание<textarea name="description" rows="3">${escape(current.description)}</textarea></label>
         <div class="ideas-form-grid">
@@ -201,6 +201,10 @@ export async function renderIdeasWorkspace(root, user, onBack) {
         if (activityResult.error) console.error("Idea activity was not recorded:", activityResult.error.message);
       }
       formHost.hidden = true;
+      toolbar.hidden = false;
+      filters.hidden = false;
+      list.hidden = false;
+      footer.hidden = false;
       await load();
     } catch (error) {
       errorNode.textContent = error?.message || "Не удалось сохранить идею.";
