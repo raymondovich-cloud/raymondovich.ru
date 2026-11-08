@@ -121,6 +121,8 @@ function renderSignedIn(root, user) {
       <div><span class="auth-profile-label">ЭЛЕКТРОННАЯ ПОЧТА</span><strong>${escapeHtml(user.email || "")}</strong></div>
       <div><span class="auth-profile-label">УРОВЕНЬ ДОСТУПА</span><strong>${escapeHtml(roleLabels[role] || "Пользователь")}</strong></div>
       <p class="auth-legal">Доступ к проектам и функциям определяется назначенными разрешениями. Самостоятельно повысить свою роль через профиль нельзя.</p>
+      <button class="button secondary" type="button" data-pin-change>Изменить PIN-код</button>
+      <button class="button secondary" type="button" data-auth-lock>Заблокировать приложение</button>
       <button class="button secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
     </div>
     <p class="auth-footnote">Сессия защищена Supabase Auth.</p>`;
@@ -146,6 +148,14 @@ function bindForms(root) {
     const switcher = event.target.closest("[data-auth-switch]");
     if (switcher) {
       showPanel(root, switcher.dataset.authSwitch);
+      return;
+    }
+    if (event.target.closest("[data-pin-change]")) {
+      window.RaymondovichPinGuard?.changePin();
+      return;
+    }
+    if (event.target.closest("[data-auth-lock]")) {
+      window.RaymondovichPinGuard?.lock();
       return;
     }
     if (event.target.closest("[data-auth-signout]")) {
