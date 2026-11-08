@@ -26,25 +26,30 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       </header>
 
       <section class="ideas-registry" data-ideas-registry>
+        <div class="ideas-toolbar">
+          <input class="ideas-search" type="search" placeholder="Поиск идей" aria-label="Поиск идей" data-ideas-search>
+          <button class="ideas-filter-toggle" type="button" data-ideas-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="ideas-filter-panel">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 4v4M15 10v4M10 16v4"/></svg>
+          </button>
+        </div>
+        <div class="ideas-filters" id="ideas-filter-panel" data-ideas-filters hidden>
+          <label>Статус
+            <select aria-label="Фильтр по статусу" data-filter-status><option value="">Все статусы</option>
+              ${Object.entries(STATUS).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
+            </select>
+          </label>
+          <label>Приоритет
+            <select aria-label="Фильтр по приоритету" data-filter-priority><option value="">Все приоритеты</option>
+              ${Object.entries(PRIORITY).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
+            </select>
+          </label>
+          <label>Категория
+            <select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>
+          </label>
+        </div>
         <button class="ideas-create-row" type="button" data-idea-create>
           <span>Записать новую идею</span><span class="ideas-create-icon" aria-hidden="true">＋</span>
         </button>
-        <div class="ideas-tabs" role="tablist" aria-label="Список идей">
-          <button type="button" role="tab" aria-selected="true" data-ideas-tab="active">Активные</button>
-          <button type="button" role="tab" aria-selected="false" data-ideas-tab="archive">Архив</button>
-        </div>
-        <div class="ideas-toolbar">
-          <input class="ideas-search" type="search" placeholder="Поиск идей" aria-label="Поиск идей" data-ideas-search>
-        </div>
-        <div class="ideas-filters">
-          <select aria-label="Фильтр по статусу" data-filter-status><option value="">Все статусы</option>
-            ${Object.entries(STATUS).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
-          </select>
-          <select aria-label="Фильтр по приоритету" data-filter-priority><option value="">Все приоритеты</option>
-            ${Object.entries(PRIORITY).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
-          </select>
-          <select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>
-        </div>
         <div class="ideas-list" data-ideas-list aria-live="polite"><p class="ideas-loading">Загрузка идей…</p></div>
         <footer class="ideas-footer"><span data-ideas-count>—</span><span>ДОСТУП ВЛАДЕЛЬЦА</span></footer>
       </section>
@@ -59,7 +64,6 @@ export async function renderIdeasWorkspace(root, user, onBack) {
   const formHost = root.querySelector("[data-ideas-form]");
   let ideas = [];
   let categories = [];
-  let currentTab = "active";
   let currentIdeaId = null;
 
   const escape = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -96,29 +100,20 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     renderList();
   }
 
-  function setTab(tab) {
-    currentTab = tab;
-    root.querySelectorAll("[data-ideas-tab]").forEach(button => {
-      button.setAttribute("aria-selected", String(button.dataset.ideasTab === tab));
-    });
-    renderList();
-  }
-
   function renderList() {
     const query = root.querySelector("[data-ideas-search]").value.trim().toLowerCase();
     const status = root.querySelector("[data-filter-status]").value;
     const priority = root.querySelector("[data-filter-priority]").value;
     const category = root.querySelector("[data-filter-category]").value;
     const filtered = ideas.filter(idea =>
-      (currentTab === "archive" ? isArchived(idea) : !isArchived(idea)) &&
       (!query || [idea.name,idea.description,idea.goal,idea.concept,idea.additional_info].some(v=>String(v||"").toLowerCase().includes(query))) &&
       (!status || idea.status === status) &&
       (!priority || idea.priority === priority) &&
       (!category || idea.category_id === category)
     );
-    root.querySelector("[data-ideas-count]").textContent = `${currentTab === "archive" ? "В АРХИВЕ" : "АКТИВНЫХ"}: ${filtered.length}`;
+    root.querySelector("[data-ideas-count]").textContent = `НАЙДЕНО ИДЕЙ: ${filtered.length}`;
     if (!filtered.length) {
-      list.innerHTML = `<div class="ideas-empty"><strong>${currentTab === "archive" ? "Архив пока пуст" : "Идей пока нет"}</strong><span>${currentTab === "archive" ? "Архивированные идеи появятся здесь." : "Запишите первую идею или измените фильтры."}</span></div>`;
+      list.innerHTML = `<div class="ideas-empty"><strong>${ideas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${ideas.length ? "Измените параметры поиска или фильтрации." : "Запишите первую идею."}</span></div>`;
       return;
     }
     list.innerHTML = filtered.map(idea => {
@@ -137,6 +132,8 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     formHost.hidden = true;
     registry.hidden = false;
     currentIdeaId = null;
+    root.querySelector("[data-ideas-filters]").hidden = true;
+    root.querySelector("[data-ideas-filter-toggle]").setAttribute("aria-expanded","false");
     renderList();
     window.scrollTo({top:0,behavior:"smooth"});
   }
@@ -224,8 +221,13 @@ export async function renderIdeasWorkspace(root, user, onBack) {
   root.addEventListener("click", async event => {
     if (event.target.closest("[data-ideas-back]")) { onBack(); return; }
     if (event.target.closest("[data-idea-create]")) { showForm(); return; }
-    const tab = event.target.closest("[data-ideas-tab]");
-    if (tab) { setTab(tab.dataset.ideasTab); return; }
+    const filterToggle = event.target.closest("[data-ideas-filter-toggle]");
+    if (filterToggle) {
+      const panel = root.querySelector("[data-ideas-filters]");
+      panel.hidden = !panel.hidden;
+      filterToggle.setAttribute("aria-expanded", String(!panel.hidden));
+      return;
+    }
     const open = event.target.closest("[data-idea-open]");
     if (open) { showDetail(ideas.find(i=>i.id===open.dataset.ideaOpen)); return; }
     if (event.target.closest("[data-idea-close]")) { showRegistry(); return; }
@@ -284,7 +286,6 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       try { await recordActivity(result.data, archive ? "archived" : "restored", {previous_status:idea.status}); }
       catch(error) { window.alert("Статус изменён, но запись истории не сохранилась: "+error.message); }
       await load();
-      if (archive) setTab("archive"); else setTab("active");
       showDetail(result.data);
     }
   }, listenerOptions);
@@ -334,8 +335,6 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       }
       await load();
       if (id) {
-        if (saved.status === "archived") setTab("archive");
-        else if (previous?.status === "archived") setTab("active");
         showDetail(ideas.find(item=>item.id===saved.id));
       } else showRegistry();
     } catch(error) {
