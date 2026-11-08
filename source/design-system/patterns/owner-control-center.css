@@ -162,3 +162,55 @@
   .owner-console-card-description{font-size:11px}
   .owner-console-card-status{font-size:8px;letter-spacing:.035em}
 }
+
+/* Unified gradient treatment for Owner Control Center surfaces and controls. */
+.owner-console {
+  background: var(--gradient-owner-panel);
+  box-shadow: var(--shadow-panel);
+}
+.owner-console-tabs {
+  background: var(--gradient-owner-surface);
+}
+.owner-console-tab {
+  border: 1px solid transparent;
+  background: var(--gradient-owner-control);
+}
+.owner-console-tab[aria-selected="true"] {
+  border-color: var(--color-owner-line-strong);
+  background: var(--gradient-owner-control-active);
+  color: var(--color-accent-bright);
+}
+.owner-console-card {
+  background: var(--gradient-owner-surface);
+}
+.owner-console-card.is-active {
+  border-color: var(--color-accent);
+  background: var(--gradient-owner-control-active);
+}
+.owner-console-code {
+  background: var(--gradient-owner-control);
+}
+.owner-console :is(input, select, textarea) {
+  border: 1px solid var(--color-owner-line-strong);
+  border-radius: 12px;
+  background: var(--gradient-owner-input);
+  color: var(--color-owner-text);
+}
+.owner-console :is(input, select, textarea):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 68%, transparent);
+  outline-offset: 2px;
+}
+.owner-console button:not(.owner-console-tab) {
+  border-color: var(--color-owner-line-strong);
+  background: var(--gradient-owner-control);
+  color: var(--color-owner-text);
+}
+.owner-console button:not(.owner-console-tab):hover {
+  border-color: var(--color-accent);
+  background: var(--gradient-owner-control-active);
+}
+.owner-console :is(input, select, textarea):disabled,
+.owner-console button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}

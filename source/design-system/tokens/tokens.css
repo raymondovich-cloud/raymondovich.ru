@@ -82,3 +82,17 @@
   --radius-md: 16px;
   --radius-lg: 24px;
 }
+
+/* Owner Control Center gradient language — structure shared, palette scoped. */
+:root {
+  --gradient-owner-panel: linear-gradient(145deg, rgba(255,118,47,.085) 0%, rgba(23,26,32,.78) 46%, rgba(16,18,22,.66) 100%);
+  --gradient-owner-surface: linear-gradient(145deg, rgba(255,118,47,.075), rgba(23,26,32,.72) 54%, rgba(16,18,22,.62));
+  --gradient-owner-control: linear-gradient(115deg, rgba(255,106,39,.14), rgba(255,176,120,.045));
+  --gradient-owner-control-active: linear-gradient(115deg, rgba(255,106,39,.24), rgba(255,176,120,.10));
+  --gradient-owner-input: linear-gradient(145deg, rgba(255,118,47,.07), rgba(16,18,22,.72));
+
+  /* Ideas keeps its own semantic accent and surface identity. */
+  --gradient-ideas-control: linear-gradient(115deg, color-mix(in srgb, var(--color-ideas-accent) 12%, transparent), color-mix(in srgb, var(--color-ideas-accent-soft) 4%, var(--color-ideas-surface)));
+  --gradient-ideas-input: linear-gradient(145deg, color-mix(in srgb, var(--color-ideas-accent) 6%, var(--color-ideas-surface)), var(--color-ideas-surface));
+  --gradient-ideas-button: linear-gradient(110deg, var(--color-ideas-accent), var(--color-ideas-accent-soft));
+}
