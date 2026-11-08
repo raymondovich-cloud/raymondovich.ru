@@ -150,6 +150,21 @@ async function ensureProfile(user) {
 
 function bindForms(root) {
   root.addEventListener("click", async (event) => {
+    const ownerTab = event.target.closest("[data-owner-tab]");
+    if (ownerTab) {
+      const selectedGroup = ownerTab.dataset.ownerTab;
+      root.querySelectorAll("[data-owner-tab]").forEach((tab) => {
+        tab.setAttribute("aria-selected", String(tab === ownerTab));
+      });
+      root.querySelectorAll("[data-owner-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.ownerPanel !== selectedGroup;
+      });
+      return;
+    }
+    if (event.target.closest("[data-coming-soon]")) {
+      event.preventDefault();
+      return;
+    }
     const switcher = event.target.closest("[data-auth-switch]");
     if (switcher) {
       showPanel(root, switcher.dataset.authSwitch);
