@@ -78,15 +78,16 @@ function navigateScreen(screen, data = {}, options = {}) {
     parentScreen: "route",
     direct: true
   };
+  const replacing = Boolean(options.replace);
   const next = {
     route: current.route,
     screen,
     data,
-    parentRoute: current.route,
-    parentScreen: current.screen,
-    direct: false
+    parentRoute: replacing ? (current.parentRoute || current.route) : current.route,
+    parentScreen: replacing ? (current.parentScreen || "route") : current.screen,
+    direct: replacing ? Boolean(current.direct) : false
   };
-  writeState(next, location.href, Boolean(options.replace));
+  writeState(next, location.href, replacing);
   window.scrollTo({ top: 0, behavior: "auto" });
 }
 
