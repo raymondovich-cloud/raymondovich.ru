@@ -21,18 +21,18 @@ export async function renderIdeasWorkspace(root, user) {
     <div class="owner-console-shell">
       <h1 class="owner-console-page-title">RAYMONDOVICH / CONTROL CENTER</h1>
       <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
-        <div class="ideas-workspace" aria-labelledby="ideas-title">
-      <header class="ideas-header">
-        <h1 id="ideas-title">Идеи</h1>
-        <p class="ideas-subtitle">Реестр идей экосистемы</p>
-      </header>
-
+        <div class="ideas-workspace">
       <section class="ideas-registry" data-ideas-registry>
         <div class="ideas-toolbar">
           <input class="ideas-search" type="search" placeholder="Поиск идей" aria-label="Поиск идей" data-ideas-search>
-          <button class="ideas-filter-toggle" type="button" data-ideas-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="ideas-filter-panel">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
+          <div class="ideas-toolbar-actions">
+            <button class="ideas-filter-toggle" type="button" data-ideas-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="ideas-filter-panel">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <button class="ideas-create-toggle" type="button" data-idea-create aria-label="Добавить новую идею" title="Новая идея">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
         </div>
         <div class="ideas-filters" id="ideas-filter-panel" data-ideas-filters hidden>
           <label>Статус
@@ -49,9 +49,6 @@ export async function renderIdeasWorkspace(root, user) {
             <select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>
           </label>
         </div>
-        <button class="ideas-create-row" type="button" data-idea-create>
-          <span>Записать новую идею</span><span class="ideas-create-icon" aria-hidden="true">＋</span>
-        </button>
         <div class="ideas-list" data-ideas-list aria-live="polite"><p class="ideas-loading">Загрузка идей…</p></div>
         <footer class="ideas-footer"><span data-ideas-count>—</span><span>ДОСТУП ВЛАДЕЛЬЦА</span></footer>
       </section>
