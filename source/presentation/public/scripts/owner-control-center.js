@@ -80,7 +80,6 @@ export function renderOwnerControlCenter(user) {
 
       <footer class="owner-console-footer">
         <span>ДОСТУП ВЛАДЕЛЬЦА</span>
-        <button class="auth-text-button" type="button" data-auth-signout>Выйти</button>
       </footer>
     </section>`;
 }
