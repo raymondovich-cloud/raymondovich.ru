@@ -12,6 +12,10 @@ const STATUS = {
 const PRIORITY = { low: "Низкий", normal: "Обычный", high: "Высокий", critical: "Критический" };
 
 export async function renderIdeasWorkspace(root, user, onBack) {
+  root._ideasController?.abort();
+  const controller = new AbortController();
+  root._ideasController = controller;
+  const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <section class="ideas-workspace" aria-labelledby="ideas-title">
       <header class="ideas-header">
@@ -129,14 +133,14 @@ export async function renderIdeasWorkspace(root, user, onBack) {
     if (event.target.closest("[data-idea-cancel]")) { formHost.hidden = true; return; }
     const edit = event.target.closest("[data-idea-edit]");
     if (edit) { showForm(ideas.find(i=>i.id===edit.dataset.ideaEdit)); formHost.scrollIntoView({behavior:"smooth",block:"start"}); }
-  });
+  }, listenerOptions);
 
   root.addEventListener("input", event => {
     if (event.target.matches("[data-ideas-search]")) renderList();
-  });
+  }, listenerOptions);
   root.addEventListener("change", event => {
     if (event.target.matches("[data-filter-status],[data-filter-priority],[data-filter-category]")) renderList();
-  });
+  }, listenerOptions);
   root.addEventListener("submit", async event => {
     const form = event.target.closest("[data-idea-form]");
     if (!form) return;
@@ -183,7 +187,7 @@ export async function renderIdeasWorkspace(root, user, onBack) {
       errorNode.hidden = false;
       button.disabled = false;
     }
-  });
+  }, listenerOptions);
 
   await load();
 }
