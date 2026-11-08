@@ -1,16 +1,37 @@
-const sections = [
-  { code: "01", icon: "⌂", title: "Обзор", description: "Состояние экосистемы и ключевые показатели", status: "active", href: "#control-center" },
-  { code: "02", icon: "✧", title: "Идеи", description: "Сбор, фиксация и развитие идей экосистемы", status: "planned", href: "#ideas" },
-  { code: "03", icon: "◇", title: "Проекты", description: "Собственные, партнёрские и сторонние проекты", status: "planned", href: "#projects" },
-  { code: "04", icon: "◎", title: "Пользователи", description: "Аккаунты, роли и разрешения", status: "planned" },
-  { code: "05", icon: "↗", title: "Партнёры", description: "Партнёрские профили и взаимодействие", status: "planned" },
-  { code: "06", icon: "₽", title: "Финансы", description: "Доходы, расходы и финансовые операции", status: "planned" },
-  { code: "07", icon: "▥", title: "Аналитика", description: "Статистика платформы и проектов", status: "planned" },
-  { code: "08", icon: "⌘", title: "Инфраструктура", description: "Домены, сервисы, серверы и подписки", status: "planned" },
-  { code: "09", icon: "◇", title: "Безопасность", description: "Доступы, защита и контроль сессий", status: "planned" },
-  { code: "10", icon: "≡", title: "Системные журналы", description: "История действий и системных событий", status: "planned" },
-  { code: "11", icon: "▦", title: "Design System", description: "Компоненты, токены и правила интерфейса", status: "planned" },
-  { code: "12", icon: "⚙", title: "Настройки", description: "Конфигурация и параметры платформы", status: "planned" }
+const groups = [
+  {
+    id: "main",
+    label: "Главное",
+    heading: "ГЛАВНОЕ",
+    sections: [
+      { code: "01", icon: "⌂", title: "Обзор", description: "Сводка по экосистеме", active: true, href: "#control-center" },
+      { code: "02", icon: "▥", title: "Аналитика", description: "Метрики и отчёты" }
+    ]
+  },
+  {
+    id: "business",
+    label: "Бизнес",
+    heading: "БИЗНЕС",
+    sections: [
+      { code: "01", icon: "◇", title: "Проекты", description: "Приложения экосистемы" },
+      { code: "02", icon: "◎", title: "Пользователи", description: "Аккаунты и доступы" },
+      { code: "03", icon: "↗", title: "Партнёры", description: "Программа партнёров" },
+      { code: "04", icon: "₽", title: "Финансы", description: "Выплаты и доходы" },
+      { code: "05", icon: "✧", title: "Идеи", description: "Задумки и предложения" }
+    ]
+  },
+  {
+    id: "system",
+    label: "Система",
+    heading: "СИСТЕМА",
+    sections: [
+      { code: "01", icon: "⌘", title: "Инфраструктура", description: "Домены, сервисы и серверы" },
+      { code: "02", icon: "◇", title: "Безопасность", description: "Защита и контроль доступа" },
+      { code: "03", icon: "≡", title: "Системные журналы", description: "История событий и действий" },
+      { code: "04", icon: "▦", title: "Design System", description: "Компоненты и правила интерфейса" },
+      { code: "05", icon: "⚙", title: "Настройки", description: "Параметры платформы" }
+    ]
+  }
 ];
 
 export function renderOwnerControlCenter(user) {
@@ -19,31 +40,47 @@ export function renderOwnerControlCenter(user) {
     <section class="owner-console" aria-labelledby="owner-console-title">
       <header class="owner-console-heading">
         <div>
-          <p class="overline">RAYMONDOVICH / OWNER CONTROL CENTER</p>
+          <p class="overline">RAYMONDOVICH / CONTROL CENTER</p>
           <h1 id="owner-console-title">Центр управления</h1>
-          <p>Единая административная точка управления цифровой экосистемой.</p>
         </div>
         <div class="owner-console-identity">
           <span class="owner-console-status"><i></i> OWNER ACCESS</span>
           <strong>${email}</strong>
         </div>
       </header>
-      <div class="owner-console-section-heading">
-        <div><span>CONTROL PANEL</span><h2>Управление экосистемой</h2></div>
-        <span class="owner-console-version">OWNER / 01</span>
+
+      <div class="owner-console-tabs" role="tablist" aria-label="Категории управления">
+        ${groups.map((group, index) => `
+          <button class="owner-console-tab" type="button" role="tab"
+            id="owner-tab-${group.id}" aria-controls="owner-panel-${group.id}"
+            aria-selected="${index === 0}" data-owner-tab="${group.id}">
+            ${group.label}
+          </button>`).join("")}
       </div>
-      <nav class="owner-console-grid" aria-label="Разделы панели управления">
-        ${sections.map((section) => `
-          <a class="owner-console-card ${section.status === "planned" ? "is-planned" : ""}" href="${section.href}" ${section.status === "planned" ? 'aria-disabled="true" data-coming-soon="true"' : ""}>
-            <span class="owner-console-card-top"><span class="owner-console-code">${section.code}</span><span class="owner-console-icon" aria-hidden="true">${section.icon}</span></span>
-            <span class="owner-console-card-title">${section.title}</span>
-            <span class="owner-console-card-description">${section.description}</span>
-            <span class="owner-console-card-status">${section.status === "active" ? "ОТКРЫТЬ РАЗДЕЛ ↗" : "В РАЗРАБОТКЕ"}</span>
-          </a>`).join("")}
-      </nav>
+
+      ${groups.map((group, index) => `
+        <section class="owner-console-panel" role="tabpanel" id="owner-panel-${group.id}"
+          aria-labelledby="owner-tab-${group.id}" data-owner-panel="${group.id}" ${index === 0 ? "" : "hidden"}>
+          <div class="owner-console-section-heading">
+            <span>${group.heading} <i>·</i> ${String(group.sections.length).padStart(2, "0")} РАЗДЕЛОВ</span>
+          </div>
+          <nav class="owner-console-grid" aria-label="Разделы: ${group.label}">
+            ${group.sections.map((section) => `
+              <a class="owner-console-card ${section.active ? "is-active" : "is-planned"}"
+                href="${section.href || "#"}" ${section.active ? "" : 'aria-disabled="true" data-coming-soon="true"'}>
+                <span class="owner-console-code">${section.code}</span>
+                <span class="owner-console-card-content">
+                  <span class="owner-console-card-title">${section.title}</span>
+                  <span class="owner-console-card-description">${section.description}</span>
+                </span>
+                <span class="owner-console-card-status">${section.active ? "ОТКРЫТЬ ↗" : "В РАЗРАБОТКЕ"}</span>
+              </a>`).join("")}
+          </nav>
+        </section>`).join("")}
+
       <footer class="owner-console-footer">
-        <span>ДОСТУП ВЛАДЕЛЬЦА · ЗАЩИЩЁННАЯ СЕССИЯ</span>
-        <button class="auth-text-button" type="button" data-auth-signout>Выйти из аккаунта</button>
+        <span>ДОСТУП ВЛАДЕЛЬЦА</span>
+        <button class="auth-text-button" type="button" data-auth-signout>Выйти</button>
       </footer>
     </section>`;
 }
