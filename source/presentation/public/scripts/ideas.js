@@ -174,6 +174,7 @@ export async function renderIdeasWorkspace(root, user) {
     const archived = isArchived(idea);
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
+      ${workspaceScreenHead({title:idea.name})}
       <article class="ideas-detail">
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
@@ -185,7 +186,6 @@ export async function renderIdeasWorkspace(root, user) {
             ${!converted && !archived ? '<button type="button" class="ideas-icon-action is-danger" data-idea-archive aria-label="Архивировать идею" title="Архивировать"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v4H3z"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/></svg></button>' : ""}
           </div>
         </header>
-        <h2>${escape(idea.name)}</h2>
         <p class="ideas-detail-description">${escape(idea.description || "Описание пока не добавлено.")}</p>
         <div class="ideas-detail-fields">
           <section><h3>Цель</h3><p>${escape(idea.goal || "Не указана")}</p></section>
@@ -220,8 +220,8 @@ export async function renderIdeasWorkspace(root, user) {
     detailHost.hidden = true;
     formHost.hidden = false;
     formHost.innerHTML = `
+      ${workspaceScreenHead({title:idea ? "Редактирование идеи" : "Новая идея"})}
       <form class="ideas-form" data-idea-form data-idea-id="${escape(current.id || "")}">
-        <div class="ideas-form-heading"><h2>${idea ? "Редактирование идеи" : "Новая идея"}</h2></div>
         <label>Название<input name="name" required maxlength="120" value="${escape(current.name)}"></label>
         <label>Описание<textarea name="description" rows="3">${escape(current.description)}</textarea></label>
         <div class="ideas-form-grid">
