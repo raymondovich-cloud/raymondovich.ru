@@ -66,6 +66,7 @@ function renderSignedOut(root) {
   document.body.dataset.page = "authorization";
   const shell = root.querySelector("[data-auth-shell]");
   if (!shell) return;
+  delete shell.dataset.ownerWorkspace;
   shell.innerHTML = `
     <div class="auth-heading">
       <p class="overline">RAYMONDOVICH / ACCOUNT</p>
@@ -113,6 +114,7 @@ function renderSignedIn(root, user) {
   const shell = root.matches?.("[data-auth-shell]") ? root : root.querySelector("[data-auth-shell]");
   if (!shell) return;
   const role = user.app_metadata?.role || "user";
+  if (role !== "admin") delete shell.dataset.ownerWorkspace;
   if (role === "admin") {
     const route = window.RaymondovichNavigation?.getState()?.route || location.hash;
     if (route === "#authorization/ideas") {
