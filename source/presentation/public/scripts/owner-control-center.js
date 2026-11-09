@@ -13,7 +13,7 @@ const groups = [
     label: "Бизнес",
     heading: "БИЗНЕС",
     sections: [
-      { code: "01", icon: "◇", title: "Проекты", description: "Приложения экосистемы" },
+      { code: "01", icon: "◇", title: "Проекты", description: "Рабочие пространства проектов", active: true, href: "#authorization/projects", module: "projects" },
       { code: "02", icon: "◎", title: "Пользователи", description: "Аккаунты и доступы" },
       { code: "03", icon: "↗", title: "Партнёры", description: "Программа партнёров" },
       { code: "04", icon: "₽", title: "Финансы", description: "Выплаты и доходы" },
