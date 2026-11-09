@@ -166,6 +166,13 @@ export async function renderProjectsWorkspace(root, user) {
     }
   }
 
+  function renderServicesCategory(project,category,openCreate){
+    if(!project||!["infrastructure","services"].includes(category))return renderRegistry();
+    const module=MODULES.services;
+    host.innerHTML=`<section class="projects-module-screen"><header class="projects-screen-heading"><p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1></header><div class="projects-module-body" data-project-module-body></div></section>`;
+    renderProjectServicesScreen(host.querySelector("[data-project-module-body]"),project,user,category,openCreate);
+  }
+
   function renderNavigation(state) {
     if (state?.route !== "#authorization/projects") return;
     const screen = state.screen || "projects-registry";
@@ -180,6 +187,7 @@ export async function renderProjectsWorkspace(root, user) {
         }
       });
     }
+    else if (screen === "project-services-category") renderServicesCategory(project,state.data?.category,state.data?.openCreate);
     else if (screen.startsWith("project-") && MODULES[screen.replace("project-","")]) renderModule(project,screen.replace("project-",""));
     else renderRegistry();
   }
