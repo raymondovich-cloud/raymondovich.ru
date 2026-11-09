@@ -37,7 +37,7 @@ export function workspaceFilters({ id, attributes = "", fields = [] }) {
 export function workspaceStatGrid(stats = []) {
   return `<div class="ws-stat-grid">${stats.map((stat, index) => `
     <article class="ws-stat${stat.accent || index === 1 ? " is-accent" : ""}">
-      <span>${escapeHtml(stat.label)}</span><strong>${escapeHtml(stat.value ?? "—")}</strong>
+      <span>${escapeHtml(stat.label)}</span><strong ${stat.valueAttr || ""}>${escapeHtml(stat.value ?? "—")}</strong>
     </article>`).join("")}</div>`;
 }
 
