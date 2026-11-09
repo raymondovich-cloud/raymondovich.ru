@@ -125,7 +125,7 @@ export async function renderIdeasWorkspace(root, user) {
     const card = (idea, focused = false) => {
       const categoryName = categories.find(c=>c.id===idea.category_id)?.name || "Без категории";
       const statusName = STATUS[idea.status] || idea.status || "Новая";
-      return `<button class="ws-card idea-card ${focused ? "ws-card is-focused idea-card-focused" : "ws-card is-compact idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
+      return `<button class="ws-card idea-card ${focused ? "is-focused idea-card-focused" : "is-compact idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
         <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span>${focused ? '<span class="idea-card-arrow" aria-hidden="true">↗</span>' : ""}</span>
         <span class="idea-card-title">${escape(idea.name)}</span>
         ${focused ? `<span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>` : `<span class="idea-card-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>`}
