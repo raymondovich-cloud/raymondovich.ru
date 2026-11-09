@@ -1,0 +1,29 @@
+import { supabase } from "./client.js";
+
+export async function listProjects() {
+  return supabase.from("projects")
+    .select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at")
+    .order("updated_at",{ascending:false});
+}
+
+export async function listProjectToolRelations(projectId = null) {
+  let query = supabase.from("project_tool_relations").select("project_id,status");
+  if (projectId) query = query.eq("project_id",projectId);
+  return query;
+}
+
+export async function listProjectServiceDetails(projectId) {
+  const [services,resources] = await Promise.all([
+    supabase.from("project_tool_relations")
+      .select("id,relationship_type,purpose,status,evidence_note,last_verified_at,ecosystem_tools(name,category,official_url)")
+      .eq("project_id",projectId).order("created_at",{ascending:false}),
+    supabase.from("project_resource_relations")
+      .select("id,role,status,evidence_note,tool_resources(name,resource_type,resource_url,environment)")
+      .eq("project_id",projectId).order("created_at",{ascending:false})
+  ]);
+  return { services, resources };
+}
+
+export async function insertProjectRecord(payload) {
+  return supabase.from("projects").insert(payload).select("id").single();
+}
