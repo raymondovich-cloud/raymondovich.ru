@@ -1,6 +1,6 @@
 import { getProjectServices, createProjectService, updateProjectService, removeProjectService } from "/source/application/services/project-services.js";
 import { createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
-import { escapeHtml as esc, workspaceScreenHead } from "../shared/workspace-ui.js";
+import { escapeHtml as esc } from "../shared/workspace-ui.js";
 
 const resourceTypes={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS",supabase_project:"Проект Supabase",other:"Ресурс"};
 const statusLabels={active:"Активен",testing:"Тестирование",paused:"Приостановлен",retired:"Выведен",unknown:"Неизвестен",needs_verification:"Требует проверки",planned:"Запланирован"};
