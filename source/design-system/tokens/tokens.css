@@ -117,4 +117,13 @@
   --ws-muted:var(--color-ideas-muted);
   --ws-subtle:var(--color-ideas-subtle);
   --ws-description:var(--color-ideas-description);
+  --ws-card-focused:#21140e;
+  --ws-card-compact:#100e0c;
+  --ws-group-surface:#14110e;
+  --ws-group-line:#2b241e;
+  --ws-progress-track:#30251d;
+  --ws-card-line:#57301d;
+  --ws-card-text:#f4f0ec;
+  --ws-card-muted:#b4aaa1;
+  --ws-section-muted:#918a83;
 }
