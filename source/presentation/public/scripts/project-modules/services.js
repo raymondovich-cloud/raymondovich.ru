@@ -1,5 +1,6 @@
 import { getProjectServices, createProjectService, updateProjectService, removeProjectService } from "/source/application/services/project-services.js";
 import { createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
+import { workspaceScreenHead } from "../shared/workspace-ui.js";
 
 const esc=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 const resourceTypes={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS",supabase_project:"Проект Supabase",other:"Ресурс"};
@@ -81,7 +82,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   const optionalCount=optionalServices.length+optionalResources.length;
 
   host.innerHTML = `
-    <header class="projects-services-heading"><p class="projects-eyebrow">PROJECT / SERVICES</p><h1>Связи проекта</h1></header>
+    ${workspaceScreenHead({title:"Связи проекта",subtitle:"Инфраструктура и подключённые сервисы проекта."})}
     <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraCost,infraCount,true)}${summaryCard("Сервисы",servicesCost,optionalCount,false)}</div>
 
     <section class="projects-service-group">
