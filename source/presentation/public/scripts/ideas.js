@@ -317,8 +317,8 @@ export async function renderIdeasWorkspace(root, user) {
         const response=Array.isArray(result.data) ? result.data[0] : result.data;
         if (!response?.project_id) throw new Error("Сервер не вернул созданный проект.");
         await load();
-        const updated=ideas.find(i=>i.id===currentIdeaId);
-        showDetail(updated);
+        window.RaymondovichNavigation?.navigateRoute("#authorization/projects");
+        window.RaymondovichNavigation?.navigateScreen("project-overview",{projectId:response.project_id});
       } catch(error) {
         errorNode.textContent=error?.message || "Не удалось создать проект.";
         errorNode.hidden=false;
