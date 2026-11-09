@@ -179,7 +179,7 @@ export async function renderProjectsWorkspace(root, user) {
   function renderServicesCategory(project,category,openCreate){
     if(!project||!["infrastructure","services"].includes(category))return renderRegistry();
     const module=MODULES.services;
-    host.innerHTML=`<section class="projects-module-screen">${workspaceScreenHead({title:"Связи проекта"})}<div class="projects-module-body" data-project-module-body></div></section>`;
+    host.innerHTML=`<section class="projects-module-screen"><div class="projects-module-body" data-project-module-body></div></section>`;
     renderProjectServicesScreen(host.querySelector("[data-project-module-body]"),project,user,category,openCreate);
   }
 
