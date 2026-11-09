@@ -1,6 +1,7 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
 import { renderOwnerControlCenter } from "./owner-control-center.js";
 import { renderIdeasWorkspace } from "./ideas.js";
+import { renderProjectsWorkspace } from "./projects.js";
 
 const AUTH_REDIRECT_URL = "https://raymondovich.ru/#authorization";
 const main = document.querySelector("#main");
@@ -113,10 +114,20 @@ function renderSignedIn(root, user) {
   if (!shell) return;
   const role = user.app_metadata?.role || "user";
   if (role === "admin") {
-    if (location.hash === "#authorization/ideas") {
-      document.body.dataset.page = "owner-ideas";
-      renderIdeasWorkspace(shell, user);
+    const route = window.RaymondovichNavigation?.getState()?.route || location.hash;
+    if (route === "#authorization/ideas") {
+      if (shell.dataset.ownerWorkspace !== "ideas") {
+        shell.dataset.ownerWorkspace = "ideas";
+        document.body.dataset.page = "owner-ideas";
+        renderIdeasWorkspace(shell, user);
+      }
+    } else if (route === "#authorization/projects") {
+      if (shell.dataset.ownerWorkspace !== "projects") {
+        document.body.dataset.page = "owner-projects";
+        renderProjectsWorkspace(shell, user);
+      }
     } else {
+      shell.dataset.ownerWorkspace = "control-center";
       document.body.dataset.page = "owner-control-center";
       shell.innerHTML = renderOwnerControlCenter(user);
     }
@@ -159,11 +170,12 @@ async function ensureProfile(user) {
 
 function bindForms(root) {
   root.addEventListener("click", async (event) => {
-    const ideasModule = event.target.closest("[data-owner-module='ideas']");
-    if (ideasModule) {
+    const ownerModule = event.target.closest("[data-owner-module]");
+    if (ownerModule) {
       event.preventDefault();
-      window.RaymondovichNavigation?.navigateRoute("#authorization/ideas");
-      if (!window.RaymondovichNavigation) location.hash = "#authorization/ideas";
+      const route = ownerModule.dataset.ownerModule === "projects" ? "#authorization/projects" : "#authorization/ideas";
+      window.RaymondovichNavigation?.navigateRoute(route);
+      if (!window.RaymondovichNavigation) location.hash = route;
       return;
     }
     const ownerTab = event.target.closest("[data-owner-tab]");
@@ -314,6 +326,11 @@ supabase.auth.getSession().then(({ data, error }) => {
   if (!error) {
     currentSession = data.session;
     syncHeaderAccount(data.session);
+  }
+});
+document.addEventListener("raymondovich:navigation", event => {
+  if (event.detail?.route?.startsWith("#authorization") && currentSession?.user?.app_metadata?.role === "admin") {
+    renderSignedIn(main, currentSession.user);
   }
 });
 window.addEventListener("hashchange", renderAuth);
