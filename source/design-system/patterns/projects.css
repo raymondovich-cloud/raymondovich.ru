@@ -231,3 +231,27 @@
 .projects-service-action-menu button:hover{background:var(--gradient-owner-control)}
 .projects-service-action-menu button:last-child{color:#d98272}
 @media(max-width:600px){.projects-service-group-title strong{font-size:17px}.projects-service-group-title small{font-size:11px}}
+
+/* Services category index — aligned with the Ideas focus-row visual language. */
+.projects-service-category-list{display:grid;gap:12px}
+.projects-service-category-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:9px;padding:0 15px 0 0;border:1px solid #57301d;border-radius:22px;background:#21140e;overflow:hidden}
+.projects-service-category-open{display:flex;align-items:center;justify-content:space-between;gap:18px;min-width:0;padding:23px 25px;border:0;background:transparent;color:var(--color-owner-text);text-align:left;cursor:pointer}
+.projects-service-category-copy{display:grid;gap:7px;min-width:0}
+.projects-service-category-copy strong{font-size:clamp(20px,2.5vw,27px);font-weight:500;letter-spacing:-.025em}
+.projects-service-category-copy small{color:#b4aaa1;font-size:14px;line-height:1.5}
+.projects-service-category-copy em{color:#928b84;font-size:11px;font-style:normal}
+.projects-service-category-arrow{align-self:flex-start;color:#ff792d;font-size:29px;line-height:1}
+.projects-service-category-add{align-self:center;display:grid;place-items:center;width:37px;height:37px;padding:0;border:1px solid #57301d;border-radius:11px;background:linear-gradient(145deg,#2a170f,#1b100c);color:#ff792d;font-size:23px;cursor:pointer}
+.projects-service-category-open:hover{background:#27170f}
+.projects-service-category-add:hover{border-color:#ff792d}
+.projects-service-category-back{justify-self:start;margin:0 0 13px;padding:0;border:0;background:transparent;color:#ff792d;font:500 13px var(--font-sans);cursor:pointer}
+.projects-service-category-back+h1{margin-top:0}
+@media(max-width:600px){
+ .projects-service-category-list{gap:9px}
+ .projects-service-category-row{gap:5px;padding-right:10px;border-radius:18px}
+ .projects-service-category-open{padding:18px 16px;gap:10px}
+ .projects-service-category-copy strong{font-size:19px}
+ .projects-service-category-copy small{font-size:12px}
+ .projects-service-category-arrow{font-size:24px}
+ .projects-service-category-add{width:33px;height:33px;font-size:20px}
+}
