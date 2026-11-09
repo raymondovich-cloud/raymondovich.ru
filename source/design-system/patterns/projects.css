@@ -255,3 +255,45 @@
  .projects-service-category-arrow{font-size:24px}
  .projects-service-category-add{width:33px;height:33px;font-size:20px}
 }
+
+/* Services dashboard: side-by-side summaries and independently expandable groups. */
+.projects-service-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:22px}
+.projects-service-group-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
+.projects-service-group{min-width:0;gap:12px;margin:0;padding:17px;border:1px solid var(--color-owner-line);border-radius:20px;background:var(--gradient-owner-surface)}
+.projects-service-group[data-service-accordion="infrastructure"]{border-color:#59311e;background:linear-gradient(145deg,#21140f,#1a110d)}
+.projects-service-group-heading{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:8px;align-items:start}
+.projects-service-accordion-trigger{align-items:flex-start;gap:8px;padding:0}
+.projects-service-group-title strong{font-size:17px;line-height:1.3}
+.projects-service-group-title small{display:block;font-size:11px;line-height:1.4}
+.projects-service-chevron{margin:0;color:#ff792d;font-size:23px;line-height:1;transition:transform .18s ease}
+.projects-service-accordion-trigger[aria-expanded="true"] .projects-service-chevron{transform:rotate(90deg)}
+.projects-service-add{display:grid;place-items:center;width:31px;min-width:31px;height:31px;min-height:31px;padding:0;border:1px solid var(--color-owner-line-strong);border-radius:9px;background:transparent;color:#ff792d;font-size:21px;line-height:1;cursor:pointer}
+.projects-service-add:hover{border-color:#ff792d;background:rgba(255,121,45,.08)}
+.projects-service-list{padding:5px 12px;border-radius:15px}
+.projects-service-item{grid-template-columns:42px minmax(0,1fr);gap:10px;padding:13px 0}
+.projects-service-item-icon{width:42px;height:42px;border-radius:12px;font-size:18px}
+.projects-service-item-finance{grid-column:2;display:flex;justify-content:space-between;align-items:center;text-align:left;white-space:normal;gap:8px}
+.projects-service-item-finance strong{font-size:13px}
+.projects-service-item-finance span{font-size:11px}
+@media(max-width:640px){
+ .projects-service-summary-grid{gap:8px;margin-bottom:15px}
+ .projects-service-summary{padding:13px 12px;border-radius:15px}
+ .projects-service-summary>span{font-size:11px}
+ .projects-service-summary strong{font-size:21px}
+ .projects-service-summary small{font-size:9px}
+ .projects-service-group-grid{gap:9px}
+ .projects-service-group{padding:11px;gap:9px;border-radius:16px}
+ .projects-service-group-heading{grid-template-columns:minmax(0,1fr) 27px;gap:5px}
+ .projects-service-group-title strong{font-size:14px}
+ .projects-service-group-title small{font-size:10px}
+ .projects-service-chevron{font-size:19px}
+ .projects-service-add{width:26px;min-width:26px;height:26px;min-height:26px;font-size:18px}
+ .projects-service-list{padding:3px 8px}
+ .projects-service-item{grid-template-columns:32px minmax(0,1fr);gap:7px;padding:10px 0}
+ .projects-service-item-icon{width:32px;height:32px;border-radius:9px;font-size:15px}
+ .projects-service-item-main strong{font-size:13px}
+ .projects-service-item-main span{font-size:10px}
+ .projects-service-item-finance strong{font-size:11px}
+ .projects-service-item-finance span{font-size:9px}
+}
+@media(max-width:370px){.projects-service-group-grid{grid-template-columns:1fr}}
