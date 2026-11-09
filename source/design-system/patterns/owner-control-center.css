@@ -13,9 +13,10 @@
 .owner-console-groups{display:grid;gap:8px;padding-top:var(--space-2)}
 .owner-console-group.ws-group{overflow:hidden;min-width:0;border:1px solid var(--ws-group-line);border-radius:var(--radius-lg);background:var(--ws-group-surface)}
 .owner-console-group.ws-group[open]{border-color:var(--ws-accent-line)}
-.owner-console-group>summary{display:block;min-height:64px;padding:0 16px;cursor:pointer;list-style:none}
-.owner-console-group>summary::-webkit-details-marker{display:none}
-.owner-console-group>summary h2{display:grid;grid-template-columns:32px minmax(0,1fr) auto 18px;align-items:center;gap:12px;min-height:inherit;margin:0;color:var(--ws-accent-text);font:500 12px/1.2 var(--font-mono);letter-spacing:.14em}
+.owner-console-groups>.owner-console-group.ws-group{margin:0}
+.owner-console-group.ws-group>summary{display:block;min-height:64px;padding:0 16px;cursor:pointer;list-style:none}
+.owner-console-group.ws-group>summary::-webkit-details-marker{display:none}
+.owner-console-group.ws-group>summary h2{display:grid;grid-template-columns:32px minmax(0,1fr) auto 18px;align-items:center;gap:12px;min-height:inherit;margin:0;color:var(--ws-accent-text);font:500 12px/1.2 var(--font-mono);letter-spacing:.14em}
 .owner-console-group-icon{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--ws-control-strong-line);border-radius:10px;background:var(--gradient-owner-control);color:var(--ws-control-accent)}
 .owner-console-group-icon svg{width:18px;height:18px}
 .owner-console-group-count{color:var(--ws-control-subtle);font:12px/1 var(--font-mono);letter-spacing:.08em}
@@ -23,7 +24,7 @@
 .owner-console-group[open] .owner-console-group-chevron{transform:rotate(180deg)}
 @keyframes owner-console-reveal{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .owner-console-group[open] .owner-console-grid{animation:owner-console-reveal .15s ease both}
-.owner-console-group>summary:focus-visible{outline:2px solid var(--ws-accent);outline-offset:-3px;border-radius:var(--radius-lg)}
+.owner-console-group.ws-group>summary:focus-visible{outline:2px solid var(--ws-accent);outline-offset:-3px;border-radius:var(--radius-lg)}
 .owner-console-group .ws-group-content{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:8px;padding:8px;border-top:1px solid var(--ws-group-line)}
 .owner-console-group .owner-console-grid-integrations{grid-template-columns:repeat(3,minmax(0,1fr))}
 .owner-console-card{display:flex;min-width:0;min-height:116px;flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid var(--ws-control-line);border-radius:var(--radius-md);background:var(--gradient-owner-surface);color:var(--ws-control-text);text-decoration:none;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
@@ -52,8 +53,8 @@
  .owner-console-page-title{font-size:clamp(.92rem,3.6vw,1.1rem)}
  .owner-console-access{min-height:28px;padding:0 8px;font-size:8px}
  .owner-console-groups{gap:8px;padding-top:10px}
- .owner-console-group>summary{min-height:50px;padding:0 11px}
- .owner-console-group>summary h2{grid-template-columns:32px minmax(0,1fr) auto 17px;gap:9px;font-size:11px}
+ .owner-console-group.ws-group>summary{min-height:50px;padding:0 11px}
+ .owner-console-group.ws-group>summary h2{grid-template-columns:32px minmax(0,1fr) auto 17px;gap:9px;font-size:11px}
  .owner-console-group .ws-group-content{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:8px}
  .owner-console-group .owner-console-grid-integrations{grid-template-columns:repeat(2,minmax(0,1fr))}
  .owner-console-card{min-height:88px;gap:6px;padding:9px;border-radius:var(--radius-md)}
