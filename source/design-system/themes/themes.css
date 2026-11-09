@@ -104,6 +104,23 @@
   --ws-card-text:var(--color-ideas-text);
   --ws-card-muted:var(--color-ideas-description);
   --ws-section-muted:var(--color-ideas-muted);
+
+  --ws-button-text:#ffffff;
+  --ws-success:#218653;
+  --ws-warning:#a6531d;
+  --ws-warning-text:#a6531d;
+  --ws-danger:#b33e32;
+  --ws-project-line:var(--color-ideas-confirm-border);
+  --ws-project-line-strong:var(--color-ideas-divider);
+  --ws-project-hero-bg:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,243,246,.86));
+  --ws-project-group-bg:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,243,246,.86));
+  --ws-project-icon-bg:var(--color-ideas-card-gradient);
+  --ws-project-category-gradient:var(--color-ideas-card-gradient);
+  --ws-project-hover:var(--color-ideas-control-hover);
+  --ws-project-muted:var(--color-ideas-description);
+  --ws-project-subtle:var(--color-ideas-muted);
+  --ws-empty-line:var(--color-ideas-empty-border);
+  --ws-empty-surface:var(--color-ideas-surface);
   --ws-control-panel-text:var(--color-owner-panel-text);
   --ws-control-panel:var(--color-owner-panel);
   --ws-control-surface:var(--color-owner-surface);
