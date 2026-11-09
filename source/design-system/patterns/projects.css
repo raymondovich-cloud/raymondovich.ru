@@ -344,3 +344,11 @@
  .projects-service-item-main strong{font-size:14px}
  .projects-service-item-finance strong{font-size:13px}
 }
+
+/* Keep the two service section titles on a single line on mobile. */
+@media(max-width:600px){
+ .projects-service-group-heading h2{font-size:14px;letter-spacing:-.035em;white-space:nowrap}
+}
+@media(max-width:390px){
+ .projects-service-group-heading h2{font-size:13px}
+}
