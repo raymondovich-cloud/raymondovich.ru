@@ -161,7 +161,7 @@ export async function renderProjectsWorkspace(root, user) {
         </header>
         <div class="projects-module-body" data-project-module-body></div>
       </section>`;
-    await renderers[key](host.querySelector("[data-project-module-body]"),project);
+    await renderers[key](host.querySelector("[data-project-module-body]"),project,user);
     const current = window.RaymondovichNavigation?.getState();
     if (current?.route !== "#authorization/projects" || current?.screen !== "project-"+key || current?.data?.projectId !== project.id) {
       if (current?.route === "#authorization/projects") renderNavigation(current);
@@ -174,7 +174,14 @@ export async function renderProjectsWorkspace(root, user) {
     const projectId = state.data?.projectId;
     const project = projects.find(item=>item.id===projectId);
     if (screen === "project-create") renderCreateForm();
-    else if (screen === "project-overview") renderOverview(project);
+    else if (screen === "project-overview") {
+      loadProjects().then(loaded=>{
+        const current=window.RaymondovichNavigation?.getState();
+        if(loaded && !controller.signal.aborted && current?.route==="#authorization/projects" && current?.screen==="project-overview" && current?.data?.projectId===projectId) {
+          renderOverview(projects.find(item=>item.id===projectId));
+        }
+      });
+    }
     else if (screen.startsWith("project-") && MODULES[screen.replace("project-","")]) renderModule(project,screen.replace("project-",""));
     else renderRegistry();
   }
