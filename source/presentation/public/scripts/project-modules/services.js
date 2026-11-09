@@ -122,9 +122,9 @@ export async function renderProjectServicesScreen(host,project,user){
     menu.setAttribute("role","menu");
     menu.innerHTML='<button type="button" role="menuitem" data-menu-action="edit">Изменить</button><button type="button" role="menuitem" data-menu-action="delete">Удалить</button>';
     host.append(menu);
-    const rect=host.getBoundingClientRect(),width=menu.offsetWidth,height=menu.offsetHeight;
-    menu.style.left=Math.max(8,Math.min(x-rect.left,rect.width-width-8))+"px";
-    menu.style.top=Math.max(8,Math.min(y-rect.top,host.scrollHeight-height-8))+"px";
+    const width=menu.offsetWidth,height=menu.offsetHeight;
+    menu.style.left=Math.max(8,Math.min(x,window.innerWidth-width-8))+"px";
+    menu.style.top=Math.max(8,Math.min(y,window.innerHeight-height-8))+"px";
   };
   host.addEventListener("pointerdown",event=>{
     const row=event.target.closest("[data-service-row]");
@@ -177,12 +177,11 @@ export async function renderProjectServicesScreen(host,project,user){
       if(opening){panel.hidden=false;trigger.setAttribute("aria-expanded","true");}
     }
     if(event.target.closest("[data-service-add]")){
-      const panel=host.querySelector('[data-service-accordion="services"] [data-accordion-panel]');
-      host.querySelector('[data-service-accordion="services"] [data-accordion-trigger]').click();
+      host.querySelectorAll("[data-service-accordion]").forEach(item=>{const active=item.dataset.serviceAccordion==="services";item.querySelector("[data-accordion-panel]").hidden=!active;item.querySelector("[data-accordion-trigger]").setAttribute("aria-expanded",String(active));});
       showForm(host,"service",true);
     }
     if(event.target.closest("[data-resource-add]")){
-      host.querySelector('[data-service-accordion="infrastructure"] [data-accordion-trigger]').click();
+      host.querySelectorAll("[data-service-accordion]").forEach(item=>{const active=item.dataset.serviceAccordion==="infrastructure";item.querySelector("[data-accordion-panel]").hidden=!active;item.querySelector("[data-accordion-trigger]").setAttribute("aria-expanded",String(active));});
       showForm(host,"resource",true);
     }
     if(event.target.closest("[data-service-cancel]")){editing=null;showForm(host,"service",false);host.querySelector("[data-service-add]").hidden=false;}
