@@ -80,7 +80,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   const optionalCount=optionalServices.length+optionalResources.length;
   const providers=[...new Map([...services.map(x=>[x.tool_id,{id:x.tool_id,name:x.ecosystem_tools?.name||"Сервис"}]),...resources.map(x=>[x.tool_resources?.ecosystem_tools?.id,{id:x.tool_resources?.ecosystem_tools?.id,name:x.tool_resources?.ecosystem_tools?.name||"Провайдер"}])].filter(([id])=>id)).values()];
 
-`
+  host.innerHTML = `
     <header class="projects-services-heading"><h1>Связи проекта</h1><p>Инфраструктура и сервисы, от которых зависит работа проекта.</p></header>
     <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraCost,infraCount,true)}${summaryCard("Сервисы",servicesCost,optionalCount,false)}</div>
 
