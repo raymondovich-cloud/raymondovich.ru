@@ -104,4 +104,18 @@
   --ws-card-text:var(--color-ideas-text);
   --ws-card-muted:var(--color-ideas-description);
   --ws-section-muted:var(--color-ideas-muted);
+  --ws-control-panel-text:var(--color-owner-panel-text);
+  --ws-control-panel:var(--color-owner-panel);
+  --ws-control-surface:var(--color-owner-surface);
+  --ws-control-surface-raised:var(--color-owner-surface-raised);
+  --ws-control-text:var(--color-owner-text);
+  --ws-control-muted:var(--color-owner-muted);
+  --ws-control-subtle:var(--color-owner-subtle);
+  --ws-control-line:var(--color-owner-line);
+  --ws-control-strong-line:var(--color-owner-line-strong);
+  --ws-control-separator:var(--color-owner-separator);
+  --ws-control-planned:var(--color-owner-planned);
+  --ws-control-hover:var(--color-owner-hover);
+  --ws-control-accent:var(--color-accent);
+  --ws-control-accent-bright:var(--color-accent-bright);
 }
