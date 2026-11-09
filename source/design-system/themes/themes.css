@@ -76,3 +76,22 @@
   --gradient-owner-input: linear-gradient(145deg, rgba(214,91,31,.055), rgba(255,255,255,.82));
   --gradient-ideas-surface: linear-gradient(145deg, rgba(214,91,31,.10), rgba(255,255,255,.90) 48%, rgba(241,243,246,.84));
 }
+
+
+/* Owner Control Center shared workspace semantic tokens — light theme. */
+:root[data-theme="light"]{
+  --ws-background:var(--color-bg);
+  --ws-surface:var(--color-owner-surface);
+  --ws-surface-2:var(--color-owner-surface-raised);
+  --ws-list-item:var(--color-ideas-card-gradient);
+  --ws-line:var(--color-ideas-divider);
+  --ws-strong-line:var(--color-ideas-control-border);
+  --ws-accent-line:var(--color-ideas-confirm-border);
+  --ws-accent-surface:var(--gradient-ideas-surface);
+  --ws-accent:var(--color-ideas-accent);
+  --ws-accent-contrast:var(--color-ideas-accent-contrast);
+  --ws-text:var(--color-ideas-text);
+  --ws-muted:var(--color-ideas-muted);
+  --ws-subtle:var(--color-ideas-subtle);
+  --ws-description:var(--color-ideas-description);
+}
