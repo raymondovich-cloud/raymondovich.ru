@@ -1,4 +1,5 @@
-import { loadProjectsRegistry, createProjectRecord } from "/source/application/projects/project-registry.js";
+import { loadProjectsWorkspace } from "/source/application/projects/project-overview-coordinator.js";
+import { createProjectRecord } from "/source/application/projects/project-registry.js";
 import { getProjectServices } from "/source/application/services/project-services.js";
 
 const PROJECT_STATUS = {
@@ -38,7 +39,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   const host = root.querySelector("[data-projects-content]");
   let projects = [];
-  let toolRelations = [];
+  let serviceCounts = {};
   let currentProjectId = null;
 
   const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -50,13 +51,13 @@ export async function renderProjectsWorkspace(root, user) {
 
   async function loadProjects() {
     host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
-    const result = await loadProjectsRegistry();
+    const result = await loadProjectsWorkspace();
     if (result.error) {
       host.innerHTML = '<div class="projects-state projects-error"><strong>Не удалось загрузить проекты</strong><p>Проверьте подключение и права доступа.</p></div>';
       return false;
     }
     projects = result.projects;
-    toolRelations = result.serviceRelations;
+    serviceCounts = result.serviceCounts;
     return true;
   }
 
@@ -104,7 +105,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   function moduleSummary(projectId, key) {
     if (key === "services") {
-      const count = toolRelations.filter(item=>item.project_id===projectId && item.status==="active").length;
+      const count = serviceCounts[projectId] || 0;
       return count ? `${count} подключено` : "Нет подключённых сервисов";
     }
     if (key === "accounting") return "Нет финансовых операций";
@@ -115,7 +116,7 @@ export async function renderProjectsWorkspace(root, user) {
   function renderOverview(project) {
     if (!project) return renderRegistry();
     currentProjectId = project.id;
-    const servicesCount = toolRelations.filter(item=>item.project_id===project.id && item.status==="active").length;
+    const servicesCount = serviceCounts[project.id] || 0;
     host.innerHTML = `
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
