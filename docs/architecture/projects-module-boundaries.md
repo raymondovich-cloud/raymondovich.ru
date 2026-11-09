@@ -2,7 +2,7 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Архитектурные границы Projects  
-> **Версия:** 1.1  
+> **Версия:** 1.2  
 > **Статус:** Согласовано для реализации первой вертикали  
 > **Дата:** 2026-11-10
 
@@ -98,7 +98,7 @@ Services — единственный владелец `project_tool_relations` 
 
 `source/application/projects/project-overview-coordinator.js` — единственная точка композиции публичных контрактов Projects, Services, Accounting, Analytics и Marketing. DTO `services` содержит `count`, `label` и поля исходной сводки. При ошибке Services label равен «Нет данных».
 
-DTO `headline` содержит `users`, `income`, `expense`. Каждый показатель имеет `state`, `value`, `currency`, `period`, `source`, `basis`. Пользователи и доход остаются `not_configured`, пока соответствующие источники не настроены. Если Accounting не возвращает фактическое значение, расход может использовать Services recurring summary: `period: "month"`, `source: "services_recurring"`, `basis: "manual_estimate"`. Это ручная оценка регулярных платежей, не бухгалтерская операция.
+DTO `headline` содержит `users`, `income`, `expense`. Каждый показатель имеет `state`, `value`, `currency`, `period`, `source`, `basis`. Пользователи и доход остаются `not_configured`, пока соответствующие источники не настроены. Если Accounting возвращает `state: "value"`, его показатель имеет приоритет. Services recurring summary используется только когда Accounting явно возвращает `state: "not_configured"`: `period: "month"`, `source: "services_recurring"`, `basis: "manual_estimate"`. Ошибка Accounting не маскируется оценкой Services. Это ручная оценка регулярных платежей, не бухгалтерская операция.
 
 Accounting не читает Services. Координатор не объединяет два источника и не складывает суммы. При появлении фактических операций Accounting правило сосуществования с Services требует отдельного решения владельца.
 
@@ -112,5 +112,6 @@ Presentation вызывает координатор и получает DTO; п
 
 | Версия | Дата | Статус | Изменение |
 |---|---|---|---|
+| 1.2 | 2026-11-10 | Согласовано для реализации | Уточнён приоритет Accounting и условие fallback Services только при `not_configured`; ошибки Accounting не маскируются. |
 | 1.1 | 2026-11-10 | Согласовано для реализации | Зафиксированы единое правило connected, DTO Services summary, headline Overview и посредник Owner Hub. |
 | 1.0 | 2026-11-09 | Согласовано | Утверждены владение данными, контракты и посредник, безопасность и границы первой вертикали. |
