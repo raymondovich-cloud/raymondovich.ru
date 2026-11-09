@@ -1,4 +1,4 @@
-import { listProjectResources, insertToolResource, insertProjectResourceRelation } from "../../infrastructure/supabase/projects-repository.js";
+import { listProjectResources, insertToolResource, insertProjectResourceRelation, updateToolResource, updateProjectResourceRelation, deleteProjectResourceRelation } from "../../infrastructure/supabase/projects-repository.js";
 const TYPES=new Set(["repository","domain","database","server","api","deployment","dns_zone","supabase_project","other"]);
 const ENVS=new Set(["production","staging","development",""]);
 const STATUSES=new Set(["active","testing","paused","retired","unknown","needs_verification"]);
@@ -19,3 +19,19 @@ export async function createProjectResource(ownerId,projectId,values){
   if(relation.error)throw relation.error;
   return {resourceId:resource.data.id,relationId:relation.data.id};
 }
+
+export async function updateProjectResource(relationId,resourceId,values){
+ const name=String(values.name||"").trim(),toolId=String(values.tool_id||""),type=String(values.resource_type||"other"),environment=String(values.environment||""),role=String(values.role||"").trim(),description=String(values.description||"").trim(),url=safeUrl(String(values.resource_url||"").trim()),cost=Number(values.monthly_cost||0),date=String(values.next_payment_date||"");
+ if(!name||name.length>160)throw new Error("Укажите название ресурса (до 160 символов).");
+ if(!toolId)throw new Error("Выберите сервис-провайдер для ресурса.");
+ if(!TYPES.has(type)||!ENVS.has(environment))throw new Error("Проверьте тип ресурса и окружение.");
+ if(!Number.isFinite(cost)||cost<0||cost>1000000000)throw new Error("Укажите корректные ежемесячные расходы.");
+ if(date&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw new Error("Укажите корректную дату следующей оплаты.");
+ if(role.length>500||description.length>2000)throw new Error("Слишком длинное описание.");
+ const resource=await updateToolResource(resourceId,{tool_id:toolId,name,resource_type:type,resource_url:url,environment:environment||null,description});
+ if(resource.error)throw resource.error;
+ const relation=await updateProjectResourceRelation(relationId,{role,dependency_level:"critical",monthly_cost:cost,currency:"RUB",next_payment_date:date||null});
+ if(relation.error)throw relation.error;
+ return relation.data;
+}
+export async function removeProjectResource(relationId){const result=await deleteProjectResourceRelation(relationId);if(result.error)throw result.error;return result.data;}
