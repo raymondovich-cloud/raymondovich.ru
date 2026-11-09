@@ -226,7 +226,7 @@
 .projects-service-accordion-panel{display:grid;gap:13px}
 .projects-service-item{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .projects-service-item a{user-select:auto;-webkit-user-select:auto}
-.projects-service-action-menu{position:absolute;z-index:30;display:grid;min-width:150px;padding:6px;border:1px solid var(--color-owner-line-strong);border-radius:13px;background:var(--gradient-owner-surface);box-shadow:0 12px 36px rgba(0,0,0,.35)}
+.projects-service-action-menu{position:fixed;z-index:30;display:grid;min-width:150px;padding:6px;border:1px solid var(--color-owner-line-strong);border-radius:13px;background:var(--gradient-owner-surface);box-shadow:0 12px 36px rgba(0,0,0,.35)}
 .projects-service-action-menu button{padding:11px 13px;border:0;border-radius:8px;background:transparent;color:var(--color-owner-text);font:500 13px var(--font-body);text-align:left;cursor:pointer}
 .projects-service-action-menu button:hover{background:var(--gradient-owner-control)}
 .projects-service-action-menu button:last-child{color:#d98272}
