@@ -213,3 +213,21 @@
 .projects-service-item-actions button:last-child{color:#d98272}
 .projects-service-item-actions button:disabled{opacity:.45;cursor:wait}
 @media(max-width:600px){.projects-service-item-actions{gap:7px}.projects-service-item-actions button{font-size:10px}}
+
+/* Project Services — compact heading, exclusive accordions and contextual actions. */
+.projects-service-group-heading{gap:12px}
+.projects-service-accordion-trigger{display:flex;align-items:center;gap:12px;flex:1;min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer}
+.projects-service-group-title{display:grid;gap:3px;min-width:0}
+.projects-service-group-title strong{color:var(--color-owner-text);font-size:19px;font-weight:500}
+.projects-service-group-title small{color:var(--color-owner-muted);font-size:13px;line-height:1.4}
+.projects-service-chevron{margin-left:auto;color:var(--color-owner-muted);font-size:20px;transition:transform .2s ease}
+.projects-service-accordion-trigger[aria-expanded="true"] .projects-service-chevron{transform:rotate(180deg)}
+.projects-service-accordion-panel[hidden]{display:none}
+.projects-service-accordion-panel{display:grid;gap:13px}
+.projects-service-item{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.projects-service-item a{user-select:auto;-webkit-user-select:auto}
+.projects-service-action-menu{position:absolute;z-index:30;display:grid;min-width:150px;padding:6px;border:1px solid var(--color-owner-line-strong);border-radius:13px;background:var(--gradient-owner-surface);box-shadow:0 12px 36px rgba(0,0,0,.35)}
+.projects-service-action-menu button{padding:11px 13px;border:0;border-radius:8px;background:transparent;color:var(--color-owner-text);font:500 13px var(--font-body);text-align:left;cursor:pointer}
+.projects-service-action-menu button:hover{background:var(--gradient-owner-control)}
+.projects-service-action-menu button:last-child{color:#d98272}
+@media(max-width:600px){.projects-service-group-title strong{font-size:17px}.projects-service-group-title small{font-size:11px}}
