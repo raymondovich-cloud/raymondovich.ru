@@ -1,5 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
-import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspacePageTitle } from "./shared/workspace-ui.js";
+import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const STATUS = {
   new: "Новая",
