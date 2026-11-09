@@ -81,12 +81,11 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   const providers=[...new Map([...services.map(x=>[x.tool_id,{id:x.tool_id,name:x.ecosystem_tools?.name||"Сервис"}]),...resources.map(x=>[x.tool_resources?.ecosystem_tools?.id,{id:x.tool_resources?.ecosystem_tools?.id,name:x.tool_resources?.ecosystem_tools?.name||"Провайдер"}])].filter(([id])=>id)).values()];
 
   host.innerHTML = `
-    <header class="projects-services-heading"><h1>Связи проекта</h1><p>Инфраструктура и сервисы, от которых зависит работа проекта.</p></header>
+    <header class="projects-services-heading"><p class="projects-eyebrow">PROJECT / SERVICES</p><h1>Связи проекта</h1></header>
     <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraCost,infraCount,true)}${summaryCard("Сервисы",servicesCost,optionalCount,false)}</div>
 
-    <div class="projects-service-group-grid">\n    <section class="projects-service-group" data-service-accordion="infrastructure">
-      <header class="projects-service-group-heading"><button type="button" class="projects-service-accordion-trigger" data-accordion-trigger aria-expanded="false"><span class="projects-service-group-title"><strong>Инфраструктура</strong><small>Без этого проект не может работать</small></span><span class="projects-service-chevron" aria-hidden="true">↗</span></button><button class="projects-service-add" type="button" data-resource-add aria-label="Добавить ресурс">＋</button></header>
-      <div class="projects-service-accordion-panel" data-accordion-panel hidden>
+    <section class="projects-service-group">
+      <header class="projects-service-group-heading"><div class="projects-service-group-symbol is-critical" aria-hidden="true">⚓</div><div><h2>Инфраструктура</h2><p>Без этого проект не работает</p></div><button class="projects-primary projects-service-add" type="button" data-resource-add aria-label="Добавить ресурс">＋</button></header>
       <form class="projects-form projects-service-form" data-resource-form hidden>
         <label>Название ресурса<input name="name" required maxlength="160" placeholder="Например, raymondovich.ru"></label>
         <div class="projects-form-grid"><label>Тип ресурса<select name="resource_type"><option value="domain">Домен</option><option value="database">База данных</option><option value="dns_zone">DNS и защита</option><option value="server">Сервер</option><option value="repository">Репозиторий</option><option value="deployment">Развёртывание</option><option value="api">API</option><option value="supabase_project">Проект Supabase</option><option value="other">Другое</option></select></label>
@@ -99,12 +98,10 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <p class="projects-form-error" data-resource-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-resource-cancel>Отмена</button><button type="submit" class="projects-primary">Сохранить ресурс</button></div>
       </form>
       <div class="projects-service-list">${[...criticalResources.map(resourceCard),...criticalServices.map(serviceCard)].join("")||'<div class="projects-state"><strong>Инфраструктура пока не добавлена</strong><p>Добавьте домен, базу данных, DNS, сервер или другую критическую зависимость.</p></div>'}</div>
-      </div>
     </section>
 
-    <section class="projects-service-group" data-service-accordion="services">
-      <header class="projects-service-group-heading"><button type="button" class="projects-service-accordion-trigger" data-accordion-trigger aria-expanded="false"><span class="projects-service-group-title"><strong>Подключённые сервисы</strong><small>Инструменты для работы и развития проекта</small></span><span class="projects-service-chevron" aria-hidden="true">↗</span></button><button class="projects-service-add" type="button" data-service-add aria-label="Добавить сервис">＋</button></header>
-      <div class="projects-service-accordion-panel" data-accordion-panel hidden>
+    <section class="projects-service-group">
+      <header class="projects-service-group-heading"><div class="projects-service-group-symbol" aria-hidden="true">⌁</div><div><h2>Подключённые сервисы</h2><p>Можно отключить, проект продолжит работать</p></div><button class="projects-primary projects-service-add" type="button" data-service-add aria-label="Добавить сервис">＋</button></header>
       <form class="projects-form projects-service-form" data-service-form hidden>
         <label>Название сервиса<input name="name" required maxlength="120" placeholder="Например, ChatGPT"></label>
         <div class="projects-form-grid"><label>Категория<select name="category">${Object.entries(categoryLabels).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label><label>Зависимость<select name="dependency_level"><option value="optional">Дополнительный сервис</option><option value="critical">Критически важен для проекта</option></select></label></div>
@@ -115,9 +112,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <p class="projects-service-security-note">Не вводите сюда пароли, API-ключи или другие секреты.</p>
       </form>
       <div class="projects-service-list">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||'<div class="projects-state"><strong>Дополнительные сервисы не подключены</strong><p>Добавьте инструменты разработки, аналитики, маркетинга и автоматизации.</p></div>'}</div>
-      </div>
     </section>
-    </div>\n    
   `;
 
   let menuTarget=null,longPressTimer=null;
@@ -153,9 +148,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         const row=services.find(x=>x.id===target.id);if(!row)return;
         if(menuAction.dataset.menuAction==="edit"){
           editing={kind:"service",row};const form=host.querySelector("[data-service-form]");
-          host.querySelector('[data-service-accordion="services"] [data-accordion-panel]').hidden=false;
-          host.querySelector('[data-service-accordion="services"] [data-accordion-trigger]').setAttribute("aria-expanded","true");
-          form.hidden=false;host.querySelector("[data-service-add]").hidden=true;
+          showForm(host,"service",true);
           fillForm(form,{name:row.ecosystem_tools?.name,category:row.ecosystem_tools?.category,dependency_level:row.dependency_level,official_url:row.ecosystem_tools?.official_url,purpose:row.purpose,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date});
         }else if(confirm(`Удалить подключение «${row.ecosystem_tools?.name||"сервис"}» из этого проекта? Сам сервис в справочнике останется.`)){
           try{await removeProjectService(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить подключение.");}
@@ -164,9 +157,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         const row=resources.find(x=>x.id===target.id);if(!row)return;
         if(menuAction.dataset.menuAction==="edit"){
           editing={kind:"resource",row};const form=host.querySelector("[data-resource-form]");
-          host.querySelector('[data-service-accordion="infrastructure"] [data-accordion-panel]').hidden=false;
-          host.querySelector('[data-service-accordion="infrastructure"] [data-accordion-trigger]').setAttribute("aria-expanded","true");
-          form.hidden=false;host.querySelector("[data-resource-add]").hidden=true;
+          showForm(host,"resource",true);
           fillForm(form,{name:row.tool_resources?.name,resource_type:row.tool_resources?.resource_type,tool_id:row.tool_resources?.ecosystem_tools?.id,resource_url:row.tool_resources?.resource_url,environment:row.tool_resources?.environment,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date,role:row.role,description:row.tool_resources?.description});
         }else if(confirm(`Удалить ресурс «${row.tool_resources?.name||"ресурс"}» из этого проекта?`)){
           try{await removeProjectResource(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить ресурс.");}
@@ -175,21 +166,8 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
       return;
     }
     if(!event.target.closest("[data-service-action-menu]"))closeActionMenu();
-    const trigger=event.target.closest("[data-accordion-trigger]");
-    if(trigger){
-      const group=trigger.closest("[data-service-accordion]"),panel=group.querySelector("[data-accordion-panel]"),opening=panel.hidden;
-      panel.hidden=!opening;trigger.setAttribute("aria-expanded",String(opening));
-    }
-    if(event.target.closest("[data-service-add]")){
-      const panel=host.querySelector('[data-service-accordion="services"] [data-accordion-panel]');
-      panel.hidden=false;host.querySelector('[data-service-accordion="services"] [data-accordion-trigger]').setAttribute("aria-expanded","true");
-      showForm(host,"service",true);
-    }
-    if(event.target.closest("[data-resource-add]")){
-      const panel=host.querySelector('[data-service-accordion="infrastructure"] [data-accordion-panel]');
-      panel.hidden=false;host.querySelector('[data-service-accordion="infrastructure"] [data-accordion-trigger]').setAttribute("aria-expanded","true");
-      showForm(host,"resource",true);
-    }
+    if(event.target.closest("[data-service-add]"))showForm(host,"service",true);
+    if(event.target.closest("[data-resource-add]"))showForm(host,"resource",true);
     if(event.target.closest("[data-service-cancel]")){editing=null;showForm(host,"service",false);host.querySelector("[data-service-add]").hidden=false;}
     if(event.target.closest("[data-resource-cancel]")){editing=null;showForm(host,"resource",false);host.querySelector("[data-resource-add]").hidden=false;}
   },opts);
