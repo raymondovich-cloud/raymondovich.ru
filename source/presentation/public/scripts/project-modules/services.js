@@ -117,7 +117,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
       <div class="projects-service-list">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||'<div class="projects-state"><strong>Дополнительные сервисы не подключены</strong><p>Добавьте инструменты разработки, аналитики, маркетинга и автоматизации.</p></div>'}</div>
       </div>
     </section>
-    </div>\n    ${resourcesResult.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить часть ресурсов</strong><p>Проверьте подключение и права доступа.</p></div>':""}
+    </div>\n    
   `;
 
   let menuTarget=null,longPressTimer=null;
