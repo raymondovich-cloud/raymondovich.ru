@@ -98,7 +98,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <label>Описание<textarea name="description" rows="2" maxlength="2000"></textarea></label>
         <p class="projects-form-error" data-resource-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-resource-cancel>Отмена</button><button type="submit" class="projects-primary">Сохранить ресурс</button></div>
       </form>
-      <div class="projects-service-list ${criticalResources.length+criticalServices.length?"":"is-empty"}">${[...criticalResources.map(resourceCard),...criticalServices.map(serviceCard)].join("")||'<div class="projects-state"><strong>Инфраструктура пока не добавлена</strong><p>Добавьте домен, базу данных, DNS, сервер или другую критическую зависимость.</p></div>'}</div>
+      <div class="projects-service-list ${criticalResources.length+criticalServices.length?"":"is-empty"}">${[...criticalResources.map(resourceCard),...criticalServices.map(serviceCard)].join("")||''}</div>
     </section>
 
     <section class="projects-service-group">
@@ -112,7 +112,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <p class="projects-form-error" data-service-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-service-cancel>Отмена</button><button type="submit" class="projects-primary">Подключить</button></div>
         <p class="projects-service-security-note">Не вводите сюда пароли, API-ключи или другие секреты.</p>
       </form>
-      <div class="projects-service-list ${optionalServices.length+optionalResources.length?"":"is-empty"}">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||'<div class="projects-state"><strong>Дополнительные сервисы не подключены</strong><p>Добавьте инструменты разработки, аналитики, маркетинга и автоматизации.</p></div>'}</div>
+      <div class="projects-service-list ${optionalServices.length+optionalResources.length?"":"is-empty"}">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||''}</div>
     </section>
   `;
 
