@@ -25,8 +25,10 @@ const SERVICE_CATEGORIES = new Set(["ai","development","domains_dns","database",
 const RELATIONSHIP_TYPES = new Set(["manual_use","technical_integration","infrastructure_dependency","other"]);
 
 function makeSlug(value) {
-  const slug = String(value || "").normalize("NFKD").replace(/[\\u0300-\\u036f]/g,"")
-    .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80);
+  const transliteration = {а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"y",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"ts",ч:"ch",ш:"sh",щ:"shch",ъ:"",ы:"y",ь:"",э:"e",ю:"yu",я:"ya"};
+  const normalized = String(value || "").toLowerCase().split("").map(char=>transliteration[char] ?? char).join("");
+  const slug = normalized.normalize("NFKD").replace(/[\\u0300-\\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80);
   return slug || "service-" + crypto.randomUUID().slice(0,8);
 }
 
