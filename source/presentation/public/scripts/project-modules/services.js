@@ -50,7 +50,7 @@ function showForm(host,kind,visible){
   if(trigger)trigger.hidden=visible;
 }
 
-export async function renderProjectServicesScreen(host,project,user){
+export async function renderProjectServicesScreen(host,project,user,category=null,openCreate=false){
   activeController?.abort();
   const controller=new AbortController();activeController=controller;
   const opts={signal:controller.signal};
@@ -71,6 +71,29 @@ export async function renderProjectServicesScreen(host,project,user){
   const infraCount=criticalServices.length+criticalResources.length;
   const optionalCount=optionalServices.length+optionalResources.length;
   const providers=[...new Map([...services.map(x=>[x.tool_id,{id:x.tool_id,name:x.ecosystem_tools?.name||"Сервис"}]),...resources.map(x=>[x.tool_resources?.ecosystem_tools?.id,{id:x.tool_resources?.ecosystem_tools?.id,name:x.tool_resources?.ecosystem_tools?.name||"Провайдер"}])].filter(([id])=>id)).values()];
+
+  if(!category){
+    const rows=[
+      {key:"infrastructure",title:"Инфраструктура",description:"Без этого проект не может работать",count:infraCount},
+      {key:"services",title:"Подключённые сервисы",description:"Инструменты и платформы для работы над проектом",count:optionalCount}
+    ];
+    host.innerHTML=`<div class="projects-services-heading"><h1>Сервисы проекта</h1><p>Внешние ресурсы и инструменты, связанные с проектом.</p></div>
+      <div class="projects-service-category-list">${rows.map(row=>`<div class="projects-service-category-row">
+        <button type="button" class="projects-service-category-open" data-open-service-category="${row.key}">
+          <span class="projects-service-category-copy"><strong>${row.title}</strong><small>${row.description}</small><em>${row.count} ${row.count===1?"подключение":row.count>1&&row.count<5?"подключения":"подключений"}</em></span>
+          <span class="projects-service-category-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button type="button" class="projects-service-category-add" data-add-service-category="${row.key}" aria-label="Добавить: ${row.title}">＋</button>
+      </div>`).join("")}</div>`;
+    host.addEventListener("click",event=>{
+      const open=event.target.closest("[data-open-service-category]");
+      const add=event.target.closest("[data-add-service-category]");
+      const key=open?.dataset.openServiceCategory||add?.dataset.addServiceCategory;
+      if(!key)return;
+      window.RaymondovichNavigation?.navigateScreen("project-services-category",{projectId:project.id,category:key,openCreate:Boolean(add)});
+    },opts);
+    return;
+  }
 
   host.innerHTML=`
     <header class="projects-services-heading"><h1>Сервисы проекта</h1><p>Инфраструктура и подключённые инструменты, связанные с работой проекта.</p></header>
@@ -112,6 +135,25 @@ export async function renderProjectServicesScreen(host,project,user){
     ${resourcesResult.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить часть ресурсов</strong><p>Проверьте подключение и права доступа.</p></div>':""}
   `;
 
+  const activeCategory=host.querySelector(`[data-service-accordion="${category}"]`);
+  const inactiveCategory=host.querySelector(`[data-service-accordion="${category==="infrastructure"?"services":"infrastructure"}"]`);
+  if(inactiveCategory)inactiveCategory.remove();
+  host.querySelector(".projects-service-summary-grid")?.remove();
+  const heading=host.querySelector(".projects-services-heading");
+  if(heading){
+    heading.innerHTML=`<button type="button" class="projects-service-category-back" data-service-category-back>← Сервисы проекта</button><h1>${category==="infrastructure"?"Инфраструктура":"Подключённые сервисы"}</h1><p>${category==="infrastructure"?"Без этого проект не может работать":"Инструменты и платформы, которые используются в проекте."}</p>`;
+  }
+  if(activeCategory){
+    activeCategory.querySelector("[data-accordion-panel]").hidden=false;
+    activeCategory.querySelector("[data-accordion-trigger]").setAttribute("aria-expanded","true");
+  }
+  if(openCreate){
+    const kind=category==="infrastructure"?"resource":"service";
+    const form=host.querySelector(`[data-${kind}-form]`);
+    if(form)form.hidden=false;
+    const trigger=host.querySelector(category==="infrastructure"?"[data-resource-add]":"[data-service-add]");
+    if(trigger)trigger.hidden=true;
+  }
   let menuTarget=null,longPressTimer=null;
   const closeActionMenu=()=>{host.querySelector("[data-service-action-menu]")?.remove();menuTarget=null;};
   const openActionMenu=(rowEl,x,y)=>{
@@ -138,6 +180,7 @@ export async function renderProjectServicesScreen(host,project,user){
     event.preventDefault();openActionMenu(row,event.clientX,event.clientY);
   },opts);
   host.addEventListener("click",async event=>{
+    if(event.target.closest("[data-service-category-back]")){window.RaymondovichNavigation?.navigateScreen("project-services",{projectId:project.id});return;}
     const menuAction=event.target.closest("[data-menu-action]");
     if(menuAction&&menuTarget){
       const target=menuTarget;closeActionMenu();
