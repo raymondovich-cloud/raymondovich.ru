@@ -53,7 +53,17 @@ Project Overview не обращается напрямую к таблицам 
 
 ## 4. Изоляция экранов
 
-Каждый модуль имеет собственный route screen, собственный presentation entrypoint, собственные application use cases и инфраструктурный адаптер. Общие элементы интерфейса берутся из Design System; бизнес-правила и запросы не выносятся в CSS или общие UI-компоненты.
+Каждый модуль имеет собственный route screen, собственный presentation entrypoint и собственный application contract. Общие элементы интерфейса берутся из Design System; бизнес-правила и запросы не выносятся в CSS или общие UI-компоненты.
+
+Первая вертикаль фиксирует следующие точки входа:
+- Projects Registry: source/presentation/public/scripts/projects.js + source/application/projects/project-registry.js;
+- Project Overview mediator: source/application/projects/project-overview-coordinator.js;
+- Services: source/presentation/public/scripts/project-modules/services.js + source/application/services/project-services.js;
+- Accounting: source/presentation/public/scripts/project-modules/accounting.js + source/application/accounting/project-accounting.js;
+- Analytics: source/presentation/public/scripts/project-modules/analytics.js + source/application/analytics/project-analytics.js;
+- Marketing: source/presentation/public/scripts/project-modules/marketing.js + source/application/marketing/project-marketing.js.
+
+Presentation Projects не обращается напрямую к Supabase. Доступ к существующим таблицам инкапсулирован в source/infrastructure/supabase/projects-repository.js. Overview coordinator получает сводки через публичные application contracts модулей. Каждый модуль может развиваться независимо; общий UI не становится владельцем их бизнес-логики.
 
 ## 5. Безопасность и доступ
 
