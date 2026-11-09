@@ -83,3 +83,9 @@
 @media(prefers-reduced-motion:reduce){
   .header-back-toggle{transition:none}
 }
+
+
+/* Telegram owns the native header back control; avoid a duplicate in-page button. */
+html[data-platform="telegram"] .header-back-toggle {
+  display: none !important;
+}

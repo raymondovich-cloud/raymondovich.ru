@@ -1,3 +1,5 @@
+import { getPlatform, onBackButtonSync, openExternal } from "/source/platform/bridge.js";
+
 const menuButtons = document.querySelectorAll("[data-menu-toggle]");
 const closeTargets = document.querySelectorAll("[data-menu-close]");
 const header = document.querySelector(".site-header .header-inner");
@@ -57,6 +59,7 @@ function emitNavigation(source = "navigation") {
     backButton.tabIndex = isRoot ? -1 : 0;
   }
   header?.classList.toggle("has-back-navigation", !isRoot);
+  onBackButtonSync(isRoot);
 }
 
 function setMenu(open) {
@@ -206,4 +209,16 @@ window.RaymondovichNavigation = Object.freeze({
   navigateScreen,
   back: goBack,
   getState: currentNavigation
+});
+
+// External targets keep the browser's existing behavior on Web/PWA.
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[href]");
+  if (!link || link.target !== "_blank" || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const platform = getPlatform();
+  if (platform !== "telegram" && platform !== "native") return;
+  const url = new URL(link.href, location.href);
+  if (url.origin === location.origin) return;
+  event.preventDefault();
+  openExternal(url.href);
 });

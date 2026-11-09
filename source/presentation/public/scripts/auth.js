@@ -1,9 +1,10 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
+import { getAuthRedirectUrl } from "/source/platform/bridge.js";
 import { renderOwnerControlCenter, hydrateOwnerHubMetrics } from "./owner-control-center.js";
 import { renderIdeasWorkspace } from "./ideas.js";
 import { renderProjectsWorkspace } from "./projects.js";
 
-const AUTH_REDIRECT_URL = "https://raymondovich.ru/#authorization";
+const AUTH_REDIRECT_URL = getAuthRedirectUrl();
 const main = document.querySelector("#main");
 let currentSession = null;
 let recoveryMode = false;
