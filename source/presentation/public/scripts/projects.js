@@ -91,7 +91,7 @@ export async function renderProjectsWorkspace(root, user) {
   function renderCreateForm() {
     host.innerHTML = `
       <section class="projects-form-screen">
-        <header class="projects-screen-heading"><button type="button" class="projects-back" data-projects-back>← Проекты</button><p class="projects-eyebrow">PROJECTS / NEW</p><h1>Новый проект</h1><p>Создайте рабочее пространство. Проект будет добавлен напрямую, без создания идеи.</p></header>
+        <header class="projects-screen-heading"><p class="projects-eyebrow">PROJECTS / NEW</p><h1>Новый проект</h1><p>Создайте рабочее пространство. Проект будет добавлен напрямую, без создания идеи.</p></header>
         <form class="projects-form" data-project-form>
           <label>Название проекта<input name="name" required maxlength="120" autocomplete="off" placeholder="Например, raymondovich.ru"></label>
           <label>Описание<textarea name="description" rows="3" maxlength="4000" placeholder="Кратко опишите проект"></textarea></label>
@@ -101,7 +101,7 @@ export async function renderProjectsWorkspace(root, user) {
             <label>Статус<select name="status"><option value="active">В работе</option><option value="paused">На паузе</option></select></label>
           </div>
           <p class="projects-form-error" data-project-form-error hidden></p>
-          <div class="projects-form-actions"><button type="button" class="projects-secondary" data-projects-back>Отмена</button><button type="submit" class="projects-primary">Создать проект</button></div>
+          <div class="projects-form-actions"><button type="submit" class="projects-primary">Создать проект</button></div>
         </form>
       </section>`;
   }
@@ -118,7 +118,6 @@ export async function renderProjectsWorkspace(root, user) {
     host.innerHTML = `
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
-          <button type="button" class="projects-back" data-projects-back>← Все проекты</button>
           <div class="projects-project-hero">
             <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span></div>
             <h1>${escape(project.name)}</h1>
@@ -156,7 +155,6 @@ export async function renderProjectsWorkspace(root, user) {
     host.innerHTML = `
       <section class="projects-module-screen">
         <header class="projects-screen-heading">
-          <button type="button" class="projects-back" data-project-overview="${escape(project.id)}">← ${escape(project.name)}</button>
           <p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1><p>${module.description}</p>
         </header>
         <div class="projects-module-body" data-project-module-body></div>
@@ -202,16 +200,7 @@ export async function renderProjectsWorkspace(root, user) {
       navigation?.navigateScreen("project-"+moduleButton.dataset.projectModule,{projectId:moduleButton.dataset.projectId});
       return;
     }
-    const overview = event.target.closest("[data-project-overview]");
-    if (overview) {
-      await loadProjects();
-      navigation?.navigateScreen("project-overview",{projectId:overview.dataset.projectOverview},{replace:true});
-      return;
-    }
-    if (event.target.closest("[data-projects-back]")) {
-      navigation?.navigateScreen("projects-registry",{}, {replace:true});
-      return;
-    }
+
   },listenerOptions);
 
   root.addEventListener("input",event=>{
