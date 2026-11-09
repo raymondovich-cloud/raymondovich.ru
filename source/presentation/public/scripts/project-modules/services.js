@@ -27,7 +27,7 @@ function serviceCard(row){
   return `<article class="projects-service-item">
     <span class="projects-service-item-icon" aria-hidden="true">${esc((tool.name||"S").slice(0,1).toUpperCase())}</span>
     <div class="projects-service-item-main"><strong>${esc(tool.name||"Сервис без названия")}</strong><span>${esc(row.purpose||categoryLabels[tool.category]||"Назначение не указано")}</span></div>
-    <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span></div>
+    <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span><div class="projects-service-item-actions"><button type="button" data-edit-service="${esc(row.id)}">Изменить</button><button type="button" data-delete-service="${esc(row.id)}">Удалить</button></div></div>
   </article>`;
 }
 function resourceCard(row){
@@ -36,13 +36,14 @@ function resourceCard(row){
   return `<article class="projects-service-item">
     <span class="projects-service-item-icon" aria-hidden="true">${esc((resource.resource_type==="domain"?"◎":resource.resource_type==="database"?"▤":resource.resource_type==="dns_zone"?"⌘":"↗"))}</span>
     <div class="projects-service-item-main"><strong>${esc(resource.name||"Ресурс")}</strong><span>${esc(meta)}${resource.resource_url?' · <a href="'+esc(resource.resource_url)+'" target="_blank" rel="noopener noreferrer">Открыть ↗</a>':""}</span>${row.role?'<span>'+esc(row.role)+'</span>':""}</div>
-    <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span></div>
+    <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span><div class="projects-service-item-actions"><button type="button" data-edit-resource="${esc(row.id)}">Изменить</button><button type="button" data-delete-resource="${esc(row.id)}">Удалить</button></div></div>
   </article>`;
 }
 function summaryCard(title,total,count,accent){
   return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${money(total)}</strong><small>в месяц · ${count} ${count===1?"ресурс":count>1&&count<5?"ресурса":"ресурсов"}</small></article>`;
 }
-function fillForm(form,values){for(const [name,value] of Object.entries(values)){const field=form.elements.namedItem(name);if(field&&value!==null&&value!==undefined)field.value=String(value);}}\nfunction showForm(host,kind,visible){
+function fillForm(form,values){for(const [name,value] of Object.entries(values)){const field=form.elements.namedItem(name);if(field&&value!==null&&value!==undefined)field.value=String(value);}}
+function showForm(host,kind,visible){
   const form=host.querySelector(`[data-${kind}-form]`);
   const trigger=host.querySelector(`[data-${kind}-add]`);
   if(form)form.hidden=!visible;
@@ -52,7 +53,8 @@ function fillForm(form,values){for(const [name,value] of Object.entries(values))
 export async function renderProjectServicesScreen(host,project,user){
   activeController?.abort();
   const controller=new AbortController();activeController=controller;
-  const opts={signal:controller.signal};\n  let editing=null;
+  const opts={signal:controller.signal};
+  let editing=null;
   host.innerHTML='<div class="projects-loading">Загрузка связей проекта…</div>';
   const [data,resourcesResult]=await Promise.all([
     getProjectServices(project.id),
@@ -110,7 +112,15 @@ export async function renderProjectServicesScreen(host,project,user){
     if(event.target.closest("[data-service-add]"))showForm(host,"service",true);
     if(event.target.closest("[data-service-cancel]"))showForm(host,"service",false);
     if(event.target.closest("[data-resource-add]"))showForm(host,"resource",true);
-    if(event.target.closest("[data-resource-cancel]")){editing=null;showForm(host,"resource",false);}\n    const serviceEdit=event.target.closest("[data-edit-service]");\n    const resourceEdit=event.target.closest("[data-edit-resource]");\n    const serviceDelete=event.target.closest("[data-delete-service]");\n    const resourceDelete=event.target.closest("[data-delete-resource]");\n    if(serviceEdit){const row=services.find(x=>x.id===serviceEdit.dataset.editService);if(row){editing={kind:"service",row};const form=host.querySelector("[data-service-form]");form.hidden=false;host.querySelector("[data-service-add]").hidden=true;fillForm(form,{name:row.ecosystem_tools?.name,category:row.ecosystem_tools?.category,dependency_level:row.dependency_level,official_url:row.ecosystem_tools?.official_url,purpose:row.purpose,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date});}}\n    if(resourceEdit){const row=resources.find(x=>x.id===resourceEdit.dataset.editResource);if(row){editing={kind:"resource",row};const form=host.querySelector("[data-resource-form]");form.hidden=false;host.querySelector("[data-resource-add]").hidden=true;fillForm(form,{name:row.tool_resources?.name,resource_type:row.tool_resources?.resource_type,tool_id:row.tool_resources?.ecosystem_tools?.id,resource_url:row.tool_resources?.resource_url,environment:row.tool_resources?.environment,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date,role:row.role,description:row.tool_resources?.description});}}\n    if(serviceDelete){const row=services.find(x=>x.id===serviceDelete.dataset.deleteService);if(row&&confirm(`Удалить подключение «${row.ecosystem_tools?.name||"сервис"}» из этого проекта? Сам сервис в справочнике останется.`)){serviceDelete.disabled=true;try{await removeProjectService(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить подключение.");serviceDelete.disabled=false;}}}\n    if(resourceDelete){const row=resources.find(x=>x.id===resourceDelete.dataset.deleteResource);if(row&&confirm(`Удалить ресурс «${row.tool_resources?.name||"ресурс"}» из этого проекта?`)){resourceDelete.disabled=true;try{await removeProjectResource(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить ресурс.");resourceDelete.disabled=false;}}}
+    if(event.target.closest("[data-resource-cancel]")){editing=null;showForm(host,"resource",false);}
+    const serviceEdit=event.target.closest("[data-edit-service]");
+    const resourceEdit=event.target.closest("[data-edit-resource]");
+    const serviceDelete=event.target.closest("[data-delete-service]");
+    const resourceDelete=event.target.closest("[data-delete-resource]");
+    if(serviceEdit){const row=services.find(x=>x.id===serviceEdit.dataset.editService);if(row){editing={kind:"service",row};const form=host.querySelector("[data-service-form]");form.hidden=false;host.querySelector("[data-service-add]").hidden=true;fillForm(form,{name:row.ecosystem_tools?.name,category:row.ecosystem_tools?.category,dependency_level:row.dependency_level,official_url:row.ecosystem_tools?.official_url,purpose:row.purpose,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date});}}
+    if(resourceEdit){const row=resources.find(x=>x.id===resourceEdit.dataset.editResource);if(row){editing={kind:"resource",row};const form=host.querySelector("[data-resource-form]");form.hidden=false;host.querySelector("[data-resource-add]").hidden=true;fillForm(form,{name:row.tool_resources?.name,resource_type:row.tool_resources?.resource_type,tool_id:row.tool_resources?.ecosystem_tools?.id,resource_url:row.tool_resources?.resource_url,environment:row.tool_resources?.environment,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date,role:row.role,description:row.tool_resources?.description});}}
+    if(serviceDelete){const row=services.find(x=>x.id===serviceDelete.dataset.deleteService);if(row&&confirm(`Удалить подключение «${row.ecosystem_tools?.name||"сервис"}» из этого проекта? Сам сервис в справочнике останется.`)){serviceDelete.disabled=true;try{await removeProjectService(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить подключение.");serviceDelete.disabled=false;}}}
+    if(resourceDelete){const row=resources.find(x=>x.id===resourceDelete.dataset.deleteResource);if(row&&confirm(`Удалить ресурс «${row.tool_resources?.name||"ресурс"}» из этого проекта?`)){resourceDelete.disabled=true;try{await removeProjectResource(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить ресурс.");resourceDelete.disabled=false;}}}
   },opts);
   host.addEventListener("submit",async event=>{
     const serviceForm=event.target.closest("[data-service-form]");
