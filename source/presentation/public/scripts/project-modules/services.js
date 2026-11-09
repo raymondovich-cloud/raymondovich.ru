@@ -1,70 +1,37 @@
 import { getProjectServices, createProjectService } from "/source/application/services/project-services.js";
-
-const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
-let activeController = null;
-
-export async function renderProjectServicesScreen(host, project, user) {
-  activeController?.abort();
-  const controller = new AbortController();
-  activeController = controller;
-  const options = { signal: controller.signal };
-  const result = await getProjectServices(project.id);
-  if (controller.signal.aborted) return;
-  const services = result.services;
-  const resources = result.resources;
-  host.innerHTML = `
-    <div class="projects-service-toolbar"><div><h2>Подключённые сервисы</h2><p>Реестр сервисов, используемых в проекте.</p></div><button type="button" class="projects-primary" data-service-add>＋ Добавить сервис</button></div>
-    <form class="projects-form projects-service-form" data-project-service-form hidden>
-      <label>Название сервиса<input name="name" required maxlength="120" placeholder="Например, Supabase"></label>
-      <div class="projects-form-grid">
-        <label>Категория<select name="category">
-          <option value="ai">AI / ИИ</option><option value="development">Разработка</option><option value="domains_dns">Домены и DNS</option><option value="database">База данных</option><option value="hosting">Хостинг</option><option value="analytics">Аналитика</option><option value="payments">Платежи</option><option value="communication">Коммуникации</option><option value="other">Другое</option>
-        </select></label>
-        <label>Тип подключения<select name="relationship_type">
-          <option value="manual_use">Ручное использование</option><option value="technical_integration">Техническая интеграция</option><option value="infrastructure_dependency">Инфраструктурная зависимость</option><option value="other">Другое</option>
-        </select></label>
-      </div>
-      <label>Официальный сайт<input name="official_url" type="url" inputmode="url" placeholder="https://example.com"></label>
-      <label>Для чего используется в проекте<textarea name="purpose" rows="2" maxlength="1000" placeholder="Назначение сервиса"></textarea></label>
-      <p class="projects-form-error" data-service-error hidden></p>
-      <div class="projects-form-actions"><button type="button" class="projects-secondary" data-service-cancel>Отмена</button><button type="submit" class="projects-primary">Подключить</button></div>
-      <p class="projects-service-security-note">Не вводите сюда пароли, API-ключи или другие секреты. Здесь хранятся только сведения о сервисе и его назначении.</p>
-    </form>
-    ${result.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить связи сервисов</strong><p>Проверьте права доступа к реестру сервисов.</p></div>':""}
-    <section class="projects-module-section">
-      ${services.length?services.map(item=>`<article class="projects-data-row"><div><strong>${escape(item.ecosystem_tools?.name||"Сервис без названия")}</strong><span>${escape(item.purpose||item.relationship_type||"Назначение не указано")}${item.ecosystem_tools?.official_url?' · <a href="'+escape(item.ecosystem_tools.official_url)+'" target="_blank" rel="noopener noreferrer">Официальный сайт ↗</a>':""}</span></div><span class="projects-status status-${escape(item.status)}">${escape(item.status==="active"?"Активен":item.status==="paused"?"Приостановлен":item.status==="planned"?"Запланирован":"Требует проверки")}</span></article>`).join(""):'<div class="projects-state"><strong>Сервисы пока не подключены</strong><p>Добавьте Supabase, Cloudflare, OpenAI, Claude, Reg.ru и другие инструменты, которые используются в проекте.</p></div>'}
-    </section>
-    <section class="projects-module-section"><h2>Ресурсы и инфраструктура</h2>
-      ${resources.length?resources.map(item=>`<article class="projects-data-row"><div><strong>${escape(item.tool_resources?.name||"Ресурс")}</strong><span>${escape(item.role||item.tool_resources?.resource_type||"Тип не указан")}${item.tool_resources?.environment?" · "+escape(item.tool_resources.environment):""}</span></div><span class="projects-status">${escape(item.status)}</span></article>`).join(""):'<div class="projects-state"><strong>Ресурсы не привязаны</strong><p>Домены, базы данных, репозитории и другие ресурсы будут отображаться здесь.</p></div>'}
-    </section>`;
-
-  host.addEventListener("click",event=>{
-    if(event.target.closest("[data-service-add]")){
-      host.querySelector("[data-project-service-form]").hidden=false;
-      host.querySelector("[data-service-add]").hidden=true;
-      host.querySelector('[name="name"]')?.focus();
-    }
-    if(event.target.closest("[data-service-cancel]")){
-      host.querySelector("[data-project-service-form]").hidden=true;
-      host.querySelector("[data-service-add]").hidden=false;
-    }
-  },options);
-
-  host.addEventListener("submit",async event=>{
-    const form=event.target.closest("[data-project-service-form]");
-    if(!form)return;
-    event.preventDefault();
-    const values=Object.fromEntries(new FormData(form).entries());
-    const button=form.querySelector('[type="submit"]');
-    const errorNode=form.querySelector("[data-service-error]");
-    button.disabled=true;
-    try{
-      await createProjectService(user.id,project.id,values);
-      await renderProjectServicesScreen(host,project,user);
-    }catch(error){
-      errorNode.textContent=error?.message||"Не удалось подключить сервис.";
-      errorNode.hidden=false;
-      button.disabled=false;
-    }
-  },options);
+import { getProjectResources, createProjectResource } from "/source/application/resources/project-resources.js";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let activeController=null;
+const types={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS-зона",supabase_project:"Проект Supabase",other:"Другое"};
+const statuses={active:"Активен",testing:"Тестирование",paused:"Приостановлен",retired:"Выведен из эксплуатации",unknown:"Неизвестен",needs_verification:"Требует проверки",planned:"Запланирован"};
+export async function renderProjectServicesScreen(host,project,user){
+activeController?.abort();const controller=new AbortController();activeController=controller;const opts={signal:controller.signal};
+const [data,resourceData]=await Promise.all([getProjectServices(project.id),getProjectResources(project.id).then(resources=>({resources})).catch(error=>({error,resources:[]}))]);
+if(controller.signal.aborted)return;
+const services=data.services,resources=resourceData.resources,serviceOptions=services.map(x=>({id:x.tool_id,name:x.ecosystem_tools?.name||"Сервис"}));
+host.innerHTML=`
+<div class="projects-service-toolbar"><div><h2>Подключённые сервисы</h2><p>Поставщики платформ и инструментов, используемых в проекте.</p></div><button type="button" class="projects-primary" data-service-add>＋ Добавить сервис</button></div>
+<form class="projects-form projects-service-form" data-service-form hidden>
+<label>Название сервиса<input name="name" required maxlength="120" placeholder="Например, Reg.ru"></label>
+<div class="projects-form-grid"><label>Категория<select name="category"><option value="ai">AI / ИИ</option><option value="development">Разработка</option><option value="domains_dns">Домены и DNS</option><option value="database">База данных</option><option value="hosting">Хостинг</option><option value="analytics">Аналитика</option><option value="payments">Платежи</option><option value="communication">Коммуникации</option><option value="other">Другое</option></select></label>
+<label>Тип подключения<select name="relationship_type"><option value="manual_use">Ручное использование</option><option value="technical_integration">Техническая интеграция</option><option value="infrastructure_dependency">Инфраструктурная зависимость</option><option value="other">Другое</option></select></label></div>
+<label>Официальный сайт<input name="official_url" type="url" inputmode="url" placeholder="https://example.com"></label>
+<label>Назначение<textarea name="purpose" rows="2" maxlength="1000"></textarea></label><p class="projects-form-error" data-service-error hidden></p>
+<div class="projects-form-actions"><button type="button" class="projects-secondary" data-service-cancel>Отмена</button><button type="submit" class="projects-primary">Подключить</button></div><p class="projects-service-security-note">Не вводите сюда пароли, API-ключи или другие секреты.</p></form>
+<section class="projects-module-section">${services.length?services.map(x=>`<article class="projects-data-row"><div><strong>${esc(x.ecosystem_tools?.name||"Сервис без названия")}</strong><span>${esc(x.purpose||x.relationship_type||"Назначение не указано")}${x.ecosystem_tools?.official_url?' · <a href="'+esc(x.ecosystem_tools.official_url)+'" target="_blank" rel="noopener noreferrer">Официальный сайт ↗</a>':""}</span></div><span class="projects-status">${esc(statuses[x.status]||x.status)}</span></article>`).join(""):'<div class="projects-state"><strong>Сервисы пока не подключены</strong><p>Добавьте Reg.ru, GitHub, Supabase, Cloudflare и другие платформы.</p></div>'}</section>
+<div class="projects-resource-toolbar"><div><h2>Ресурсы и инфраструктура</h2><p>Конкретные активы проекта, связанные с сервисами-провайдерами.</p></div><button type="button" class="projects-primary" data-resource-add>＋ Добавить ресурс</button></div>
+<form class="projects-form projects-resource-form" data-resource-form hidden>
+<label>Название ресурса<input name="name" required maxlength="160" placeholder="Например, raymondovich.ru"></label>
+<div class="projects-form-grid"><label>Тип ресурса<select name="resource_type"><option value="domain">Домен</option><option value="repository">Репозиторий</option><option value="database">База данных</option><option value="supabase_project">Проект Supabase</option><option value="server">Сервер</option><option value="dns_zone">DNS-зона</option><option value="deployment">Развёртывание</option><option value="api">API</option><option value="other">Другое</option></select></label>
+<label>Сервис-провайдер<select name="tool_id" required><option value="">Выберите сервис</option>${serviceOptions.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}</select></label></div>
+<label>Адрес ресурса<input name="resource_url" type="url" inputmode="url" placeholder="https://raymondovich.ru"></label>
+<div class="projects-form-grid"><label>Окружение<select name="environment"><option value="">Не указано</option><option value="production">Production</option><option value="staging">Staging</option><option value="development">Development</option></select></label>
+<label>Статус<select name="status"><option value="needs_verification">Требует проверки</option><option value="active">Активен</option><option value="testing">Тестирование</option><option value="paused">Приостановлен</option><option value="retired">Выведен из эксплуатации</option><option value="unknown">Неизвестен</option></select></label></div>
+<label>Назначение в проекте<input name="role" maxlength="500" placeholder="Основной публичный сайт"></label><label>Описание<textarea name="description" rows="2" maxlength="2000"></textarea></label>
+<p class="projects-form-error" data-resource-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-resource-cancel>Отмена</button><button type="submit" class="projects-primary">Сохранить ресурс</button></div>
+<p class="projects-service-security-note">Секреты здесь не хранятся. Стоимость и продления будут добавлены через единый финансовый слой, без двойного учёта расходов.</p></form>
+${resourceData.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить ресурсы</strong><p>Проверьте права доступа.</p></div>':""}
+<section class="projects-module-section projects-resource-list">${resources.length?resources.map(x=>{const r=x.tool_resources||{};return `<article class="projects-data-row"><div><strong>${esc(r.name||"Ресурс")}</strong><span>${esc(types[r.resource_type]||r.resource_type||"Тип не указан")} · ${esc(r.ecosystem_tools?.name||"Провайдер не указан")}${r.environment?" · "+esc(r.environment):""}${r.resource_url?' · <a href="'+esc(r.resource_url)+'" target="_blank" rel="noopener noreferrer">Открыть ↗</a>':""}</span>${x.role?'<span>'+esc(x.role)+'</span>':""}</div><span class="projects-status">${esc(statuses[x.status]||x.status)}</span></article>`}).join(""):'<div class="projects-state"><strong>Ресурсы пока не добавлены</strong><p>Например: домен raymondovich.ru у Reg.ru, репозиторий GitHub или проект Supabase.</p></div>'}</section>`;
+host.addEventListener("click",e=>{if(e.target.closest("[data-service-add]")){host.querySelector("[data-service-form]").hidden=false;host.querySelector("[data-service-add]").hidden=true}if(e.target.closest("[data-service-cancel]")){host.querySelector("[data-service-form]").hidden=true;host.querySelector("[data-service-add]").hidden=false}if(e.target.closest("[data-resource-add]")){host.querySelector("[data-resource-form]").hidden=false;host.querySelector("[data-resource-add]").hidden=true}if(e.target.closest("[data-resource-cancel]")){host.querySelector("[data-resource-form]").hidden=true;host.querySelector("[data-resource-add]").hidden=false}},opts);
+host.addEventListener("submit",async e=>{const sf=e.target.closest("[data-service-form]"),rf=e.target.closest("[data-resource-form]"),form=sf||rf;if(!form)return;e.preventDefault();const values=Object.fromEntries(new FormData(form).entries()),button=form.querySelector('[type="submit"]'),error=form.querySelector(sf?"[data-service-error]":"[data-resource-error]");button.disabled=true;try{if(sf)await createProjectService(user.id,project.id,values);else await createProjectResource(user.id,project.id,values);await renderProjectServicesScreen(host,project,user)}catch(err){error.textContent=err?.message||"Не удалось сохранить запись.";error.hidden=false;button.disabled=false}},opts);
 }
