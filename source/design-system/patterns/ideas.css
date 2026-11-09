@@ -219,3 +219,128 @@
 .owner-console-workspace:not(.is-detail-view) {
   background: var(--gradient-ideas-surface);
 }
+
+
+/* Ideas registry — reference layout */
+.owner-console-shell:has(.ideas-workspace) > .owner-console-page-title{display:none}
+.owner-console-workspace:has(.ideas-workspace){
+  padding:30px;
+  border:1px solid rgba(255,255,255,.025);
+  border-radius:28px;
+  background:#090a0b;
+}
+.ideas-toolbar{gap:16px;margin-bottom:24px}
+.ideas-search{
+  min-height:84px;
+  padding:20px 25px;
+  border-radius:25px;
+  background:#17120e;
+  border-color:#29221c;
+  color:#f4f1ed;
+  font-size:23px;
+}
+.ideas-search::placeholder{color:#89847f;opacity:1}
+.ideas-toolbar-actions{gap:16px}
+.ideas-filter-toggle,.ideas-create-toggle{
+  width:86px;height:84px;flex-basis:86px;
+  border-radius:25px;
+  border:1px solid #29221c;
+  background:#17120e;
+  color:#f3eee8;
+}
+.ideas-filter-toggle svg,.ideas-create-toggle svg{width:29px;height:29px;stroke-width:1.9}
+.ideas-create-toggle{background:linear-gradient(145deg,#24150f,#1b100c);color:#ff792d;border-color:#432719}
+.ideas-filters{margin:0 0 22px;padding:18px;border-radius:18px;background:#14110e;border-color:#2b241e}
+.ideas-overview{display:grid;gap:16px;margin:0 0 30px}
+.ideas-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ideas-stat{
+  min-height:140px;display:flex;flex-direction:column;justify-content:space-between;
+  padding:22px 25px;border:1px solid #2b241e;border-radius:26px;background:#17120e;
+}
+.ideas-stat span,.ideas-category-summary-head,.ideas-category-summary-foot{
+  color:#928b84;font-size:20px;line-height:1.35
+}
+.ideas-stat strong{font-size:52px;line-height:1;font-weight:500;color:#f5f2ef}
+.ideas-stat-priority{background:#2a170f;border-color:#57301d}
+.ideas-stat-priority span,.ideas-stat-priority strong{color:#ff792d}
+.ideas-category-summary{
+  padding:21px 25px 19px;border:1px solid #2b241e;border-radius:25px;background:#17120e;
+}
+.ideas-category-summary-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px}
+.ideas-category-track{height:12px;overflow:hidden;border-radius:99px;background:#30251d}
+.ideas-category-track span{display:block;height:100%;border-radius:inherit;background:#ff792d;transition:width .2s ease}
+.ideas-category-summary-foot{margin-top:14px}
+.ideas-list{display:grid;grid-template-columns:minmax(0,1fr);gap:30px}
+.ideas-focus,.ideas-others{display:grid;gap:17px;min-width:0}
+.ideas-focus h2,.ideas-others h2{
+  margin:0 0 0 4px;color:#ff792d;font-size:22px;font-weight:500;letter-spacing:.06em
+}
+.ideas-others h2{color:#918a83}
+.ideas-focus-list{display:grid;gap:16px}
+.idea-card{
+  min-height:0;padding:29px 30px;border:1px solid #57301d;border-radius:29px;
+  background:#21140e;color:#f4f0ec;box-shadow:none
+}
+.idea-card-focused{min-height:210px}
+.idea-card-top{align-items:center}
+.idea-category{font:500 19px/1.35 var(--font-sans);letter-spacing:0;text-transform:uppercase;color:#928b84}
+.idea-card-arrow{font-size:31px;line-height:1;color:#ff792d}
+.idea-card-title{margin:23px 0 12px;font:500 32px/1.2 var(--font-sans);letter-spacing:-.025em}
+.idea-card-description{display:block;overflow:visible;-webkit-line-clamp:unset;color:#b4aaa1;font:23px/1.55 var(--font-sans)}
+.ideas-others{gap:17px}
+.ideas-groups{display:grid;gap:12px}
+.ideas-group{overflow:hidden;border:1px solid #2b241e;border-radius:25px;background:#14110e}
+.ideas-group summary{
+  min-height:89px;display:flex;align-items:center;justify-content:space-between;gap:15px;
+  padding:20px 29px;list-style:none;cursor:pointer;color:#f1ede9;font-size:27px
+}
+.ideas-group summary::-webkit-details-marker{display:none}
+.ideas-group-chevron{color:#ff792d;font-size:30px;line-height:1;transition:transform .18s ease}
+.ideas-group[open] .ideas-group-chevron{transform:rotate(180deg)}
+.ideas-group-items{border-top:1px solid #2b241e}
+.idea-card-compact{
+  width:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
+  gap:12px 20px;padding:25px 29px;border:0;border-radius:0;background:#100e0c
+}
+.idea-card-compact+.idea-card-compact{border-top:1px solid #29221c}
+.idea-card-compact .idea-card-top{grid-column:1/-1}
+.idea-card-compact .idea-card-title{margin:0;font:500 26px/1.35 var(--font-sans)}
+.idea-card-priority{color:#918a83;font-size:20px;white-space:nowrap}
+.idea-card-compact:hover{background:#17120e}
+.ideas-empty{padding:34px;border-color:#49301f;background:#17120e;color:#b4aaa1}
+@media(max-width:700px){
+  .owner-console-workspace:has(.ideas-workspace){padding:16px;border-radius:22px}
+  .ideas-toolbar{gap:9px;margin-bottom:16px}
+  .ideas-search{min-height:58px;padding:13px 16px;border-radius:17px;font-size:17px}
+  .ideas-toolbar-actions{gap:9px}
+  .ideas-filter-toggle,.ideas-create-toggle{width:58px;height:58px;flex-basis:58px;border-radius:17px}
+  .ideas-filter-toggle svg,.ideas-create-toggle svg{width:23px;height:23px}
+  .ideas-overview{gap:10px;margin-bottom:23px}
+  .ideas-stat-grid{gap:10px}
+  .ideas-stat{min-height:100px;padding:15px 17px;border-radius:19px}
+  .ideas-stat span,.ideas-category-summary-head,.ideas-category-summary-foot{font-size:14px}
+  .ideas-stat strong{font-size:38px}
+  .ideas-category-summary{padding:15px 17px;border-radius:19px}
+  .ideas-category-track{height:9px}
+  .ideas-focus h2,.ideas-others h2{font-size:16px}
+  .ideas-list{gap:23px}
+  .ideas-focus-list{gap:12px}
+  .idea-card{padding:19px;border-radius:21px}
+  .idea-card-focused{min-height:0}
+  .idea-category{font-size:13px}
+  .idea-card-arrow{font-size:25px}
+  .idea-card-title{margin:17px 0 8px;font-size:23px}
+  .idea-card-description{font-size:17px;line-height:1.5}
+  .ideas-group{border-radius:19px}
+  .ideas-group summary{min-height:70px;padding:16px 19px;font-size:20px}
+  .idea-card-compact{padding:19px}
+  .idea-card-compact .idea-card-title{font-size:19px}
+  .idea-card-priority{font-size:15px}
+}
+@media(max-width:390px){
+  .owner-console-workspace:has(.ideas-workspace){padding:12px}
+  .ideas-toolbar-actions{gap:7px}
+  .ideas-filter-toggle,.ideas-create-toggle{width:50px;height:54px;flex-basis:50px}
+  .idea-card-compact{grid-template-columns:minmax(0,1fr)}
+  .idea-card-priority{justify-self:start}
+}
