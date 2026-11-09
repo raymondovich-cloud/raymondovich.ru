@@ -131,6 +131,7 @@ export async function renderProjectsWorkspace(root, user) {
     currentProjectId = project.id;
     const projectSummary=moduleSummaries[project.id]||{};
     const servicesCount=projectSummary.services?.count||0;
+    const servicesFootnote=projectSummary.services?.label==="Нет данных"?"Сводка недоступна":servicesCount?"Управление подключениями":"Добавьте сервисы проекта";
     const headline=projectSummary.headline||{};
     const renderMetric=metric=>{
       if(metric?.state!=="value")return "—";
@@ -162,7 +163,7 @@ export async function renderProjectsWorkspace(root, user) {
               <span class="projects-module-top"><span class="projects-module-icon" aria-hidden="true">${key==="services"?"⌁":key==="accounting"?"▣":key==="analytics"?"⌁":"◉"}</span><span class="projects-module-summary">${escape(moduleSummary(project.id,key))}</span></span>
               <span class="projects-module-title">${escape(module.title)}</span>
               ${key==="services"?`<span class="projects-service-dots" aria-hidden="true">${serviceDots}</span>`:key==="accounting"?'<span class="projects-empty-bar" aria-hidden="true"></span>':key==="analytics"?'<span class="projects-placeholder-chart">График появится после сбора данных</span>':'<span class="projects-placeholder-platforms">Площадки не добавлены</span>'}
-              <span class="projects-module-foot">${key==="services"?servicesCount?"Управление подключениями":"Добавьте сервисы проекта":key==="accounting"?"Ручной учёт доходов и расходов":key==="analytics"?"Динамика и источники трафика":"Каналы и площадки продвижения"}</span>
+              <span class="projects-module-foot">${key==="services"?servicesFootnote:key==="accounting"?"Ручной учёт доходов и расходов":key==="analytics"?"Динамика и источники трафика":"Каналы и площадки продвижения"}</span>
               <span class="projects-module-arrow" aria-hidden="true">↗</span>
             </button>`).join("")}
         </div>
