@@ -78,7 +78,7 @@ export async function renderProjectsWorkspace(root, user) {
         <div><p class="projects-eyebrow">OWNER CONTROL CENTER / BUSINESS</p><h1>Проекты</h1><p class="projects-intro">Рабочие пространства собственных и совместных проектов.</p></div>
       </header>
       <div class="projects-registry-tools">
-        <label class="projects-search-wrap"><span class="sr-only">Поиск проектов</span><input class="projects-search" type="search" placeholder="Поиск проектов" value="${escape(query)}" data-project-search></label>
+        <label class="projects-search-wrap"><input class="projects-search" type="search" aria-label="Поиск проектов" placeholder="Поиск проектов" value="${escape(query)}" data-project-search></label>
         <div class="projects-toolbar-actions">
           <button class="projects-filter-toggle" type="button" data-project-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="projects-filter-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
           <button class="projects-create-toggle" type="button" data-project-create aria-label="Добавить новый проект" title="Новый проект"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
