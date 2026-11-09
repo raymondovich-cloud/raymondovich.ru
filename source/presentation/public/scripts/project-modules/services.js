@@ -108,7 +108,7 @@ export async function renderProjectServicesScreen(host,project,user){
     ${resourcesResult.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить часть ресурсов</strong><p>Проверьте подключение и права доступа.</p></div>':""}
   `;
 
-  host.addEventListener("click",event=>{
+  host.addEventListener("click",async event=>{
     if(event.target.closest("[data-service-add]"))showForm(host,"service",true);
     if(event.target.closest("[data-service-cancel]"))showForm(host,"service",false);
     if(event.target.closest("[data-resource-add]"))showForm(host,"resource",true);
