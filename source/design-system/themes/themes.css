@@ -90,7 +90,7 @@
   --ws-accent-surface:var(--gradient-ideas-surface);
   --ws-accent:var(--color-ideas-accent);
   --ws-accent-text:#a94b20;
-  --ws-accent-contrast:var(--color-ideas-accent-contrast);
+  --ws-accent-contrast:#100d0c;
   --ws-text:var(--color-ideas-text);
   --ws-muted:var(--color-ideas-muted);
   --ws-subtle:var(--color-ideas-subtle);
