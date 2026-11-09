@@ -79,7 +79,6 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   const servicesCost=[...optionalServices,...optionalResources].reduce((sum,x)=>sum+Number(x.monthly_cost||0),0);
   const infraCount=criticalServices.length+criticalResources.length;
   const optionalCount=optionalServices.length+optionalResources.length;
-  const providers=[...new Map([...services.map(x=>[x.tool_id,{id:x.tool_id,name:x.ecosystem_tools?.name||"Сервис"}]),...resources.map(x=>[x.tool_resources?.ecosystem_tools?.id,{id:x.tool_resources?.ecosystem_tools?.id,name:x.tool_resources?.ecosystem_tools?.name||"Провайдер"}])].filter(([id])=>id)).values()];
 
   host.innerHTML = `
     <header class="projects-services-heading"><p class="projects-eyebrow">PROJECT / SERVICES</p><h1>Связи проекта</h1></header>
@@ -90,7 +89,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
       <form class="projects-form projects-service-form" data-resource-form hidden>
         <label>Название ресурса<input name="name" required maxlength="160" placeholder="Например, raymondovich.ru"></label>
         <div class="projects-form-grid"><label>Тип ресурса<select name="resource_type"><option value="domain">Домен</option><option value="database">База данных</option><option value="dns_zone">DNS и защита</option><option value="server">Сервер</option><option value="repository">Репозиторий</option><option value="deployment">Развёртывание</option><option value="api">API</option><option value="supabase_project">Проект Supabase</option><option value="other">Другое</option></select></label>
-        <label>Провайдер<select name="tool_id" required><option value="">Выберите сервис</option>${providers.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}</select></label></div>
+        <label>Провайдер ресурса<input name="provider_name" required maxlength="120" placeholder="Например, REG.RU или Supabase"></label></div>
         <label>Адрес ресурса<input name="resource_url" type="url" placeholder="https://example.com"></label>
         <div class="projects-form-grid"><label>Окружение<select name="environment"><option value="">Не указано</option><option value="production">Production</option><option value="staging">Staging</option><option value="development">Development</option></select></label><label>Ежемесячные расходы, ₽<input name="monthly_cost" type="number" min="0" step="0.01" value="0" inputmode="decimal"></label></div>
         <label>Следующая дата оплаты<input name="next_payment_date" type="date"></label>
@@ -159,7 +158,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         if(menuAction.dataset.menuAction==="edit"){
           editing={kind:"resource",row};const form=host.querySelector("[data-resource-form]");
           showForm(host,"resource",true);
-          fillForm(form,{name:row.tool_resources?.name,resource_type:row.tool_resources?.resource_type,tool_id:row.tool_resources?.ecosystem_tools?.id,resource_url:row.tool_resources?.resource_url,environment:row.tool_resources?.environment,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date,role:row.role,description:row.tool_resources?.description});
+          fillForm(form,{name:row.tool_resources?.name,resource_type:row.tool_resources?.resource_type,provider_name:row.tool_resources?.ecosystem_tools?.name,resource_url:row.tool_resources?.resource_url,environment:row.tool_resources?.environment,monthly_cost:row.monthly_cost,next_payment_date:row.next_payment_date,role:row.role,description:row.tool_resources?.description});
         }else if(confirm(`Удалить ресурс «${row.tool_resources?.name||"ресурс"}» из этого проекта?`)){
           try{await removeProjectResource(row.id);await renderProjectServicesScreen(host,project,user);}catch(e){alert(e.message||"Не удалось удалить ресурс.");}
         }
@@ -183,7 +182,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
     button.disabled=true;error.hidden=true;
     try{
       if(serviceForm){if(editing?.kind==="service")await updateProjectService(editing.row.id,editing.row.tool_id,values);else await createProjectService(user.id,project.id,values);}
-      else{if(editing?.kind==="resource")await updateProjectResource(editing.row.id,editing.row.tool_resources.id,values);else await createProjectResource(user.id,project.id,values);}
+      else{if(editing?.kind==="resource")await updateProjectResource(editing.row.id,editing.row.tool_resources.id,user.id,values);else await createProjectResource(user.id,project.id,values);}
       await renderProjectServicesScreen(host,project,user);
     }catch(reason){
       error.textContent=reason?.message||"Не удалось сохранить запись.";
