@@ -204,6 +204,7 @@ export async function renderProjectsWorkspace(root, user) {
     }
     const overview = event.target.closest("[data-project-overview]");
     if (overview) {
+      await loadProjects();
       navigation?.navigateScreen("project-overview",{projectId:overview.dataset.projectOverview},{replace:true});
       return;
     }
