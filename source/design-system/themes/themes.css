@@ -75,6 +75,7 @@
   --gradient-owner-control-active: linear-gradient(115deg, rgba(214,91,31,.18), rgba(255,176,120,.10));
   --gradient-owner-input: linear-gradient(145deg, rgba(214,91,31,.055), rgba(255,255,255,.82));
   --gradient-ideas-surface: linear-gradient(145deg, rgba(214,91,31,.10), rgba(255,255,255,.90) 48%, rgba(241,243,246,.84));
+  --gradient-ideas-button:linear-gradient(110deg,var(--color-ideas-accent),var(--color-ideas-accent));
 }
 
 
