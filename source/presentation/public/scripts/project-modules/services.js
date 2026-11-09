@@ -1,8 +1,7 @@
 import { getProjectServices, createProjectService, updateProjectService, removeProjectService } from "/source/application/services/project-services.js";
 import { createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
-import { workspaceScreenHead } from "../shared/workspace-ui.js";
+import { escapeHtml as esc, workspaceScreenHead } from "../shared/workspace-ui.js";
 
-const esc=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 const resourceTypes={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS",supabase_project:"Проект Supabase",other:"Ресурс"};
 const statusLabels={active:"Активен",testing:"Тестирование",paused:"Приостановлен",retired:"Выведен",unknown:"Неизвестен",needs_verification:"Требует проверки",planned:"Запланирован"};
 const categoryLabels={ai:"AI / ИИ",development:"Разработка",domains_dns:"Домены и DNS",database:"База данных",hosting:"Хостинг",analytics:"Аналитика",payments:"Платежи",communication:"Коммуникации",other:"Другое"};
