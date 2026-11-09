@@ -1,4 +1,4 @@
-import { listProjectServiceDetails, listProjectToolRelations, findEcosystemToolBySlug, insertEcosystemTool, insertProjectToolRelation } from "../../infrastructure/supabase/projects-repository.js";
+import { listProjectServiceDetails, listProjectToolRelations, findEcosystemToolBySlug, insertEcosystemTool, insertProjectToolRelation, updateProjectToolRelation, deleteProjectToolRelation, updateEcosystemTool } from "../../infrastructure/supabase/projects-repository.js";
 
 const CATEGORIES=new Set(["ai","development","domains_dns","database","hosting","analytics","payments","communication","other"]);
 const DEPENDENCIES=new Set(["critical","optional"]);
@@ -50,3 +50,17 @@ export async function createProjectService(ownerId,projectId,values){
   if(relation.error)throw relation.error;
   return {toolId,relationId:relation.data.id};
 }
+
+export async function updateProjectService(relationId,toolId,values){
+ const name=String(values.name||"").trim(),category=String(values.category||"other"),dependency=String(values.dependency_level||"optional");
+ if(!name||name.length>120)throw new Error("Укажите название сервиса (до 120 символов).");
+ if(!CATEGORIES.has(category)||!DEPENDENCIES.has(dependency))throw new Error("Проверьте категорию и тип зависимости.");
+ const officialUrl=validateUrl(String(values.official_url||"").trim(),"официальный сайт");
+ const finance=validateMoneyAndDate(values);
+ const tool=await updateEcosystemTool(toolId,{name,category,official_url:officialUrl});
+ if(tool.error)throw tool.error;
+ const relation=await updateProjectToolRelation(relationId,{relationship_type:dependency==="critical"?"infrastructure_dependency":"manual_use",purpose:String(values.purpose||"").trim(),dependency_level:dependency,...finance});
+ if(relation.error)throw relation.error;
+ return relation.data;
+}
+export async function removeProjectService(relationId){const result=await deleteProjectToolRelation(relationId);if(result.error)throw result.error;return result.data;}
