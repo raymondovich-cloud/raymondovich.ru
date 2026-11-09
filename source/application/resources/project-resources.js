@@ -10,7 +10,7 @@ export async function createProjectResource(ownerId,projectId,values){
   if(!toolId)throw new Error("Выберите сервис-провайдер для ресурса.");
   if(!TYPES.has(type)||!ENVS.has(environment))throw new Error("Проверьте тип ресурса и окружение.");
   if(!Number.isFinite(cost)||cost<0||cost>1000000000)throw new Error("Укажите корректные ежемесячные расходы.");
-  if(date&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw new Error("Укажите корректную дату следующей оплаты.");
+  if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Укажите корректную дату следующей оплаты.");
   if(role.length>500||description.length>2000)throw new Error("Слишком длинное описание.");
   const finance={monthly_cost:cost,currency:"RUB",next_payment_date:date||null};
   const resource=await insertToolResource({owner_id:ownerId,tool_id:toolId,name,resource_type:type,resource_url:url,environment:environment||null,status,description});
