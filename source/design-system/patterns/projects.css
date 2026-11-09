@@ -394,3 +394,43 @@
   .projects-service-group-heading.is-connected-services{padding:11px 12px;border-radius:15px}
 }
 
+
+
+/* Projects registry toolbar — search, parameter filters and create action. */
+.projects-registry-tools{gap:10px;margin-bottom:10px}
+.projects-toolbar-actions{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.projects-filter-toggle,.projects-create-toggle{
+  display:grid;place-items:center;flex:0 0 49px;width:49px;height:49px;padding:0;
+  border:1px solid var(--color-owner-line);border-radius:15px;
+  background:var(--gradient-owner-control);color:var(--color-owner-text);cursor:pointer;
+  transition:border-color .18s ease,transform .18s ease,background .18s ease
+}
+.projects-filter-toggle svg,.projects-create-toggle svg{
+  width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.projects-create-toggle{border-color:#59311e;background:linear-gradient(145deg,#24150f,#1b100c);color:#ff792d}
+.projects-filter-toggle:hover,.projects-create-toggle:hover{border-color:#ff792d}
+.projects-filter-toggle:active,.projects-create-toggle:active{transform:scale(.97)}
+.projects-filters{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+  margin:0 0 12px;padding:15px;border:1px solid var(--color-owner-line);
+  border-radius:16px;background:var(--gradient-owner-surface)
+}
+.projects-filters[hidden]{display:none}
+.projects-filters label{display:grid;gap:7px;min-width:0;color:var(--color-owner-muted);font-size:12px}
+.projects-filters select{
+  width:100%;min-width:0;min-height:42px;padding:9px 11px;
+  border:1px solid var(--color-owner-line-strong);border-radius:11px;
+  background:var(--gradient-owner-input);color:var(--color-owner-text);font:13px var(--font-body)
+}
+.projects-filters select:focus{outline:2px solid color-mix(in srgb,var(--color-accent) 45%,transparent);outline-offset:2px}
+.projects-count{display:block;margin:0 0 12px;color:var(--color-owner-muted);font-size:12px}
+@media(max-width:600px){
+  .projects-registry-tools{gap:7px;margin-bottom:9px}
+  .projects-toolbar-actions{gap:7px}
+  .projects-filter-toggle,.projects-create-toggle{flex-basis:45px;width:45px;height:45px;border-radius:13px}
+  .projects-filter-toggle svg,.projects-create-toggle svg{width:19px;height:19px}
+  .projects-filters{grid-template-columns:1fr;gap:10px;padding:12px;border-radius:14px}
+  .projects-filters select{min-height:40px}
+}
