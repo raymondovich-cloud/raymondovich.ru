@@ -27,3 +27,17 @@ export async function listProjectServiceDetails(projectId) {
 export async function insertProjectRecord(payload) {
   return supabase.from("projects").insert(payload).select("id").single();
 }
+
+export async function findEcosystemToolBySlug(ownerId, slug) {
+  return supabase.from("ecosystem_tools")
+    .select("id,name,slug,category,official_url,status")
+    .eq("owner_id",ownerId).eq("slug",slug).maybeSingle();
+}
+
+export async function insertEcosystemTool(payload) {
+  return supabase.from("ecosystem_tools").insert(payload).select("id").single();
+}
+
+export async function insertProjectToolRelation(payload) {
+  return supabase.from("project_tool_relations").insert(payload).select("id").single();
+}
