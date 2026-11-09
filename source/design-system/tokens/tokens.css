@@ -126,6 +126,23 @@
   --ws-card-text:#f4f0ec;
   --ws-card-muted:#b4aaa1;
   --ws-section-muted:#918a83;
+
+  --ws-button-text:#ffffff;
+  --ws-success:#65cb8c;
+  --ws-warning:#e9a05f;
+  --ws-warning-text:#e99a65;
+  --ws-danger:#d98272;
+  --ws-project-line:#59311e;
+  --ws-project-line-strong:#50301f;
+  --ws-project-hero-bg:linear-gradient(145deg,#25160f,#1b110d);
+  --ws-project-group-bg:linear-gradient(145deg,#21140f,#1a110d);
+  --ws-project-icon-bg:#301a10;
+  --ws-project-category-gradient:linear-gradient(145deg,#2a170f,#1b100c);
+  --ws-project-hover:#27170f;
+  --ws-project-muted:#a69b92;
+  --ws-project-subtle:#958a81;
+  --ws-empty-line:#49301f;
+  --ws-empty-surface:#17120e;
   --ws-control-panel-text:var(--color-owner-panel-text);
   --ws-control-panel:var(--color-owner-panel);
   --ws-control-surface:var(--color-owner-surface);
