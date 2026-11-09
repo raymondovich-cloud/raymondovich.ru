@@ -10,7 +10,7 @@
 .projects-primary,.projects-secondary,.projects-back{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:10px 16px;
   border:1px solid var(--color-owner-line-strong);border-radius:13px;background:var(--gradient-owner-control);
-  color:var(--color-owner-text);font:500 13px/1.2 var(--font-sans);text-decoration:none;cursor:pointer
+  color:var(--color-owner-text);font:500 13px/1.2 var(--font-body);text-decoration:none;cursor:pointer
 }
 .projects-primary{border-color:transparent;background:var(--gradient-ideas-button);color:#fff}
 .projects-primary>span{font-size:20px;line-height:0}
@@ -18,7 +18,7 @@
 .projects-back{min-height:34px;padding:7px 11px;border-radius:10px;color:var(--color-accent);font-size:12px}
 .projects-registry-tools{display:flex;align-items:center;gap:14px;margin-bottom:15px}
 .projects-search-wrap{display:block;flex:1;min-width:0}
-.projects-search{width:100%;min-height:49px;padding:12px 16px;border:1px solid var(--color-owner-line);border-radius:15px;background:var(--gradient-owner-input);color:var(--color-owner-text);font:15px var(--font-sans)}
+.projects-search{width:100%;min-height:49px;padding:12px 16px;border:1px solid var(--color-owner-line);border-radius:15px;background:var(--gradient-owner-input);color:var(--color-owner-text);font:15px var(--font-body)}
 .projects-search::placeholder{color:var(--color-owner-muted)}
 .projects-count{flex:0 0 auto;color:var(--color-owner-muted);font-size:12px}
 .projects-registry-list{display:grid;gap:10px}
@@ -47,7 +47,7 @@
 .projects-form label{display:grid;gap:7px;color:var(--color-owner-muted);font-size:13px}
 .projects-form input,.projects-form textarea,.projects-form select{
   width:100%;min-width:0;padding:12px 14px;border:1px solid var(--color-owner-line-strong);border-radius:12px;
-  background:var(--gradient-owner-input);color:var(--color-owner-text);font:16px/1.4 var(--font-sans)
+  background:var(--gradient-owner-input);color:var(--color-owner-text);font:16px/1.4 var(--font-body)
 }
 .projects-form textarea{resize:vertical}
 .projects-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
