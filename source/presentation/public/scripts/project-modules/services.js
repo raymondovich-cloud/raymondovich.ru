@@ -1,5 +1,5 @@
 import { getProjectServices, createProjectService, updateProjectService, removeProjectService } from "/source/application/services/project-services.js";
-import { getProjectResources, createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
+import { createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
 
 const esc=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
 const resourceTypes={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS",supabase_project:"Проект Supabase",other:"Ресурс"};
@@ -56,12 +56,20 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   const opts={signal:controller.signal};
   let editing=null;
   host.innerHTML='<div class="projects-loading">Загрузка связей проекта…</div>';
-  const [data,resourcesResult]=await Promise.all([
-    getProjectServices(project.id),
-    getProjectResources(project.id).then(resources=>({resources})).catch(error=>({error,resources:[]}))
-  ]);
+  let data;
+  try {
+    data=await getProjectServices(project.id);
+    if(controller.signal.aborted)return;
+    if(data.error)throw data.error;
+  } catch(error) {
+    if(controller.signal.aborted)return;
+    const message=String(error?.message||"Не удалось получить данные проекта.");
+    host.innerHTML=`<div class="projects-state projects-error"><strong>Не удалось загрузить связи проекта</strong><p>${esc(message)}</p><button type="button" class="projects-secondary" data-services-retry>Повторить загрузку</button></div>`;
+    host.querySelector("[data-services-retry]")?.addEventListener("click",()=>renderProjectServicesScreen(host,project,user),{once:true});
+    return;
+  }
   if(controller.signal.aborted)return;
-  const services=data.services||[],resources=resourcesResult.resources||[];
+  const services=data.services||[],resources=data.resources||[];
   const criticalServices=services.filter(x=>x.dependency_level==="critical");
   const optionalServices=services.filter(x=>x.dependency_level!=="critical");
   const criticalResources=resources.filter(x=>x.dependency_level==="critical");
