@@ -20,7 +20,7 @@ export async function loadProjectsWorkspace() {
       getProjectMarketingSummary(project.id)
     ]);
     return [project.id,{
-      services: { label: services.error ? "Нет данных" : (services.counts[project.id] ? services.counts[project.id]+" подключено" : "Нет подключённых сервисов") },
+      services: { count: services.counts[project.id] || 0, label: services.error ? "Нет данных" : (services.counts[project.id] ? services.counts[project.id]+" подключено" : "Нет подключённых сервисов") },
       accounting: finance,
       analytics: insights,
       marketing: promotion
