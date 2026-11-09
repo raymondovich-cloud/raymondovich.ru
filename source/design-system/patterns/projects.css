@@ -352,3 +352,30 @@
 @media(max-width:390px){
  .projects-service-group-heading h2{font-size:13px}
 }
+
+
+/* Infrastructure: frame the section heading and keep the empty state unboxed. */
+.projects-service-group-heading.is-infrastructure{
+  gap:12px;
+  padding:13px 15px;
+  border:1px solid #59311e;
+  border-radius:17px;
+  background:linear-gradient(145deg,#21140f,#1a110d);
+}
+.projects-service-group-heading.is-infrastructure h2{color:var(--color-owner-text)}
+.projects-service-group-heading.is-infrastructure p{color:#b4aaa1}
+.projects-service-list.is-empty{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.projects-service-list.is-empty .projects-state{
+  padding:4px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+@media(max-width:600px){
+  .projects-service-group-heading.is-infrastructure{padding:11px 12px;border-radius:15px}
+}
