@@ -86,7 +86,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
     <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraCost,infraCount,true)}${summaryCard("Сервисы",servicesCost,optionalCount,false)}</div>
 
     <section class="projects-service-group">
-      <header class="projects-service-group-heading"><div class="projects-service-group-symbol is-critical" aria-hidden="true">⚓</div><div><h2>Инфраструктура</h2><p>Без этого проект не работает</p></div><button class="projects-primary projects-service-add" type="button" data-resource-add aria-label="Добавить ресурс">＋</button></header>
+      <header class="projects-service-group-heading is-infrastructure"><div class="projects-service-group-symbol is-critical" aria-hidden="true">⚓</div><div><h2>Инфраструктура</h2><p>Без этого проект не работает</p></div><button class="projects-primary projects-service-add" type="button" data-resource-add aria-label="Добавить ресурс">＋</button></header>
       <form class="projects-form projects-service-form" data-resource-form hidden>
         <label>Название ресурса<input name="name" required maxlength="160" placeholder="Например, raymondovich.ru"></label>
         <div class="projects-form-grid"><label>Тип ресурса<select name="resource_type"><option value="domain">Домен</option><option value="database">База данных</option><option value="dns_zone">DNS и защита</option><option value="server">Сервер</option><option value="repository">Репозиторий</option><option value="deployment">Развёртывание</option><option value="api">API</option><option value="supabase_project">Проект Supabase</option><option value="other">Другое</option></select></label>
@@ -98,7 +98,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <label>Описание<textarea name="description" rows="2" maxlength="2000"></textarea></label>
         <p class="projects-form-error" data-resource-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-resource-cancel>Отмена</button><button type="submit" class="projects-primary">Сохранить ресурс</button></div>
       </form>
-      <div class="projects-service-list">${[...criticalResources.map(resourceCard),...criticalServices.map(serviceCard)].join("")||'<div class="projects-state"><strong>Инфраструктура пока не добавлена</strong><p>Добавьте домен, базу данных, DNS, сервер или другую критическую зависимость.</p></div>'}</div>
+      <div class="projects-service-list ${criticalResources.length+criticalServices.length?"":"is-empty"}">${[...criticalResources.map(resourceCard),...criticalServices.map(serviceCard)].join("")||'<div class="projects-state"><strong>Инфраструктура пока не добавлена</strong><p>Добавьте домен, базу данных, DNS, сервер или другую критическую зависимость.</p></div>'}</div>
     </section>
 
     <section class="projects-service-group">
