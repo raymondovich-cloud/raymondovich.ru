@@ -6,13 +6,13 @@ const RELATIONSHIP_TYPES=new Set(["manual_use","technical_integration","infrastr
 function slugify(value){
   const map={а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"y",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"ts",ч:"ch",ш:"sh",щ:"shch",ъ:"",ы:"y",ь:"",э:"e",ю:"yu",я:"ya"};
   const text=String(value||"").toLowerCase().split("").map(c=>map[c]??c).join("");
-  return text.normalize("NFKD").replace(/\\p{M}/gu,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"service-"+crypto.randomUUID().slice(0,8);
+  return text.normalize("NFKD").replace(/\p{M}/gu,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"service-"+crypto.randomUUID().slice(0,8);
 }
 function validateMoneyAndDate(values){
   const cost=Number(values.monthly_cost||0);
   if(!Number.isFinite(cost)||cost<0||cost>1000000000)throw new Error("Укажите корректные ежемесячные расходы.");
   const date=String(values.next_payment_date||"");
-  if(date&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(date))throw new Error("Укажите корректную дату следующей оплаты.");
+  if(date&&!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error("Укажите корректную дату следующей оплаты.");
   return {monthly_cost:cost,currency:"RUB",next_payment_date:date||null};
 }
 function validateUrl(value,label){
