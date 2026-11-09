@@ -118,7 +118,7 @@ export async function renderIdeasWorkspace(root, user) {
     root.querySelector("[data-category-progress]").toggleAttribute("data-active", activeIdeas.length > 0);
 
     if (!filtered.length) {
-      list.innerHTML = `<div class="ideas-empty"><strong>${activeIdeas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${activeIdeas.length ? "Измените параметры поиска или фильтрации." : "Добавьте первую идею."}</span></div>`;
+      list.innerHTML = `<div class="ws-empty ideas-empty"><strong>${activeIdeas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${activeIdeas.length ? "Измените параметры поиска или фильтрации." : "Добавьте первую идею."}</span></div>`;
       return;
     }
 
@@ -144,7 +144,7 @@ export async function renderIdeasWorkspace(root, user) {
 
     list.innerHTML = `
       ${focused.length ? `<section class="ideas-focus">${workspaceSectionTitle("В ФОКУСЕ")}<div class="ideas-focus-list ws-card-list">${focused.map(idea => card(idea,true)).join("")}</div></section>` : ""}
-      ${remaining.length ? `<section class="ideas-others">${workspaceSectionTitle("ОСТАЛЬНЫЕ",{muted:true})}<div class="ideas-groups">${[...groups.entries()].map(([label,items],index) => `
+      ${remaining.length ? `<section class="ideas-others">${workspaceSectionTitle("ОСТАЛЬНЫЕ",{muted:true})}<div class="ws-groups ideas-groups">${[...groups.entries()].map(([label,items],index) => `
         <details class="ws-group ideas-group" ${groups.size===1 ? "open" : ""}>
           <summary><span>${escape(label)} · ${items.length}</span><span class="ideas-group-chevron" aria-hidden="true">⌄</span></summary>
           <div class="ws-group-content ideas-group-items">${items.map(idea => card(idea,false)).join("")}</div>
