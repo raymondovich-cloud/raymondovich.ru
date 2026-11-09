@@ -95,4 +95,13 @@
   --ws-muted:var(--color-ideas-muted);
   --ws-subtle:var(--color-ideas-subtle);
   --ws-description:var(--color-ideas-description);
+  --ws-card-focused:var(--gradient-ideas-surface);
+  --ws-card-compact:var(--color-ideas-card-gradient);
+  --ws-group-surface:var(--color-owner-surface);
+  --ws-group-line:var(--color-ideas-divider);
+  --ws-progress-track:var(--color-ideas-control-border);
+  --ws-card-line:var(--color-ideas-confirm-border);
+  --ws-card-text:var(--color-ideas-text);
+  --ws-card-muted:var(--color-ideas-description);
+  --ws-section-muted:var(--color-ideas-muted);
 }
