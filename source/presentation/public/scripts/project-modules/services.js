@@ -102,7 +102,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
     </section>
 
     <section class="projects-service-group">
-      <header class="projects-service-group-heading"><div class="projects-service-group-symbol" aria-hidden="true">⌁</div><div><h2>Подключённые сервисы</h2><p>Можно отключить, проект продолжит работать</p></div><button class="projects-primary projects-service-add" type="button" data-service-add aria-label="Добавить сервис">＋</button></header>
+      <header class="projects-service-group-heading is-connected-services"><div class="projects-service-group-symbol" aria-hidden="true">⌁</div><div><h2>Подключённые сервисы</h2><p>Можно отключить, проект продолжит работать</p></div><button class="projects-primary projects-service-add" type="button" data-service-add aria-label="Добавить сервис">＋</button></header>
       <form class="projects-form projects-service-form" data-service-form hidden>
         <label>Название сервиса<input name="name" required maxlength="120" placeholder="Например, ChatGPT"></label>
         <div class="projects-form-grid"><label>Категория<select name="category">${Object.entries(categoryLabels).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</select></label><label>Зависимость<select name="dependency_level"><option value="optional">Дополнительный сервис</option><option value="critical">Критически важен для проекта</option></select></label></div>
@@ -112,7 +112,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
         <p class="projects-form-error" data-service-error hidden></p><div class="projects-form-actions"><button type="button" class="projects-secondary" data-service-cancel>Отмена</button><button type="submit" class="projects-primary">Подключить</button></div>
         <p class="projects-service-security-note">Не вводите сюда пароли, API-ключи или другие секреты.</p>
       </form>
-      <div class="projects-service-list">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||'<div class="projects-state"><strong>Дополнительные сервисы не подключены</strong><p>Добавьте инструменты разработки, аналитики, маркетинга и автоматизации.</p></div>'}</div>
+      <div class="projects-service-list ${optionalServices.length+optionalResources.length?"":"is-empty"}">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||'<div class="projects-state"><strong>Дополнительные сервисы не подключены</strong><p>Добавьте инструменты разработки, аналитики, маркетинга и автоматизации.</p></div>'}</div>
     </section>
   `;
 
