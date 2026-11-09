@@ -1,6 +1,7 @@
 :root[data-theme="light"]{
   color-scheme:light;
   --color-bg:#f3f4f6;
+  --color-header-background:#08090b;
   --color-surface:#fff;
   --color-surface-raised:#e9ebef;
   --color-text:#17191d;
