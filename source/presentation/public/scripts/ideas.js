@@ -31,7 +31,7 @@ export async function renderIdeasWorkspace(root, user) {
           { label: "Категория", control: `<select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>` }
         ] })}
         <section class="ws-overview ideas-overview" data-ideas-overview aria-label="Сводка идей">
-          ${workspaceStatGrid([{label:"Всего идей",value:"—"},{label:"Высокий приоритет",value:"—",accent:true}])}
+          ${workspaceStatGrid([{label:"Всего идей",value:"—",valueAttr:"data-total-count"},{label:"Высокий приоритет",value:"—",accent:true,valueAttr:"data-high-count"}])}
           <article class="ws-summary ideas-category-summary">
             <div class="ws-summary-head ideas-category-summary-head"><span>По категориям</span><span data-new-count>Новые: —</span></div>
             <div class="ws-progress ideas-category-track"><span data-category-progress></span></div>
