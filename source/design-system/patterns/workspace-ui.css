@@ -64,3 +64,66 @@
  .ws-icon-button,.ws-card{transition:none}
  .ws-icon-button:hover,.ws-card:hover{transform:none}
 }
+
+
+/* Registry-specific cascade guards: the shared pattern wins over legacy module selectors. */
+.ideas-workspace .ws-toolbar,.projects-content .ws-toolbar{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 20px}
+.ideas-workspace .ws-search,.projects-content .ws-search{height:84px;min-height:0;padding:0 24px;border-radius:25px;font:16px/1.4 var(--font-body)}
+.ideas-workspace .ws-icon-button,.projects-content .ws-icon-button{flex:0 0 86px;width:86px;height:84px;border-radius:25px}
+.ideas-workspace .ws-filters,.projects-content .ws-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:18px;border-radius:18px}
+.ideas-workspace .ws-filters[hidden],.projects-content .ws-filters[hidden]{display:none}
+.ideas-workspace .ws-filters select,.projects-content .ws-filters select{min-height:44px;font:16px/1.4 var(--font-body)}
+.ideas-workspace .ws-overview{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.ideas-workspace .ws-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ideas-workspace .ws-stat,.projects-content .ws-stat{display:grid;align-content:space-between;gap:14px;min-height:104px;padding:18px 20px;border:1px solid var(--ws-line);border-radius:18px;background:var(--ws-surface)}
+.ideas-workspace .ws-stat.is-accent,.projects-content .ws-stat.is-accent{border-color:var(--ws-accent-line);background:var(--ws-accent-surface)}
+.ideas-workspace .ws-summary{padding:18px 20px;border:1px solid var(--ws-line);border-radius:18px;background:var(--ws-surface)}
+.ideas-workspace .ws-section-title{margin:0 0 12px;color:var(--ws-accent);font:500 11px/1.4 var(--font-mono);letter-spacing:.13em}
+.ideas-workspace .ws-section-title.is-muted{color:var(--ws-subtle)}
+.ideas-workspace .ws-card,.projects-content .ws-card.projects-registry-card{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:unset;padding:18px;border:1px solid var(--ws-line);border-radius:18px;background:var(--ws-list-item);color:var(--ws-text);text-align:left}
+.ideas-workspace .ws-card.is-focused,.projects-content .ws-card.is-focused{border-color:var(--ws-accent-line);background:var(--ws-accent-surface)}
+.ideas-workspace .ws-card.is-compact,.projects-content .ws-card.is-compact{min-height:unset}
+.ideas-workspace .ws-group{overflow:hidden;border:1px solid var(--ws-line);border-radius:18px;background:var(--ws-surface)}
+.ideas-workspace .ws-group>summary{padding:15px 18px;color:var(--ws-text);font-size:16px}
+.ideas-workspace .ws-group-content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px;border-top:1px solid var(--ws-line)}
+.ideas-workspace .ws-progress>span[data-active]{width:100%}
+.projects-content .ws-card-list,.projects-content .ws-group-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.projects-content .ws-groups{display:grid;gap:10px}
+.projects-content .ws-card.projects-registry-card{width:100%;gap:12px;cursor:pointer}
+.projects-content .ws-card.projects-registry-card .projects-registry-meta{width:100%;justify-content:flex-start;flex-wrap:wrap}
+.ws-progress>span[class*="ws-progress-"]{width:0}
+.ws-progress>span.ws-progress-0{width:0%}
+.ws-progress>span.ws-progress-5{width:5%}
+.ws-progress>span.ws-progress-10{width:10%}
+.ws-progress>span.ws-progress-15{width:15%}
+.ws-progress>span.ws-progress-20{width:20%}
+.ws-progress>span.ws-progress-25{width:25%}
+.ws-progress>span.ws-progress-30{width:30%}
+.ws-progress>span.ws-progress-35{width:35%}
+.ws-progress>span.ws-progress-40{width:40%}
+.ws-progress>span.ws-progress-45{width:45%}
+.ws-progress>span.ws-progress-50{width:50%}
+.ws-progress>span.ws-progress-55{width:55%}
+.ws-progress>span.ws-progress-60{width:60%}
+.ws-progress>span.ws-progress-65{width:65%}
+.ws-progress>span.ws-progress-70{width:70%}
+.ws-progress>span.ws-progress-75{width:75%}
+.ws-progress>span.ws-progress-80{width:80%}
+.ws-progress>span.ws-progress-85{width:85%}
+.ws-progress>span.ws-progress-90{width:90%}
+.ws-progress>span.ws-progress-95{width:95%}
+.ws-progress>span.ws-progress-100{width:100%}
+@media(max-width:700px){
+ .ideas-workspace .ws-toolbar,.projects-content .ws-toolbar{gap:8px;margin-bottom:14px}
+ .ideas-workspace .ws-search,.projects-content .ws-search{height:48px;padding:0 14px;border-radius:14px}
+ .ideas-workspace .ws-icon-button,.projects-content .ws-icon-button{flex-basis:48px;width:48px;height:48px;border-radius:14px}
+ .ideas-workspace .ws-filters,.projects-content .ws-filters{grid-template-columns:minmax(0,1fr);gap:10px;padding:13px}
+ .ideas-workspace .ws-overview{grid-template-columns:minmax(0,1fr);gap:9px}
+ .ideas-workspace .ws-stat,.ideas-workspace .ws-summary{padding:15px;border-radius:15px}
+ .ideas-workspace .ws-group-content,.projects-content .ws-card-list,.projects-content .ws-group-content{grid-template-columns:minmax(0,1fr)}
+ .ideas-workspace .ws-card,.projects-content .ws-card.projects-registry-card{padding:15px;border-radius:16px}
+}
+@media(max-width:390px){
+ .ideas-workspace .ws-search,.projects-content .ws-search{height:45px}
+ .ideas-workspace .ws-icon-button,.projects-content .ws-icon-button{flex-basis:44px;width:44px;height:45px}
+}
