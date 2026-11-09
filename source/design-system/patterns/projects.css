@@ -140,3 +140,11 @@
 }
 
 .projects-service-form[hidden]{display:none}
+
+.projects-resource-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:24px 0 12px;padding-top:19px;border-top:1px solid var(--color-owner-line)}
+.projects-resource-toolbar h2{margin:0 0 5px;color:var(--color-owner-text);font-size:18px;font-weight:500}
+.projects-resource-toolbar p{margin:0;color:var(--color-owner-muted);font-size:12px}
+.projects-resource-form{margin-bottom:16px}
+.projects-resource-form[hidden]{display:none}
+.projects-service-form[hidden]{display:none}
+@media(max-width:700px){.projects-resource-toolbar{align-items:flex-start;flex-direction:column}}
