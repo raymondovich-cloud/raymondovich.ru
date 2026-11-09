@@ -98,3 +98,22 @@
   --gradient-ideas-input: linear-gradient(145deg, color-mix(in srgb, var(--color-ideas-accent) 6%, var(--color-ideas-surface)), var(--color-ideas-surface));
   --gradient-ideas-button: linear-gradient(110deg, var(--color-ideas-accent), var(--color-ideas-accent-soft));
 }
+
+
+/* Owner Control Center shared workspace semantic tokens — dark theme. */
+:root{
+  --ws-background:var(--color-bg);
+  --ws-surface:var(--color-owner-surface);
+  --ws-surface-2:var(--color-owner-surface-raised);
+  --ws-list-item:var(--color-ideas-card-gradient);
+  --ws-line:var(--color-ideas-divider);
+  --ws-strong-line:var(--color-ideas-control-border);
+  --ws-accent-line:var(--color-ideas-confirm-border);
+  --ws-accent-surface:var(--gradient-ideas-surface);
+  --ws-accent:var(--color-ideas-accent);
+  --ws-accent-contrast:var(--color-ideas-accent-contrast);
+  --ws-text:var(--color-ideas-text);
+  --ws-muted:var(--color-ideas-muted);
+  --ws-subtle:var(--color-ideas-subtle);
+  --ws-description:var(--color-ideas-description);
+}
