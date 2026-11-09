@@ -379,3 +379,18 @@
 @media(max-width:600px){
   .projects-service-group-heading.is-infrastructure{padding:11px 12px;border-radius:15px}
 }
+
+/* Connected services: use the same framed heading and unboxed empty state. */
+.projects-service-group-heading.is-connected-services{
+  gap:12px;
+  padding:13px 15px;
+  border:1px solid #59311e;
+  border-radius:17px;
+  background:linear-gradient(145deg,#21140f,#1a110d);
+}
+.projects-service-group-heading.is-connected-services h2{color:var(--color-owner-text)}
+.projects-service-group-heading.is-connected-services p{color:#b4aaa1}
+@media(max-width:600px){
+  .projects-service-group-heading.is-connected-services{padding:11px 12px;border-radius:15px}
+}
+
