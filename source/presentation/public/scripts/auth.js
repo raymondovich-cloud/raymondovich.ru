@@ -175,20 +175,10 @@ function bindForms(root) {
     const ownerModule = event.target.closest("[data-owner-module]");
     if (ownerModule) {
       event.preventDefault();
-      const route = ownerModule.dataset.ownerModule === "projects" ? "#authorization/projects" : "#authorization/ideas";
+      const route = ownerModule.getAttribute("href");
+      if (!route || !route.startsWith("#authorization/")) return;
       window.RaymondovichNavigation?.navigateRoute(route);
       if (!window.RaymondovichNavigation) location.hash = route;
-      return;
-    }
-    const ownerTab = event.target.closest("[data-owner-tab]");
-    if (ownerTab) {
-      const selectedGroup = ownerTab.dataset.ownerTab;
-      root.querySelectorAll("[data-owner-tab]").forEach((tab) => {
-        tab.setAttribute("aria-selected", String(tab === ownerTab));
-      });
-      root.querySelectorAll("[data-owner-panel]").forEach((panel) => {
-        panel.hidden = panel.dataset.ownerPanel !== selectedGroup;
-      });
       return;
     }
     if (event.target.closest("[data-coming-soon]")) {
