@@ -4,7 +4,7 @@
 }
 .owner-console-page-title{
   margin:0 0 24px;
-  color:var(--color-owner-panel-text);
+  color:var(--ws-control-panel-text);
   text-align:center;
   font-family:var(--font-sans);
   font-size:clamp(1.1rem,3vw,1.5rem);
@@ -16,10 +16,10 @@
   width:100%;
   margin:0 auto;
   padding:var(--space-4);
-  border:1px solid var(--color-owner-line-strong);
+  border:1px solid var(--ws-control-strong-line);
   border-radius:30px;
-  background:var(--color-owner-panel);
-  color:var(--color-owner-panel-text);
+  background:var(--ws-control-panel);
+  color:var(--ws-control-panel-text);
 }
 .owner-console-workspace{padding:var(--space-4)}
 .owner-console-workspace .ideas-workspace{width:100%;max-width:none;margin:0;padding:0}
@@ -29,9 +29,9 @@
   gap:var(--space-1);
   padding:var(--space-1);
   margin-bottom:var(--space-3);
-  border:1px solid var(--color-owner-line);
+  border:1px solid var(--ws-control-line);
   border-radius:19px;
-  background:var(--color-owner-surface);
+  background:var(--ws-control-surface);
 }
 .owner-console-tab{
   min-height:54px;
@@ -39,17 +39,17 @@
   border:0;
   border-radius:14px;
   background:transparent;
-  color:var(--color-owner-muted);
+  color:var(--ws-control-muted);
   font:500 15px/1.2 var(--font-sans);
   cursor:pointer;
   transition:background .18s ease,color .18s ease;
 }
 .owner-console-tab[aria-selected="true"]{
-  background:var(--color-owner-surface-raised);
-  color:var(--color-accent);
+  background:var(--ws-control-surface-raised);
+  color:var(--ws-control-accent);
 }
 .owner-console-tab:focus-visible,.owner-console-card:focus-visible{
-  outline:2px solid var(--color-accent);
+  outline:2px solid var(--ws-control-accent);
   outline-offset:3px;
 }
 .owner-console-panel[hidden]{display:none}
@@ -57,11 +57,11 @@
   display:flex;
   align-items:center;
   margin:0 0 var(--space-2);
-  color:var(--color-owner-muted);
+  color:var(--ws-control-muted);
   font:500 11px/1.4 var(--font-mono);
   letter-spacing:.16em;
 }
-.owner-console-section-heading i{padding:0 7px;font-style:normal;color:var(--color-owner-separator)}
+.owner-console-section-heading i{padding:0 7px;font-style:normal;color:var(--ws-control-separator)}
 .owner-console-grid{
   display:grid;
   gap:var(--space-2);
@@ -73,23 +73,23 @@
   align-items:center;
   gap:var(--space-2);
   padding:var(--space-2);
-  border:1px solid var(--color-owner-line);
+  border:1px solid var(--ws-control-line);
   border-radius:21px;
-  background:var(--color-owner-surface);
-  color:var(--color-owner-text);
+  background:var(--ws-control-surface);
+  color:var(--ws-control-text);
   text-decoration:none;
   transition:border-color .18s ease,background .18s ease;
 }
 .owner-console-card.is-active{
-  border:2px solid var(--color-accent);
+  border:2px solid var(--ws-control-accent);
   padding:15px 15px;
 }
 .owner-console-code{
   width:48px;height:48px;
   display:grid;place-items:center;
-  border:1px solid var(--color-owner-line-strong);
+  border:1px solid var(--ws-control-strong-line);
   border-radius:13px;
-  color:var(--color-owner-subtle);
+  color:var(--ws-control-subtle);
   font:13px var(--font-mono);
 }
 .owner-console-card-content{min-width:0;display:grid;gap:3px}
@@ -100,30 +100,30 @@
   letter-spacing:-.025em;
 }
 .owner-console-card-description{
-  color:var(--color-owner-subtle);
+  color:var(--ws-control-subtle);
   font-size:13px;
   line-height:1.35;
 }
 .owner-console-card-status{
   justify-self:end;
   white-space:nowrap;
-  color:var(--color-accent);
+  color:var(--ws-control-accent);
   font:10px var(--font-mono);
   letter-spacing:.1em;
 }
 .owner-console-card.is-planned{cursor:default}
-.owner-console-card.is-planned .owner-console-card-title{color:var(--color-owner-planned)}
-.owner-console-card:hover.is-active{background:var(--color-owner-hover)}
+.owner-console-card.is-planned .owner-console-card-title{color:var(--ws-control-planned)}
+.owner-console-card:hover.is-active{background:var(--ws-control-hover)}
 .owner-console-footer{
   display:flex;
   align-items:center;
   gap:16px;
   margin-top:var(--space-3);
   padding-top:var(--space-2);
-  border-top:1px solid var(--color-owner-line);
+  border-top:1px solid var(--ws-control-line);
 }
 .owner-console-footer>span{
-  color:var(--color-owner-muted);
+  color:var(--ws-control-muted);
   font:10px var(--font-mono);
   letter-spacing:.13em;
 }
@@ -176,37 +176,37 @@
   background: var(--gradient-owner-control);
 }
 .owner-console-tab[aria-selected="true"] {
-  border-color: var(--color-owner-line-strong);
+  border-color: var(--ws-control-strong-line);
   background: var(--gradient-owner-control-active);
-  color: var(--color-accent-bright);
+  color: var(--ws-control-accent-bright);
 }
 .owner-console-card {
   background: var(--gradient-owner-surface);
 }
 .owner-console-card.is-active {
-  border-color: var(--color-accent);
+  border-color: var(--ws-control-accent);
   background: var(--gradient-owner-control-active);
 }
 .owner-console-code {
   background: var(--gradient-owner-control);
 }
 .owner-console :is(input, select, textarea) {
-  border: 1px solid var(--color-owner-line-strong);
+  border: 1px solid var(--ws-control-strong-line);
   border-radius: 12px;
   background: var(--gradient-owner-input);
-  color: var(--color-owner-text);
+  color: var(--ws-control-text);
 }
 .owner-console :is(input, select, textarea):focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 68%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--ws-control-accent) 68%, transparent);
   outline-offset: 2px;
 }
 .owner-console button:not(.owner-console-tab) {
-  border-color: var(--color-owner-line-strong);
+  border-color: var(--ws-control-strong-line);
   background: var(--gradient-owner-control);
-  color: var(--color-owner-text);
+  color: var(--ws-control-text);
 }
 .owner-console button:not(.owner-console-tab):hover {
-  border-color: var(--color-accent);
+  border-color: var(--ws-control-accent);
   background: var(--gradient-owner-control-active);
 }
 .owner-console :is(input, select, textarea):disabled,
