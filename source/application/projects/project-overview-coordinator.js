@@ -1,5 +1,8 @@
 import { loadProjectsRegistry } from "./project-registry.js";
 import { getProjectServicesSummary } from "../services/project-services.js";
+import { getProjectAccountingSummary } from "../accounting/project-accounting.js";
+import { getProjectAnalyticsSummary } from "../analytics/project-analytics.js";
+import { getProjectMarketingSummary } from "../marketing/project-marketing.js";
 
 /*
  * Application-level mediator for the Project Overview.
@@ -9,11 +12,29 @@ import { getProjectServicesSummary } from "../services/project-services.js";
 export async function loadProjectsWorkspace() {
   const registry = await loadProjectsRegistry();
   if (registry.error) return { ...registry, serviceCounts: {} };
-  const services = await getProjectServicesSummary();
+  const [services,accounting,analytics,marketing] = await Promise.all([
+    getProjectServicesSummary(),
+    Promise.resolve(null),
+    Promise.resolve(null),
+    Promise.resolve(null)
+  ]);
+  const summaries = await Promise.all(registry.projects.map(async project => {
+    const [finance,insights,promotion] = await Promise.all([
+      getProjectAccountingSummary(project.id),
+      getProjectAnalyticsSummary(project.id),
+      getProjectMarketingSummary(project.id)
+    ]);
+    return [project.id,{
+      services: { label: services.error ? "Нет данных" : (services.counts[project.id] ? services.counts[project.id]+" подключено" : "Нет подключённых сервисов") },
+      accounting: finance,
+      analytics: insights,
+      marketing: promotion
+    }];
+  }));
   return {
     projects: registry.projects,
     error: null,
-    serviceCounts: services.counts,
+    moduleSummaries: Object.fromEntries(summaries),
     serviceSummaryError: services.error || null
   };
 }
