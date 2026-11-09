@@ -1,17 +1,9 @@
-import { listProjects, listProjectToolRelations, insertProjectRecord } from "../../infrastructure/supabase/projects-repository.js";
+import { listProjects, insertProjectRecord } from "../../infrastructure/supabase/projects-repository.js";
 
 export async function loadProjectsRegistry() {
-  const [projects,relations] = await Promise.all([
-    listProjects(),
-    listProjectToolRelations()
-  ]);
-  if (projects.error) return { error: projects.error, projects: [], serviceRelations: [] };
-  return {
-    error: null,
-    projects: projects.data || [],
-    serviceRelations: relations.error ? [] : (relations.data || []),
-    serviceRelationsError: relations.error || null
-  };
+  const projects = await listProjects();
+  if (projects.error) return { error: projects.error, projects: [] };
+  return { error: null, projects: projects.data || [] };
 }
 
 export async function createProjectRecord(userId, values) {
