@@ -253,3 +253,13 @@
  .projects-content .ws-card.is-focused.projects-registry-card{padding:11px 12px}
  .projects-content .ws-card.is-compact.projects-registry-card{padding:10px 12px}
 }
+
+
+.ideas-workspace .ideas-focus,.ideas-workspace .ideas-others{display:grid;gap:17px;min-width:0}
+.ideas-workspace .ws-groups{display:grid;gap:12px}
+.ideas-workspace .ws-empty{padding:34px;border:1px dashed var(--ws-card-line);border-radius:16px;background:var(--ws-surface);color:var(--ws-card-muted)}
+@media(max-width:700px){
+ .ideas-workspace .ideas-focus,.ideas-workspace .ideas-others{gap:9px}
+ .ideas-workspace .ws-groups{gap:7px}
+ .ideas-workspace .ws-empty{padding:20px}
+}
