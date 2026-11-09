@@ -4,6 +4,7 @@ import { renderProjectServicesScreen } from "./project-modules/services.js";
 import { renderProjectAccountingScreen } from "./project-modules/accounting.js";
 import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
 import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
+import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -46,9 +47,6 @@ export async function renderProjectsWorkspace(root, user) {
   let currentProjectId = null;
   let projectFilters = { status: "", priority: "", origin: "" };
 
-  const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[char]);
   const date = value => value ? new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"short",year:"numeric"}).format(new Date(value)) : "—";
   const statusLabel = status => PROJECT_STATUS[status] || status || "Не указан";
   const priorityLabel = priority => PROJECT_PRIORITY[priority] || priority || "Обычный";
@@ -68,42 +66,45 @@ export async function renderProjectsWorkspace(root, user) {
   function renderRegistry() {
     currentProjectId = null;
     const query = host.querySelector("[data-project-search]")?.value.trim().toLowerCase() || "";
-    const visible = projects.filter(project => project.status !== "archived" &&
+    const allVisibleProjects = projects.filter(project => project.status !== "archived");
+    const visible = allVisibleProjects.filter(project =>
       (!query || [project.name,project.description,project.goal].some(value => String(value||"").toLowerCase().includes(query))) &&
       (!projectFilters.status || project.status === projectFilters.status) &&
       (!projectFilters.priority || (project.priority || "normal") === projectFilters.priority) &&
       (!projectFilters.origin || (projectFilters.origin === "idea" ? Boolean(project.source_idea_id) : !project.source_idea_id)));
+    const focused = visible.filter(project => project.status === "active" && ["high","critical"].includes(project.priority)).slice(0,2);
+    const focusedIds = new Set(focused.map(project => project.id));
+    const remaining = visible.filter(project => !focusedIds.has(project.id));
+    const groups = new Map();
+    remaining.forEach(project => { const status = project.status || "unknown"; if (!groups.has(status)) groups.set(status,[]); groups.get(status).push(project); });
+    const highPriorityCount = allVisibleProjects.filter(project => ["high","critical"].includes(project.priority)).length;
+    const completedCount = allVisibleProjects.filter(project => project.status === "completed").length;
+    const progressStep = allVisibleProjects.length ? Math.min(100,Math.round(completedCount / allVisibleProjects.length * 20) * 5) : 0;
+    const statusSummary = Object.entries(PROJECT_STATUS).filter(([key])=>key!=="archived").map(([key,label])=>`${label}: ${allVisibleProjects.filter(project=>project.status===key).length}`).join(" · ");
     host.innerHTML = `
-      <header class="projects-toolbar">
-        <div><p class="projects-eyebrow">OWNER CONTROL CENTER / BUSINESS</p><h1>Проекты</h1><p class="projects-intro">Рабочие пространства собственных и совместных проектов.</p></div>
-      </header>
-      <div class="projects-registry-tools">
-        <label class="projects-search-wrap"><input class="projects-search" type="search" aria-label="Поиск проектов" placeholder="Поиск проектов" value="${escape(query)}" data-project-search></label>
-        <div class="projects-toolbar-actions">
-          <button class="projects-filter-toggle" type="button" data-project-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="projects-filter-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-          <button class="projects-create-toggle" type="button" data-project-create aria-label="Добавить новый проект" title="Новый проект"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <section class="ws-page projects-registry" data-project-registry>
+        ${workspacePageTitle("Проекты")}
+        ${workspaceToolbar({searchAttr:"data-project-search",searchLabel:"Поиск проектов",searchPlaceholder:"Поиск проектов",searchValue:query,filterToggleAttr:"data-project-filter-toggle",filterPanelId:"projects-filter-panel",createAttr:"data-project-create",createLabel:"Добавить новый проект"})}
+        ${workspaceFilters({id:"projects-filter-panel",attributes:"data-project-filters",fields:[
+          {label:"Статус",control:`<select aria-label="Фильтр по статусу" data-project-filter-status><option value="">Все статусы</option>${Object.entries(PROJECT_STATUS).filter(([key])=>key!=="archived").map(([key,label])=>`<option value="${key}" ${projectFilters.status===key?"selected":""}>${escape(label)}</option>`).join("")}</select>`},
+          {label:"Приоритет",control:`<select aria-label="Фильтр по приоритету" data-project-filter-priority><option value="">Все приоритеты</option>${Object.entries(PROJECT_PRIORITY).map(([key,label])=>`<option value="${key}" ${projectFilters.priority===key?"selected":""}>${escape(label)}</option>`).join("")}</select>`},
+          {label:"Источник",control:`<select aria-label="Фильтр по источнику" data-project-filter-origin><option value="">Все проекты</option><option value="idea" ${projectFilters.origin==="idea"?"selected":""}>Из идеи</option><option value="direct" ${projectFilters.origin==="direct"?"selected":""}>Создан напрямую</option></select>`}
+        ]})}
+        <section class="ws-overview" aria-label="Сводка проектов">
+          ${workspaceStatGrid([{label:"Всего проектов",value:allVisibleProjects.length},{label:"Высокий приоритет",value:highPriorityCount,accent:true}])}
+          <article class="ws-summary"><div class="ws-summary-head"><span>По статусам</span><span>${completedCount} завершено</span></div><div class="ws-progress"><span class="ws-progress-${progressStep}"></span></div><div class="ws-summary-foot">${escape(statusSummary || "Проектов пока нет")}</div></article>
+        </section>
+        <div class="projects-registry-list" data-project-list>
+          ${focused.length ? `<section class="ws-focus"><h2 class="ws-section-title">В ФОКУСЕ</h2><div class="ws-card-list">${focused.map(project=>`<button class="ws-card is-focused projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span>${escape(priorityLabel(project.priority))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>`).join("")}</div></section>` : ""}
+          ${remaining.length ? `<section class="ws-others"><h2 class="ws-section-title is-muted">ОСТАЛЬНЫЕ</h2><div class="ws-groups">${[...groups.entries()].map(([status,items])=>`<details class="ws-group" ${groups.size===1?"open":""}><summary><span>${escape(statusLabel(status))} · ${items.length}</span><span aria-hidden="true">⌄</span></summary><div class="ws-group-content">${items.map(project=>`<button class="ws-card is-compact projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>`).join("")}</div></details>`).join("")}</div></section>` : ""}
+          ${!visible.length ? `<div class="ws-empty"><strong>${projects.length?"Ничего не найдено":"Проектов пока нет"}</strong><p>${projects.length?"Измените поисковый запрос или фильтры.":"Создайте первый проект или преобразуйте существующую идею в проект."}</p></div>` : ""}
         </div>
-      </div>
-      <div class="projects-filters" id="projects-filter-panel" data-project-filters hidden>
-        <label>Статус<select aria-label="Фильтр по статусу" data-project-filter-status><option value="">Все статусы</option>${Object.entries(PROJECT_STATUS).filter(([key])=>key!=="archived").map(([key,label])=>'<option value="'+key+'" '+(projectFilters.status===key?"selected":"")+'>'+label+'</option>').join("")}</select></label>
-        <label>Приоритет<select aria-label="Фильтр по приоритету" data-project-filter-priority><option value="">Все приоритеты</option>${Object.entries(PROJECT_PRIORITY).map(([key,label])=>'<option value="'+key+'" '+(projectFilters.priority===key?"selected":"")+'>'+label+'</option>').join("")}</select></label>
-        <label>Источник<select aria-label="Фильтр по источнику" data-project-filter-origin><option value="">Все проекты</option><option value="idea" ${projectFilters.origin==="idea"?"selected":""}>Из идеи</option><option value="direct" ${projectFilters.origin==="direct"?"selected":""}>Создан напрямую</option></select></label>
-      </div>
-      <div class="projects-count">${visible.length} ${visible.length===1?"проект":visible.length>1&&visible.length<5?"проекта":"проектов"}</div>
-      <div class="projects-registry-list" data-project-list>
-        ${visible.length ? visible.map(project=>`
-          <button class="projects-registry-card" type="button" data-project-open="${escape(project.id)}">
-            <span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span>
-            <span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span>${project.source_idea_id?"Из идеи":"Создан напрямую"}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span>
-          </button>`).join("") : `
-          <div class="projects-state"><strong>${projects.length?"Ничего не найдено":"Проектов пока нет"}</strong><p>${projects.length?"Измените поисковый запрос.":"Создайте первый проект или преобразуйте существующую идею в проект."}</p></div>`}
-      </div>`;
+      </section>`;
   }
-
   function renderCreateForm() {
     host.innerHTML = `
       <section class="projects-form-screen">
-        <header class="projects-screen-heading"><p class="projects-eyebrow">PROJECTS / NEW</p><h1>Новый проект</h1><p>Создайте рабочее пространство. Проект будет добавлен напрямую, без создания идеи.</p></header>
+        ${workspaceScreenHead({title:"Новый проект",subtitle:"Создайте рабочее пространство. Проект будет добавлен напрямую, без создания идеи."})}
         <form class="projects-form" data-project-form>
           <label>Название проекта<input name="name" required maxlength="120" autocomplete="off" placeholder="Например, raymondovich.ru"></label>
           <label>Описание<textarea name="description" rows="3" maxlength="4000" placeholder="Кратко опишите проект"></textarea></label>
@@ -166,7 +167,7 @@ export async function renderProjectsWorkspace(root, user) {
     };
     host.innerHTML = `
       <section class="projects-module-screen">
-        ${key==="services"?"":`<header class="projects-screen-heading"><p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1><p>${module.description}</p></header>`}
+        ${key==="services"?"":`${workspaceScreenHead({title:module.title,subtitle:module.description})}`}
         <div class="projects-module-body" data-project-module-body></div>
       </section>`;
     await renderers[key](host.querySelector("[data-project-module-body]"),project,user);
