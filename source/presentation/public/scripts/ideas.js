@@ -1,4 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
+import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const STATUS = {
   new: "Новая",
@@ -22,41 +23,19 @@ export async function renderIdeasWorkspace(root, user) {
       <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
         <div class="ideas-workspace">
       <section class="ideas-registry" data-ideas-registry>
-        <div class="ideas-toolbar">
-          <input class="ideas-search" type="search" placeholder="Поиск идей" aria-label="Поиск идей" data-ideas-search>
-          <div class="ideas-toolbar-actions">
-            <button class="ideas-filter-toggle" type="button" data-ideas-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="ideas-filter-panel">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <button class="ideas-create-toggle" type="button" data-idea-create aria-label="Добавить новую идею" title="Новая идея">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="ideas-filters" id="ideas-filter-panel" data-ideas-filters hidden>
-          <label>Статус
-            <select aria-label="Фильтр по статусу" data-filter-status><option value="">Все статусы</option>
-              ${Object.entries(STATUS).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
-            </select>
-          </label>
-          <label>Приоритет
-            <select aria-label="Фильтр по приоритету" data-filter-priority><option value="">Все приоритеты</option>
-              ${Object.entries(PRIORITY).map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}
-            </select>
-          </label>
-          <label>Категория
-            <select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>
-          </label>
-        </div>
-        <section class="ideas-overview" data-ideas-overview aria-label="Сводка идей">
-          <div class="ideas-stat-grid">
-            <article class="ideas-stat"><span>Всего идей</span><strong data-total-count>—</strong></article>
-            <article class="ideas-stat ideas-stat-priority"><span>Высокий приоритет</span><strong data-high-count>—</strong></article>
-          </div>
-          <article class="ideas-category-summary">
-            <div class="ideas-category-summary-head"><span>По категориям</span><span data-new-count>Новые: —</span></div>
-            <div class="ideas-category-track"><span data-category-progress></span></div>
-            <div class="ideas-category-summary-foot" data-category-summary>Загрузка…</div>
+        ${workspacePageTitle("Идеи")}
+        ${workspaceToolbar({ searchAttr: "data-ideas-search", searchLabel: "Поиск идей", searchPlaceholder: "Поиск идей", filterToggleAttr: "data-ideas-filter-toggle", filterPanelId: "ideas-filter-panel", createAttr: "data-idea-create", createLabel: "Добавить новую идею" })}
+        ${workspaceFilters({ id: "ideas-filter-panel", attributes: "data-ideas-filters", fields: [
+          { label: "Статус", control: `<select aria-label="Фильтр по статусу" data-filter-status><option value="">Все статусы</option>${Object.entries(STATUS).map(([key,label])=>`<option value="${escape(key)}">${escape(label)}</option>`).join("")}</select>` },
+          { label: "Приоритет", control: `<select aria-label="Фильтр по приоритету" data-filter-priority><option value="">Все приоритеты</option>${Object.entries(PRIORITY).map(([key,label])=>`<option value="${escape(key)}">${escape(label)}</option>`).join("")}</select>` },
+          { label: "Категория", control: `<select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>` }
+        ] })}
+        <section class="ws-overview ideas-overview" data-ideas-overview aria-label="Сводка идей">
+          ${workspaceStatGrid([{label:"Всего идей",value:"—"},{label:"Высокий приоритет",value:"—",accent:true}])}
+          <article class="ws-summary ideas-category-summary">
+            <div class="ws-summary-head ideas-category-summary-head"><span>По категориям</span><span data-new-count>Новые: —</span></div>
+            <div class="ws-progress ideas-category-track"><span data-category-progress></span></div>
+            <div class="ws-summary-foot ideas-category-summary-foot" data-category-summary>Загрузка…</div>
           </article>
         </section>
         <div class="ideas-list" data-ideas-list aria-live="polite"><p class="ideas-loading">Загрузка идей…</p></div>
@@ -77,9 +56,6 @@ export async function renderIdeasWorkspace(root, user) {
   let categories = [];
   let currentIdeaId = null;
 
-  const escape = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[c]);
   const money = value => value === null || value === undefined || value === ""
     ? "Не указано"
     : new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(Number(value));
@@ -139,7 +115,7 @@ export async function renderIdeasWorkspace(root, user) {
       .map(([name,count]) => `${escape(name)} · ${count}`)
       .join("  /  ");
     root.querySelector("[data-category-summary]").textContent = categorySummary || "Категории пока не добавлены";
-    root.querySelector("[data-category-progress]").style.width = activeIdeas.length ? "100%" : "0%";
+    root.querySelector("[data-category-progress]").toggleAttribute("data-active", activeIdeas.length > 0);
 
     if (!filtered.length) {
       list.innerHTML = `<div class="ideas-empty"><strong>${activeIdeas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${activeIdeas.length ? "Измените параметры поиска или фильтрации." : "Добавьте первую идею."}</span></div>`;
@@ -149,7 +125,7 @@ export async function renderIdeasWorkspace(root, user) {
     const card = (idea, focused = false) => {
       const categoryName = categories.find(c=>c.id===idea.category_id)?.name || "Без категории";
       const statusName = STATUS[idea.status] || idea.status || "Новая";
-      return `<button class="idea-card ${focused ? "idea-card-focused" : "idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
+      return `<button class="ws-card idea-card ${focused ? "ws-card is-focused idea-card-focused" : "ws-card is-compact idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
         <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span>${focused ? '<span class="idea-card-arrow" aria-hidden="true">↗</span>' : ""}</span>
         <span class="idea-card-title">${escape(idea.name)}</span>
         ${focused ? `<span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>` : `<span class="idea-card-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>`}
@@ -167,11 +143,11 @@ export async function renderIdeasWorkspace(root, user) {
     });
 
     list.innerHTML = `
-      ${focused.length ? `<section class="ideas-focus"><h2>В ФОКУСЕ</h2><div class="ideas-focus-list">${focused.map(idea => card(idea,true)).join("")}</div></section>` : ""}
-      ${remaining.length ? `<section class="ideas-others"><h2>ОСТАЛЬНЫЕ</h2><div class="ideas-groups">${[...groups.entries()].map(([label,items],index) => `
-        <details class="ideas-group" ${groups.size===1 ? "open" : ""}>
+      ${focused.length ? `<section class="ideas-focus">${workspaceSectionTitle("В ФОКУСЕ")}<div class="ideas-focus-list ws-card-list">${focused.map(idea => card(idea,true)).join("")}</div></section>` : ""}
+      ${remaining.length ? `<section class="ideas-others">${workspaceSectionTitle("ОСТАЛЬНЫЕ",{muted:true})}<div class="ideas-groups">${[...groups.entries()].map(([label,items],index) => `
+        <details class="ws-group ideas-group" ${groups.size===1 ? "open" : ""}>
           <summary><span>${escape(label)} · ${items.length}</span><span class="ideas-group-chevron" aria-hidden="true">⌄</span></summary>
-          <div class="ideas-group-items">${items.map(idea => card(idea,false)).join("")}</div>
+          <div class="ws-group-content ideas-group-items">${items.map(idea => card(idea,false)).join("")}</div>
         </details>`).join("")}</div></section>` : ""}
       `;
   }
