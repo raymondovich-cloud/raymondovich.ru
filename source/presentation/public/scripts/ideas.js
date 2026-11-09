@@ -19,7 +19,6 @@ export async function renderIdeasWorkspace(root, user) {
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <div class="owner-console-shell">
-      <h1 class="owner-console-page-title">RAYMONDOVICH / CONTROL CENTER</h1>
       <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
         <div class="ideas-workspace">
       <section class="ideas-registry" data-ideas-registry>
@@ -49,8 +48,18 @@ export async function renderIdeasWorkspace(root, user) {
             <select aria-label="Фильтр по категории" data-filter-category><option value="">Все категории</option></select>
           </label>
         </div>
+        <section class="ideas-overview" data-ideas-overview aria-label="Сводка идей">
+          <div class="ideas-stat-grid">
+            <article class="ideas-stat"><span>Всего идей</span><strong data-total-count>—</strong></article>
+            <article class="ideas-stat ideas-stat-priority"><span>Высокий приоритет</span><strong data-high-count>—</strong></article>
+          </div>
+          <article class="ideas-category-summary">
+            <div class="ideas-category-summary-head"><span>По категориям</span><span data-new-count>Новые: —</span></div>
+            <div class="ideas-category-track"><span data-category-progress></span></div>
+            <div class="ideas-category-summary-foot" data-category-summary>Загрузка…</div>
+          </article>
+        </section>
         <div class="ideas-list" data-ideas-list aria-live="polite"><p class="ideas-loading">Загрузка идей…</p></div>
-        <footer class="ideas-footer"><span data-ideas-count>—</span><span>ДОСТУП ВЛАДЕЛЬЦА</span></footer>
       </section>
 
       <section class="ideas-detail-host" data-ideas-detail hidden aria-live="polite"></section>
@@ -107,26 +116,64 @@ export async function renderIdeasWorkspace(root, user) {
     const status = root.querySelector("[data-filter-status]").value;
     const priority = root.querySelector("[data-filter-priority]").value;
     const category = root.querySelector("[data-filter-category]").value;
-    const filtered = ideas.filter(idea =>
+    const activeIdeas = ideas.filter(idea => !isArchived(idea));
+    const filtered = activeIdeas.filter(idea =>
       (!query || [idea.name,idea.description,idea.goal,idea.concept,idea.additional_info].some(v=>String(v||"").toLowerCase().includes(query))) &&
       (!status || idea.status === status) &&
       (!priority || idea.priority === priority) &&
       (!category || idea.category_id === category)
     );
-    root.querySelector("[data-ideas-count]").textContent = `НАЙДЕНО ИДЕЙ: ${filtered.length}`;
+    const highPriority = filtered.filter(idea => ["high","critical"].includes(idea.priority));
+    const newCount = activeIdeas.filter(idea => idea.status === "new").length;
+    root.querySelector("[data-total-count]").textContent = activeIdeas.length;
+    root.querySelector("[data-high-count]").textContent = activeIdeas.filter(idea => ["high","critical"].includes(idea.priority)).length;
+    root.querySelector("[data-new-count]").textContent = `Новые: ${newCount}`;
+
+    const categoryCounts = new Map();
+    activeIdeas.forEach(idea => {
+      const label = categories.find(item => item.id === idea.category_id)?.name || "Без категории";
+      categoryCounts.set(label, (categoryCounts.get(label) || 0) + 1);
+    });
+    const categorySummary = [...categoryCounts.entries()]
+      .sort((a,b) => b[1]-a[1])
+      .map(([name,count]) => `${escape(name)} · ${count}`)
+      .join("  /  ");
+    root.querySelector("[data-category-summary]").textContent = categorySummary || "Категории пока не добавлены";
+    root.querySelector("[data-category-progress]").style.width = activeIdeas.length ? "100%" : "0%";
+
     if (!filtered.length) {
-      list.innerHTML = `<div class="ideas-empty"><strong>${ideas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${ideas.length ? "Измените параметры поиска или фильтрации." : "Запишите первую идею."}</span></div>`;
+      list.innerHTML = `<div class="ideas-empty"><strong>${activeIdeas.length ? "Идей по этим условиям нет" : "Идей пока нет"}</strong><span>${activeIdeas.length ? "Измените параметры поиска или фильтрации." : "Добавьте первую идею."}</span></div>`;
       return;
     }
-    list.innerHTML = filtered.map(idea => {
+
+    const card = (idea, focused = false) => {
       const categoryName = categories.find(c=>c.id===idea.category_id)?.name || "Без категории";
-      return `<button class="idea-card" type="button" data-idea-open="${escape(idea.id)}">
-        <span class="idea-card-top"><span class="idea-category">${escape(categoryName)}</span><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span></span>
+      const statusName = STATUS[idea.status] || idea.status || "Новая";
+      return `<button class="idea-card ${focused ? "idea-card-focused" : "idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
+        <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span>${focused ? '<span class="idea-card-arrow" aria-hidden="true">↗</span>' : ""}</span>
         <span class="idea-card-title">${escape(idea.name)}</span>
-        <span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>
-        <span class="idea-card-bottom"><span>${escape(STATUS[idea.status] || idea.status)}</span><span class="idea-card-arrow" aria-hidden="true">↗</span></span>
+        ${focused ? `<span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>` : `<span class="idea-card-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>`}
       </button>`;
-    }).join("");
+    };
+
+    const focused = highPriority.slice(0, 2);
+    const focusedIds = new Set(focused.map(idea => idea.id));
+    const remaining = filtered.filter(idea => !focusedIds.has(idea.id));
+    const groups = new Map();
+    remaining.forEach(idea => {
+      const label = categories.find(item => item.id === idea.category_id)?.name || "Без категории";
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(idea);
+    });
+
+    list.innerHTML = `
+      ${focused.length ? `<section class="ideas-focus"><h2>В ФОКУСЕ</h2><div class="ideas-focus-list">${focused.map(idea => card(idea,true)).join("")}</div></section>` : ""}
+      ${remaining.length ? `<section class="ideas-others"><h2>ОСТАЛЬНЫЕ</h2><div class="ideas-groups">${[...groups.entries()].map(([label,items],index) => `
+        <details class="ideas-group" ${groups.size===1 ? "open" : ""}>
+          <summary><span>${escape(label)} · ${items.length}</span><span class="ideas-group-chevron" aria-hidden="true">⌄</span></summary>
+          <div class="ideas-group-items">${items.map(idea => card(idea,false)).join("")}</div>
+        </details>`).join("")}</div></section>` : ""}
+      `;
   }
 
   function showRegistry() {
