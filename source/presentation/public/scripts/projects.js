@@ -44,6 +44,7 @@ export async function renderProjectsWorkspace(root, user) {
   let projects = [];
   let moduleSummaries = {};
   let currentProjectId = null;
+  let projectFilters = { status: "", priority: "", origin: "" };
 
   const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -68,16 +69,27 @@ export async function renderProjectsWorkspace(root, user) {
     currentProjectId = null;
     const query = host.querySelector("[data-project-search]")?.value.trim().toLowerCase() || "";
     const visible = projects.filter(project => project.status !== "archived" &&
-      (!query || [project.name,project.description,project.goal].some(value => String(value||"").toLowerCase().includes(query))));
+      (!query || [project.name,project.description,project.goal].some(value => String(value||"").toLowerCase().includes(query))) &&
+      (!projectFilters.status || project.status === projectFilters.status) &&
+      (!projectFilters.priority || (project.priority || "normal") === projectFilters.priority) &&
+      (!projectFilters.origin || (projectFilters.origin === "idea" ? Boolean(project.source_idea_id) : !project.source_idea_id)));
     host.innerHTML = `
       <header class="projects-toolbar">
         <div><p class="projects-eyebrow">OWNER CONTROL CENTER / BUSINESS</p><h1>Проекты</h1><p class="projects-intro">Рабочие пространства собственных и совместных проектов.</p></div>
-        <button class="projects-primary" type="button" data-project-create><span aria-hidden="true">＋</span> Новый проект</button>
       </header>
       <div class="projects-registry-tools">
         <label class="projects-search-wrap"><span class="sr-only">Поиск проектов</span><input class="projects-search" type="search" placeholder="Поиск проектов" value="${escape(query)}" data-project-search></label>
-        <span class="projects-count">${visible.length} ${visible.length===1?"проект":visible.length>1&&visible.length<5?"проекта":"проектов"}</span>
+        <div class="projects-toolbar-actions">
+          <button class="projects-filter-toggle" type="button" data-project-filter-toggle aria-label="Настройки фильтрации" aria-expanded="false" aria-controls="projects-filter-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+          <button class="projects-create-toggle" type="button" data-project-create aria-label="Добавить новый проект" title="Новый проект"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
       </div>
+      <div class="projects-filters" id="projects-filter-panel" data-project-filters hidden>
+        <label>Статус<select aria-label="Фильтр по статусу" data-project-filter-status><option value="">Все статусы</option>${Object.entries(PROJECT_STATUS).filter(([key])=>key!=="archived").map(([key,label])=>'<option value="'+key+'" '+(projectFilters.status===key?"selected":"")+'>'+label+'</option>').join("")}</select></label>
+        <label>Приоритет<select aria-label="Фильтр по приоритету" data-project-filter-priority><option value="">Все приоритеты</option>${Object.entries(PROJECT_PRIORITY).map(([key,label])=>'<option value="'+key+'" '+(projectFilters.priority===key?"selected":"")+'>'+label+'</option>').join("")}</select></label>
+        <label>Источник<select aria-label="Фильтр по источнику" data-project-filter-origin><option value="">Все проекты</option><option value="idea" ${projectFilters.origin==="idea"?"selected":""}>Из идеи</option><option value="direct" ${projectFilters.origin==="direct"?"selected":""}>Создан напрямую</option></select></label>
+      </div>
+      <div class="projects-count">${visible.length} ${visible.length===1?"проект":visible.length>1&&visible.length<5?"проекта":"проектов"}</div>
       <div class="projects-registry-list" data-project-list>
         ${visible.length ? visible.map(project=>`
           <button class="projects-registry-card" type="button" data-project-open="${escape(project.id)}">
@@ -196,6 +208,13 @@ export async function renderProjectsWorkspace(root, user) {
       navigation?.navigateScreen("project-create",{});
       return;
     }
+    const filterToggle = event.target.closest("[data-project-filter-toggle]");
+    if (filterToggle) {
+      const panel = host.querySelector("[data-project-filters]");
+      panel.hidden = !panel.hidden;
+      filterToggle.setAttribute("aria-expanded",String(!panel.hidden));
+      return;
+    }
     const open = event.target.closest("[data-project-open]");
     if (open) {
       navigation?.navigateScreen("project-overview",{projectId:open.dataset.projectOpen});
@@ -217,6 +236,17 @@ export async function renderProjectsWorkspace(root, user) {
       input?.focus();
       input?.setSelectionRange(position,position);
     }
+  },listenerOptions);
+  root.addEventListener("change",event=>{
+    if(event.target.matches("[data-project-filter-status]")) projectFilters.status=event.target.value;
+    else if(event.target.matches("[data-project-filter-priority]")) projectFilters.priority=event.target.value;
+    else if(event.target.matches("[data-project-filter-origin]")) projectFilters.origin=event.target.value;
+    else return;
+    renderRegistry();
+    const panel=host.querySelector("[data-project-filters]");
+    const toggle=host.querySelector("[data-project-filter-toggle]");
+    if(panel)panel.hidden=false;
+    toggle?.setAttribute("aria-expanded","true");
   },listenerOptions);
 
   root.addEventListener("submit",async event=>{
