@@ -154,9 +154,7 @@ export async function renderProjectsWorkspace(root, user) {
     };
     host.innerHTML = `
       <section class="projects-module-screen">
-        <header class="projects-screen-heading">
-          <p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1><p>${module.description}</p>
-        </header>
+        ${key==="services"?"":`<header class="projects-screen-heading"><p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1><p>${module.description}</p></header>`}
         <div class="projects-module-body" data-project-module-body></div>
       </section>`;
     await renderers[key](host.querySelector("[data-project-module-body]"),project,user);
@@ -169,7 +167,7 @@ export async function renderProjectsWorkspace(root, user) {
   function renderServicesCategory(project,category,openCreate){
     if(!project||!["infrastructure","services"].includes(category))return renderRegistry();
     const module=MODULES.services;
-    host.innerHTML=`<section class="projects-module-screen"><header class="projects-screen-heading"><p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1></header><div class="projects-module-body" data-project-module-body></div></section>`;
+    host.innerHTML=`<section class="projects-module-screen"><div class="projects-module-body" data-project-module-body></div></section>`;
     renderProjectServicesScreen(host.querySelector("[data-project-module-body]"),project,user,category,openCreate);
   }
 
