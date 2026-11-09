@@ -4,7 +4,7 @@ import { renderProjectServicesScreen } from "./project-modules/services.js";
 import { renderProjectAccountingScreen } from "./project-modules/accounting.js";
 import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
 import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
-import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
+import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -47,7 +47,6 @@ export async function renderProjectsWorkspace(root, user) {
   let currentProjectId = null;
   let projectFilters = { status: "", priority: "", origin: "" };
 
-  const date = value => value ? new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"short",year:"numeric"}).format(new Date(value)) : "—";
   const statusLabel = status => PROJECT_STATUS[status] || status || "Не указан";
   const priorityLabel = priority => PROJECT_PRIORITY[priority] || priority || "Обычный";
 
