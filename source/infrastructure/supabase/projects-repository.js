@@ -24,3 +24,10 @@ export async function insertProjectRecord(payload){return supabase.from("project
 export async function findEcosystemToolBySlug(ownerId,slug){return supabase.from("ecosystem_tools").select("id,name,slug,category,official_url,status").eq("owner_id",ownerId).eq("slug",slug).maybeSingle();}
 export async function insertEcosystemTool(payload){return supabase.from("ecosystem_tools").insert(payload).select("id").single();}
 export async function insertProjectToolRelation(payload){return supabase.from("project_tool_relations").insert(payload).select("id").single();}
+
+export async function updateProjectToolRelation(id,payload){return supabase.from("project_tool_relations").update(payload).eq("id",id).select("id").single();}
+export async function deleteProjectToolRelation(id){return supabase.from("project_tool_relations").delete().eq("id",id).select("id").single();}
+export async function updateEcosystemTool(id,payload){return supabase.from("ecosystem_tools").update(payload).eq("id",id).select("id").single();}
+export async function updateToolResource(id,payload){return supabase.from("tool_resources").update(payload).eq("id",id).select("id").single();}
+export async function updateProjectResourceRelation(id,payload){return supabase.from("project_resource_relations").update(payload).eq("id",id).select("id").single();}
+export async function deleteProjectResourceRelation(id){return supabase.from("project_resource_relations").delete().eq("id",id).select("id").single();}
