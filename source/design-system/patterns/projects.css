@@ -434,3 +434,15 @@
   .projects-filters{grid-template-columns:1fr;gap:10px;padding:12px;border-radius:14px}
   .projects-filters select{min-height:40px}
 }
+
+
+/* Align the project search field and its action buttons on one control line. */
+.projects-registry-tools{align-items:center}
+.projects-search-wrap{line-height:0}
+.projects-search{display:block;height:49px;min-height:49px}
+.projects-toolbar-actions{align-self:center}
+.projects-filter-toggle,.projects-create-toggle{height:49px}
+@media(max-width:600px){
+  .projects-search{height:45px;min-height:45px}
+  .projects-filter-toggle,.projects-create-toggle{height:45px}
+}
