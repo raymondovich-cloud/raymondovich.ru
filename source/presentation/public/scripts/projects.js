@@ -113,6 +113,8 @@ export async function renderProjectsWorkspace(root, user) {
   function renderOverview(project) {
     if (!project) return renderRegistry();
     currentProjectId = project.id;
+    const servicesCount = moduleSummaries[project.id]?.services?.count || 0;
+    const serviceDots = Array.from({length:6},(_,index)=>`<i class="${index<servicesCount?"is-active":""}"></i>`).join("");
     host.innerHTML = `
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
@@ -133,7 +135,7 @@ export async function renderProjectsWorkspace(root, user) {
             <button type="button" class="projects-module-card" data-project-module="${key}" data-project-id="${escape(project.id)}">
               <span class="projects-module-top"><span class="projects-module-icon" aria-hidden="true">${key==="services"?"⌁":key==="accounting"?"▣":key==="analytics"?"⌁":"◉"}</span><span class="projects-module-summary">${escape(moduleSummary(project.id,key))}</span></span>
               <span class="projects-module-title">${escape(module.title)}</span>
-              ${key==="services"?`<span class="projects-service-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>`:key==="accounting"?'<span class="projects-empty-bar" aria-hidden="true"></span>':key==="analytics"?'<span class="projects-analytics-line" aria-hidden="true"></span>':'<span class="projects-platform-marks" aria-hidden="true">◎　▷　➤　＠</span>'}
+              ${key==="services"?`<span class="projects-service-dots" aria-hidden="true">${serviceDots}</span>`:key==="accounting"?'<span class="projects-empty-bar" aria-hidden="true"></span>':key==="analytics"?'<span class="projects-placeholder-chart">График появится после сбора данных</span>':'<span class="projects-placeholder-platforms">Площадки не добавлены</span>'}
               <span class="projects-module-foot">${key==="services"?servicesCount?"Управление подключениями":"Добавьте сервисы проекта":key==="accounting"?"Ручной учёт доходов и расходов":key==="analytics"?"Динамика и источники трафика":"Каналы и площадки продвижения"}</span>
               <span class="projects-module-arrow" aria-hidden="true">↗</span>
             </button>`).join("")}
