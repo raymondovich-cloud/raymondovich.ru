@@ -36,7 +36,7 @@ export async function loadProjectsWorkspace(){
     const promotion=promotionResult.status==="fulfilled"?promotionResult.value:{state:"error",label:"Нет данных"};
     const serviceDto=services.byProjectId?.[project.id]||{connectedCount:0,servicesCount:0,resourcesCount:0,monthlyCost:[],hasPaid:false};
     const serviceError=Boolean(services.error);
-    const expense=finance?.state==="value"?finance:(!serviceError?buildServicesExpense(serviceDto):notConfigured());
+    const expense=finance?.state==="value"?finance:(finance?.state==="not_configured"&&!serviceError?buildServicesExpense(serviceDto):notConfigured());
     return [project.id,{
       services:{
         ...serviceDto,

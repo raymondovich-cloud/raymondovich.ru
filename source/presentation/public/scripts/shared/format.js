@@ -3,7 +3,7 @@ export function formatMoney(value,currency="RUB"){
   if(!Number.isFinite(amount))return "—";
   const code=String(currency||"RUB").toUpperCase();
   try{
-    return new Intl.NumberFormat("ru-RU",{style:"currency",currency:code,maximumFractionDigits:2}).format(amount);
+    return new Intl.NumberFormat("ru-RU",{style:"currency",currency:code,maximumFractionDigits:Number.isInteger(amount)?0:2}).format(amount);
   }catch{
     return new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2}).format(amount)+" "+code;
   }

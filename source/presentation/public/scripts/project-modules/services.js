@@ -1,26 +1,15 @@
 import { getProjectServices, createProjectService, updateProjectService, removeProjectService } from "/source/application/services/project-services.js";
 import { createProjectResource, updateProjectResource, removeProjectResource } from "/source/application/resources/project-resources.js";
 import { escapeHtml as esc, workspaceScreenHead } from "../shared/workspace-ui.js";
+import { formatMoney, formatPaymentDate } from "../shared/format.js";
 
 const resourceTypes={repository:"Репозиторий",domain:"Домен",database:"База данных",server:"Сервер",api:"API",deployment:"Развёртывание",dns_zone:"DNS",supabase_project:"Проект Supabase",other:"Ресурс"};
 const statusLabels={active:"Активен",testing:"Тестирование",paused:"Приостановлен",retired:"Выведен",unknown:"Неизвестен",needs_verification:"Требует проверки",planned:"Запланирован"};
 const categoryLabels={ai:"AI / ИИ",development:"Разработка",domains_dns:"Домены и DNS",database:"База данных",hosting:"Хостинг",analytics:"Аналитика",payments:"Платежи",communication:"Коммуникации",other:"Другое"};
 let activeController=null;
 
-const money=value=>new Intl.NumberFormat("ru-RU",{style:"currency",currency:"RUB",maximumFractionDigits:0}).format(Number(value)||0);
-const paymentDate=value=>{
-  if(!value)return "Без даты оплаты";
-  const due=new Date(value+"T12:00:00");
-  const today=new Date();today.setHours(12,0,0,0);
-  const days=Math.round((due-today)/86400000);
-  if(days===0)return "сегодня";
-  if(days===1)return "завтра";
-  if(days>1)return "через "+days+" дн.";
-  if(days===-1)return "просрочен на 1 дн.";
-  return "просрочен на "+Math.abs(days)+" дн.";
-};
-const priceLabel=row=>Number(row.monthly_cost)>0?money(row.monthly_cost):"Бесплатно";
-const paymentMeta=row=>Number(row.monthly_cost)>0?paymentDate(row.next_payment_date):"Без оплаты";
+const priceLabel=row=>Number(row.monthly_cost)>0?formatMoney(row.monthly_cost,row.currency):"Бесплатно";
+const paymentMeta=row=>Number(row.monthly_cost)>0?formatPaymentDate(row.next_payment_date):"Без оплаты";
 
 function serviceCard(row){
   const tool=row.ecosystem_tools||{};
@@ -39,9 +28,15 @@ function resourceCard(row){
     <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span></div>
   </article>`;
 }
-function summaryCard(title,total,count,accent){
+function summaryCard(title,rows,count,accent){
+  const totals=new Map();
+  rows.forEach(row=>{
+    const currency=String(row.currency||"RUB").toUpperCase();
+    totals.set(currency,(totals.get(currency)||0)+Number(row.monthly_cost||0));
+  });
+  const amount=[...totals.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([currency,total])=>formatMoney(total,currency)).join(" · ")||formatMoney(0,"RUB");
   const countLabel=title==="Сервисы"?"подключено":count===1?"ресурс":count>1&&count<5?"ресурса":"ресурсов";
-  return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${money(total)}</strong><small>в месяц · ${count} ${countLabel}</small></article>`;
+  return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${amount}</strong><small>в месяц · ${count} ${countLabel}</small></article>`;
 }
 function fillForm(form,values){for(const [name,value] of Object.entries(values)){const field=form.elements.namedItem(name);if(field&&value!==null&&value!==undefined)field.value=String(value);}}
 function showForm(host,kind,visible){
@@ -71,18 +66,22 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   }
   if(controller.signal.aborted)return;
   const services=data.services||[],resources=data.resources||[];
-  const criticalServices=services.filter(x=>x.dependency_level==="critical");
-  const optionalServices=services.filter(x=>x.dependency_level!=="critical");
-  const criticalResources=resources.filter(x=>x.dependency_level==="critical");
-  const optionalResources=resources.filter(x=>x.dependency_level!=="critical");
-  const infraCost=[...criticalServices,...criticalResources].reduce((sum,x)=>sum+Number(x.monthly_cost||0),0);
-  const servicesCost=[...optionalServices,...optionalResources].reduce((sum,x)=>sum+Number(x.monthly_cost||0),0);
+  const connectedServices=data.connectedServices||services.filter(row=>row.connected!==false);
+  const connectedResources=data.connectedResources||resources.filter(row=>row.connected!==false);
+  const inactiveServices=services.filter(row=>row.connected===false);
+  const inactiveResources=resources.filter(row=>row.connected===false);
+  const criticalServices=connectedServices.filter(x=>x.dependency_level==="critical");
+  const optionalServices=connectedServices.filter(x=>x.dependency_level!=="critical");
+  const criticalResources=connectedResources.filter(x=>x.dependency_level==="critical");
+  const optionalResources=connectedResources.filter(x=>x.dependency_level!=="critical");
+  const infraRows=[...criticalServices,...criticalResources];
+  const optionalRows=[...optionalServices,...optionalResources];
   const infraCount=criticalServices.length+criticalResources.length;
   const optionalCount=optionalServices.length+optionalResources.length;
 
   host.innerHTML = `
     ${workspaceScreenHead({title:"Связи проекта",subtitle:"Инфраструктура и подключённые сервисы проекта."})}
-    <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraCost,infraCount,true)}${summaryCard("Сервисы",servicesCost,optionalCount,false)}</div>
+    <div class="projects-service-summary-grid">${summaryCard("Инфраструктура",infraRows,infraCount,true)}${summaryCard("Сервисы",optionalRows,optionalCount,false)}</div>
 
     <section class="projects-service-group">
       <header class="projects-service-group-heading is-infrastructure"><div class="projects-service-group-symbol is-critical" aria-hidden="true">⚓</div><div><h2>Инфраструктура</h2><p>Без этого проект не работает</p></div><button class="projects-primary projects-service-add" type="button" data-resource-add aria-label="Добавить ресурс">＋</button></header>
@@ -113,6 +112,10 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
       </form>
       <div class="projects-service-list ${optionalServices.length+optionalResources.length?"":"is-empty"}">${[...optionalServices.map(serviceCard),...optionalResources.map(resourceCard)].join("")||''}</div>
     </section>
+    ${inactiveServices.length+inactiveResources.length?`<section class="projects-service-group">
+      <header class="projects-service-group-heading"><div><h2>Приостановленные и выведенные</h2><p>Не учитываются как подключённые</p></div></header>
+      <div class="projects-service-list">${[...inactiveServices.map(serviceCard),...inactiveResources.map(resourceCard)].join("")}</div>
+    </section>`:""}
   `;
 
   let menuTarget=null,longPressTimer=null;
