@@ -138,3 +138,6 @@
   --ws-control-accent:var(--color-accent);
   --ws-control-accent-bright:var(--color-accent-bright);
 }
+
+:root[data-platform="telegram"][data-tg-color-scheme="light"] { color-scheme: light; }
+:root[data-platform="telegram"][data-tg-color-scheme="dark"] { color-scheme: dark; }

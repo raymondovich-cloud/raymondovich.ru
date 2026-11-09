@@ -5,6 +5,9 @@
  */
 body {
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  min-height: var(--tg-viewport-stable-height, 100dvh);
   background-color: var(--color-bg);
   background-image: var(--gradient-home-atmosphere);
   background-position: right top;

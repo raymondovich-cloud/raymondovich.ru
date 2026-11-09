@@ -1,3 +1,5 @@
+import "/source/platform/bootstrap.js";
+
 const main = document.querySelector("#main");
 const homeMarkup = main?.innerHTML ?? "";
 
