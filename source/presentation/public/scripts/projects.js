@@ -1,4 +1,5 @@
-import { supabase } from "/source/infrastructure/supabase/client.js";
+import { loadProjectsRegistry, createProjectRecord } from "/source/application/projects/project-registry.js";
+import { getProjectServices } from "/source/application/services/project-services.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -49,16 +50,13 @@ export async function renderProjectsWorkspace(root, user) {
 
   async function loadProjects() {
     host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
-    const [projectResult, relationResult] = await Promise.all([
-      supabase.from("projects").select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at").order("updated_at",{ascending:false}),
-      supabase.from("project_tool_relations").select("project_id,status")
-    ]);
-    if (projectResult.error) {
+    const result = await loadProjectsRegistry();
+    if (result.error) {
       host.innerHTML = '<div class="projects-state projects-error"><strong>Не удалось загрузить проекты</strong><p>Проверьте подключение и права доступа.</p></div>';
       return false;
     }
-    projects = projectResult.data || [];
-    toolRelations = relationResult.error ? [] : (relationResult.data || []);
+    projects = result.projects;
+    toolRelations = result.serviceRelations;
     return true;
   }
 
@@ -152,14 +150,11 @@ export async function renderProjectsWorkspace(root, user) {
     const module = MODULES[key];
     let body = "";
     if (key === "services") {
-      const [relationResult, resourceResult] = await Promise.all([
-        supabase.from("project_tool_relations").select("id,relationship_type,purpose,status,evidence_note,last_verified_at,ecosystem_tools(name,category,official_url)").eq("project_id",project.id).order("created_at",{ascending:false}),
-        supabase.from("project_resource_relations").select("id,role,status,evidence_note,tool_resources(name,resource_type,resource_url,environment)").eq("project_id",project.id).order("created_at",{ascending:false})
-      ]);
-      const services = relationResult.error ? [] : relationResult.data || [];
-      const resources = resourceResult.error ? [] : resourceResult.data || [];
+      const serviceData = await getProjectServices(project.id);
+      const services = serviceData.services;
+      const resources = serviceData.resources;
       body = `
-        ${relationResult.error||resourceResult.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить связи сервисов</strong><p>Проверьте права доступа к реестру сервисов.</p></div>':""}
+        ${serviceData.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить связи сервисов</strong><p>Проверьте права доступа к реестру сервисов.</p></div>':""}
         <section class="projects-module-section"><h2>Подключённые сервисы</h2>
           ${services.length?services.map(item=>`<article class="projects-data-row"><div><strong>${escape(item.ecosystem_tools?.name||"Сервис без названия")}</strong><span>${escape(item.purpose||item.relationship_type||"Назначение не указано")}</span></div><span class="projects-status status-${escape(item.status)}">${escape(item.status==="active"?"Активен":item.status==="paused"?"Приостановлен":item.status==="planned"?"Запланирован":"Требует проверки")}</span></article>`).join(""):'<div class="projects-state"><strong>Сервисы пока не подключены</strong><p>Список будет пополняться по мере регистрации сервисов в общем каталоге.</p></div>'}
         </section>
@@ -241,16 +236,7 @@ export async function renderProjectsWorkspace(root, user) {
     const errorNode=form.querySelector("[data-project-form-error]");
     button.disabled=true;
     try{
-      const payload={
-        owner_id:user.id,
-        name:String(values.name||"").trim(),
-        description:String(values.description||"").trim(),
-        goal:String(values.goal||"").trim(),
-        status:values.status,
-        priority:values.priority,
-        source_idea_id:null
-      };
-      const result=await supabase.from("projects").insert(payload).select("id").single();
+      const result=await createProjectRecord(user.id,values);
       if(result.error)throw result.error;
       await loadProjects();
       navigationFallback(result.data.id);
