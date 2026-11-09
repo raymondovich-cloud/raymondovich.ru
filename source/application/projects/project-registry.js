@@ -1,4 +1,4 @@
-import { listProjects, insertProjectRecord } from "../../infrastructure/supabase/projects-repository.js";
+import { listProjects, insertProjectRecord, countProjectsSummary } from "../../infrastructure/supabase/projects-repository.js";
 
 export async function loadProjectsRegistry() {
   const projects = await listProjects();
@@ -17,4 +17,9 @@ export async function createProjectRecord(userId, values) {
     source_idea_id: null
   };
   return insertProjectRecord(payload);
+}
+
+export async function getProjectsSummary(){
+  const result=await countProjectsSummary();
+  return {total:result.total,activeCount:result.activeCount,error:result.error||null};
 }

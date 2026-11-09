@@ -73,3 +73,17 @@
  .owner-console-card.is-planned .owner-console-card-status{background:var(--ws-control-subtle)}
 }
 @media(prefers-reduced-motion:reduce){.owner-console-card,.owner-console-group-chevron{transition:none}.owner-console-group[open] .owner-console-grid{animation:none}.owner-console-card.is-active:hover,.owner-console-card.is-active:active{transform:none}}
+
+.owner-console-metric-badge{
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  min-width:23px;height:23px;padding:0 7px;border:1px solid var(--ws-control-strong-line);
+  border-radius:var(--radius-lg);background:var(--ws-control-surface-raised);
+  color:var(--ws-control-accent);font:600 10px/1 var(--font-mono);font-variant-numeric:tabular-nums;
+}
+.owner-console-metric-badge.is-loading{
+  min-width:23px;color:var(--ws-control-muted);background:var(--ws-control-surface);
+  animation:owner-console-metric-pulse 1.1s ease-in-out infinite;
+}
+.owner-console-metric-badge[hidden]{display:none}
+@keyframes owner-console-metric-pulse{50%{opacity:.48}}
+@media(prefers-reduced-motion:reduce){.owner-console-metric-badge.is-loading{animation:none}}

@@ -3,10 +3,18 @@ import { supabase } from "./client.js";
 export async function listProjects(){
   return supabase.from("projects").select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at").order("updated_at",{ascending:false});
 }
-export async function listProjectToolRelations(projectId=null){
-  let query=supabase.from("project_tool_relations").select("project_id,status");
-  if(projectId)query=query.eq("project_id",projectId);
-  return query;
+export async function listProjectServiceSummaryRelations(){
+  return supabase.from("project_tool_relations").select("project_id,status,monthly_cost,currency");
+}
+export async function listProjectResourceSummaryRelations(){
+  return supabase.from("project_resource_relations").select("project_id,status,monthly_cost,currency");
+}
+export async function countProjectsSummary(){
+  const [total,active]=await Promise.all([
+    supabase.from("projects").select("id",{count:"exact",head:true}).neq("status","archived"),
+    supabase.from("projects").select("id",{count:"exact",head:true}).eq("status","active")
+  ]);
+  return {total:total.count||0,activeCount:active.count||0,error:total.error||active.error||null};
 }
 export async function listProjectServiceDetails(projectId){
   const [services,resources]=await Promise.all([

@@ -1,4 +1,4 @@
-import { listProjectServiceDetails, listProjectToolRelations, findEcosystemToolBySlug, insertEcosystemTool, insertProjectToolRelation, updateProjectToolRelation, deleteProjectToolRelation, updateEcosystemTool } from "../../infrastructure/supabase/projects-repository.js";
+import { listProjectServiceDetails, listProjectServiceSummaryRelations, listProjectResourceSummaryRelations, findEcosystemToolBySlug, insertEcosystemTool, insertProjectToolRelation, updateProjectToolRelation, deleteProjectToolRelation, updateEcosystemTool } from "../../infrastructure/supabase/projects-repository.js";
 
 const CATEGORIES=new Set(["ai","development","domains_dns","database","hosting","analytics","payments","communication","other"]);
 const DEPENDENCIES=new Set(["critical","optional"]);
@@ -21,16 +21,51 @@ function validateUrl(value,label){
   if(!["http:","https:"].includes(parsed.protocol))throw new Error("Ссылка должна использовать HTTP или HTTPS.");
   return parsed.href;
 }
+const INACTIVE_RELATION_STATUSES = new Set(["retired","paused"]);
+
+/** A relation is connected unless explicitly retired or paused. */
+export function isProjectServiceConnected(relation){
+  return !INACTIVE_RELATION_STATUSES.has(relation?.status);
+}
+
 export async function getProjectServices(projectId){
   if(!projectId)throw new Error("Project context is required.");
   const result=await listProjectServiceDetails(projectId);
-  return {services:result.services.data||[],resources:result.resources.data||[],error:result.services.error||result.resources.error||null};
+  const services=result.services.data||[],resources=result.resources.data||[];
+  return {
+    services:services.map(row=>({...row,connected:isProjectServiceConnected(row)})),
+    resources:resources.map(row=>({...row,connected:isProjectServiceConnected(row)})),
+    connectedServices:services.filter(isProjectServiceConnected),
+    connectedResources:resources.filter(isProjectServiceConnected),
+    error:result.services.error||result.resources.error||null
+  };
 }
+
+export function aggregateProjectServicesSummary(serviceRelations=[],resourceRelations=[]){
+  const summaries={};
+  const add=(row,type)=>{
+    if(!isProjectServiceConnected(row)||!row.project_id)return;
+    const summary=summaries[row.project_id]||(summaries[row.project_id]={connectedCount:0,servicesCount:0,resourcesCount:0,monthlyCost:[],hasPaid:false});
+    summary.connectedCount+=1;
+    if(type==="service")summary.servicesCount+=1;else summary.resourcesCount+=1;
+    const amount=Number(row.monthly_cost||0);
+    if(Number.isFinite(amount)&&amount>0)summary.hasPaid=true;
+    const currency=String(row.currency||"RUB").toUpperCase();
+    const existing=summary.monthlyCost.find(item=>item.currency===currency);
+    if(existing)existing.amount+=Number.isFinite(amount)?amount:0;
+    else summary.monthlyCost.push({currency,amount:Number.isFinite(amount)?amount:0});
+  };
+  serviceRelations.forEach(row=>add(row,"service"));
+  resourceRelations.forEach(row=>add(row,"resource"));
+  Object.values(summaries).forEach(summary=>summary.monthlyCost.sort((a,b)=>a.currency.localeCompare(b.currency)));
+  return summaries;
+}
+
 export async function getProjectServicesSummary(){
-  const result=await listProjectToolRelations();
-  if(result.error)return {counts:{},error:result.error};
-  const counts={};for(const row of result.data||[])if(row.status==="active")counts[row.project_id]=(counts[row.project_id]||0)+1;
-  return {counts,error:null};
+  const [services,resources]=await Promise.all([listProjectServiceSummaryRelations(),listProjectResourceSummaryRelations()]);
+  const error=services.error||resources.error||null;
+  if(error)return {byProjectId:{},error};
+  return {byProjectId:aggregateProjectServicesSummary(services.data||[],resources.data||[]),error:null};
 }
 export async function createProjectService(ownerId,projectId,values){
   const name=String(values.name||"").trim(),category=String(values.category||"other"),dependency=String(values.dependency_level||"optional"),relationship=dependency==="critical"?"infrastructure_dependency":"manual_use";

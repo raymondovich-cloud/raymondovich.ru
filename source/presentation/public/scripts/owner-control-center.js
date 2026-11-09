@@ -1,3 +1,7 @@
+import { getOwnerHubSummary } from "/source/application/owner/owner-hub-summary.js";
+
+let hubHydrationSequence=0;
+
 const icons = {
   projects: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
   partners: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.8 19c.5-3 2.3-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 15c3.7-.9 6.2.5 7.2 3.5"/></svg>',
@@ -50,10 +54,14 @@ function renderSection(section) {
     ? `href="${section.route}" data-owner-module="${section.module}"`
     : 'href="#" aria-disabled="true" tabindex="-1" data-coming-soon="true"';
 
+  const metric=["projects","ideas"].includes(section.id)
+    ? `<span class="owner-console-metric-badge is-loading" data-owner-hub-metric="${section.id}" aria-label="Загрузка счётчика">…</span>`
+    : "";
   return `
     <a class="owner-console-card ${active ? "is-active" : "is-planned"}" ${attributes}>
       <span class="owner-console-card-top">
         <span class="owner-console-icon">${icons[section.icon]}</span>
+        ${metric}
         <span class="owner-console-card-status">${active ? "ОТКРЫТЬ ↗" : "В РАЗРАБОТКЕ"}</span>
       </span>
       <span class="owner-console-card-content">
@@ -113,4 +121,51 @@ export function renderOwnerControlCenter(user) {
         </div>
       </section>
     </div>`;
+}
+
+
+export async function hydrateOwnerHubMetrics(shell){
+  const sequence=++hubHydrationSequence;
+  const badges=[...shell.querySelectorAll("[data-owner-hub-metric]")];
+  badges.forEach(badge=>{
+    badge.hidden=false;
+    badge.textContent="…";
+    badge.title="";
+    badge.setAttribute("aria-label","Загрузка счётчика");
+    badge.classList.add("is-loading");
+    badge.classList.remove("is-error");
+  });
+  let summary;
+  try{summary=await getOwnerHubSummary();}
+  catch{
+    if(sequence!==hubHydrationSequence||!shell.isConnected||shell.dataset.ownerWorkspace!=="control-center")return;
+    badges.forEach(badge=>{
+      badge.hidden=true;
+      badge.title="Не удалось получить данные";
+      badge.setAttribute("aria-label","Не удалось получить данные");
+      badge.classList.remove("is-loading");
+    });
+    return;
+  }
+  if(sequence!==hubHydrationSequence||!shell.isConnected||shell.dataset.ownerWorkspace!=="control-center")return;
+  for(const badge of badges){
+    const kind=badge.dataset.ownerHubMetric;
+    const data=summary[kind];
+    if(!data){
+      badge.hidden=true;
+      badge.title="Не удалось получить данные";
+      badge.setAttribute("aria-label","Не удалось получить данные");
+      badge.classList.remove("is-loading");
+      continue;
+    }
+    badge.textContent=String(data.total);
+    if(kind==="projects"){
+      badge.title=`${data.total} проектов, из них ${data.activeCount} в работе`;
+      badge.setAttribute("aria-label",badge.title);
+    }else{
+      badge.title=`${data.total} идей, из них ${data.highPriorityCount} высокого приоритета`;
+      badge.setAttribute("aria-label",badge.title);
+    }
+    badge.classList.remove("is-loading","is-error");
+  }
 }

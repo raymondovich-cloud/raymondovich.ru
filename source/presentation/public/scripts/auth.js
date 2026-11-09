@@ -1,5 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
-import { renderOwnerControlCenter } from "./owner-control-center.js";
+import { renderOwnerControlCenter, hydrateOwnerHubMetrics } from "./owner-control-center.js";
 import { renderIdeasWorkspace } from "./ideas.js";
 import { renderProjectsWorkspace } from "./projects.js";
 
@@ -132,6 +132,7 @@ function renderSignedIn(root, user) {
       shell.dataset.ownerWorkspace = "control-center";
       document.body.dataset.page = "owner-control-center";
       shell.innerHTML = renderOwnerControlCenter(user);
+      hydrateOwnerHubMetrics(shell);
     }
     return;
   }

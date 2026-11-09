@@ -26,7 +26,7 @@ function serviceCard(row){
   const tool=row.ecosystem_tools||{};
   return `<article class="projects-service-item" data-service-row="service" data-row-id="${esc(row.id)}">
     <span class="projects-service-item-icon" aria-hidden="true">${esc((tool.name||"S").slice(0,1).toUpperCase())}</span>
-    <div class="projects-service-item-main"><strong>${esc(tool.name||"Сервис без названия")}</strong><span>${esc(row.purpose||categoryLabels[tool.category]||"Назначение не указано")}</span></div>
+    <div class="projects-service-item-main"><strong>${esc(tool.name||"Сервис без названия")}</strong><span>${esc(row.purpose||categoryLabels[tool.category]||"Назначение не указано")}</span>${row.connected===false?`<span>${esc(statusLabels[row.status]||row.status||"Не подключено")}</span>`:""}</div>
     <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span></div>
   </article>`;
 }
@@ -35,7 +35,7 @@ function resourceCard(row){
   const meta=[resourceTypes[resource.resource_type]||resource.resource_type,provider.name,resource.environment].filter(Boolean).join(" · ");
   return `<article class="projects-service-item" data-service-row="resource" data-row-id="${esc(row.id)}">
     <span class="projects-service-item-icon" aria-hidden="true">${esc((resource.resource_type==="domain"?"◎":resource.resource_type==="database"?"▤":resource.resource_type==="dns_zone"?"⌘":"↗"))}</span>
-    <div class="projects-service-item-main"><strong>${esc(resource.name||"Ресурс")}</strong><span>${esc(meta)}${resource.resource_url?' · <a href="'+esc(resource.resource_url)+'" target="_blank" rel="noopener noreferrer">Открыть ↗</a>':""}</span>${row.role?'<span>'+esc(row.role)+'</span>':""}</div>
+    <div class="projects-service-item-main"><strong>${esc(resource.name||"Ресурс")}</strong><span>${esc(meta)}${resource.resource_url?' · <a href="'+esc(resource.resource_url)+'" target="_blank" rel="noopener noreferrer">Открыть ↗</a>':""}</span>${row.role?'<span>'+esc(row.role)+'</span>':""}${row.connected===false?`<span>${esc(statusLabels[row.status]||row.status||"Не подключено")}</span>`:""}</div>
     <div class="projects-service-item-finance"><strong>${priceLabel(row)}</strong><span>${paymentMeta(row)}</span></div>
   </article>`;
 }

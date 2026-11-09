@@ -358,3 +358,7 @@
 .projects-service-group-heading.is-connected-services p{color:var(--ws-card-muted)}@media(max-width:600px){
   .projects-service-group-heading.is-connected-services{padding:11px 12px;border-radius:15px}
 }
+
+.projects-project-metrics .projects-metric-source{
+  color:var(--ws-project-muted);font-size:10px;line-height:1.3;font-weight:400;
+}

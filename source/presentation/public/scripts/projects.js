@@ -5,6 +5,7 @@ import { renderProjectAccountingScreen } from "./project-modules/accounting.js";
 import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
 import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
 import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
+import { formatMoney } from "./shared/format.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -45,14 +46,17 @@ export async function renderProjectsWorkspace(root, user) {
   let projects = [];
   let moduleSummaries = {};
   let currentProjectId = null;
+  let loadSequence = 0;
   let projectFilters = { status: "", priority: "", origin: "" };
 
   const statusLabel = status => PROJECT_STATUS[status] || status || "Не указан";
   const priorityLabel = priority => PROJECT_PRIORITY[priority] || priority || "Обычный";
 
   async function loadProjects() {
+    const sequence=++loadSequence;
     host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
     const result = await loadProjectsWorkspace();
+    if(sequence!==loadSequence||controller.signal.aborted)return false;
     if (result.error) {
       host.innerHTML = '<div class="projects-state projects-error"><strong>Не удалось загрузить проекты</strong><p>Проверьте подключение и права доступа.</p></div>';
       return false;
@@ -125,7 +129,18 @@ export async function renderProjectsWorkspace(root, user) {
   function renderOverview(project) {
     if (!project) return renderRegistry();
     currentProjectId = project.id;
-    const servicesCount = moduleSummaries[project.id]?.services?.count || 0;
+    const projectSummary=moduleSummaries[project.id]||{};
+    const servicesCount=projectSummary.services?.count||0;
+    const headline=projectSummary.headline||{};
+    const renderMetric=metric=>{
+      if(metric?.state!=="value")return "—";
+      if(Array.isArray(metric.value))return metric.value.map(item=>formatMoney(item.amount,item.currency)+"/мес").join(" · ")||"—";
+      const value=formatMoney(metric.value,metric.currency);
+      return metric.period==="month"?value+"/мес":value;
+    };
+    const expenseSource=headline.expense?.source==="services_recurring"
+      ? '<small class="projects-metric-source">в мес · по сервисам</small>'
+      : "";
     const serviceDots = Array.from({length:6},(_,index)=>`<i class="${index<servicesCount?"is-active":""}"></i>`).join("");
     host.innerHTML = `
       <div class="projects-overview-screen">
@@ -134,11 +149,11 @@ export async function renderProjectsWorkspace(root, user) {
             <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span></div>
             <h1>${escape(project.name)}</h1>
             <div class="projects-project-metrics">
-              <div><span>Польз.</span><strong>—</strong></div>
-              <div><span>Доход</span><strong class="metric-positive">—</strong></div>
-              <div><span>Расход</span><strong class="metric-expense">—</strong></div>
+              <div><span>Польз.</span><strong>${renderMetric(headline.users)}</strong></div>
+              <div><span>Доход</span><strong class="metric-positive">${renderMetric(headline.income)}</strong></div>
+              <div><span>Расход</span><strong class="metric-expense">${renderMetric(headline.expense)}</strong>${expenseSource}</div>
             </div>
-            <p class="projects-data-note">Финансовые и пользовательские показатели появятся после подключения соответствующих модулей.</p>
+            <p class="projects-data-note">Расход показывает ежемесячные платежи по сервисам проекта (ручной ввод); фактический учёт появится в «Бухгалтерии».</p>
           </div>
         </header>
         <div class="projects-module-grid">
@@ -188,15 +203,17 @@ export async function renderProjectsWorkspace(root, user) {
     const screen = state.screen || "projects-registry";
     const projectId = state.data?.projectId;
     const project = projects.find(item=>item.id===projectId);
-    if (screen === "project-create") renderCreateForm();
-    else if (screen === "project-overview") {
+    if (screen === "project-overview") {
       loadProjects().then(loaded=>{
         const current=window.RaymondovichNavigation?.getState();
         if(loaded && !controller.signal.aborted && current?.route==="#authorization/projects" && current?.screen==="project-overview" && current?.data?.projectId===projectId) {
           renderOverview(projects.find(item=>item.id===projectId));
         }
       });
+      return;
     }
+    loadSequence+=1;
+    if (screen === "project-create") renderCreateForm();
     else if (screen === "project-services-category") renderServicesCategory(project,state.data?.category,state.data?.openCreate);
     else if (screen.startsWith("project-") && MODULES[screen.replace("project-","")]) renderModule(project,screen.replace("project-",""));
     else renderRegistry();
@@ -276,6 +293,7 @@ export async function renderProjectsWorkspace(root, user) {
     if(event.detail?.route==="#authorization/projects") {
       renderNavigation(event.detail);
     } else {
+      loadSequence+=1;
       controller.abort();
       if(activeController===controller)activeController=null;
     }
