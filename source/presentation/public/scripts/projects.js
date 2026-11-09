@@ -160,6 +160,10 @@ export async function renderProjectsWorkspace(root, user) {
         <div class="projects-module-body" data-project-module-body></div>
       </section>`;
     await renderers[key](host.querySelector("[data-project-module-body]"),project);
+    const current = window.RaymondovichNavigation?.getState();
+    if (current?.route !== "#authorization/projects" || current?.screen !== "project-"+key || current?.data?.projectId !== project.id) {
+      if (current?.route === "#authorization/projects") renderNavigation(current);
+    }
   }
 
   function renderNavigation(state) {
@@ -234,11 +238,16 @@ export async function renderProjectsWorkspace(root, user) {
   },listenerOptions);
 
   document.addEventListener("raymondovich:navigation",event=>{
-    if(event.detail?.route==="#authorization/projects")renderNavigation(event.detail);
+    if(event.detail?.route==="#authorization/projects") {
+      renderNavigation(event.detail);
+    } else {
+      controller.abort();
+      if(activeController===controller)activeController=null;
+    }
   },listenerOptions);
 
   const loaded=await loadProjects();
-  if(!loaded)return;
+  if(!loaded || controller.signal.aborted)return;
   const state=window.RaymondovichNavigation?.getState();
-  renderNavigation(state?.route==="#authorization/projects"?state:{route:"#authorization/projects",screen:"projects-registry"});
+  if(state?.route==="#authorization/projects") renderNavigation(state);
 }
