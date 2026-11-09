@@ -13,6 +13,12 @@ alter table public.project_resource_relations
   add column if not exists currency text not null default 'RUB',
   add column if not exists next_payment_date date;
 
+update public.project_tool_relations
+set dependency_level = case
+  when relationship_type = 'infrastructure_dependency' then 'critical'
+  else 'optional'
+end;
+
 alter table public.project_tool_relations
   add constraint project_tool_relations_dependency_level_check
     check (dependency_level in ('critical','optional')),
