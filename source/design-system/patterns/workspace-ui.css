@@ -263,3 +263,6 @@
  .ideas-workspace .ws-groups{gap:7px}
  .ideas-workspace .ws-empty{padding:20px}
 }
+
+.ws-group>summary:focus-visible{outline:2px solid var(--ws-accent);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.ws-group-chevron{transition:none}}
