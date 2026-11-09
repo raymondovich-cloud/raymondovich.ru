@@ -11,13 +11,8 @@ import { getProjectMarketingSummary } from "../marketing/project-marketing.js";
  */
 export async function loadProjectsWorkspace() {
   const registry = await loadProjectsRegistry();
-  if (registry.error) return { ...registry, serviceCounts: {} };
-  const [services,accounting,analytics,marketing] = await Promise.all([
-    getProjectServicesSummary(),
-    Promise.resolve(null),
-    Promise.resolve(null),
-    Promise.resolve(null)
-  ]);
+  if (registry.error) return { ...registry, moduleSummaries: {} };
+  const services = await getProjectServicesSummary();
   const summaries = await Promise.all(registry.projects.map(async project => {
     const [finance,insights,promotion] = await Promise.all([
       getProjectAccountingSummary(project.id),
