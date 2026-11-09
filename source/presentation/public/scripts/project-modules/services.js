@@ -34,7 +34,7 @@ function summaryCard(title,rows,count,accent){
     const currency=String(row.currency||"RUB").toUpperCase();
     totals.set(currency,(totals.get(currency)||0)+Number(row.monthly_cost||0));
   });
-  const amount=[...totals.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([currency,total])=>formatMoney(total,currency)).join(" · ")||formatMoney(0,"RUB");
+  const amount=[...totals.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([currency,total])=>formatMoney(total,currency)).join(" · ")||"—";
   const countLabel=title==="Сервисы"?"подключено":count===1?"ресурс":count>1&&count<5?"ресурса":"ресурсов";
   return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${amount}</strong><small>в месяц · ${count} ${countLabel}</small></article>`;
 }
