@@ -1,6 +1,9 @@
 import { loadProjectsWorkspace } from "/source/application/projects/project-overview-coordinator.js";
 import { createProjectRecord } from "/source/application/projects/project-registry.js";
-import { getProjectServices } from "/source/application/services/project-services.js";
+import { renderProjectServicesScreen } from "./project-modules/services.js";
+import { renderProjectAccountingScreen } from "./project-modules/accounting.js";
+import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
+import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -39,7 +42,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   const host = root.querySelector("[data-projects-content]");
   let projects = [];
-  let serviceCounts = {};
+  let moduleSummaries = {};
   let currentProjectId = null;
 
   const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -57,7 +60,7 @@ export async function renderProjectsWorkspace(root, user) {
       return false;
     }
     projects = result.projects;
-    serviceCounts = result.serviceCounts;
+    moduleSummaries = result.moduleSummaries || {};
     return true;
   }
 
@@ -104,19 +107,12 @@ export async function renderProjectsWorkspace(root, user) {
   }
 
   function moduleSummary(projectId, key) {
-    if (key === "services") {
-      const count = serviceCounts[projectId] || 0;
-      return count ? `${count} подключено` : "Нет подключённых сервисов";
-    }
-    if (key === "accounting") return "Нет финансовых операций";
-    if (key === "analytics") return "Ожидает источников данных";
-    return "Нет добавленных площадок";
+    return moduleSummaries[projectId]?.[key]?.label || "Нет данных";
   }
 
   function renderOverview(project) {
     if (!project) return renderRegistry();
     currentProjectId = project.id;
-    const servicesCount = serviceCounts[project.id] || 0;
     host.innerHTML = `
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
@@ -149,35 +145,21 @@ export async function renderProjectsWorkspace(root, user) {
     if (!project || !MODULES[key]) return renderRegistry();
     currentProjectId = project.id;
     const module = MODULES[key];
-    let body = "";
-    if (key === "services") {
-      const serviceData = await getProjectServices(project.id);
-      const services = serviceData.services;
-      const resources = serviceData.resources;
-      body = `
-        ${serviceData.error?'<div class="projects-state projects-error"><strong>Не удалось загрузить связи сервисов</strong><p>Проверьте права доступа к реестру сервисов.</p></div>':""}
-        <section class="projects-module-section"><h2>Подключённые сервисы</h2>
-          ${services.length?services.map(item=>`<article class="projects-data-row"><div><strong>${escape(item.ecosystem_tools?.name||"Сервис без названия")}</strong><span>${escape(item.purpose||item.relationship_type||"Назначение не указано")}</span></div><span class="projects-status status-${escape(item.status)}">${escape(item.status==="active"?"Активен":item.status==="paused"?"Приостановлен":item.status==="planned"?"Запланирован":"Требует проверки")}</span></article>`).join(""):'<div class="projects-state"><strong>Сервисы пока не подключены</strong><p>Список будет пополняться по мере регистрации сервисов в общем каталоге.</p></div>'}
-        </section>
-        <section class="projects-module-section"><h2>Ресурсы и инфраструктура</h2>
-          ${resources.length?resources.map(item=>`<article class="projects-data-row"><div><strong>${escape(item.tool_resources?.name||"Ресурс")}</strong><span>${escape(item.role||item.tool_resources?.resource_type||"Тип не указан")}${item.tool_resources?.environment?" · "+escape(item.tool_resources.environment):""}</span></div><span class="projects-status">${escape(item.status)}</span></article>`).join(""):'<div class="projects-state"><strong>Ресурсы не привязаны</strong><p>Домены, базы данных, репозитории и другие ресурсы будут отображаться здесь.</p></div>'}
-        </section>`;
-    } else {
-      const copy = key==="accounting"
-        ? {title:"Финансовый учёт",text:"Здесь будут храниться доходы, расходы, платежи за сервисы, продвижение и другие операции. Сводные показатели будут рассчитываться только по сохранённым операциям."}
-        : key==="analytics"
-        ? {title:"Источники аналитики пока не подключены",text:"Здесь появятся показатели пользователей, онлайн по часам и периодам, динамика прироста и статистика партнёрских ссылок с указанием источника и периода измерения."}
-        : {title:"Маркетинговые площадки пока не добавлены",text:"Здесь будут храниться каналы продвижения, аккаунты, публикации и кампании. Автоматическая статистика будет подключаться по официальным API там, где платформы это разрешают."};
-      body = `<section class="projects-module-empty"><div class="projects-empty-mark" aria-hidden="true">${key==="accounting"?"₽":key==="analytics"?"⌁":"◉"}</div><h2>${copy.title}</h2><p>${copy.text}</p><span class="projects-coming-label">МОДУЛЬ ПОДГОТАВЛИВАЕТСЯ К ВВОДУ ДАННЫХ</span></section>`;
-    }
+    const renderers = {
+      services: renderProjectServicesScreen,
+      accounting: renderProjectAccountingScreen,
+      analytics: renderProjectAnalyticsScreen,
+      marketing: renderProjectMarketingScreen
+    };
     host.innerHTML = `
       <section class="projects-module-screen">
         <header class="projects-screen-heading">
           <button type="button" class="projects-back" data-project-overview="${escape(project.id)}">← ${escape(project.name)}</button>
           <p class="projects-eyebrow">${module.eyebrow}</p><h1>${module.title}</h1><p>${module.description}</p>
         </header>
-        <div class="projects-module-body">${body}</div>
+        <div class="projects-module-body" data-project-module-body></div>
       </section>`;
+    await renderers[key](host.querySelector("[data-project-module-body]"),project);
   }
 
   function renderNavigation(state) {
