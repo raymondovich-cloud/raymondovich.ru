@@ -15,13 +15,25 @@ export async function listProjectToolRelations(projectId = null) {
 export async function listProjectServiceDetails(projectId) {
   const [services,resources] = await Promise.all([
     supabase.from("project_tool_relations")
-      .select("id,relationship_type,purpose,status,evidence_note,last_verified_at,ecosystem_tools(name,category,official_url)")
+      .select("id,tool_id,relationship_type,purpose,status,evidence_note,last_verified_at,ecosystem_tools(name,category,official_url)")
       .eq("project_id",projectId).order("created_at",{ascending:false}),
-    supabase.from("project_resource_relations")
-      .select("id,role,status,evidence_note,tool_resources(name,resource_type,resource_url,environment)")
-      .eq("project_id",projectId).order("created_at",{ascending:false})
+    listProjectResources(projectId)
   ]);
   return { services, resources };
+}
+
+export async function listProjectResources(projectId) {
+  return supabase.from("project_resource_relations")
+    .select("id,role,status,evidence_note,tool_resources(id,name,resource_type,resource_url,external_id,environment,status,description,ecosystem_tools(id,name))")
+    .eq("project_id",projectId).order("created_at",{ascending:false});
+}
+
+export async function insertToolResource(payload) {
+  return supabase.from("tool_resources").insert(payload).select("id").single();
+}
+
+export async function insertProjectResourceRelation(payload) {
+  return supabase.from("project_resource_relations").insert(payload).select("id").single();
 }
 
 export async function insertProjectRecord(payload) {
