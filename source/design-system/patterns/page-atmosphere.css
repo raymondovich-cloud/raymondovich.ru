@@ -13,7 +13,7 @@ body {
 
 /* The site header intentionally remains solid black without the shared glow. */
 .site-header {
-  background-color: #08090b;
+  background-color: var(--color-header-background);
   background-image: none;
 }
 
