@@ -40,7 +40,8 @@ function resourceCard(row){
   </article>`;
 }
 function summaryCard(title,total,count,accent){
-  return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${money(total)}</strong><small>в месяц · ${count} ${count===1?"ресурс":count>1&&count<5?"ресурса":"ресурсов"}</small></article>`;
+  const countLabel=title==="Сервисы"?"подключено":count===1?"ресурс":count>1&&count<5?"ресурса":"ресурсов";
+  return `<article class="projects-service-summary ${accent?"is-accent":""}"><span>${title}</span><strong>${money(total)}</strong><small>в месяц · ${count} ${countLabel}</small></article>`;
 }
 function fillForm(form,values){for(const [name,value] of Object.entries(values)){const field=form.elements.namedItem(name);if(field&&value!==null&&value!==undefined)field.value=String(value);}}
 function showForm(host,kind,visible){
