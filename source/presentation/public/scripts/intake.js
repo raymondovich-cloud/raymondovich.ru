@@ -1,21 +1,17 @@
-import { getPlatform, getTelegramLaunch } from "/source/platform/bridge.js";
 import { submitApplication } from "/source/application/intake/intake-submit.js";
 
 const main = document.querySelector("#main");
 
 const errorMessages = {
-  expired_init_data: "Срок действия данных Telegram истёк. Закройте Mini App и откройте его заново.",
-  invalid_init_data: "Не удалось подтвердить запуск из Telegram. Откройте Mini App через официальную ссылку.",
-  rate_limited: "Вы отправляли заявку недавно. Подождите и попробуйте позже.",
   intake_disabled: "Форма временно недоступна. Попробуйте позже.",
   invalid_name: "Проверьте имя: не более 80 символов.",
   invalid_message: "Проверьте сообщение: от 1 до 1000 символов.",
-  invalid_partner_role: "Выберите вашу роль в проекте.",
-  invalid_weekly_availability: "Выберите время, которое готовы уделять проекту.",
+  invalid_partner_fields: "Заполните обязательные поля о партнёрстве.",
   invalid_portfolio_url: "Укажите корректную ссылку на портфолио с HTTPS.",
   invalid_product_name: "Название продукта должно быть не длиннее 120 символов.",
   invalid_product_url: "Укажите корректную ссылку на продукт с HTTPS.",
   invalid_product_stage: "Выберите стадию продукта.",
+  consent_required: "Необходимо согласие с актуальным уведомлением об обработке данных.",
   persistence_failed: "Не удалось сохранить заявку. Попробуйте позже.",
   server_configuration_error: "Форма временно недоступна. Попробуйте позже.",
 };
@@ -36,6 +32,20 @@ function setNotice(element, message, type = "info") {
   element.hidden = !message;
 }
 
+function readTouch(timestamp) {
+  const url = new URL(window.location.href);
+  const touch = {
+    source: url.searchParams.get("utm_source") || "direct",
+    landing_page: (url.pathname + url.search).slice(0, 512),
+    referrer: document.referrer.slice(0, 512),
+    captured_at: timestamp,
+  };
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]) {
+    touch[key] = (url.searchParams.get(key) || "").slice(0, 120) || null;
+  }
+  return touch;
+}
+
 function initializeIntake(root) {
   if (root.dataset.intakeInitialized === "true") return;
   root.dataset.intakeInitialized = "true";
@@ -47,19 +57,11 @@ function initializeIntake(root) {
   const notice = root.querySelector("[data-intake-notice]");
   const counter = root.querySelector("[data-intake-counter]");
   const submitButton = form?.querySelector('button[type="submit"]');
-  if (!form || !gate || !success || !submitButton) return;
+  if (!form || !success || !submitButton) return;
 
-  const launch = getTelegramLaunch();
-  const available = getPlatform() === "telegram" && Boolean(launch.initData);
-  if (!available) {
-    gate.hidden = false;
-    legalBlock && (legalBlock.hidden = true);
-    form.hidden = true;
-    return;
-  }
-
-  gate.hidden = true;
-  if (root.dataset.legalNoticeReady !== "true") {
+  if (gate) gate.hidden = true;
+  const noticeVersion = root.dataset.noticeVersion || "";
+  if (root.dataset.legalNoticeReady !== "true" || !noticeVersion) {
     legalBlock && (legalBlock.hidden = false);
     form.hidden = true;
     return;
@@ -67,8 +69,6 @@ function initializeIntake(root) {
 
   legalBlock && (legalBlock.hidden = true);
   form.hidden = false;
-  const nameInput = form.elements.namedItem("name");
-  if (nameInput && launch.displayName) nameInput.value = launch.displayName.slice(0, 80);
 
   const interestInputs = form.querySelectorAll('input[name="interest"]');
   const conditionalGroups = form.querySelectorAll("[data-intake-fields]");
@@ -92,21 +92,26 @@ function initializeIntake(root) {
   messageInput?.addEventListener("input", updateCounter);
   updateCounter();
 
+  const startedAt = Date.now();
+  const firstTouch = readTouch(new Date(startedAt).toISOString());
   let idempotencyKey = createIdempotencyKey();
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
     const values = {
-      initData: launch.initData,
-      startParam: launch.startParam,
       idempotencyKey,
+      formStartedAt: startedAt,
+      companyWebsite: String(data.get("companyWebsite") || ""),
+      pageUrl: window.location.href.slice(0, 512),
+      firstTouch,
       name: String(data.get("name") || ""),
       interest: String(data.get("interest") || ""),
       message: String(data.get("message") || ""),
       consent: data.get("consent") === "on",
-      clientPlatform: launch.clientPlatform,
+      noticeVersion,
       partnerRole: String(data.get("partnerRole") || ""),
       weeklyAvailability: String(data.get("weeklyAvailability") || ""),
       portfolioUrl: String(data.get("portfolioUrl") || ""),
