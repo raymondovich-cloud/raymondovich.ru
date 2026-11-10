@@ -2,7 +2,7 @@
 
 > **Project:** Raymondovich.ru  
 > **Document:** Intake Module Specification  
-> **Version:** 1.2  
+> **Version:** 1.3  
 > **Status:** Draft for implementation review  
 > **Date:** 2026-11-10
 
@@ -58,7 +58,7 @@ The URL hash remains reserved for SPA navigation. It must not be used to persist
 Fields:
 - `name`: required, 1–80 characters; prefilled from Telegram first/last name as a convenience, editable by the user.
 - `interest`: required enum: `partner`, `own_product`, `question`.
-- `message`: required, 1–1000 characters.
+- `message`: required, 1–1000 characters; UI hint: «Чем занимаетесь и чего хотите от сотрудничества».
 - `consent`: required explicit confirmation of the linked personal-data notice; the server records the consent timestamp.
 - `idempotencyKey`: UUID generated when the form is opened and reused for retries until success.
 - `initData`: raw `Telegram.WebApp.initData`; never use `initDataUnsafe` for server trust.
@@ -189,3 +189,36 @@ References: [152-FZ, Article 18 (current text)](https://www.consultant.ru/docume
 |---|---|---|---|
 | 1.1 | Draft for implementation review | 2026-11-10 | Added database-managed owner binding, fail-closed activation gate and legal readiness requirements. |
 | 1.0 | Draft for implementation review | 2026-11-10 | Initial intake scope, Telegram attribution, validation, persistence, notification and retention contract. |
+
+
+## 4.1. Conditional questions — version 1.3
+
+The form has four common fields and interest-specific questions. The selected interest controls which additional fields are visible and enabled; inactive fields are disabled and are not submitted.
+
+Common fields:
+- name: Telegram display name prefill, editable, required.
+- interest: required choice: partner («Хочу стать партнёром»), own_product («Есть свой продукт»), question («Есть вопрос»).
+- message: required, maximum 1000 characters, with the hint «Чем занимаетесь и чего хотите от сотрудничества».
+- consent: required checkbox.
+
+When interest = partner:
+- partnerRole: required enum: co_development (development and launch jointly with the ecosystem), ecosystem_tools (launch own project using ecosystem tools), promotion_only (promote own project in the ecosystem without tool access).
+- weeklyAvailability: required enum up_to_5, 5_to_15, over_15.
+- portfolioUrl: optional HTTPS URL, maximum 2048 characters.
+
+When interest = own_product:
+- productName: optional text, maximum 120 characters.
+- productUrl: optional HTTPS URL, maximum 2048 characters.
+- productStage: required enum idea, in_development, launched.
+
+When interest = question, no conditional fields are shown or accepted.
+
+Persistence uses typed nullable columns on public.intake_applications, not a client-controlled JSON blob. Database constraints enforce the selected-interest shape. The Edge Function validates enums, text length, HTTPS URLs and conditional requirements before invoking the database RPC. Telegram owner notifications include the applicable conditional answers.
+
+No change to activation controls, secrets, legal readiness or deployment is implied by this schema revision.
+
+## Version history — amendment
+
+| Version | Status | Date | Changes |
+|---|---|---|---|
+| 1.3 | Draft for implementation review | 2026-11-10 | Added common and interest-dependent fields, server-side validation, typed persistence and notification requirements. |

@@ -10,6 +10,12 @@ const errorMessages = {
   intake_disabled: "Форма временно недоступна. Попробуйте позже.",
   invalid_name: "Проверьте имя: не более 80 символов.",
   invalid_message: "Проверьте сообщение: от 1 до 1000 символов.",
+  invalid_partner_role: "Выберите вашу роль в проекте.",
+  invalid_weekly_availability: "Выберите время, которое готовы уделять проекту.",
+  invalid_portfolio_url: "Укажите корректную ссылку на портфолио с HTTPS.",
+  invalid_product_name: "Название продукта должно быть не длиннее 120 символов.",
+  invalid_product_url: "Укажите корректную ссылку на продукт с HTTPS.",
+  invalid_product_stage: "Выберите стадию продукта.",
   persistence_failed: "Не удалось сохранить заявку. Попробуйте позже.",
   server_configuration_error: "Форма временно недоступна. Попробуйте позже.",
 };
@@ -64,6 +70,21 @@ function initializeIntake(root) {
   const nameInput = form.elements.namedItem("name");
   if (nameInput && launch.displayName) nameInput.value = launch.displayName.slice(0, 80);
 
+  const interestInputs = form.querySelectorAll('input[name="interest"]');
+  const conditionalGroups = form.querySelectorAll("[data-intake-fields]");
+  const updateConditionalFields = () => {
+    const selected = form.querySelector('input[name="interest"]:checked')?.value;
+    for (const group of conditionalGroups) {
+      const active = group.dataset.intakeFields === selected;
+      group.hidden = !active;
+      for (const control of group.querySelectorAll("input, select, textarea")) {
+        control.disabled = !active;
+      }
+    }
+  };
+  interestInputs.forEach((input) => input.addEventListener("change", updateConditionalFields));
+  updateConditionalFields();
+
   const messageInput = form.elements.namedItem("message");
   const updateCounter = () => {
     if (counter && messageInput) counter.textContent = `${[...messageInput.value].length} / 1000`;
@@ -86,6 +107,12 @@ function initializeIntake(root) {
       message: String(data.get("message") || ""),
       consent: data.get("consent") === "on",
       clientPlatform: launch.clientPlatform,
+      partnerRole: String(data.get("partnerRole") || ""),
+      weeklyAvailability: String(data.get("weeklyAvailability") || ""),
+      portfolioUrl: String(data.get("portfolioUrl") || ""),
+      productName: String(data.get("productName") || ""),
+      productUrl: String(data.get("productUrl") || ""),
+      productStage: String(data.get("productStage") || ""),
     };
 
     setNotice(notice, "");

@@ -2,8 +2,8 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.8  
-> **Статус:** Актуально; Этапы 0–1 реализованы; Telegram Intake подготовлен в отдельной ветке и fail-closed; source migration history восстановлена и сверена; staging preflight продолжается  
+> **Версия:** 2.0  
+> **Статус:** Telegram Intake расширен в Production и остаётся fail-closed; UI и документация расширения находятся в PR #20  
 > **Дата:** 2026-11-10
 
 ---
@@ -132,7 +132,7 @@
 
 | Версия | Статус | Дата | Изменения |
 |---|---|---|---|
-| 1.8 | Актуально | 2026-11-10 | Завершена source migration reconciliation; исправлен отсутствующий импорт в Deno tests; staging project ожидает выбора организации владельцем. |
+| 1.9 | Актуально | 2026-11-10 | Добавлена подготовка расширения условных полей Intake в feature-ветке; Production не менялся. |
 | 1.7 | Актуально | 2026-11-10 | Восстановлены и сверены 25 source migration versions; отмечено безопасное исключение Telegram owner seed. |
 | 1.6 | Актуально | 2026-11-10 | Уточнена модель startapp direct links: signed start_param при наличии, иначе unsigned attribution hint с source_param_signed. |
 | 1.5 | Актуально | 2026-11-10 | Обновлён Git checkpoint после статических проверок; зафиксирован текущий SHA ветки и неизменность main. |
@@ -156,3 +156,35 @@
 - Security advisor показал INFO по приватной таблице без RLS policy (ожидаемо: schema закрыта, доступ только service_role) и WARN по отключённой защите от скомпрометированных паролей в Auth. Также есть ранее существовавшие findings по Telegram таблицам и performance. Новых критических health findings не выявлено.
 - Перед публичным включением необходимо: проверить/установить приватные secrets, владелец должен начать чат с ботом командой `/start`, завершить юридическую проверку локализации/трансграничной передачи и privacy notice, затем выполнить end-to-end QA. До этого `INTAKE_ENABLED` оставить выключенным.
 
+
+
+## 10. Conditional Intake fields — implementation branch (2026-11-10)
+
+- Владелец согласовал расширение серверной части и условных полей формы.
+- Рабочая ветка: feature/intake-conditional-fields-2026-11-10, создана от main на момент SHA 578ea37fcbeca69a025f28f97f8dd0b53d203e12.
+- Обновлены source/presentation/public/pages/apply.html, source/presentation/public/scripts/intake.js и source/design-system/patterns/public-intake.css.
+- Общие поля: редактируемое имя, интерес, короткое сообщение до 1000 символов, consent checkbox.
+- Partner: required role enum, required weekly availability enum, optional HTTPS portfolio/GitHub URL.
+- Own product: optional product name and HTTPS URL, required product stage enum.
+- Question: только общие поля.
+- Неактивные conditional controls скрываются и disabled; в FormData не попадают.
+- Edge Function supabase/functions/intake-submit/index.ts проверяет conditional requirements, enum values, optional text length и HTTPS URLs; Telegram notification включает соответствующие поля. Для безопасного rolling deployment Edge Function также распознаёт старый payload без conditional keys и использует прежний RPC overload.
+- Добавлена миграция supabase/migrations/20261110183000_add_intake_conditional_fields.sql: шесть типизированных колонок, CHECK constraints и обновлённая RPC сигнатура. Совместимость старых заявок обеспечивается conditional_fields_version=0 и пустыми дополнительными полями; новые RPC-вставки записываются с версией 1 и проходят проверку выбранного interest. Реальный migration dry-run ещё не выполнен.
+- Обновлена спецификация docs/product/intake-module-specification.md до версии 1.3 и changelog за 2026-11-10.
+- Production migration не применялась. Edge Function не развёртывалась. Secrets не менялись. INTAKE_ENABLED не менялся. Main не менялся.
+- Проверено чтением содержимого файлов в feature branch. Deno runtime недоступен; SQL migration не исполнялась; нет browser/iPhone Safari/Telegram E2E тестов.
+- Rollout без простоя: (1) применить миграцию, сохранив старый 12-параметрический RPC overload; (2) deploy новой Edge Function, которая принимает старый payload и маршрутизирует его в legacy RPC, а новый payload — в расширенный RPC; (3) опубликовать новый frontend. После проверки старый RPC overload можно удалить отдельной cleanup migration. Если Edge Function развернуть до миграции, новые заявки не сохранятся. До согласованного rollout Production остаётся на прежней версии.
+
+
+## 9. Intake — Production conditional-fields rollout (2026-11-10)
+
+- По отдельному подтверждению владельца в Production Supabase project `yajybgdorhxebbigwjgi` применена миграция `add_intake_conditional_fields`; фактическая версия в `supabase_migrations.schema_migrations` — `20261110152808`.
+- Файл миграции в feature branch переименован в `20261110152808_add_intake_conditional_fields.sql`, чтобы имя файла совпадало с Production migration history и будущий `db push` не пытался повторно применить DDL.
+- Добавлены typed columns и CHECK constraints для conditional fields; старые заявки совместимы через `conditional_fields_version=0`.
+- Создан новый 18-argument `public.intake_submit` overload; старый 12-argument overload сохранён для rolling compatibility. Оба overload имеют `SECURITY INVOKER`, пустой `search_path`, EXECUTE только у `service_role`; у `anon` и `authenticated` EXECUTE отсутствует.
+- Проверено, что `intake_applications` сохраняет RLS и FORCE RLS. До и после транзакционных smoke tests в таблице 0 строк.
+- В Production Edge Function `intake-submit` развёрнута version 2 (ACTIVE, `verify_jwt=false`, как у предыдущей версии). Загружены entrypoint и общий модуль `_shared/intake.ts`.
+- Выполнены rollback-only RPC smoke tests: legacy 12-argument contract, новый partner payload, own-product payload, question payload и idempotency duplicate response. Все тестовые транзакции откатились; постоянных тестовых заявок не осталось.
+- Не запускались Deno unit tests, реальный HTTP/Telegram Mini App E2E и browser/iPhone Safari QA.
+- `INTAKE_ENABLED` не включался; Production secrets не читались и не менялись; публичный приём заявок остаётся закрытым. Frontend не выкладывался: условная форма остаётся в Draft PR #20 до отдельной проверки и интеграции.
+- Production Supabase migration и Edge Function deploy выполнены по прямому подтверждению владельца от 2026-11-10. GitHub `main` не изменялся.

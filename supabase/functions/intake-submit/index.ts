@@ -72,10 +72,39 @@ function sourceLabel(source: string): string {
 
 function interestLabel(interest: string): string {
   return ({
-    partner: "Партнёрство",
-    own_product: "Свой продукт",
-    question: "Вопрос",
+    partner: "Хочу стать партнёром",
+    own_product: "Есть свой продукт",
+    question: "Есть вопрос",
   } as Record<string, string>)[interest] || "Не указано";
+}
+
+const PARTNER_ROLES = new Set(["co_development", "ecosystem_tools", "promotion_only"]);
+const WEEKLY_AVAILABILITY = new Set(["up_to_5", "5_to_15", "over_15"]);
+const PRODUCT_STAGES = new Set(["idea", "in_development", "launched"]);
+
+function normalizeOptionalText(value: unknown, maximum: number, code: string): string | null {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") throw new IntakeValidationError(code);
+  const normalized = value.normalize("NFKC").trim();
+  if ([...normalized].length > maximum || /[\u0000-\u001F\u007F]/.test(normalized)) {
+    throw new IntakeValidationError(code);
+  }
+  return normalized || null;
+}
+
+function normalizeOptionalHttpsUrl(value: unknown, code: string): string | null {
+  const raw = normalizeOptionalText(value, 2048, code);
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== "https:" || !parsed.hostname || parsed.username || parsed.password) {
+      throw new Error("invalid_url");
+    }
+    if (parsed.href.length > 2048) throw new Error("url_too_long");
+    return parsed.href;
+  } catch {
+    throw new IntakeValidationError(code);
+  }
 }
 
 function moscowDate(value: string): string {
@@ -187,6 +216,14 @@ async function sendOwnerNotification(
   telegramUsername: string | undefined,
   languageCode: string | undefined,
   clientPlatform: string,
+  details: {
+    partnerRole: string | null;
+    weeklyAvailability: string | null;
+    portfolioUrl: string | null;
+    productName: string | null;
+    productUrl: string | null;
+    productStage: string | null;
+  },
 ): Promise<void> {
   const safeId = escapeTelegramHtml(applicationId.slice(0, 8).toUpperCase());
   const profileUrl = `tg://user?id=${telegramUserId}`;
@@ -202,6 +239,16 @@ async function sendOwnerNotification(
     `Telegram: <a href="${escapeTelegramHtml(profileUrl)}">${escapeTelegramHtml(telegramLabel)}</a>`,
     `Платформа (клиент): ${escapeTelegramHtml(clientPlatform)} · Язык: ${escapeTelegramHtml(languageCode || "не указан")}`,
     `Время: ${escapeTelegramHtml(moscowDate(createdAt))} МСК`,
+    ...(interest === "partner" ? [
+      `Роль: ${escapeTelegramHtml(({ co_development: "Разработка и запуск совместно с экосистемой", ecosystem_tools: "Свой проект с инструментами экосистемы", promotion_only: "Продвижение без доступа к инструментам" } as Record<string, string>)[details.partnerRole || ""] || "Не указана")}`,
+      `Время в неделю: ${escapeTelegramHtml(({ up_to_5: "До 5 часов", "5_to_15": "5–15 часов", over_15: "Больше 15 часов" } as Record<string, string>)[details.weeklyAvailability || ""] || "Не указано")}`,
+      ...(details.portfolioUrl ? [`Портфолио: ${escapeTelegramHtml(details.portfolioUrl)}`] : []),
+    ] : []),
+    ...(interest === "own_product" ? [
+      ...(details.productName ? [`Продукт: ${escapeTelegramHtml(details.productName)}`] : []),
+      ...(details.productUrl ? [`Ссылка: ${escapeTelegramHtml(details.productUrl)}`] : []),
+      `Стадия: ${escapeTelegramHtml(({ idea: "Идея", in_development: "В разработке", launched: "Уже запущен" } as Record<string, string>)[details.productStage || ""] || "Не указана")}`,
+    ] : []),
     "",
     "<b>Сообщение:</b>",
     notificationMessage,
@@ -284,6 +331,83 @@ Deno.serve(async (request: Request) => {
   const interest = String(body.interest);
   const clientPlatform = normalizeClientPlatform(body.clientPlatform);
 
+  const conditionalFieldNames = [
+    "partnerRole",
+    "weeklyAvailability",
+    "portfolioUrl",
+    "productName",
+    "productUrl",
+    "productStage",
+  ];
+  const hasConditionalFields = conditionalFieldNames.some((field) =>
+    Object.prototype.hasOwnProperty.call(body, field)
+  );
+
+  let details: {
+    partnerRole: string | null;
+    weeklyAvailability: string | null;
+    portfolioUrl: string | null;
+    productName: string | null;
+    productUrl: string | null;
+    productStage: string | null;
+  };
+  try {
+    if (!hasConditionalFields) {
+      // Backward compatibility: the currently deployed Mini App sends only
+      // common fields. Keep accepting it during the Edge Function/frontend rollout.
+      details = {
+        partnerRole: null,
+        weeklyAvailability: null,
+        portfolioUrl: null,
+        productName: null,
+        productUrl: null,
+        productStage: null,
+      };
+    } else if (interest === "partner") {
+      const partnerRole = body.partnerRole;
+      const weeklyAvailability = body.weeklyAvailability;
+      if (typeof partnerRole !== "string" || !PARTNER_ROLES.has(partnerRole)) {
+        throw new IntakeValidationError("invalid_partner_role");
+      }
+      if (typeof weeklyAvailability !== "string" || !WEEKLY_AVAILABILITY.has(weeklyAvailability)) {
+        throw new IntakeValidationError("invalid_weekly_availability");
+      }
+      details = {
+        partnerRole,
+        weeklyAvailability,
+        portfolioUrl: normalizeOptionalHttpsUrl(body.portfolioUrl, "invalid_portfolio_url"),
+        productName: null,
+        productUrl: null,
+        productStage: null,
+      };
+    } else if (interest === "own_product") {
+      const productStage = body.productStage;
+      if (typeof productStage !== "string" || !PRODUCT_STAGES.has(productStage)) {
+        throw new IntakeValidationError("invalid_product_stage");
+      }
+      details = {
+        partnerRole: null,
+        weeklyAvailability: null,
+        portfolioUrl: null,
+        productName: normalizeOptionalText(body.productName, 120, "invalid_product_name"),
+        productUrl: normalizeOptionalHttpsUrl(body.productUrl, "invalid_product_url"),
+        productStage,
+      };
+    } else {
+      details = {
+        partnerRole: null,
+        weeklyAvailability: null,
+        portfolioUrl: null,
+        productName: null,
+        productUrl: null,
+        productStage: null,
+      };
+    }
+  } catch (error) {
+    if (error instanceof IntakeValidationError) return jsonResponse({ error: error.code }, 400, origin);
+    return jsonResponse({ error: "invalid_request" }, 400, origin);
+  }
+
   let saved: { application_id: string; created_at: string; duplicate: boolean };
   try {
     saved = await databaseRpc("intake_submit", {
@@ -299,6 +423,14 @@ Deno.serve(async (request: Request) => {
       p_language_code: verified.user.language_code || null,
       p_client_platform: clientPlatform,
       p_consent_at: new Date().toISOString(),
+      ...(hasConditionalFields ? {
+        p_partner_role: details.partnerRole,
+        p_weekly_availability: details.weeklyAvailability,
+        p_portfolio_url: details.portfolioUrl,
+        p_product_name: details.productName,
+        p_product_url: details.productUrl,
+        p_product_stage: details.productStage,
+      } : {}),
     });
   } catch (error) {
     if (error instanceof IntakeValidationError) {
@@ -326,6 +458,7 @@ Deno.serve(async (request: Request) => {
       verified.user.username,
       verified.user.language_code,
       clientPlatform,
+      details,
     );
     try {
       await updateNotificationStatus(saved.application_id, "notified");
