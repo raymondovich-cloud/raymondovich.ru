@@ -2,7 +2,7 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.5  
+> **Версия:** 1.6  
 > **Статус:** Актуально; Этап 0 утверждён, Этап 1 реализован; Telegram Intake подготовлен в отдельной ветке и fail-closed  
 > **Дата:** 2026-11-10
 
@@ -86,12 +86,12 @@
 
 ## 8. Telegram Intake — изолированная реализация
 
-- Созданы спецификация Intake v1.1 и ADR-0004 v1.1.
+- Созданы спецификация Intake v1.2 и ADR-0004 v1.2.
 - Существующий Telegram bootstrap распознаёт разрешённые start_param вида tg, ig, threads, site и кампании с суффиксом _<a-z0-9>{1,24}, направляет их на #apply и очищает launch-параметры из адресной строки. Источник не хранится в hash/localStorage.
-- Платформенный bridge расширен методом getTelegramLaunch(). Raw initData передаётся Edge Function; источник и campaign сервер получает только из проверенного Telegram payload. SDK platform остаётся недоверенной диагностической подсказкой.
+- Платформенный bridge расширен методом getTelegramLaunch(). Raw initData передаётся Edge Function для проверки Telegram identity. Для direct-link startapp значение может приходить через tgWebAppStartParam, но не гарантировано в raw signed initData. Сервер предпочитает подписанный start_param, а при его отсутствии принимает allowlisted client hint как неподписанную метку и сохраняет source_param_signed. Это только маркетинговая атрибуция, не доказательство реального канала.
 - Добавлены форма, privacy notice draft, route и CSS pattern. Форма не отправляет заявки вне Telegram.
 - Fail-closed состояние: data-legal-notice-ready=false скрывает форму и показывает юридический блок; Edge Function дополнительно возвращает 503, если приватный secret INTAKE_ENABLED не равен точной строке true.
-- Edge Function intake-submit подготовлена в репозитории, но не развёрнута. Она проверяет HMAC-SHA-256 Telegram initData, свежесть auth_date, allowlist источника, поля, consent, идемпотентность, rate limit, HTML escaping и owner notification.
+- Edge Function intake-submit подготовлена в репозитории, но не развёрнута. Она проверяет HMAC-SHA-256 Telegram initData, свежесть auth_date, Telegram user ID, allowlist source/campaign (signed value preferred, unsigned direct-link hint otherwise), поля, consent, идемпотентность, rate limit, HTML escaping и owner notification.
 - Миграция создаёт public.intake_applications, RLS и private owner configuration. Owner ID берётся из единственной Supabase Auth учётной записи с raw_app_meta_data.role=admin; клиент не может передать или подменить owner ID.
 - Утверждённый срок хранения: 90 дней после закрытия. Ежедневная очистка через pg_cron; незакрытые заявки остаются до явного закрытия. UI закрытия будет отдельным срезом Owner Control Center.
 - Подтверждено read-only: Supabase project yajybgdorhxebbigwjgi активен в eu-central-1 (Frankfurt); существует ровно одна admin Auth учётная запись; pg_cron доступен версии 1.6.4, но ещё не установлен.
