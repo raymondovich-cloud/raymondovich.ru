@@ -12,6 +12,8 @@ import {
 const shellObservers = new WeakMap();
 const currentShellUsers = new WeakMap();
 
+const backMarkup = '<button class="authenticated-back-toggle" type="button" data-global-back aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 7-7m-7 7 7 7"/></svg></button>';
+
 const TAB_ROUTES = {
   projects: "#authorization/projects",
   ideas: "#authorization/ideas",
