@@ -306,7 +306,7 @@ Deno.serve(async (request: Request) => {
   try {
     saved = await rpc({
       p_idempotency_key: body.idempotencyKey,
-      p_source: "other",
+      p_source: "test",
       p_campaign: "test",
       p_source_param_signed: true,
       p_interest: interest,
