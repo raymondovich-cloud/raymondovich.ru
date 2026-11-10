@@ -1,6 +1,7 @@
 import { getOwnerHubSummary } from "/source/application/owner/owner-hub-summary.js";
 
 let hubHydrationSequence=0;
+let ownerHubSummaryCache=null;
 
 const icons = {
   projects: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
@@ -128,11 +129,14 @@ export async function hydrateOwnerHubMetrics(shell){
   const sequence=++hubHydrationSequence;
   const badges=[...shell.querySelectorAll("[data-owner-hub-metric]")];
   badges.forEach(badge=>{
+    const cached=ownerHubSummaryCache?.[badge.dataset.ownerHubMetric];
     badge.hidden=false;
-    badge.textContent="…";
-    badge.title="";
-    badge.setAttribute("aria-label","Загрузка счётчика");
-    badge.classList.add("is-loading");
+    badge.textContent=cached ? String(cached.total) : "…";
+    badge.title=cached ? (badge.dataset.ownerHubMetric==="projects"
+      ? `${cached.total} проектов, из них ${cached.activeCount} в работе`
+      : `${cached.total} идей, из них ${cached.highPriorityCount} высокого приоритета`) : "";
+    badge.setAttribute("aria-label",cached ? badge.title : "Загрузка счётчика");
+    badge.classList.toggle("is-loading",!cached);
     badge.classList.remove("is-error");
   });
   let summary;
@@ -148,6 +152,7 @@ export async function hydrateOwnerHubMetrics(shell){
     return;
   }
   if(sequence!==hubHydrationSequence||!shell.isConnected||shell.dataset.ownerWorkspace!=="control-center")return;
+  ownerHubSummaryCache=summary;
   for(const badge of badges){
     const kind=badge.dataset.ownerHubMetric;
     const data=summary[kind];
