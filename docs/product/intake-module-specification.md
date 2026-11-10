@@ -2,22 +2,22 @@
 
 > **Project:** Raymondovich.ru  
 > **Document:** Intake Module Specification  
-> **Version:** 1.3  
+> **Version:** 1.4  
 > **Status:** Draft for implementation review  
 > **Date:** 2026-11-10
 
 ## 1. Purpose
 
-Intake receives requests from visitors who open the Raymondovich Telegram Mini App. The initial release supports one application form and three interest categories. It records an attribution label, stores the request, and sends a notification to the owner through Telegram Bot API.
+Intake receives requests through the public Raymondovich.ru website form. Visitors do not need Telegram or an account. The backend validates and stores each application, then notifies the owner through Telegram Bot API. The existing Telegram Mini App remains a separate compatible entry point to the legacy submission endpoint.
 
 Intake is a request intake channel, not an account registration mechanism and not proof of a contractual relationship.
 
 ## 2. Scope
 
 Included:
-- Telegram Mini App launch through the existing platform bootstrap and bridge.
-- Attribution labels `tg`, `ig`, `threads`, `site`, optionally followed by a campaign suffix.
-- Server-side validation of raw Telegram `initData`.
+- Ordinary browser submission through the website-first anonymous Edge Function.
+- Server-side validation of request shape, consent notice version, idempotency and attribution metadata.
+- Existing Telegram Mini App submission through its legacy endpoint, retained for compatibility.
 - One form with name, interest, message and consent.
 - Idempotent persistence, per-user rate limits and owner notification.
 - Owner-only read access at the database layer for a future Control Center screen.
@@ -290,4 +290,10 @@ No production migration, deploy, secret update, public activation or legal-gate 
 
 ## 12.9. Implementation status amendment — Production DB foundation (2026-11-10)
 
-After the owner separately authorized Production database changes and direct work on `main`, the database foundation was applied in Supabase project `yajybgdorhxebbigwjgi`. Applied migrations: `20261110161352`, `20261110161410`, `20261110161441`. The schema now supports website-originated applications without Telegram identity, separate application/notification statuses, first/last-touch JSONB, notice version, private outbox, status history and a service-role-only website RPC. Legacy Telegram RPCs remain in place. The corresponding SQL migration sources are present in the repository. Edge Function and frontend implementation remain pending; no public activation, secrets change or deployment was performed.
+After the owner separately authorized Production database changes and direct work on `main`, the database foundation was applied in Supabase project `yajybgdorhxebbigwjgi`. Applied migrations: `20261110161352`, `20261110161410`, `20261110161441`. The schema now supports website-originated applications without Telegram identity, separate application/notification statuses, first/last-touch JSONB, notice version, private outbox, status history and a service-role-only website RPC. Legacy Telegram RPCs remain in place. The corresponding SQL migration sources are present in the repository.
+
+## 12.10. Implementation status amendment — website backend/frontend source (2026-11-10)
+
+Added the source for `intake-website-submit`, a separate anonymous website endpoint; the existing Telegram `intake-submit` function was not replaced. Added and applied migration `20261110161956_add_intake_notification_delivery_rpc`, which lets the service role update outbox delivery state and schedule exponential retry metadata. The public form script and submit client now use the website-first endpoint and no longer require Telegram initData. The legal gate remains closed. The new Edge Function is not deployed and the frontend is not published. No production secrets or activation flags were changed.
+
+Known incomplete requirements before public activation: robust abuse/rate limiting or a challenge; a scheduled outbox worker that claims due notifications and retries them automatically; setting the approved notice version server-side; Deno compilation, HTTP/Telegram end-to-end tests and browser/iPhone Safari QA. The honeypot and minimum form-duration check are supplemental filters, not sufficient rate limiting.
