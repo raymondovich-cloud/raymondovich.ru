@@ -28,3 +28,21 @@
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
 @media(max-width:600px){.authenticated-app-content{padding-top:10px;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:6px}.app-tab{min-height:56px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.app-welcome-continue,.app-tab{transition:none}.app-welcome-continue:active,.app-tab:active{transform:none}}
+
+/* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
+body:has(.authenticated-app-shell) .sidebar,
+body:has(.authenticated-app-shell) .scrim,
+body:has(.app-welcome) .sidebar,
+body:has(.app-welcome) .scrim{display:none}
+body:has(.authenticated-app-shell) .site-header .header-menu-toggle,
+body:has(.authenticated-app-shell) .site-header .mobile-toggle,
+body:has(.authenticated-app-shell) .site-header .wordmark,
+body:has(.authenticated-app-shell) .site-header .header-account,
+body:has(.authenticated-app-shell) .site-header .header-nav,
+body:has(.app-welcome) .site-header .header-menu-toggle,
+body:has(.app-welcome) .site-header .mobile-toggle,
+body:has(.app-welcome) .site-header .wordmark,
+body:has(.app-welcome) .site-header .header-account,
+body:has(.app-welcome) .site-header .header-nav{display:none}
+body:has(.authenticated-app-shell) .site-header .header-inner,
+body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:54px}
