@@ -238,3 +238,14 @@
 - The new Edge Function is still not deployed; frontend is not published. No database changes, secrets, `INTAKE_ENABLED`, legal gate or public activation were changed.
 - Turnstile is a challenge layer, not a hard request quota. It does not replace application-level rate limiting if abuse patterns later require it.
 - No Deno compile, HTTP verification, live Siteverify test, browser or iPhone Safari QA was run. Public Intake remains blocked pending secret provisioning, outbox retry worker, legal approval and end-to-end QA.
+
+
+## Website-first Intake — retry worker source checkpoint (2026-11-10)
+
+- Последний известный Git commit для worker source/config: `b538d1dc3863e652a6cf5de4eccbabbec736cb01`.
+- Добавлен `supabase/functions/intake-notification-worker/index.ts`: server-to-server worker, авторизация через `x-intake-worker-secret` / `INTAKE_WORKER_SECRET`, batch size 5, claim lock 180 seconds, отправка Telegram и обновление через существующий `intake_set_notification_delivery`.
+- `supabase/config.toml` содержит `verify_jwt = false` для worker. Это безопасно только при обязательной проверке выделенного worker secret; secret пока не создан/не подтверждён.
+- Production DB read-only inspection: pg_cron установлен, Vault установлен, pg_net доступен, но не установлен. Outbox не содержит payload; worker должен читать application отдельно через service-role REST.
+- Блокер: не создан `intake_claim_notification_batch` и не настроен cron. Supabase CLI отсутствует; согласно Supabase workflow миграцию нужно создавать через `supabase migration new`. Не обходить это ручным созданием миграции или прямым DDL.
+- Не деплоить worker и не создавать cron до claim RPC, pg_net migration, настройки одинакового worker secret в Edge Functions и Vault, и проверки worker. `INTAKE_ENABLED=false`, legal gate закрыт; website function и frontend не развернуты/не опубликованы.
+- Текущий статус тестирования: source review выполнен; Deno compile, SQL concurrency tests, Telegram HTTP integration и iPhone Safari QA не выполнялись.
