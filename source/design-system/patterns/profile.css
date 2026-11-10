@@ -8,6 +8,25 @@
 .profile-identity h2{margin:0;font-size:19px;font-weight:750;letter-spacing:-.035em;overflow-wrap:anywhere}
 .profile-identity p{max-width:100%;overflow-wrap:anywhere;margin:0;color:var(--component-app-shell-muted);font-size:13px}
 .profile-role{align-self:start;justify-self:end;margin:0;padding:6px 10px;border:1px solid var(--component-app-shell-active-outline);border-radius:999px;background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);font-size:11px;font-weight:650;letter-spacing:.02em;white-space:nowrap}
+
+@keyframes profile-identity-scroll-collapse{
+  from{max-height:120px;margin-bottom:18px;padding-block:14px;padding-inline:16px;border-width:1px;border-radius:18px;opacity:1;transform:translateY(0) scale(1)}
+  to{max-height:0;margin-bottom:0;padding-block:0;padding-inline:0;border-width:0;border-radius:0;opacity:0;transform:translateY(-8px) scale(.985)}
+}
+@supports (animation-timeline:scroll(root block)){
+  .profile-identity{
+    overflow:hidden;
+    animation-name:profile-identity-scroll-collapse;
+    animation-duration:1s;
+    animation-timing-function:linear;
+    animation-fill-mode:both;
+    animation-timeline:scroll(root block);
+    animation-range:0px 132px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .profile-identity{animation:none}
+}
 .profile-groups{display:grid;gap:16px}
 .profile-group{overflow:hidden;border:1px solid var(--component-profile-group-border);border-radius:22px;background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
 .profile-group[hidden]{display:none}
