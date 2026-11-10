@@ -18,7 +18,7 @@
 .app-tab.is-active{border-color:var(--component-app-shell-active-outline);background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);box-shadow:inset 0 1px 0 var(--component-app-shell-material-highlight)}
 .app-tab.is-active::after{content:"";position:absolute;left:50%;bottom:3px;width:15px;height:3px;border-radius:999px;background:var(--component-app-shell-active);transform:translateX(-50%)}
 .app-tab:active{transform:scale(.96)}
-@media(hover:hover){.app-tab:not(.is-active):hover{background:var(--component-profile-row-hover);color:var(--component-app-shell-text)}}
+@media(hover:hover){.app-tab:not(.is-active):hover{background:var(--component-app-shell-hover-surface);color:var(--component-app-shell-text)}}
 .app-tab-avatar{width:25px;height:25px;border:1px solid var(--component-app-shell-border);border-radius:50%;object-fit:cover}
 .app-tab-avatar-fallback{display:grid;width:25px;height:25px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:50%;background:var(--gradient-owner-control-active);color:var(--component-app-shell-active);font-size:11px;font-weight:700}
 .app-placeholder-screen{width:min(100%,760px);margin:0 auto;padding:clamp(12px,3vw,26px) 0}
