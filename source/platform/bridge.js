@@ -30,6 +30,24 @@ export function getPlatform() {
   return platform;
 }
 
+export function getTelegramLaunch() {
+  const launch = window.RaymondovichTelegramLaunch;
+  if (!launch) {
+    return Object.freeze({
+      initData: "",
+      startParam: "",
+      displayName: "",
+      clientPlatform: "unknown"
+    });
+  }
+  return Object.freeze({
+    initData: launch.initData || "",
+    startParam: launch.startParam || "",
+    displayName: launch.displayName || "",
+    clientPlatform: launch.clientPlatform || "unknown"
+  });
+}
+
 export function openExternal(url) {
   return adapter.openExternal(url);
 }
@@ -56,6 +74,7 @@ export function onBackButtonSync(isRoot) {
 
 window.RaymondovichPlatform = Object.freeze({
   getPlatform,
+  getTelegramLaunch,
   openExternal,
   getAuthRedirectUrl,
   isStandalone,

@@ -1,0 +1,44 @@
+.public-intake,.privacy-notice{max-width:900px}
+.public-intake .page-intro,.privacy-notice .page-intro{max-width:760px}
+.public-intake .page-intro h1 span,.privacy-notice .page-intro h1 span{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.intake-form{display:grid;gap:1.35rem;max-width:720px;padding:clamp(1.1rem,3vw,2rem);border:1px solid var(--color-line);border-radius:var(--radius-lg);background:linear-gradient(145deg,var(--color-surface),color-mix(in srgb,var(--color-surface) 70%,transparent))}
+.intake-field{display:grid;gap:.55rem;min-width:0}
+.intake-field>span,.intake-field legend{font-size:.82rem;font-weight:620;color:var(--color-text)}
+.intake-field input,.intake-field textarea{width:100%;min-height:52px;padding:.9rem 1rem;border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-bg);color:var(--color-text);font:inherit;font-size:16px;resize:vertical}
+.intake-field textarea{min-height:150px;line-height:1.6}
+.intake-field input:focus,.intake-field textarea:focus{outline:2px solid var(--color-accent);outline-offset:2px}
+.intake-interest{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;border:0;padding:0;margin:0}
+.intake-interest legend{grid-column:1/-1;margin-bottom:.1rem}
+.intake-interest label{position:relative;display:flex;min-width:0}
+.intake-interest input{position:absolute;opacity:0;pointer-events:none}
+.intake-interest label span{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;padding:.65rem .5rem;border:1px solid var(--color-line);border-radius:var(--radius-sm);background:var(--color-bg);font-size:.78rem;text-align:center;color:var(--color-muted);cursor:pointer}
+.intake-interest input:checked+span{border-color:var(--color-accent);background:var(--gradient-owner-control);color:var(--color-text)}
+.intake-interest input:focus-visible+span{outline:2px solid var(--color-accent-bright);outline-offset:3px}
+.intake-counter{justify-self:end;color:var(--color-subtle);font:.68rem var(--font-mono)}
+.intake-consent{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:start;gap:.75rem;color:var(--color-muted);font-size:.78rem;line-height:1.6}
+.intake-consent input{width:18px;height:18px;margin:.15rem 0 0;accent-color:var(--color-accent)}
+.intake-consent a,.privacy-content a{color:var(--color-accent-bright);text-decoration:underline;text-underline-offset:3px}
+.intake-submit{width:100%;min-height:54px;cursor:pointer}
+.intake-submit:disabled{opacity:.55;cursor:wait;transform:none}
+.intake-footnote{margin:0;color:var(--color-subtle);font-size:.72rem;line-height:1.6}
+.intake-notice{margin:0;padding:.85rem 1rem;border:1px solid var(--color-line);border-radius:var(--radius-sm);color:var(--color-muted);font-size:.82rem}
+.intake-notice[data-type="error"]{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-line));color:var(--color-text)}
+.intake-gate,.intake-success,.intake-legal-block,.privacy-draft-note{display:grid;grid-template-columns:64px minmax(0,1fr);gap:1rem;align-items:start;padding:1.5rem;border:1px solid var(--color-line);border-radius:var(--radius-md);background:var(--color-surface)}
+.intake-gate h2,.intake-success h2{margin:0 0 .4rem;font-size:1.3rem}
+.intake-gate p,.intake-success p,.privacy-draft-note p{margin:0 0 1rem;color:var(--color-muted);font-size:.88rem}
+.intake-gate-mark,.intake-success-mark{display:grid;place-items:center;width:54px;height:54px;border:1px solid var(--color-accent);border-radius:50%;color:var(--color-accent);font:700 .9rem var(--font-mono)}
+.intake-success{grid-template-columns:64px minmax(0,1fr)}
+.intake-success-mark{font-size:1.4rem}
+.privacy-draft-note{grid-template-columns:1fr;margin-bottom:2rem;border-color:var(--color-accent)}
+.privacy-draft-note strong{color:var(--color-accent-bright)}
+.privacy-draft-note p{margin:0}
+.privacy-content{max-width:760px}
+.privacy-content h2{margin:2rem 0 .5rem;font-size:1.15rem}
+.privacy-content p,.privacy-content li{color:var(--color-muted);font-size:.9rem;line-height:1.75}
+.privacy-content ul{padding-left:1.2rem}
+@media(max-width:600px){
+ .intake-form{padding:1rem;gap:1.1rem}
+ .intake-interest{grid-template-columns:1fr}
+ .intake-interest label span{justify-content:flex-start;padding-inline:1rem}
+ .intake-gate,.intake-success,.intake-legal-block{grid-template-columns:1fr}
+}

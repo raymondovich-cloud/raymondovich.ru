@@ -1,0 +1,62 @@
+<main id="main" tabindex="-1">
+<section class="section public-intake" data-intake-root data-legal-notice-ready="false">
+  <div class="page-intro">
+    <p class="overline">RAYMONDOVICH / CONTACT</p>
+    <h1>Обсудим <span>сотрудничество.</span></h1>
+    <p>Кратко расскажите, чем мы можем быть полезны и какой формат взаимодействия вас интересует.</p>
+  </div>
+
+  <div class="intake-gate" data-intake-gate hidden>
+    <div class="intake-gate-mark" aria-hidden="true">TG</div>
+    <div>
+      <h2>Форма доступна в Telegram</h2>
+      <p>Откройте Raymondovich Mini App в Telegram, чтобы отправить заявку.</p>
+      <a class="button primary" href="https://t.me/raymondovich_bot/raymondovich?startapp=site" target="_blank" rel="noopener noreferrer">Открыть в Telegram <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+
+  <div class="intake-legal-block" data-intake-legal-block hidden>
+    <div class="intake-gate-mark" aria-hidden="true">!</div>
+    <div>
+      <h2>Форма временно недоступна</h2>
+      <p>Мы завершаем подготовку уведомления об обработке персональных данных. Отправка заявок будет включена после публикации полной и проверенной версии уведомления.</p>
+      <a class="button secondary" href="/#privacy" target="_blank" rel="noopener noreferrer">Открыть уведомление <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+
+  <form class="intake-form" data-intake-form hidden novalidate>
+    <label class="intake-field">
+      <span>Ваше имя</span>
+      <input name="name" type="text" autocomplete="name" maxlength="80" required>
+    </label>
+
+    <fieldset class="intake-field intake-interest">
+      <legend>Что вас интересует?</legend>
+      <label><input type="radio" name="interest" value="partner" checked><span>Партнёрство</span></label>
+      <label><input type="radio" name="interest" value="own_product"><span>Свой продукт</span></label>
+      <label><input type="radio" name="interest" value="question"><span>Вопрос</span></label>
+    </fieldset>
+
+    <label class="intake-field">
+      <span>Сообщение</span>
+      <textarea name="message" rows="6" maxlength="1000" required placeholder="Расскажите немного о своей идее или предложении…"></textarea>
+      <small class="intake-counter" data-intake-counter>0 / 1000</small>
+    </label>
+
+    <label class="intake-consent">
+      <input name="consent" type="checkbox" required>
+      <span>Я ознакомился с <a href="/#privacy" target="_blank" rel="noopener noreferrer">уведомлением об обработке персональных данных</a> и согласен на обработку данных для ответа на моё обращение.</span>
+    </label>
+
+    <p class="intake-notice" data-intake-notice role="status" aria-live="polite" hidden></p>
+    <button class="button primary intake-submit" type="submit">Отправить заявку <span aria-hidden="true">↗</span></button>
+    <p class="intake-footnote">Не отправляйте пароли, платёжные данные и документы. Для обращения достаточно имени и сообщения.</p>
+  </form>
+
+  <div class="intake-success" data-intake-success role="status" aria-live="polite" hidden>
+    <span class="intake-success-mark" aria-hidden="true">✓</span>
+    <h2>Заявка принята.</h2>
+    <p>Спасибо. Сообщение сохранено и передано на обработку.</p>
+  </div>
+</section>
+</main>

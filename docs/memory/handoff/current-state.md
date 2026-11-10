@@ -2,8 +2,8 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.2  
-> **Статус:** Актуально; Этап 0 утверждён, Этап 1 реализован в отдельной ветке  
+> **Версия:** 1.8  
+> **Статус:** Актуально; Этапы 0–1 реализованы; Telegram Intake подготовлен в отдельной ветке и fail-closed; source migration history восстановлена и сверена; staging preflight продолжается  
 > **Дата:** 2026-11-10
 
 ---
@@ -17,7 +17,9 @@
 - Коммит документации Этапа 0: `2476866bc114125976921e2b078a0b634030f054`.
 - Кодовый коммит Этапа 1: `d52a601904dae827979c8c3ede9b188e9cfdea0f`.
 - Commit с оценкой внешнего SDK: `1d01a29a5d5a19942e9d3e0a32ef8f99604ed894`.
-- SHA на момент подготовки handoff: `1d01a29a5d5a19942e9d3e0a32ef8f99604ed894`.
+- SHA на момент подготовки исходного handoff: `1d01a29a5d5a19942e9d3e0a32ef8f99604ed894`.
+- Текущая задача Telegram Intake ведётся в ветке `feature/telegram-intake-2026-11-10`, созданной от `main` SHA `6d122b9ff7a7527f1f4f17228282fae695267795`.
+- Ветка Intake остаётся отдельной от `main`; последнее сравнение: `ahead`, `behind = 0`. `main` не изменялся. Актуальный HEAD доступен в GitHub по ссылке на ветку.
 
 ## 2. Выполнено в анализе
 
@@ -81,10 +83,61 @@
 - Отдельное утверждение Этапа 2.
 - Не менять Supabase DDL, RLS, production secrets, DNS, домен и deploy.
 
+
+## 8. Telegram Intake — изолированная реализация
+
+- Созданы спецификация Intake v1.2 и ADR-0004 v1.2.
+- Существующий Telegram bootstrap распознаёт разрешённые start_param вида tg, ig, threads, site и кампании с суффиксом _<a-z0-9>{1,24}, направляет их на #apply и очищает launch-параметры из адресной строки. Источник не хранится в hash/localStorage.
+- Платформенный bridge расширен методом getTelegramLaunch(). Raw initData передаётся Edge Function для проверки Telegram identity. Для direct-link startapp значение может приходить через tgWebAppStartParam, но не гарантировано в raw signed initData. Сервер предпочитает подписанный start_param, а при его отсутствии принимает allowlisted client hint как неподписанную метку и сохраняет source_param_signed. Это только маркетинговая атрибуция, не доказательство реального канала.
+- Добавлены форма, privacy notice draft, route и CSS pattern. Форма не отправляет заявки вне Telegram.
+- Fail-closed состояние: data-legal-notice-ready=false скрывает форму и показывает юридический блок; Edge Function дополнительно возвращает 503, если приватный secret INTAKE_ENABLED не равен точной строке true.
+- Edge Function intake-submit подготовлена в репозитории, но не развёрнута. Она проверяет HMAC-SHA-256 Telegram initData, свежесть auth_date, Telegram user ID, allowlist source/campaign (signed value preferred, unsigned direct-link hint otherwise), поля, consent, идемпотентность, rate limit, HTML escaping и owner notification.
+- Миграция создаёт public.intake_applications, RLS и private owner configuration. Owner ID берётся из единственной Supabase Auth учётной записи с raw_app_meta_data.role=admin; клиент не может передать или подменить owner ID.
+- Утверждённый срок хранения: 90 дней после закрытия. Ежедневная очистка через pg_cron; незакрытые заявки остаются до явного закрытия. UI закрытия будет отдельным срезом Owner Control Center.
+- Подтверждено read-only: Supabase project yajybgdorhxebbigwjgi активен в eu-central-1 (Frankfurt); существует ровно одна admin Auth учётная запись; pg_cron доступен версии 1.6.4, но ещё не установлен.
+- Migration history reconciliation завершена на уровне набора версий: все 25 уже применённых remote migration versions представлены в текущей ветке; дополнительная миграция Intake остаётся локальной и не применённой. Одна историческая Telegram seed-операция намеренно исключена из публичного исходника из-за встроенного персонального Telegram ID; подробности и ограничения приведены ниже.
+- Production DDL, secrets, Edge Function deploy, DNS и main не изменялись. Текущее состояние существующих Supabase secrets не проверялось; в рамках этой работы секреты не создавались и не менялись. Edge Function не развёрнута.
+- Deno отсутствует в текущем runtime: написанные Deno tests не запускались. Реальные Telegram, browser, iPhone Safari и staging tests не проводились.
+- Юридическая информация оператора, правовое основание и контактный порядок ещё не утверждены. Отдельно зафиксирован риск 152-ФЗ: если собираются данные граждан РФ, ч. 5 ст. 18 требует проверки первичной локализации, а трансграничная передача в Telegram должна быть отдельно оценена по ст. 12. Supabase сейчас находится во Frankfurt (EU Central). Поэтому публичное включение запрещено до юридической проверки применимости требований и решения по месту первичного хранения.
+
+### Migration history reconciliation — выполнено 2026-11-10
+
+- Целевой проект подтверждён read-only: Supabase project `raymondovich`, ref `yajybgdorhxebbigwjgi`, регион `eu-central-1` (Frankfurt), статус `ACTIVE_HEALTHY`.
+- В удалённой таблице `supabase_migrations.schema_migrations` зарегистрировано 25 версий от `20261008184130` до `20261110055215`.
+- В рабочую ветку восстановлены 21 отсутствовавший migration source из массива `statements` удалённой истории Supabase. Четыре ранее существовавших файла сохранены; файл `20261108123542_ideas_categories_activity_and_lifecycle.sql` синхронизирован с фактически применённым SQL из remote history.
+- Повторная сверка списка версий: отсутствующих remote versions — 0; локальная дополнительная версия — только `20261110170000_create_intake_applications.sql`, она не зарегистрирована в production и не применялась.
+- Исключение безопасности: историческая версия `20261110025001_telegram_publications_core` содержала INSERT с жёстко записанным Telegram user ID. Поскольку репозиторий публичный, числовой идентификатор не перенесён в файл. Таблицы, индексы, RLS и grants восстановлены; seed владельца заменён комментарием. Поэтому этот один файл намеренно не является побайтной копией remote statement. Для чистой staging-среды владелец Telegram publications должен быть добавлен отдельной приватной operator-only операцией до включения административных функций.
+- Все остальные восстановленные исходники созданы из SQL statements, сохранённых Supabase migration history. Сверка четырёх прежних файлов показала, что три совпадают с remote SQL после нормализации пробелов; четвёртый обновлён до remote SQL. Один файл имеет только форматное отличие без изменения SQL-содержания.
+- Проверки выполнялись read-only через Supabase migration history и GitHub branch contents. Никакой DDL, DML, `db push`, `apply_migration`, deploy, secret change или production mutation не выполнялись.
+- Ветка остаётся отдельной; `main` не менялся.
+
+### Staging preflight — дополнительная проверка 2026-11-10
+
+- Повторно прочитан актуальный HEAD ветки после восстановления migration sources; текущий commit на момент проверки — `8c5929a493678fd4012b80533b052945de15d131`.
+- Статическая проверка Deno test source выявила отсутствующий импорт `normalizeText` в `intake_test.ts`, хотя функция используется в тесте. Импорт добавлен отдельным коммитом `8c5929a493678fd4012b80533b052945de15d131`.
+- Deno runtime по-прежнему недоступен; исправление импорта не считать результатом запуска тестов. Deno tests остаются неисполненными.
+- Список Supabase projects проверен read-only. Существующий `Ai-Sistem-Staging` (`cjsgtpxsmlyzitxbbznv`) неактивен и не выбран для Intake. Новый staging project ещё не создан.
+- В организации обнаружена одна доступная организация: `fumlzfwzffhxbyplwchp` (`fumlzfwzffhxbyplwchp`). Создание нового Supabase project требует явного выбора организации владельцем; регион для staging предлагается `eu-central-1` (Frankfurt), чтобы совпадал с текущим target environment. До подтверждения проект не создаётся.
+- Production project `yajybgdorhxebbigwjgi` остаётся read-only; миграции, secrets, Edge Functions и настройки не менялись.
+
+### Следующие действия для Intake
+
+1. Выполнено: source migration history сверена по всем 25 remote versions. Сохранить приватный шаг provisioning Telegram publications owner для чистой staging-среды.
+2. Подготовить отдельную staging-среду и проверить миграцию Intake, pg_cron, RLS и Edge Function. Не использовать существующий неактивный проект Ai-Sistem-Staging без отдельного решения владельца.
+3. Определить юрисдикцию оператора и географию субъектов данных; проверить локализацию по ст. 18(5) 152-ФЗ и трансграничную передачу Telegram по ст. 12; только затем завершить и утвердить уведомление и включать data-legal-notice-ready.
+4. После решения по размещению данных и staging настроить TELEGRAM_BOT_TOKEN и OWNER_CHAT_ID как Supabase secrets; INTAKE_ENABLED оставить false до прохождения staging и реальных Telegram тестов.
+5. Только после отдельного решения владельца включать API и публиковать ссылки источников.
+
 ## История версий
 
 | Версия | Статус | Дата | Изменения |
 |---|---|---|---|
+| 1.8 | Актуально | 2026-11-10 | Завершена source migration reconciliation; исправлен отсутствующий импорт в Deno tests; staging project ожидает выбора организации владельцем. |
+| 1.7 | Актуально | 2026-11-10 | Восстановлены и сверены 25 source migration versions; отмечено безопасное исключение Telegram owner seed. |
+| 1.6 | Актуально | 2026-11-10 | Уточнена модель startapp direct links: signed start_param при наличии, иначе unsigned attribution hint с source_param_signed. |
+| 1.5 | Актуально | 2026-11-10 | Обновлён Git checkpoint после статических проверок; зафиксирован текущий SHA ветки и неизменность main. |
+| 1.4 | Актуально | 2026-11-10 | Добавлены риск локализации по 152-ФЗ, трансграничная передача Telegram и точное состояние секретов: не проверялись и не менялись. |
+| 1.3 | Актуально | 2026-11-10 | Зафиксирован Telegram Intake, fail-closed/legal gate, 90-дневное хранение и блокеры migration drift/staging. |
 | 1.2 | Актуально | 2026-11-10 | Обновлены фактические проверки hash bootstrap, статус утверждения и оставшиеся вопросы; добавлена оценка SDK. |
 | 1.1 | Актуально | 2026-11-10 | Зафиксировано утверждение владельца и реализация платформенного слоя Этапа 1. |
 | 1.0 | Актуально на момент создания | 2026-11-10 | Первичная передача состояния и открытых вопросов по Этапу 0. |
