@@ -18,6 +18,15 @@ const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
 const OWNER_CHAT_ID = Deno.env.get("OWNER_CHAT_ID") ?? "";
 const INTAKE_ENABLED = Deno.env.get("INTAKE_ENABLED") === "true";
 const NOTICE_VERSION = Deno.env.get("INTAKE_NOTICE_VERSION") ?? "";
+const TURNSTILE_SECRET = Deno.env.get("TURNSTILE_SECRET") ?? "";
+const TURNSTILE_HOSTNAMES = new Set([
+  "raymondovich.ru",
+  "www.raymondovich.ru",
+  "raymondovich.online",
+  "www.raymondovich.online",
+  "localhost",
+  "127.0.0.1",
+]);
 
 const ALLOWED_ORIGINS = new Set([
   "https://raymondovich.ru",
@@ -148,6 +157,31 @@ async function rpc(name: string, payload: Record<string, unknown>): Promise<any>
   return raw ? JSON.parse(raw) : null;
 }
 
+async function verifyTurnstile(token: string, idempotencyKey: string): Promise<"valid" | "invalid" | "unavailable"> {
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: TURNSTILE_SECRET,
+        response: token,
+        idempotency_key: idempotencyKey,
+      }),
+    });
+    if (!response.ok) return "unavailable";
+    const result = await response.json().catch(() => null);
+    if (
+      result?.success === true &&
+      result?.action === "intake_submit" &&
+      typeof result?.hostname === "string" &&
+      TURNSTILE_HOSTNAMES.has(result.hostname)
+    ) return "valid";
+    return "invalid";
+  } catch {
+    return "unavailable";
+  }
+}
+
 async function notifyOwner(applicationId: string, createdAt: string, body: {
   name: string; message: string; interest: string; source: string;
   partnerRole: string | null; weeklyAvailability: string | null;
@@ -232,6 +266,11 @@ Deno.serve(async (request: Request) => {
   if (typeof input.companyWebsite === "string" && input.companyWebsite.trim()) {
     return respond(origin, 200, { ok: true });
   }
+  const turnstileToken = boundedMeta(input.turnstileToken, 2048);
+  if (!turnstileToken) return respond(origin, 403, { error: "invalid_challenge" });
+  const challengeResult = await verifyTurnstile(turnstileToken, String(input.idempotencyKey || ""));
+  if (challengeResult === "unavailable") return respond(origin, 503, { error: "challenge_unavailable" });
+  if (challengeResult !== "valid") return respond(origin, 403, { error: "invalid_challenge" });
   const startedAt = Number(input.formStartedAt);
   if (!Number.isFinite(startedAt) || Date.now() - startedAt < 2500 || Date.now() - startedAt > 86400000) {
     return respond(origin, 400, { error: "invalid_request" });
