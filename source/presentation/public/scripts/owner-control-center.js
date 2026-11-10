@@ -1,13 +1,7 @@
-import { getOwnerHubSummary } from "/source/application/owner/owner-hub-summary.js";
-
-let hubHydrationSequence=0;
-let ownerHubSummaryCache=null;
-
 const icons = {
   projects: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
   partners: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.8 19c.5-3 2.3-4.5 5.2-4.5s4.7 1.5 5.2 4.5M14 15c3.7-.9 6.2.5 7.2 3.5"/></svg>',
   finance: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h15a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h13"/><path d="M3 8h18M16 13h5"/><circle cx="16" cy="13" r=".7"/></svg>',
-  ideas: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M8.2 14.5a7 7 0 1 1 7.6 0c-.9.6-1.3 1.4-1.3 2.5h-5c0-1.1-.4-1.9-1.3-2.5Z"/><path d="M12 6v3M6.5 11H8M16 11h1.5"/></svg>',
   ai: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3M6 6l2.2 2.2M15.8 15.8 18 18M18 6l-2.2 2.2M8.2 15.8 6 18"/><circle cx="12" cy="12" r="4.5"/><path d="m10.5 12 1 1 2-2"/></svg>',
   telegramBot: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m21 3-7.2 18-3.9-7.9L2 9.2 21 3Z"/><path d="m9.9 13.1 4.4-4.4"/></svg>',
   community: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-5 3v-14Z"/><path d="M8 10h8M8 13.5h5"/></svg>',
@@ -22,10 +16,8 @@ const groups = [
     id: "business",
     title: "БИЗНЕС",
     sections: [
-      { id: "projects", icon: "projects", title: "Проекты", description: "Рабочие пространства проектов", status: "active", route: "#authorization/projects", module: "projects" },
-      { id: "partners", icon: "partners", title: "Партнёры", description: "Программа партнёров", status: "planned" },
-      { id: "finance", icon: "finance", title: "Финансы", description: "Выплаты и доходы", status: "planned" },
-      { id: "ideas", icon: "ideas", title: "Идеи", description: "Задумки и предложения", status: "active", route: "#authorization/ideas", module: "ideas" }
+      { id: "partners", icon: "partners", title: "Партнёры", description: "Партнёры платформы Raymondovich", status: "planned" },
+      { id: "finance", icon: "finance", title: "Финансы", description: "Финансы платформы Raymondovich", status: "planned" }
     ]
   },
   {
@@ -55,14 +47,10 @@ function renderSection(section) {
     ? `href="${section.route}" data-owner-module="${section.module}"`
     : 'href="#" aria-disabled="true" tabindex="-1" data-coming-soon="true"';
 
-  const metric=["projects","ideas"].includes(section.id)
-    ? `<span class="owner-console-metric-badge is-loading" data-owner-hub-metric="${section.id}" aria-label="Загрузка счётчика">…</span>`
-    : "";
   return `
     <a class="owner-console-card ${active ? "is-active" : "is-planned"}" ${attributes}>
       <span class="owner-console-card-top">
         <span class="owner-console-icon">${icons[section.icon]}</span>
-        ${metric}
         <span class="owner-console-card-status">${active ? "ОТКРЫТЬ ↗" : "В РАЗРАБОТКЕ"}</span>
       </span>
       <span class="owner-console-card-content">
@@ -122,55 +110,4 @@ export function renderOwnerControlCenter(user) {
         </div>
       </section>
     </div>`;
-}
-
-
-export async function hydrateOwnerHubMetrics(shell){
-  const sequence=++hubHydrationSequence;
-  const badges=[...shell.querySelectorAll("[data-owner-hub-metric]")];
-  badges.forEach(badge=>{
-    const cached=ownerHubSummaryCache?.[badge.dataset.ownerHubMetric];
-    badge.hidden=false;
-    badge.textContent=cached ? String(cached.total) : "…";
-    badge.title=cached ? (badge.dataset.ownerHubMetric==="projects"
-      ? `${cached.total} проектов, из них ${cached.activeCount} в работе`
-      : `${cached.total} идей, из них ${cached.highPriorityCount} высокого приоритета`) : "";
-    badge.setAttribute("aria-label",cached ? badge.title : "Загрузка счётчика");
-    badge.classList.toggle("is-loading",!cached);
-    badge.classList.remove("is-error");
-  });
-  let summary;
-  try{summary=await getOwnerHubSummary();}
-  catch{
-    if(sequence!==hubHydrationSequence||!shell.isConnected||shell.dataset.ownerWorkspace!=="control-center")return;
-    badges.forEach(badge=>{
-      badge.hidden=true;
-      badge.title="Не удалось получить данные";
-      badge.setAttribute("aria-label","Не удалось получить данные");
-      badge.classList.remove("is-loading");
-    });
-    return;
-  }
-  if(sequence!==hubHydrationSequence||!shell.isConnected||shell.dataset.ownerWorkspace!=="control-center")return;
-  ownerHubSummaryCache=summary;
-  for(const badge of badges){
-    const kind=badge.dataset.ownerHubMetric;
-    const data=summary[kind];
-    if(!data){
-      badge.hidden=true;
-      badge.title="Не удалось получить данные";
-      badge.setAttribute("aria-label","Не удалось получить данные");
-      badge.classList.remove("is-loading");
-      continue;
-    }
-    badge.textContent=String(data.total);
-    if(kind==="projects"){
-      badge.title=`${data.total} проектов, из них ${data.activeCount} в работе`;
-      badge.setAttribute("aria-label",badge.title);
-    }else{
-      badge.title=`${data.total} идей, из них ${data.highPriorityCount} высокого приоритета`;
-      badge.setAttribute("aria-label",badge.title);
-    }
-    badge.classList.remove("is-loading","is-error");
-  }
 }
