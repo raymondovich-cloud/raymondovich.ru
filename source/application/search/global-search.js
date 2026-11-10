@@ -85,14 +85,14 @@ export async function searchGlobalContent(query, user) {
       title: "Сервисы проектов",
       items: mapRows(rows[4], relation => makeResult("Сервисы проектов",
         relation.ecosystem_tools?.name || "Сервис проекта",
-        [relation.projects?.name, relation.purpose || relation.evidence_note].filter(Boolean).join(" · "),
+        [relation.projects?.name, relation.purpose].filter(Boolean).join(" · "),
         "#authorization/projects", "project-overview", { projectId: relation.project_id }, relation.id))
     },
     {
       title: "Ресурсы проектов",
       items: mapRows(rows[5], relation => makeResult("Ресурсы проектов",
         relation.tool_resources?.name || "Ресурс проекта",
-        [relation.projects?.name, relation.role || relation.evidence_note].filter(Boolean).join(" · "),
+        [relation.projects?.name, relation.role].filter(Boolean).join(" · "),
         "#authorization/projects", "project-overview", { projectId: relation.project_id }, relation.id))
     }
   ].filter(group => group.items.length);
