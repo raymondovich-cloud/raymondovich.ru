@@ -5,7 +5,7 @@
 .app-welcome h1 span{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;color:transparent}
 .app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--color-app-shell-muted);line-height:1.65}
 .app-welcome-role{padding:7px 12px;border:1px solid var(--color-app-shell-border);border-radius:999px;color:var(--color-app-shell-muted);font-size:12px}
-.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--color-accent);border-radius:999px;background:var(--gradient-accent);color:#17110d;font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
+.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--color-accent);border-radius:999px;background:var(--gradient-accent);color:var(--color-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
 .app-welcome-continue:active{transform:scale(.98)}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--color-app-shell-text)}
 .authenticated-app-content{min-width:0;padding:clamp(14px,3vw,28px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
