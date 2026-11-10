@@ -28,11 +28,12 @@
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
 @media(max-width:600px){.authenticated-app-content{padding-top:10px;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:6px}.app-tab{min-height:56px;font-size:10px}}
 @keyframes app-screen-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.app-welcome{animation:app-screen-enter .24s ease both}
 .authenticated-app-content>.profile-screen,
 .authenticated-app-content>.profile-subscreen,
 .authenticated-app-content>.app-placeholder-screen,
 .authenticated-app-content>.owner-console-shell{animation:app-screen-enter .22s ease both}
-@media(prefers-reduced-motion:reduce){.app-welcome-continue,.app-tab{transition:none}.app-welcome-continue:active,.app-tab:active{transform:none}.authenticated-app-content>.profile-screen,.authenticated-app-content>.profile-subscreen,.authenticated-app-content>.app-placeholder-screen,.authenticated-app-content>.owner-console-shell{animation:none}}
+@media(prefers-reduced-motion:reduce){.app-welcome-continue,.app-tab{transition:none}.app-welcome-continue:active,.app-tab:active{transform:none}.authenticated-app-content>.profile-screen,.authenticated-app-content>.profile-subscreen,.authenticated-app-content>.app-placeholder-screen,.authenticated-app-content>.owner-console-shell,.app-welcome{animation:none}}
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
