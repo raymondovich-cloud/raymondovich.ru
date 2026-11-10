@@ -7,7 +7,8 @@ const START_ROUTES = Object.freeze({
   projects: "#authorization/projects",
   ideas: "#authorization/ideas",
   authorization: "#authorization",
-  home: "/"
+  home: "/",
+  "apply-test": "#apply-test"
 });
 
 function readTelegramParameters() {
