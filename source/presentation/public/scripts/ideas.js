@@ -12,6 +12,7 @@ const STATUS = {
 };
 const PRIORITY = { low: "Низкий", normal: "Обычный", high: "Высокий", critical: "Критический" };
 let activeIdeasController = null;
+const ideasWorkspaceCache = new Map();
 
 export async function renderIdeasWorkspace(root, user) {
   activeIdeasController?.abort();
@@ -55,6 +56,11 @@ export async function renderIdeasWorkspace(root, user) {
   let ideas = [];
   let categories = [];
   let currentIdeaId = null;
+  const cachedWorkspace = ideasWorkspaceCache.get(user.id);
+  if (cachedWorkspace) {
+    ideas = cachedWorkspace.ideas;
+    categories = cachedWorkspace.categories;
+  }
 
   const money = value => value === null || value === undefined || value === ""
     ? "Не указано"
@@ -69,7 +75,9 @@ export async function renderIdeasWorkspace(root, user) {
   }
 
   async function load() {
-    list.innerHTML = '<p class="ideas-loading">Загрузка идей…</p>';
+    if (!ideas.length && !categories.length) {
+      list.innerHTML = '<p class="ideas-loading">Загрузка идей…</p>';
+    }
     const [ideaResult, categoryResult] = await Promise.all([
       supabase.from("ideas").select("*").order("updated_at", { ascending: false }),
       supabase.from("idea_categories").select("id,name").eq("is_archived", false).order("sort_order").order("name")
@@ -79,7 +87,8 @@ export async function renderIdeasWorkspace(root, user) {
       return;
     }
     ideas = ideaResult.data || [];
-    categories = categoryResult.error ? [] : (categoryResult.data || []);
+    categories = categoryResult.error ? (cachedWorkspace?.categories || []) : (categoryResult.data || []);
+    ideasWorkspaceCache.set(user.id, { ideas, categories, updatedAt: Date.now() });
     const categoryFilter = root.querySelector("[data-filter-category]");
     const selected = categoryFilter.value;
     categoryFilter.innerHTML = '<option value="">Все категории</option>' + categories.map(c=>`<option value="${escape(c.id)}">${escape(c.name)}</option>`).join("");
@@ -399,7 +408,12 @@ export async function renderIdeasWorkspace(root, user) {
     }
   }
 
-  await load();
+  if (cachedWorkspace) {
+    const categoryFilter = root.querySelector("[data-filter-category]");
+    categoryFilter.innerHTML = '<option value="">Все категории</option>' + categories.map(c=>`<option value="${escape(c.id)}">${escape(c.name)}</option>`).join("");
+    renderList();
+  }
+
   const navigation = window.RaymondovichNavigation;
   const state = navigation?.getState();
   if (!state || state.route !== "#authorization/ideas" || state.screen === "route") {
@@ -407,4 +421,7 @@ export async function renderIdeasWorkspace(root, user) {
   } else {
     renderNavigationScreen(state);
   }
+  await load();
+  const latestState = navigation?.getState();
+  if (latestState?.route === "#authorization/ideas") renderNavigationScreen(latestState);
 }
