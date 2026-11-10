@@ -141,3 +141,18 @@
 | 1.2 | Актуально | 2026-11-10 | Обновлены фактические проверки hash bootstrap, статус утверждения и оставшиеся вопросы; добавлена оценка SDK. |
 | 1.1 | Актуально | 2026-11-10 | Зафиксировано утверждение владельца и реализация платформенного слоя Этапа 1. |
 | 1.0 | Актуально на момент создания | 2026-11-10 | Первичная передача состояния и открытых вопросов по Этапу 0. |
+
+
+## 9. Production rollout — Telegram Intake (2026-11-10)
+
+- Владелец разрешил перенос реализации в основной репозиторий и изменения Production.
+- Pull Request #19 успешно объединён в `main` методом squash. Merge commit: `2b350d5c6612c3b2be773673a17ddd1e7e513d19`. После merge migration source был исправлен и синхронизирован с фактической production migration history.
+- В Production применена миграция `create_intake_applications`; Supabase зарегистрировал версию `20261110143823`. Файл-источник в репозитории: `supabase/migrations/20261110143823_create_intake_applications.sql`.
+- Первая попытка миграции была отклонена PostgreSQL: generated column с выражением timestamptz + interval не immutable. Транзакция откатилась без частичных изменений. Миграция исправлена: срок хранения теперь вычисляет trigger при INSERT/изменении статуса/closed_at. После этого миграция применена успешно.
+- Read-only verification после применения: `pg_cron` установлен; `public.intake_applications` создана; RLS и FORCE RLS включены; trigger срока хранения существует; cron job `intake-closed-retention-cleanup` зарегистрирован ровно один раз; записей Intake пока 0.
+- В Production развернута Edge Function `intake-submit`, version 1, status ACTIVE, `verify_jwt=false`. Она сама проверяет Telegram initData HMAC; deployment bundle включает `_shared/intake.ts`.
+- **Intake остаётся выключенным:** `INTAKE_ENABLED` не устанавливался в `true`; secrets не создавались и не менялись. Реальные `TELEGRAM_BOT_TOKEN` и `OWNER_CHAT_ID` не проверены. Публичная форма остаётся закрыта legal-readiness gate (`data-legal-notice-ready=false`).
+- Deno unit tests, browser/iPhone/Telegram runtime tests и реальная отправка заявки не выполнялись. Успешный deploy подтверждает сборку Edge Function, но не end-to-end работу Telegram.
+- Security advisor показал INFO по приватной таблице без RLS policy (ожидаемо: schema закрыта, доступ только service_role) и WARN по отключённой защите от скомпрометированных паролей в Auth. Также есть ранее существовавшие findings по Telegram таблицам и performance. Новых критических health findings не выявлено.
+- Перед публичным включением необходимо: проверить/установить приватные secrets, владелец должен начать чат с ботом командой `/start`, завершить юридическую проверку локализации/трансграничной передачи и privacy notice, затем выполнить end-to-end QA. До этого `INTAKE_ENABLED` оставить выключенным.
+
