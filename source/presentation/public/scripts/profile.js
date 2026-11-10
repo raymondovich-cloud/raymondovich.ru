@@ -39,7 +39,7 @@ function avatarUrl(user) {
   const candidate = user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
   try {
     const url = new URL(candidate);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+    return url.protocol === "https:" ? url.href : "";
   } catch {
     return "";
   }
