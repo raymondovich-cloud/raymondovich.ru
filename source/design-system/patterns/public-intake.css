@@ -40,5 +40,5 @@
  .intake-form{padding:1rem;gap:1.1rem}
  .intake-interest{grid-template-columns:1fr}
  .intake-interest label span{justify-content:flex-start;padding-inline:1rem}
- .intake-gate,.intake-success{grid-template-columns:1fr}
+ .intake-gate,.intake-success,.intake-legal-block{grid-template-columns:1fr}
 }
