@@ -8,7 +8,7 @@
 .app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--semantic-accent);border-radius:999px;background:var(--semantic-accent);color:var(--component-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
 .app-welcome-continue:active{transform:scale(.98)}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--component-app-shell-text)}
-.authenticated-app-content{min-width:0;padding:clamp(6px,1.5vw,16px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
+.authenticated-app-content{min-width:0;padding:clamp(3px,.75vw,8px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
 .authenticated-bottom-nav{position:fixed;z-index:1000;isolation:isolate;overflow:hidden;left:50%;bottom:calc(12px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:min(520px,calc(100% - 28px - var(--safe-left) - var(--safe-right)));padding:8px;border:1px solid var(--component-app-shell-material-border);border-radius:30px;background:var(--component-app-shell-material);box-shadow:var(--component-app-shell-material-shadow);backdrop-filter:blur(32px) saturate(190%);-webkit-backdrop-filter:blur(32px) saturate(190%);transform:translateX(-50%)}
 .authenticated-bottom-nav::before{content:"";position:absolute;z-index:0;inset:1px;border-radius:inherit;background:linear-gradient(180deg,var(--component-app-shell-material-highlight),transparent 48%);pointer-events:none}
 .app-tab{position:relative;z-index:1;display:grid;min-width:0;min-height:60px;align-content:center;justify-items:center;gap:5px;padding:6px 3px;border:1px solid transparent;border-radius:22px;background:transparent;color:var(--component-app-shell-muted);font:550 10.5px/1.15 var(--font-body);cursor:pointer;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
@@ -47,7 +47,7 @@ body:has(.app-welcome) .site-header .wordmark,
 body:has(.app-welcome) .site-header .header-account,
 body:has(.app-welcome) .site-header .header-nav{display:none}
 body:has(.authenticated-app-shell) .site-header .header-inner,
-body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:42px}
+body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:21px}
 
 .app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:3px}
 
