@@ -3,6 +3,7 @@ import { renderIdeasWorkspace } from "./ideas.js";
 import { renderProjectsWorkspace } from "./projects.js";
 import {
   renderProfileScreen,
+  renderProfileToolsScreen,
   renderProfileSettings,
   renderProfileEmptyScreen,
   bindProfileInteractions
@@ -110,6 +111,10 @@ function renderRoute(view, user, route) {
 
   if (route === "#authorization" || route === "#authorization/profile") {
     renderProfileScreen(view, user);
+    return;
+  }
+  if (route === "#authorization/profile-tools") {
+    renderProfileToolsScreen(view, user);
     return;
   }
   if (route === "#authorization/profile-settings") {
