@@ -12,6 +12,7 @@ const icons = {
   favorites: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg>',
   reports: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>',
   settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 4-2-1-2 1v2H9v-2l-2-1-2 1-2-4 2-1v-2l-2-1 2-4 2 1 2-1V4h6v2l2 1 2-1 2 4-2 1v2Z"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5 5 5M4 20l4.5-1 11-11a2.1 2.1 0 0 0-3-3l-11 11L4 20Z"/></svg>',
   modules: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
   tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6 18 10M4 20l7-7m-2-2 7-7a4 4 0 0 1 5 5l-7 7M3 4l6 6m-5-8 7 7"/></svg>',
   control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
@@ -65,7 +66,6 @@ export function renderProfileScreen(root, user) {
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4.5 4.5"/></svg>
         </button>
         <h1 id="profile-title">Профиль</h1>
-        <button class="profile-edit-action" type="button" data-profile-route="#authorization/profile-settings">Изм.</button>
       </div>
       <label class="profile-search" id="profile-search-field" hidden>
         <span class="visually-hidden">Поиск по разделам профиля</span>
@@ -94,8 +94,8 @@ export function renderProfileScreen(root, user) {
         <section class="profile-group" data-profile-group aria-label="Отчёты">
           <div class="profile-group-list">${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}</div>
         </section>
-        <section class="profile-group" data-profile-group aria-label="Настройки профиля">
-          <div class="profile-group-list">${row({icon:"settings",title:"Настройки профиля",route:"#authorization/profile-settings"})}</div>
+        <section class="profile-group" data-profile-group aria-label="Редактирование профиля">
+          <div class="profile-group-list">${row({icon:"edit",title:"Редактировать профиль",route:"#authorization/profile-settings"})}</div>
         </section>
         <section class="profile-group" data-profile-group aria-label="Управление модулями">
           <div class="profile-group-list">${row({icon:"modules",title:"Управление модулями",status:"Скоро",route:"#authorization/modules"})}</div>
