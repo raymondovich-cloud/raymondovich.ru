@@ -220,14 +220,14 @@
   --semantic-text-tertiary: var(--color-subtle);
   --semantic-border: var(--color-line);
   --semantic-divider: var(--color-owner-line);
-  --semantic-accent: var(--color-accent);
-  --semantic-accent-strong: var(--color-accent-bright);
-  --semantic-accent-subtle: var(--color-app-shell-active-surface);
-  --semantic-accent-foreground: #17100b;
+  --semantic-accent: #FF762F;
+  --semantic-accent-strong: #FF9A5B;
+  --semantic-accent-subtle: rgba(255, 118, 47, .14);
+  --semantic-accent-foreground: #100D0C;
   --semantic-success: var(--color-owner-success);
   --semantic-warning: var(--ws-warning);
   --semantic-danger: var(--color-ideas-danger);
-  --semantic-focus-ring: var(--color-accent-bright);
+  --semantic-focus-ring: #FF9A5B;
   --semantic-selection: rgba(255, 118, 47, .30);
 }
 
@@ -238,10 +238,11 @@
   --component-app-shell-border: var(--color-app-shell-border);
   --component-app-shell-text: var(--color-app-shell-text);
   --component-app-shell-muted: var(--color-app-shell-muted);
-  --component-app-shell-active: var(--color-app-shell-active);
-  --component-app-shell-active-surface: var(--color-app-shell-active-surface);
+  --component-app-shell-active: var(--semantic-accent);
+  --component-app-shell-active-surface: var(--semantic-accent-subtle);
+  --component-app-shell-focus-ring: var(--semantic-focus-ring);
   --component-app-shell-shadow: var(--color-app-shell-shadow);
-  --component-app-shell-cta-text: var(--color-app-shell-cta-text);
+  --component-app-shell-cta-text: var(--semantic-accent-foreground);
   --component-profile-surface: var(--color-profile-surface);
   --component-profile-divider: var(--color-profile-divider);
   --component-profile-row-hover: var(--color-profile-row-hover);
