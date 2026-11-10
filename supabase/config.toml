@@ -3,3 +3,6 @@ verify_jwt = false
 
 [functions.intake-website-submit]
 verify_jwt = false
+
+[functions.intake-notification-worker]
+verify_jwt = false
