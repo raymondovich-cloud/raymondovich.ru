@@ -1,13 +1,13 @@
 *,*::before,*::after{box-sizing:border-box}
 html{min-width:320px;scroll-behavior:smooth}
-body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--semantic-background);color:var(--semantic-text-primary);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 body,button,a{font-family:var(--font-body)}
 button,a{-webkit-tap-highlight-color:transparent}
 a{color:inherit;text-decoration:none}
 button{color:inherit}
 img,svg{display:block;max-width:100%}
-button:focus-visible,a:focus-visible{outline:2px solid var(--color-accent-bright);outline-offset:4px}
-::selection{background:rgba(255,118,47,.3);color:var(--color-text)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--semantic-focus-ring);outline-offset:4px}
+::selection{background:var(--semantic-selection);color:var(--semantic-text-primary)}
 [hidden]{display:none!important}
 
 /*
