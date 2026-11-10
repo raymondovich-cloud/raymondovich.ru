@@ -260,3 +260,13 @@
 - Security Advisor теперь дополнительно показывает `extension_in_public` WARN для pg_net (extension metadata schema public; extension non-relocatable; HTTP functions schema net). Не пытаться перемещать extension без отдельного обоснования. Другие advisor findings не менялись.
 - Migration fallback: Supabase CLI отсутствовал в runtime, поэтому migration была применена через MCP `apply_migration`, remote version проверена и source восстановлен в GitHub. Не выдавать это за CLI workflow.
 - Остаётся: настроить `INTAKE_WORKER_SECRET` одновременно в Edge Function Secrets и Vault; развернуть worker после проверки; создать pg_cron schedule с pg_net; выполнить реальный HTTP/Telegram integration test. Не создавать cron до deploy и secret provisioning. Публичный Intake всё ещё закрыт.
+
+ 
+### Intake worker deployment checkpoint — 2026-11-10
+
+- `intake-notification-worker` deployed to Production project `yajybgdorhxebbigwjgi`, ACTIVE version 2, `verify_jwt=false`; worker performs custom constant-time secret header check.
+- Vault secret `intake_worker_secret` exists. A one-off pg_net invocation using that Vault secret reached the worker and passed its worker-secret check.
+- Diagnostic response from deployed worker: HTTP 503 `worker_configuration_error`, missing only `OWNER_CHAT_ID`. `SUPABASE_URL`, service-role key, `TELEGRAM_BOT_TOKEN`, and `INTAKE_WORKER_SECRET` passed presence/format checks. No secret values were exposed.
+- Add Supabase Edge Function Secret `OWNER_CHAT_ID` with the numeric owner Telegram chat ID. Then repeat empty-batch invocation; expected 200 JSON `{ok:true, claimed:0, sent:0, failed:0}`.
+- No Telegram message sent; 0 applications / 0 outbox. Cron not scheduled. Public Intake remains disabled and legal gate closed.
+- Current worker source is on main; diagnostic missing-config names are returned only after worker-secret authentication. Latest relevant commit: `6ebdb87e505e5f39ec4f42b63b04c65bf39a7138`.
