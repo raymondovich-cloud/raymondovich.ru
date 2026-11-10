@@ -9,13 +9,16 @@
 .app-welcome-continue:active{transform:scale(.98)}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--component-app-shell-text)}
 .authenticated-app-content{min-width:0;padding:clamp(14px,3vw,28px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
-.authenticated-bottom-nav{position:fixed;z-index:1000;left:50%;bottom:calc(12px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:min(520px,calc(100% - 28px - var(--safe-left) - var(--safe-right)));padding:7px;border:1px solid var(--component-app-shell-border);border-radius:28px;background:var(--component-app-shell-surface);box-shadow:0 12px 40px var(--component-app-shell-shadow);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);transform:translateX(-50%)}
-.app-tab{display:grid;min-width:0;min-height:58px;align-content:center;justify-items:center;gap:4px;padding:6px 3px;border:1px solid transparent;border-radius:21px;background:transparent;color:var(--component-app-shell-muted);font:500 10px/1.15 var(--font-body);cursor:pointer;transition:background-color .18s ease,color .18s ease,transform .18s ease}
+.authenticated-bottom-nav{position:fixed;z-index:1000;isolation:isolate;overflow:hidden;left:50%;bottom:calc(12px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:min(520px,calc(100% - 28px - var(--safe-left) - var(--safe-right)));padding:8px;border:1px solid var(--component-app-shell-material-border);border-radius:30px;background:var(--component-app-shell-material);box-shadow:var(--component-app-shell-material-shadow);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);transform:translateX(-50%)}
+.authenticated-bottom-nav::before{content:"";position:absolute;z-index:0;inset:1px;border-radius:inherit;background:linear-gradient(180deg,var(--component-app-shell-material-highlight),transparent 48%);pointer-events:none}
+.app-tab{position:relative;z-index:1;display:grid;min-width:0;min-height:60px;align-content:center;justify-items:center;gap:5px;padding:6px 3px;border:1px solid transparent;border-radius:22px;background:transparent;color:var(--component-app-shell-muted);font:550 10.5px/1.15 var(--font-body);cursor:pointer;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
 .app-tab-icon{display:grid;width:28px;height:25px;place-items:center}
 .app-tab-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .app-tab-label{overflow:hidden;max-width:100%;text-overflow:ellipsis;white-space:nowrap}
-.app-tab.is-active{border-color:var(--component-app-shell-border);background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active)}
+.app-tab.is-active{border-color:var(--component-app-shell-active-outline);background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);box-shadow:inset 0 1px 0 var(--component-app-shell-material-highlight)}
+.app-tab.is-active::after{content:"";position:absolute;left:50%;bottom:3px;width:15px;height:3px;border-radius:999px;background:var(--component-app-shell-active);transform:translateX(-50%)}
 .app-tab:active{transform:scale(.96)}
+@media(hover:hover){.app-tab:not(.is-active):hover{background:var(--component-profile-row-hover);color:var(--component-app-shell-text)}}
 .app-tab-avatar{width:25px;height:25px;border:1px solid var(--component-app-shell-border);border-radius:50%;object-fit:cover}
 .app-tab-avatar-fallback{display:grid;width:25px;height:25px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:50%;background:var(--gradient-owner-control-active);color:var(--component-app-shell-active);font-size:11px;font-weight:700}
 .app-placeholder-screen{width:min(100%,760px);margin:0 auto;padding:clamp(12px,3vw,26px) 0}
@@ -26,7 +29,7 @@
 .app-placeholder-state p{max-width:400px;margin:0;color:var(--component-app-shell-muted);line-height:1.6}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
-@media(max-width:600px){.authenticated-app-content{padding-top:10px;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:6px}.app-tab{min-height:56px;font-size:10px}}
+@media(max-width:600px){.authenticated-app-content{padding-top:10px;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:7px}.app-tab{min-height:58px;font-size:10px}}
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
