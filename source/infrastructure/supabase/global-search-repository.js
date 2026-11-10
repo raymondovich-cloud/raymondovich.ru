@@ -35,13 +35,13 @@ export function searchEcosystemTools(query) {
 }
 
 export function searchToolResources(query) {
-  return searchRows("tool_resources", "id,name,description,resource_type,environment,status,tool_id,external_id,resource_url,updated_at", ["name", "description", "resource_type", "environment", "status", "external_id", "resource_url"], searchPattern(query));
+  return searchRows("tool_resources", "id,name,description,resource_type,environment,status,tool_id,updated_at", ["name", "description", "resource_type", "environment", "status"], searchPattern(query));
 }
 
 export function searchProjectServices(query) {
-  return searchRows("project_tool_relations", "id,project_id,purpose,evidence_note,relationship_type,status,updated_at,projects(name),ecosystem_tools(name,description)", ["purpose", "evidence_note", "relationship_type", "status"], searchPattern(query));
+  return searchRows("project_tool_relations", "id,project_id,purpose,relationship_type,status,updated_at,projects(name),ecosystem_tools(name,description)", ["purpose", "relationship_type", "status"], searchPattern(query));
 }
 
 export function searchProjectResources(query) {
-  return searchRows("project_resource_relations", "id,project_id,role,evidence_note,status,updated_at,projects(name),tool_resources(name,description,resource_type)", ["role", "evidence_note", "status"], searchPattern(query));
+  return searchRows("project_resource_relations", "id,project_id,role,status,updated_at,projects(name),tool_resources(name,description,resource_type)", ["role", "status"], searchPattern(query));
 }
