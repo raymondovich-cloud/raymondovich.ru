@@ -179,7 +179,8 @@ function bindShell(root, user) {
     }
     if (event.target.closest("[data-app-welcome-continue]")) {
       const requested = root.dataset.appWelcomeRoute;
-      try { sessionStorage.setItem("raymondovich.auth-welcome-complete", "1"); } catch { /* Optional session preference. */ }
+      root.dataset.welcomeComplete = "true";
+      try { sessionStorage.setItem("raymondovich.auth-welcome-complete", "1"); } catch { /* The root state remains available as a fallback. */ }
       const activeUser = root._authenticatedUser || user;
       const target = requested && requested !== "#authorization"
         ? requested
@@ -206,8 +207,8 @@ export function renderAuthenticatedApp(root, user) {
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
   bindShell(root, user);
-  let welcomed = false;
-  try { welcomed = sessionStorage.getItem("raymondovich.auth-welcome-complete") === "1"; } catch { /* Treat storage as unavailable. */ }
+  let welcomed = root.dataset.welcomeComplete === "true";
+  try { welcomed = welcomed || sessionStorage.getItem("raymondovich.auth-welcome-complete") === "1"; } catch { /* Use the root state when storage is unavailable. */ }
 
   if (!welcomed) {
     document.body.dataset.page = "authenticated-welcome";
