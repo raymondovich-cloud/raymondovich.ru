@@ -26,6 +26,7 @@
 .owner-console-group[open] .owner-console-grid{animation:owner-console-reveal .15s ease both}
 .owner-console-group.ws-group>summary:focus-visible{outline:2px solid var(--ws-accent);outline-offset:-3px;border-radius:var(--radius-lg)}
 .owner-console-group .ws-group-content{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:8px;padding:8px;border-top:1px solid var(--ws-group-line)}
+.owner-console-group .owner-console-grid-business{grid-template-columns:repeat(2,minmax(0,1fr))}
 .owner-console-group .owner-console-grid-integrations{grid-template-columns:repeat(3,minmax(0,1fr))}
 .owner-console-card{display:flex;min-width:0;min-height:116px;flex-direction:column;align-items:stretch;gap:8px;padding:12px;border:1px solid var(--ws-control-line);border-radius:var(--radius-md);background:var(--gradient-owner-surface);color:var(--ws-control-text);text-decoration:none;transition:transform .15s ease,border-color .15s ease,opacity .15s ease}
 .owner-console-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
