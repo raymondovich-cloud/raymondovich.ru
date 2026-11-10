@@ -304,3 +304,19 @@ Known incomplete requirements before public activation: robust abuse/rate limiti
 A Cloudflare Turnstile widget was created in managed mode for the approved website and local-development hostnames. The public sitekey is configured in the browser Intake module. The client renders action `intake_submit`, requires a token before enabling submission, and resets the widget after each request attempt. The `intake-website-submit` source validates each token through Siteverify and checks the returned action and hostname. It fails closed when `TURNSTILE_SECRET` is missing.
 
 The secret has not been written to Git or Supabase. It must be provisioned as an Edge Function secret named `TURNSTILE_SECRET` from Cloudflare widget settings before deploying the function. The current Supabase connector does not expose a secret-write operation. The function remains undeployed; frontend remains unpublished; `INTAKE_ENABLED` and the legal gate remain unchanged. Deno, HTTP, browser and iPhone Safari tests have not been run. Turnstile is a challenge, not a strict request quota; scheduled outbox retry and legal/E2E readiness remain outstanding.
+
+
+## 12.12. Outbox retry worker — source implementation (2026-11-10)
+
+The repository now contains `supabase/functions/intake-notification-worker/index.ts`. It is a server-to-server endpoint protected by the dedicated `INTAKE_WORKER_SECRET` request header; Supabase JWT verification is disabled for this function because the scheduled caller authenticates with that independent secret. The worker:
+- atomically claims a batch through the planned service-role-only RPC `intake_claim_notification_batch`;
+- loads each application from `public.intake_applications` using the server key;
+- sends the existing website Intake notification format to the configured owner chat;
+- updates delivery state through `intake_set_notification_delivery`;
+- records only bounded error codes and does not log application PII or credentials.
+
+The worker batch is limited to 5 rows with a 180-second claim lock. The claim RPC must use `FOR UPDATE SKIP LOCKED`, set `locked_until`, and return application IDs only. To avoid racing the synchronous first-send path in `intake-website-submit`, the claim query must not claim a fresh `pending` row immediately: claim due `failed` rows and only stale `pending` rows older than two minutes. The RPC must be in the exposed `public` schema solely for PostgREST RPC routing, use an empty search_path, run as SECURITY INVOKER, and grant EXECUTE only to service_role. No anon/authenticated table or RPC access is permitted.
+
+Delivery is at-least-once, not exactly-once. If Telegram accepts a message and the worker crashes before recording `sent`, the expired lock can lead to a duplicate retry. This limitation is inherent without an idempotency key supported by the Telegram sendMessage API.
+
+**Not yet complete:** the claim RPC and pg_net installation/schedule are not in the database. Production currently has pg_cron and Vault installed; pg_net is available but not installed. A scheduled invocation should use pg_cron + pg_net and a Vault-held copy of the same worker secret, with a short cadence (for example, every minute). The Supabase CLI is unavailable in the current execution environment, so the required migration has not been generated or applied; the project migration workflow requires creating it with `supabase migration new`. The Edge Function is not deployed, and no worker secrets or cron jobs were created. Public Intake remains disabled.
