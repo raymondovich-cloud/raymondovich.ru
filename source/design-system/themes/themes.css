@@ -188,3 +188,22 @@
   --semantic-focus-ring: var(--color-accent-bright);
   --semantic-selection: rgba(255, 118, 47, .30);
 }
+
+
+/* Authenticated workspace component tokens — light theme compatibility mapping. */
+:root[data-theme="light"] {
+  --component-app-shell-surface: var(--color-app-shell-surface);
+  --component-app-shell-border: var(--color-app-shell-border);
+  --component-app-shell-text: var(--color-app-shell-text);
+  --component-app-shell-muted: var(--color-app-shell-muted);
+  --component-app-shell-active: var(--color-app-shell-active);
+  --component-app-shell-active-surface: var(--color-app-shell-active-surface);
+  --component-app-shell-shadow: var(--color-app-shell-shadow);
+  --component-app-shell-cta-text: var(--color-app-shell-cta-text);
+  --component-profile-surface: var(--color-profile-surface);
+  --component-profile-divider: var(--color-profile-divider);
+  --component-profile-row-hover: var(--color-profile-row-hover);
+  --component-profile-icon-surface: var(--color-profile-icon-surface);
+  --component-profile-field: var(--color-profile-field);
+  --component-profile-notice: var(--color-profile-notice);
+}
