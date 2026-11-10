@@ -50,7 +50,7 @@
 .profile-row:focus-visible,.profile-round-action:focus-visible,.profile-edit-action:focus-visible,.profile-submit:focus-visible,.profile-secondary:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:2px}
 @media(hover:hover){.profile-row:hover{background:var(--component-profile-row-hover)}}
 .profile-row:active{background:var(--component-profile-row-pressed)}
-@media(max-width:380px){.profile-row{grid-template-columns:34px minmax(0,1fr) auto 12px;gap:8px;padding-inline:10px}.profile-row-value{font-size:11px}}
+@media(max-width:380px){.profile-row{grid-template-columns:38px minmax(0,1fr) auto 12px;gap:8px;padding-inline:10px}.profile-row-value{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.profile-row{transition:none}}
 
 .profile-row-icon.is-tools{color:var(--color-profile-icon-modules)}
