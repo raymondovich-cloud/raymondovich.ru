@@ -26,7 +26,10 @@
   z-index:1300;
   inset:0;
   overflow-y:auto;
-  padding:calc(var(--safe-top) + 12px) max(14px, var(--safe-left)) calc(24px + var(--safe-bottom));
+  padding-top:calc(var(--safe-top) + 12px);
+  padding-right:max(14px, var(--safe-right));
+  padding-bottom:calc(24px + var(--safe-bottom));
+  padding-left:max(14px, var(--safe-left));
   background:color-mix(in srgb, var(--semantic-background) 76%, transparent);
   backdrop-filter:blur(22px) saturate(150%);
   -webkit-backdrop-filter:blur(22px) saturate(150%);
