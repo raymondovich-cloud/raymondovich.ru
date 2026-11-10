@@ -1,12 +1,6 @@
 .profile-screen,.profile-subscreen{width:min(100%,700px);margin:0 auto}
 .profile-toolbar{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;min-height:42px;margin-bottom:12px}
 .profile-toolbar h1{margin:0;text-align:center;font-size:19px;font-weight:700;letter-spacing:-.025em}
-.profile-round-action{position:fixed;z-index:1102;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:grid;width:42px;height:42px;place-items:center;border:1px solid var(--component-app-shell-material-border);border-radius:50%;background:var(--component-app-shell-material);color:var(--component-app-shell-active);box-shadow:var(--component-app-shell-material-shadow);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);cursor:pointer;transition:background-color .18s ease,border-color .18s ease,transform .18s ease}
-.profile-round-action svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
-.profile-search{display:block;margin:10px 0 18px}
-.profile-search[hidden]{display:none}
-.profile-search input,.profile-settings-card input{box-sizing:border-box;width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--component-app-shell-border);border-radius:14px;background:var(--component-profile-field);color:var(--component-app-shell-text);font:400 16px/1.4 var(--font-body)}
-.profile-search input:focus-visible,.profile-settings-card input:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:2px}
 .profile-identity{display:grid;justify-items:center;gap:8px;margin:8px 0 18px;padding:24px 16px 26px;border:1px solid var(--component-profile-group-border);border-radius:25px;background:var(--component-profile-identity-surface);box-shadow:var(--component-profile-identity-shadow);text-align:center}
 .profile-avatar{display:grid;width:104px;height:104px;overflow:hidden;place-items:center;margin-bottom:7px;border:2px solid var(--component-profile-avatar-ring);border-radius:50%;background:var(--gradient-owner-control-active);box-shadow:0 0 0 5px var(--component-profile-avatar-halo);color:var(--component-app-shell-active);font-size:34px;font-weight:700}
 .profile-avatar img{width:100%;height:100%;object-fit:cover}
@@ -45,13 +39,12 @@
 .profile-form-notice{padding:12px 14px;border:1px solid var(--component-app-shell-border);border-radius:12px;background:var(--component-profile-notice);color:var(--component-app-shell-text);font-size:13px;line-height:1.5}
 .profile-form-notice[hidden]{display:none}
 .profile-empty-panel{min-height:120px;align-content:center;color:var(--component-app-shell-muted);line-height:1.6}
-.profile-row:focus-visible,.profile-round-action:focus-visible,.profile-submit:focus-visible,.profile-secondary:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:2px}
-@media(hover:hover){.profile-row:hover{background:var(--component-profile-row-hover)}.profile-round-action:hover{border-color:var(--component-app-shell-active-outline);background:var(--component-app-shell-active-surface)}}
-.profile-round-action:active{transform:scale(.94)}
+.profile-row:focus-visible,.profile-submit:focus-visible,.profile-secondary:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:2px}
+@media(hover:hover){.profile-row:hover{background:var(--component-profile-row-hover)}}
 @media(max-width:600px){.profile-round-action{top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 10px);width:40px;height:40px}}
 .profile-row:active{background:var(--component-profile-row-pressed)}
 @media(max-width:380px){.profile-row{grid-template-columns:38px minmax(0,1fr) auto 12px;gap:8px;padding-inline:10px}.profile-row-value{font-size:11px}}
-@media(prefers-reduced-motion:reduce){.profile-row,.profile-round-action{transition:none}}
+@media(prefers-reduced-motion:reduce){.profile-row,{transition:none}}
 
 .profile-row-icon.is-tools{color:var(--color-profile-icon-modules)}
 .profile-tools-intro{margin:10px 0 0;color:var(--component-app-shell-muted);font-size:13px;line-height:1.55}
