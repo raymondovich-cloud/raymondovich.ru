@@ -166,7 +166,7 @@ function renderRoute(view, user, route) {
 function syncFullscreenState(shell) {
   const view = shell.querySelector("[data-app-view]");
   const isFormOpen = Boolean(view?.querySelector(
-    ".projects-form-screen, [data-ideas-form]:not([hidden]), [data-project-form]"
+    ".projects-form-screen, [data-ideas-form]:not([hidden]), [data-project-form], [data-app-screen='profile-settings']"
   ));
   shell.classList.toggle("has-fullscreen-form", isFormOpen);
 }
