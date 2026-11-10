@@ -220,9 +220,22 @@ export function renderAuthenticatedApp(root, user) {
   }
 
   const active = activeTabForRoute(route);
-  root.innerHTML = shellMarkup(user, active);
-  const shell = root.querySelector(".authenticated-app-shell");
-  const view = root.querySelector("[data-app-view]");
+  let shell = root.querySelector(".authenticated-app-shell");
+  let view = shell?.querySelector("[data-app-view]");
+
+  if (!shell || !view) {
+    root.innerHTML = shellMarkup(user, active);
+    shell = root.querySelector(".authenticated-app-shell");
+    view = shell?.querySelector("[data-app-view]");
+  } else {
+    shell.querySelectorAll("[data-app-tab]").forEach(tab => {
+      const isActive = tab.dataset.appTab === active;
+      tab.classList.toggle("is-active", isActive);
+      if (isActive) tab.setAttribute("aria-current", "page");
+      else tab.removeAttribute("aria-current");
+    });
+  }
+
   document.body.dataset.page = "authenticated-workspace";
   renderRoute(view, user, route);
   syncFullscreenState(shell);
