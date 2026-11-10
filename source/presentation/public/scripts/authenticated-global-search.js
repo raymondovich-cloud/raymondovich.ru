@@ -76,11 +76,11 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
   }
 
   function openSearch() {
+    const panel = panelFor(root);
+    if (!panel || !panel.hidden) return;
     requestSequence += 1;
     clearTimeout(debounceTimer);
     resultIndex.clear();
-    const panel = panelFor(root);
-    if (!panel || !panel.hidden) return;
     previousFocus = document.activeElement;
     panel.hidden = false;
     document.body.classList.add("global-search-open");
