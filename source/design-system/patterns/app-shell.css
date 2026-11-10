@@ -54,12 +54,11 @@ body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min
   from{opacity:0;transform:translate3d(0,8px,0)}
   to{opacity:1;transform:translate3d(0,0,0)}
 }
-.authenticated-app-content>*{animation:app-screen-enter .24s ease both}
 .app-welcome{animation:app-screen-enter .32s ease both}
 @media(prefers-reduced-motion:reduce){
   .app-welcome-continue,.app-tab{transition:none}
   .app-welcome-continue:active,.app-tab:active{transform:none}
-  .authenticated-app-content>*,.app-welcome{animation:none}
+  .app-welcome{animation:none}
 }
 
 /* Keep the public footer outside authenticated workspaces. */
