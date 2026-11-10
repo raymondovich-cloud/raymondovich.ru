@@ -1,4 +1,5 @@
 import { renderOwnerControlCenter } from "./owner-control-center.js";
+import { bindAuthenticatedGlobalSearch } from "./authenticated-global-search.js";
 import { renderIdeasWorkspace } from "./ideas.js";
 import { renderProjectsWorkspace } from "./projects.js";
 import {
@@ -13,6 +14,23 @@ const shellObservers = new WeakMap();
 const currentShellUsers = new WeakMap();
 
 const backMarkup = '<button class="authenticated-back-toggle" type="button" data-global-back aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 7-7m-7 7 7 7"/></svg></button>';
+
+function globalSearchMarkup() {
+  return `<section class="authenticated-global-search" data-global-search hidden role="dialog" aria-modal="true" aria-label="Глобальный поиск">
+    <div class="global-search-panel">
+      <div class="global-search-toolbar">
+        <label class="global-search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+          <input type="search" data-global-search-input aria-label="Поиск по Raymondovich" placeholder="Поиск по Raymondovich" autocomplete="off" enterkeyhint="search">
+        </label>
+        <button class="global-search-close" type="button" data-global-search-close aria-label="Закрыть поиск" title="Закрыть поиск">×</button>
+      </div>
+      <div class="global-search-results" data-global-search-results aria-live="polite">
+        <p class="global-search-message">Введите минимум 2 символа для поиска.</p>
+      </div>
+    </div>
+  </section>`;
+}
 
 const TAB_ROUTES = {
   projects: "#authorization/projects",
@@ -66,6 +84,7 @@ function tabMarkup(key, label, user, active) {
 function shellMarkup(user, active) {
   return `
     ${backMarkup}
+    ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
       <nav class="authenticated-bottom-nav" aria-label="Основная навигация">
@@ -81,6 +100,7 @@ function renderWelcome(root, user, requestedRoute) {
   const name = displayName(user);
   root.innerHTML = `
     ${backMarkup}
+    ${globalSearchMarkup()}
     <section class="app-welcome" aria-labelledby="app-welcome-title">
       <p class="app-welcome-eyebrow">RAYMONDOVICH / PRIVATE SPACE</p>
       <div class="app-welcome-mark" aria-hidden="true">R.</div>
@@ -180,6 +200,7 @@ function syncFullscreenState(shell) {
 }
 
 function bindShell(root, user) {
+  bindAuthenticatedGlobalSearch(root, () => currentShellUsers.get(root) || user);
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
   root.addEventListener("click", event => {
