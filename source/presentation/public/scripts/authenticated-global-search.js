@@ -2,7 +2,6 @@ import { searchGlobalContent } from "/source/application/search/global-search.js
 
 const MIN_QUERY_LENGTH = 2;
 const PULL_THRESHOLD = 72;
-const TOP_EDGE_START = 96;
 
 const escape = value => String(value ?? "").replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -183,7 +182,7 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
     if (!root.contains(event.target) || panelFor(root)?.hidden === false || event.touches.length !== 1) return;
     if ((document.scrollingElement?.scrollTop || window.scrollY || 0) > 0) return;
     const touch = event.changedTouches[0];
-    if (!touch || touch.clientY > TOP_EDGE_START) return;
+    if (!touch) return;
     if (event.target instanceof Element
       && event.target.closest("input,textarea,select,button,a,[contenteditable='true']")) return;
     gesture = { startX: touch.clientX, startY: touch.clientY };
