@@ -141,3 +141,27 @@
 
 :root[data-platform="telegram"][data-tg-color-scheme="light"] { color-scheme: light; }
 :root[data-platform="telegram"][data-tg-color-scheme="dark"] { color-scheme: dark; }
+
+
+/* Authenticated app shell and Telegram-style profile — light theme. */
+:root[data-theme="light"] {
+  --color-app-shell-surface: rgba(255, 255, 255, .91);
+  --color-app-shell-border: rgba(20, 24, 30, .14);
+  --color-app-shell-text: var(--color-text);
+  --color-app-shell-muted: var(--color-muted);
+  --color-app-shell-active: #d65b1f;
+  --color-app-shell-active-surface: rgba(214, 91, 31, .12);
+  --color-app-shell-shadow: rgba(22, 28, 38, .14);
+  --color-profile-surface: rgba(255, 255, 255, .88);
+  --color-profile-divider: rgba(20, 24, 30, .09);
+  --color-profile-row-hover: rgba(20, 24, 30, .035);
+  --color-profile-icon-projects: #b94c19;
+  --color-profile-icon-favorites: #a94d80;
+  --color-profile-icon-reports: #286fae;
+  --color-profile-icon-settings: #6559b8;
+  --color-profile-icon-modules: #237b65;
+  --color-profile-icon-control: #b94c19;
+  --color-profile-icon-surface: rgba(20, 24, 30, .045);
+  --color-profile-field: rgba(20, 24, 30, .04);
+  --color-profile-notice: rgba(214, 91, 31, .08);
+}
