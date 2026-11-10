@@ -52,3 +52,18 @@
 .profile-row:active{background:var(--color-profile-row-hover)}
 @media(max-width:380px){.profile-row{grid-template-columns:34px minmax(0,1fr) auto 12px;gap:8px;padding-inline:10px}.profile-row-value{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.profile-row{transition:none}}
+
+.profile-row-icon.is-tools{color:var(--color-profile-icon-modules)}
+.profile-tools-intro{margin:10px 0 0;color:var(--color-app-shell-muted);font-size:13px;line-height:1.55}
+.profile-tools-group{margin:0 0 18px}
+.profile-tools-group>h2{margin:0 0 10px;color:var(--color-app-shell-muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.profile-tools-list{overflow:hidden;border:1px solid var(--color-app-shell-border);border-radius:18px;background:var(--color-profile-surface)}
+.profile-tool-row{display:flex;min-height:62px;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px}
+.profile-tool-row+.profile-tool-row,.profile-tool-category+.profile-tool-row,.profile-tool-row+.profile-tool-category{border-top:1px solid var(--color-profile-divider)}
+.profile-tool-row-copy{display:grid;min-width:0;gap:4px}
+.profile-tool-row-copy strong,.profile-tool-category-heading strong{font-size:14px;font-weight:600}
+.profile-tool-row-copy small,.profile-tool-category-heading small{color:var(--color-app-shell-muted);font-size:12px;line-height:1.4}
+.profile-tool-access{flex:0 0 auto;color:var(--color-app-shell-muted);font-size:11px;text-align:right}
+.profile-tool-category-heading{display:grid;gap:4px;padding:14px 14px 9px}
+.profile-tool-category .profile-tool-row{padding-left:25px}
+@media(max-width:380px){.profile-tool-row{gap:8px;padding-inline:11px}.profile-tool-access{max-width:105px;white-space:normal}}
