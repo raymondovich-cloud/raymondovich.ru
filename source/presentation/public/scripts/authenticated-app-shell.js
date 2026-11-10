@@ -180,9 +180,10 @@ function bindShell(root, user) {
     if (event.target.closest("[data-app-welcome-continue]")) {
       const requested = root.dataset.appWelcomeRoute;
       try { sessionStorage.setItem("raymondovich.auth-welcome-complete", "1"); } catch { /* Optional session preference. */ }
+      const activeUser = root._authenticatedUser || user;
       const target = requested && requested !== "#authorization"
         ? requested
-        : (user.app_metadata?.role === "admin" ? TAB_ROUTES.projects : TAB_ROUTES.profile);
+        : (activeUser.app_metadata?.role === "admin" ? TAB_ROUTES.projects : TAB_ROUTES.profile);
       const currentRoute = window.RaymondovichNavigation?.getState()?.route || location.hash;
       if (target === currentRoute) renderAuthenticatedApp(root, user);
       else {
@@ -201,6 +202,7 @@ function bindShell(root, user) {
 
 export function renderAuthenticatedApp(root, user) {
   if (!root || !user) return;
+  root._authenticatedUser = user;
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
   bindShell(root, user);
