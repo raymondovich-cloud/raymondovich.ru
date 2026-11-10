@@ -44,14 +44,16 @@ alter table public.intake_applications
         and product_stage is null
       )
       or (
-        interest = 'own_product'
+        conditional_fields_version = 1
+        and interest = 'own_product'
         and partner_role is null
         and weekly_availability is null
         and portfolio_url is null
         and product_stage is not null
       )
       or (
-        interest = 'question'
+        conditional_fields_version = 1
+        and interest = 'question'
         and partner_role is null
         and weekly_availability is null
         and portfolio_url is null
