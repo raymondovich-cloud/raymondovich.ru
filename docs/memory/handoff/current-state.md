@@ -226,3 +226,15 @@
 - New function is not deployed. Frontend is not deployed. `INTAKE_ENABLED` remains false. Legal readiness remains false. No new secrets were set.
 - Important gaps: no robust rate-limit/challenge yet (honeypot and form-duration check are not sufficient as sole abuse protection); no scheduled outbox worker yet, so failed deliveries are persisted with retry metadata but are not automatically retried on a timer; approved notice version not configured; no Deno compile/HTTP/Telegram/browser/iPhone tests executed.
 - Public activation is blocked until abuse protection, scheduled retry worker, legal notice/version, and E2E verification are complete.
+
+
+## 14. Website Intake — Turnstile challenge integration (2026-11-10)
+
+- Created Cloudflare Turnstile widget `Raymondovich Website Intake` in managed mode. Allowed hosts: `raymondovich.ru`, `www.raymondovich.ru`, `raymondovich.online`, `www.raymondovich.online`, `localhost`, `127.0.0.1`. Public sitekey: `0x4AAAAAAF7mQ44haZR2d1K4`.
+- Updated the website form to load Turnstile explicitly, render action `intake_submit`, require a valid widget token before enabling submit, and reset the widget after each request attempt.
+- Updated `intake-website-submit` source to verify every token server-side using Cloudflare Siteverify and check success, action and hostname. The endpoint fails closed if `TURNSTILE_SECRET` is absent and returns a service-unavailable response if Siteverify cannot be reached.
+- Changes committed directly to `main`: `3913dc0`, `37e137f`, `111843f`, `ea4e95d`.
+- The Turnstile secret is not stored in Git and has not been added to Supabase. The current connector exposes no Supabase secret-write action; owner must add `TURNSTILE_SECRET` through Supabase Dashboard using the secret from the Cloudflare widget settings.
+- The new Edge Function is still not deployed; frontend is not published. No database changes, secrets, `INTAKE_ENABLED`, legal gate or public activation were changed.
+- Turnstile is a challenge layer, not a hard request quota. It does not replace application-level rate limiting if abuse patterns later require it.
+- No Deno compile, HTTP verification, live Siteverify test, browser or iPhone Safari QA was run. Public Intake remains blocked pending secret provisioning, outbox retry worker, legal approval and end-to-end QA.
