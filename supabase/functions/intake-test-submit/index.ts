@@ -32,7 +32,7 @@ async function validateTelegramInitData(raw: string, botToken: string): Promise<
   const receivedHash = params.get("hash") || "";
   if (!/^[a-f0-9]{64}$/i.test(receivedHash)) throw new IntakeValidationError("invalid_init_data");
   const checkString = entries.filter(([key]) => key !== "hash")
-    .sort(([a], [b]) => a.localeCompare(b)).map(([key, value]) => \`${key}=${value}\`).join("\n");
+    .sort(([a], [b]) => a.localeCompare(b)).map(([key, value]) => `${key}=${value}`).join("\n");
   const secretKey = await hmacSha256(encoder.encode("WebAppData"), botToken);
   const calculatedHash = bytesToHex(await hmacSha256(secretKey, checkString));
   if (!equalHexConstantTime(calculatedHash, receivedHash.toLowerCase())) throw new IntakeValidationError("invalid_init_data");
@@ -58,11 +58,11 @@ async function validateTelegramInitData(raw: string, botToken: string): Promise<
   };
 }
 function normalizeText(value: unknown, maximum: number, field: "name" | "message"): string {
-  if (typeof value !== "string") throw new IntakeValidationError(\`invalid_${field}\`);
+  if (typeof value !== "string") throw new IntakeValidationError(`invalid_${field}`);
   const normalized = value.normalize("NFKC").replace(/\r\n?/g, "\n").trim();
   const forbidden = field === "message" ? /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/ : /[\u0000-\u001F\u007F]/;
   if (forbidden.test(normalized) || [...normalized].length < 1 || [...normalized].length > maximum) {
-    throw new IntakeValidationError(\`invalid_${field}\`);
+    throw new IntakeValidationError(`invalid_${field}`);
   }
   return normalized;
 }
