@@ -86,8 +86,23 @@ function initialize(root) {
           test_mode_not_configured: "Тестовый сервер ещё не настроен. Сообщите владельцу.",
           rate_limited: "Лимит тестовых отправок: одна заявка за 10 минут.",
           expired_init_data: "Telegram-сессия устарела. Закройте Mini App и откройте ссылку заново.",
+          invalid_init_data: "Telegram не передал корректную подписанную сессию. Закройте Mini App и откройте тестовую ссылку заново.",
+          invalid_telegram_user: "Не удалось подтвердить Telegram-профиль. Перезапустите Mini App.",
+          invalid_request: "Не прошла проверка обязательных полей. Обновите форму и попробуйте ещё раз.",
+          invalid_interest: "Выберите корректный тип обращения.",
+          invalid_partner_fields: "Заполните роль и доступное время в блоке «Партнёрство».",
+          invalid_product_stage: "Укажите стадию продукта.",
+          invalid_portfolio_url: "Ссылка на портфолио должна начинаться с https://.",
+          invalid_product_url: "Ссылка на продукт должна начинаться с https://.",
+          persistence_failed: "Сервер проверил Telegram, но не смог сохранить запись. Повторять отправку пока не нужно — проверяем базу.",
+          not_allowlisted: "Этот Telegram-аккаунт не включён в список тестировщиков.",
+          invalid_test_launch: "Ссылка открыта без правильного тестового параметра. Запустите Mini App по тестовой ссылке.",
+          rate_limited: "Лимит тестовых отправок: одна заявка за 10 минут.",
+          test_mode_not_configured: "Тестовый сервер ещё не настроен. Сообщите владельцу.",
+          request_too_large: "Форма слишком большая. Сократите сообщение."
+
         };
-        showNotice(notice, messages[payload.error] || "Не удалось отправить тестовую заявку. Повторите попытку.", true);
+        showNotice(notice, messages[payload.error] || `Не удалось отправить заявку (код: ${String(payload.error || response.status).slice(0, 48)}). Сообщите этот код владельцу.`, true);
         return;
       }
       form.hidden = true;
