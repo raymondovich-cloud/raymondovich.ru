@@ -86,7 +86,7 @@ function normalizeOptionalText(value: unknown, maximum: number, code: string): s
   if (value === undefined || value === null || value === "") return null;
   if (typeof value !== "string") throw new IntakeValidationError(code);
   const normalized = value.normalize("NFKC").trim();
-  if ([...normalized].length > maximum || /[\\u0000-\\u001F\\u007F]/.test(normalized)) {
+  if ([...normalized].length > maximum || /[\u0000-\u001F\u007F]/.test(normalized)) {
     throw new IntakeValidationError(code);
   }
   return normalized || null;
