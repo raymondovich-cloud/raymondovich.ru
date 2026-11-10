@@ -63,6 +63,8 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
   const resultIndex = new Map();
 
   function closeSearch() {
+    requestSequence += 1;
+    clearTimeout(debounceTimer);
     const panel = panelFor(root);
     if (!panel || panel.hidden) return;
     panel.hidden = true;
@@ -74,6 +76,9 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
   }
 
   function openSearch() {
+    requestSequence += 1;
+    clearTimeout(debounceTimer);
+    resultIndex.clear();
     const panel = panelFor(root);
     if (!panel || !panel.hidden) return;
     previousFocus = document.activeElement;
@@ -87,9 +92,8 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
     }
   }
 
-  async function runSearch(value) {
+  async function runSearch(value, sequence) {
     const query = String(value || "").trim();
-    const sequence = ++requestSequence;
     if (query.length < MIN_QUERY_LENGTH) {
       resultIndex.clear();
       renderMessage(root, "Введите минимум 2 символа для поиска.");
@@ -109,7 +113,15 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
   root.addEventListener("input", event => {
     if (!event.target.matches("[data-global-search-input]")) return;
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => runSearch(event.target.value), 240);
+    const query = event.target.value;
+    const sequence = ++requestSequence;
+    resultIndex.clear();
+    if (String(query || "").trim().length < MIN_QUERY_LENGTH) {
+      renderMessage(root, "Введите минимум 2 символа для поиска.");
+      return;
+    }
+    renderMessage(root, "Ищем по доступным разделам…", "loading");
+    debounceTimer = setTimeout(() => runSearch(query, sequence), 240);
   });
 
   root.addEventListener("click", event => {
