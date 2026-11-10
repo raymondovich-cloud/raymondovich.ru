@@ -2,7 +2,7 @@
 
 > **Project:** Raymondovich.ru  
 > **Document:** Architecture Decision Record  
-> **Version:** 1.1  
+> **Version:** 1.2  
 > **Status:** Approved for isolated implementation  
 > **Date:** 2026-11-10
 
@@ -17,7 +17,7 @@ The public website needs one application form reachable from Telegram Mini App l
 3. Keep launch parameters in transient in-memory platform state only. The hash remains navigation-only; localStorage and sessionStorage are not used for attribution.
 4. Send the original raw `Telegram.WebApp.initData` to a server-side Edge Function.
 5. Verify Telegram's HMAC-SHA-256 signature on the server before using the user identity or `start_param`.
-6. Derive source and campaign exclusively from the verified `start_param`; do not trust a separate client field.
+6. Prefer `start_param` from HMAC-verified initData when present. For Telegram direct-link launches where the raw signed payload does not contain it, accept the SDK/GET startParam only as an untrusted allowlisted attribution hint and persist a source_param_signed flag.
 7. Treat source/campaign as link attribution, not proof of the actual channel through which the user discovered the link.
 8. Store requests in Supabase with RLS, service-role-only writes, an immutable owner ID loaded from a private database configuration table populated from the single Supabase Auth admin account, idempotency and transactional per-user rate limits. Authenticated reads require both `app_metadata.role = admin` and `auth.uid() = owner_id`.
 9. Notify the owner through Telegram Bot API using secrets stored only in Supabase.
@@ -26,7 +26,7 @@ The public website needs one application form reachable from Telegram Mini App l
 
 ## Security boundary
 
-Telegram Mini App `initDataUnsafe`, SDK platform, browser URL, hash and all form values are untrusted client inputs. Only a valid HMAC-verified `initData` establishes the Telegram-signed user identity and start parameter. The SDK platform remains a client-reported hint.
+Telegram Mini App `initDataUnsafe`, SDK platform, browser URL, hash, direct-link startParam and all form values are untrusted client inputs. Only a valid HMAC-verified `initData` establishes the Telegram-signed user identity. A start_param is an integrity-protected attribution label only when it is actually present in the verified payload; direct-link startapp is also exposed through tgWebAppStartParam and may not be part of the raw signed payload. Unsigned labels are stored with source_param_signed=false and are never used for authorization, roles or rate limits.
 
 This feature does not authenticate a Supabase account, link Telegram identity to an existing account, grant a role or provide privileged access.
 
@@ -44,11 +44,12 @@ This feature does not authenticate a Supabase account, link Telegram identity to
 
 - Telegram Mini Apps: `initData`, `start_param` and server-side validation.
 - Supabase Edge Functions: function-specific `verify_jwt` configuration and secrets.
-- Intake Module Specification v1.1.
+- Intake Module Specification v1.2.
 
 ## Version history
 
 | Version | Status | Date | Changes |
 |---|---|---|---|
+| 1.2 | Approved for isolated implementation | 2026-11-10 | Corrected Telegram direct-link attribution trust model and added signed/unsigned source flag. |
 | 1.1 | Approved for isolated implementation | 2026-11-10 | Added database-managed owner binding and fail-closed activation until legal notice and staging verification are complete. |
 | 1.0 | Approved for isolated implementation | 2026-11-10 | Owner approved Telegram intake workflow and 90-day post-closure retention. |
