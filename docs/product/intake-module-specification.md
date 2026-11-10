@@ -287,3 +287,7 @@ Persist explicit consent timestamp and the exact notice/policy version identifie
 - Implement the Control Center UI as a separate later vertical slice; its future data contract is defined here.
 
 No production migration, deploy, secret update, public activation or legal-gate change is authorized by this amendment.
+
+## 12.9. Implementation status amendment — Production DB foundation (2026-11-10)
+
+After the owner separately authorized Production database changes and direct work on `main`, the database foundation was applied in Supabase project `yajybgdorhxebbigwjgi`. Applied migrations: `20261110161352`, `20261110161410`, `20261110161441`. The schema now supports website-originated applications without Telegram identity, separate application/notification statuses, first/last-touch JSONB, notice version, private outbox, status history and a service-role-only website RPC. Legacy Telegram RPCs remain in place. The corresponding SQL migration sources are present in the repository. Edge Function and frontend implementation remain pending; no public activation, secrets change or deployment was performed.
