@@ -60,7 +60,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   async function loadProjects() {
     const sequence=++loadSequence;
-    if (!projects.length) host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
+    if (!cachedWorkspace) host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
     const result = await loadProjectsWorkspace();
     if(sequence!==loadSequence||controller.signal.aborted)return false;
     if (result.error) {
