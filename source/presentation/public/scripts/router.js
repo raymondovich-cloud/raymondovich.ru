@@ -5,8 +5,8 @@ const homeMarkup = main?.innerHTML ?? "";
 
 const routes = {
   "ecosystem-projects": "/source/presentation/public/pages/ecosystem-projects.html",
-  "partner-projects": "/source/presentation/public/pages/partner-projects.html",
-  "advertising-projects": "/source/presentation/public/pages/advertising-projects.html",
+  "partner-projects": "/source/presentation/public/pages/ecosystem-projects.html",
+  "advertising-projects": "/source/presentation/public/pages/ecosystem-projects.html",
   "how-to-join": "/source/presentation/public/pages/how-to-join.html",
   "settings": "/source/presentation/public/pages/settings.html",
   "help": "/source/presentation/public/pages/help.html",
@@ -22,12 +22,15 @@ if (legacySlug) {
   let renderedRoute = null;
 
   function updateNavigation(slug) {
+    const activeSlug = ["partner-projects", "advertising-projects"].includes(slug)
+      ? "ecosystem-projects"
+      : slug;
     document.querySelectorAll(".sidebar-nav a").forEach((link) => {
       const target = new URL(link.href, location.origin);
       const targetSlug = target.hash.slice(1);
-      const isActive = slug === "home"
+      const isActive = activeSlug === "home"
         ? target.pathname === "/" && !targetSlug
-        : targetSlug === slug;
+        : targetSlug === activeSlug;
       if (isActive) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
@@ -68,6 +71,13 @@ if (legacySlug) {
       updateNavigation(routeSlug);
       document.body.classList.remove("menu-open");
       window.scrollTo({ top: 0, behavior: "auto" });
+      const productSection = {
+        "partner-projects": "partner-development",
+        "advertising-projects": "independent-products"
+      }[routeSlug];
+      if (productSection) {
+        document.getElementById(productSection)?.scrollIntoView({ behavior: "auto", block: "start" });
+      }
       main.focus({ preventScroll: true });
     } catch (error) {
       if (sequence !== renderSequence) return;
