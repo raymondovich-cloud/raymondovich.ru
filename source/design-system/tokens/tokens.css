@@ -179,3 +179,27 @@
   --pin-accent: #ff9a58;
   --pin-submit-text: #16110e;
 }
+
+
+/* Authenticated app shell and Telegram-style profile — dark theme. */
+:root {
+  --color-app-shell-surface: rgba(18, 20, 24, .88);
+  --color-app-shell-border: rgba(255, 255, 255, .14);
+  --color-app-shell-text: var(--color-text);
+  --color-app-shell-muted: var(--color-muted);
+  --color-app-shell-active: var(--color-accent);
+  --color-app-shell-active-surface: rgba(255, 118, 47, .14);
+  --color-app-shell-shadow: rgba(0, 0, 0, .32);
+  --color-profile-surface: rgba(20, 22, 27, .76);
+  --color-profile-divider: rgba(255, 255, 255, .085);
+  --color-profile-row-hover: rgba(255, 255, 255, .045);
+  --color-profile-icon-projects: #ff985f;
+  --color-profile-icon-favorites: #e9a6cb;
+  --color-profile-icon-reports: #79b8f2;
+  --color-profile-icon-settings: #a9a0f5;
+  --color-profile-icon-modules: #70c8ae;
+  --color-profile-icon-control: var(--color-accent);
+  --color-profile-icon-surface: rgba(255, 255, 255, .055);
+  --color-profile-field: rgba(255, 255, 255, .045);
+  --color-profile-notice: rgba(255, 118, 47, .10);
+}
