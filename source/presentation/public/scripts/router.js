@@ -14,7 +14,17 @@ const routes = {
   "authorization": "/source/presentation/public/pages/authorization.html"
 };
 
-const legacySlug = Object.keys(routes).find((slug) => location.pathname === routes[slug]);
+const legacyPaths = {
+  "ecosystem-projects": "/source/presentation/public/pages/ecosystem-projects.html",
+  "partner-projects": "/source/presentation/public/pages/partner-projects.html",
+  "advertising-projects": "/source/presentation/public/pages/advertising-projects.html",
+  "how-to-join": "/source/presentation/public/pages/how-to-join.html",
+  "settings": "/source/presentation/public/pages/settings.html",
+  "help": "/source/presentation/public/pages/help.html",
+  "plans": "/source/presentation/public/pages/plans.html",
+  "authorization": "/source/presentation/public/pages/authorization.html"
+};
+const legacySlug = Object.keys(legacyPaths).find((slug) => location.pathname === legacyPaths[slug]);
 if (legacySlug) {
   location.replace(`/#${legacySlug}`);
 } else {
