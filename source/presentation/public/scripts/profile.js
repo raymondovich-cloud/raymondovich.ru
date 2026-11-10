@@ -62,15 +62,8 @@ export function renderProfileScreen(root, user) {
   root.innerHTML = `
     <section class="profile-screen" aria-labelledby="profile-title">
       <div class="profile-toolbar">
-        <button class="profile-round-action" type="button" data-profile-search-toggle aria-label="Поиск по профилю" aria-expanded="false" aria-controls="profile-search-field">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4.5 4.5"/></svg>
-        </button>
         <h1 id="profile-title">Профиль</h1>
       </div>
-      <label class="profile-search" id="profile-search-field" hidden>
-        <span class="visually-hidden">Поиск по разделам профиля</span>
-        <input type="search" data-profile-search placeholder="Поиск по профилю" autocomplete="off">
-      </label>
       <header class="profile-identity">
         <div class="profile-avatar" aria-hidden="true">
           ${avatar ? `<img src="${escape(avatar)}" alt="">` : `<span>${escape(initials(name))}</span>`}
@@ -224,22 +217,9 @@ export function bindProfileInteractions(root, navigate) {
       navigate(routeButton.dataset.profileRoute);
       return;
     }
-    if (event.target.closest("[data-profile-search-toggle]")) {
-      const search = root.querySelector(".profile-search");
-      if (!search) return;
-      search.hidden = !search.hidden;
-      event.target.closest("[data-profile-search-toggle]")?.setAttribute("aria-expanded", String(!search.hidden));
-      if (!search.hidden) search.querySelector("input")?.focus();
-      return;
-    }
+
   });
-  root.addEventListener("input", event => {
-    if (!event.target.matches("[data-profile-search]")) return;
-    const query = event.target.value.trim().toLocaleLowerCase("ru");
-    root.querySelectorAll("[data-profile-group]").forEach(group => {
-      group.hidden = Boolean(query) && !group.textContent.toLocaleLowerCase("ru").includes(query);
-    });
-  });
+
   root.addEventListener("submit", async event => {
     const emailForm = event.target.closest("[data-profile-email-form]");
     const passwordForm = event.target.closest("[data-profile-password-form]");
