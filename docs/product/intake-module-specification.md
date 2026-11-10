@@ -222,3 +222,68 @@ No change to activation controls, secrets, legal readiness or deployment is impl
 | Version | Status | Date | Changes |
 |---|---|---|---|
 | 1.3 | Draft for implementation review | 2026-11-10 | Added common and interest-dependent fields, server-side validation, typed persistence and notification requirements. |
+
+## 12. Owner-approved architecture amendment — website-first Intake (2026-11-10)
+
+**Status:** Approved by the owner. This section supersedes any conflicting Telegram-only requirements in the earlier sections of this specification.
+
+### 12.1. Canonical submission flow
+
+The canonical flow is:
+
+**Visitor → public website form → Intake Edge Function → database → owner Telegram notification.**
+
+The visitor stays on the ordinary website. A visitor must not be required to open Telegram, possess a Telegram account, authenticate through Telegram, launch a Telegram Mini App, or provide Telegram initData or a PIN.
+
+Telegram is an owner-side notification and optional owner access channel only. It is not a required visitor interface. The existing Mini App may remain as an optional entry point to the same website form, but it must not create a separate submission or identity model.
+
+### 12.2. Persistence is the source of truth
+
+1. The backend validates the request and persists it before attempting notification delivery.
+2. The persisted application is the canonical record used by every future interface.
+3. Telegram notifications and the future Raymondovich Control Center “Заявки” area read/reference the same application ID and record. Neither channel creates a second application record.
+4. Notification delivery state is separate from application lifecycle state. A Telegram delivery error must never delete or invalidate a successfully stored application.
+5. Delivery must be retryable. Use a durable outbox/queue record with attempt count, next-attempt time, delivery status and bounded error code. A retry must not create a second application or send duplicate notifications after a confirmed delivery.
+
+### 12.3. Application lifecycle and notification lifecycle
+
+Application lifecycle status is independent of notification delivery status.
+
+Application statuses: new, in_review, approved, rejected, closed.
+
+Notification statuses: pending, sent, failed (with retry metadata maintained separately).
+
+The future Control Center screen may update application status and append status history. Telegram notifications must not be treated as application status changes. Reading a Telegram message does not close an application.
+
+### 12.4. Owner access contract
+
+The future Control Center must query the same intake_applications records through a server-authorized owner-only interface. The current task does not include building its UI. The database must preserve owner scoping and deny anonymous/public reads and writes. Do not grant the browser direct anonymous access to application rows or notification outbox rows.
+
+The Telegram bot is an owner notification surface. Any future Telegram commands for listing or changing applications must authenticate the configured owner chat server-side and use the same backend authorization and application IDs as Control Center.
+
+### 12.5. Attribution contract
+
+Support first-touch and last-touch attribution independently. Capture and validate the following untrusted marketing metadata when present: utm_source, utm_medium, utm_campaign, utm_content, utm_term, landing page, referrer and capture timestamps. Preserve a normalized source label (including at least Telegram, Instagram, Threads, YouTube, VK, website, other) without requiring a database enum change for each new platform. Store first touch separately from last touch. Missing or invalid attribution must not block a submission and must normalize to direct/unknown as appropriate.
+
+Attribution is a marketing hint, not verified identity or proof of provenance. Enforce strict length and character limits; do not trust client-supplied owner IDs, statuses, timestamps, notification states or source claims. Do not silently overwrite first-touch data when last-touch data changes.
+
+Do not introduce persistent browser tracking beyond the approved privacy notice and consent model. If multi-visit first/last-touch persistence is required, use a privacy-reviewed first-party mechanism with bounded retention; do not assume localStorage/sessionStorage is automatically acceptable.
+
+### 12.6. Public endpoint security
+
+The public Edge Function remains verify_jwt=false only because the visitor is anonymous. It must independently enforce method, content type, request size, origin policy, schema validation, consent and notice version, idempotency, abuse/rate controls and server-side persistence. Telegram identity must not be a prerequisite or rate-limit key for website submissions. Do not trust client-supplied IP addresses. Keep database table and RPC privileges closed to anon; the Edge Function alone performs privileged writes using server-side credentials.
+
+### 12.7. Consent and activation gate
+
+Persist explicit consent timestamp and the exact notice/policy version identifier. Keep the existing legal-readiness gate closed. This architecture approval does not approve the legal notice, public activation, migration execution, secret changes, Edge Function deployment or frontend deployment.
+
+### 12.8. Implementation order
+
+- Add backward-compatible database support for anonymous website applications and attribution while preserving existing Telegram-originated records.
+- Add durable notification outbox/retry semantics and keep application status separate from notification status.
+- Update the Edge Function to accept website submissions without Telegram identity and notify the configured owner chat only after persistence.
+- Update the website form to work in a normal browser while retaining the legal gate.
+- Add automated tests for anonymous submission, idempotency, attribution, notification failure/retry and owner-only access.
+- Implement the Control Center UI as a separate later vertical slice; its future data contract is defined here.
+
+No production migration, deploy, secret update, public activation or legal-gate change is authorized by this amendment.
