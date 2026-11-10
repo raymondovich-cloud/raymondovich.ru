@@ -2,8 +2,8 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.9  
-> **Статус:** Актуально с историческими разделами; Telegram Intake реализован в Production и остаётся fail-closed; расширение условных полей подготовлено в feature-ветке  
+> **Версия:** 2.0  
+> **Статус:** Telegram Intake расширен в Production и остаётся fail-closed; UI и документация расширения находятся в PR #20  
 > **Дата:** 2026-11-10
 
 ---
@@ -174,3 +174,17 @@
 - Production migration не применялась. Edge Function не развёртывалась. Secrets не менялись. INTAKE_ENABLED не менялся. Main не менялся.
 - Проверено чтением содержимого файлов в feature branch. Deno runtime недоступен; SQL migration не исполнялась; нет browser/iPhone Safari/Telegram E2E тестов.
 - Rollout без простоя: (1) применить миграцию, сохранив старый 12-параметрический RPC overload; (2) deploy новой Edge Function, которая принимает старый payload и маршрутизирует его в legacy RPC, а новый payload — в расширенный RPC; (3) опубликовать новый frontend. После проверки старый RPC overload можно удалить отдельной cleanup migration. Если Edge Function развернуть до миграции, новые заявки не сохранятся. До согласованного rollout Production остаётся на прежней версии.
+
+
+## 9. Intake — Production conditional-fields rollout (2026-11-10)
+
+- По отдельному подтверждению владельца в Production Supabase project `yajybgdorhxebbigwjgi` применена миграция `add_intake_conditional_fields`; фактическая версия в `supabase_migrations.schema_migrations` — `20261110152808`.
+- Файл миграции в feature branch переименован в `20261110152808_add_intake_conditional_fields.sql`, чтобы имя файла совпадало с Production migration history и будущий `db push` не пытался повторно применить DDL.
+- Добавлены typed columns и CHECK constraints для conditional fields; старые заявки совместимы через `conditional_fields_version=0`.
+- Создан новый 18-argument `public.intake_submit` overload; старый 12-argument overload сохранён для rolling compatibility. Оба overload имеют `SECURITY INVOKER`, пустой `search_path`, EXECUTE только у `service_role`; у `anon` и `authenticated` EXECUTE отсутствует.
+- Проверено, что `intake_applications` сохраняет RLS и FORCE RLS. До и после транзакционных smoke tests в таблице 0 строк.
+- В Production Edge Function `intake-submit` развёрнута version 2 (ACTIVE, `verify_jwt=false`, как у предыдущей версии). Загружены entrypoint и общий модуль `_shared/intake.ts`.
+- Выполнены rollback-only RPC smoke tests: legacy 12-argument contract, новый partner payload, own-product payload, question payload и idempotency duplicate response. Все тестовые транзакции откатились; постоянных тестовых заявок не осталось.
+- Не запускались Deno unit tests, реальный HTTP/Telegram Mini App E2E и browser/iPhone Safari QA.
+- `INTAKE_ENABLED` не включался; Production secrets не читались и не менялись; публичный приём заявок остаётся закрытым. Frontend не выкладывался: условная форма остаётся в Draft PR #20 до отдельной проверки и интеграции.
+- Production Supabase migration и Edge Function deploy выполнены по прямому подтверждению владельца от 2026-11-10. GitHub `main` не изменялся.
