@@ -250,7 +250,7 @@ Deno.serve(async (request: Request) => {
     return respond(origin, 415, { error: "content_type_not_supported" });
   }
   if (!INTAKE_ENABLED) return respond(origin, 503, { error: "intake_disabled" });
-  if (!SUPABASE_URL || !SERVICE_KEY || !BOT_TOKEN || !/^-?\d+$/.test(OWNER_CHAT_ID) || !NOTICE_VERSION) {
+  if (!SUPABASE_URL || !SERVICE_KEY || !BOT_TOKEN || !/^-?\d+$/.test(OWNER_CHAT_ID) || !NOTICE_VERSION || !TURNSTILE_SECRET) {
     return respond(origin, 503, { error: "server_configuration_error" });
   }
 
@@ -266,19 +266,18 @@ Deno.serve(async (request: Request) => {
   if (typeof input.companyWebsite === "string" && input.companyWebsite.trim()) {
     return respond(origin, 200, { ok: true });
   }
+  if (!isUuid(input.idempotencyKey) || input.consent !== true || input.noticeVersion !== NOTICE_VERSION) {
+    return respond(origin, 400, { error: "consent_required" });
+  }
   const turnstileToken = boundedMeta(input.turnstileToken, 2048);
   if (!turnstileToken) return respond(origin, 403, { error: "invalid_challenge" });
-  const challengeResult = await verifyTurnstile(turnstileToken, String(input.idempotencyKey || ""));
+  const challengeResult = await verifyTurnstile(turnstileToken, input.idempotencyKey);
   if (challengeResult === "unavailable") return respond(origin, 503, { error: "challenge_unavailable" });
   if (challengeResult !== "valid") return respond(origin, 403, { error: "invalid_challenge" });
   const startedAt = Number(input.formStartedAt);
   if (!Number.isFinite(startedAt) || Date.now() - startedAt < 2500 || Date.now() - startedAt > 86400000) {
     return respond(origin, 400, { error: "invalid_request" });
   }
-  if (!isUuid(input.idempotencyKey) || input.consent !== true || input.noticeVersion !== NOTICE_VERSION) {
-    return respond(origin, 400, { error: "consent_required" });
-  }
-
   let name: string, message: string, interest: string;
   let partnerRole: string | null = null, weeklyAvailability: string | null = null;
   let portfolioUrl: string | null = null, productName: string | null = null;
