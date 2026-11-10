@@ -122,14 +122,23 @@ async function readBoundedJson(request: Request): Promise<Record<string, unknown
   return parsed as Record<string, unknown>;
 }
 
+function serviceRequestHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const headers: Record<string, string> = {
+    apikey: SERVICE_KEY,
+    "Content-Type": "application/json",
+    ...extra,
+  };
+  // Supabase sb_secret_* keys belong in apikey, not Authorization. Legacy service-role JWTs need Bearer.
+  if (!SERVICE_KEY.startsWith("sb_secret_")) {
+    headers.Authorization = `Bearer ${SERVICE_KEY}`;
+  }
+  return headers;
+}
+
 async function databaseRpc(name: string, payload: Record<string, unknown>): Promise<any> {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
     method: "POST",
-    headers: {
-      apikey: SERVICE_KEY,
-      Authorization: `Bearer ${SERVICE_KEY}`,
-      "Content-Type": "application/json",
-    },
+    headers: serviceRequestHeaders(),
     body: JSON.stringify(payload),
   });
   const text = await response.text();
@@ -158,12 +167,7 @@ async function updateNotificationStatus(
     `${SUPABASE_URL}/rest/v1/intake_applications?id=eq.${encodeURIComponent(applicationId)}&status=eq.new`,
     {
       method: "PATCH",
-      headers: {
-        apikey: SERVICE_KEY,
-        Authorization: `Bearer ${SERVICE_KEY}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
+      headers: serviceRequestHeaders({ Prefer: "return=minimal" }),
       body: JSON.stringify(patch),
     },
   );
