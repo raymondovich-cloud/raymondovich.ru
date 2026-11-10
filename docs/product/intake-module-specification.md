@@ -320,3 +320,14 @@ The worker batch is limited to 5 rows with a 180-second claim lock. The claim RP
 Delivery is at-least-once, not exactly-once. If Telegram accepts a message and the worker crashes before recording `sent`, the expired lock can lead to a duplicate retry. This limitation is inherent without an idempotency key supported by the Telegram sendMessage API.
 
 **Not yet complete:** the claim RPC and pg_net installation/schedule are not in the database. Production currently has pg_cron and Vault installed; pg_net is available but not installed. A scheduled invocation should use pg_cron + pg_net and a Vault-held copy of the same worker secret, with a short cadence (for example, every minute). The Supabase CLI is unavailable in the current execution environment, so the required migration has not been generated or applied; the project migration workflow requires creating it with `supabase migration new`. The Edge Function is not deployed, and no worker secrets or cron jobs were created. Public Intake remains disabled.
+
+
+### 12.12.1. Database claim primitive — applied in Production (2026-11-10)
+
+Migration `20261110164405_add_intake_notification_claim_and_pg_net` is applied to Supabase project `yajybgdorhxebbigwjgi`. It installs pg_net 0.20.4 and adds `public.intake_claim_notification_batch(integer, integer)`. The function is SECURITY INVOKER with an empty search_path, bounds batch/lock parameters, uses `FOR UPDATE SKIP LOCKED`, sets `locked_until`, and returns application IDs only. EXECUTE is granted to service_role and denied to PUBLIC, anon and authenticated.
+
+A rollback-only SQL smoke test passed: first claim succeeds, a second claim cannot take the locked row, and a row with an expired lock can be reclaimed. The transaction was rolled back; Production counts remain 0 applications / 0 outbox rows.
+
+The pg_net extension catalog entry is reported in schema public by Supabase's extension metadata, while its HTTP functions are in schema net. Supabase Security Advisor emits `extension_in_public` WARN for this non-relocatable extension; no attempt was made to relocate or recreate it. Existing unrelated RLS-without-policy INFO findings and leaked-password-protection WARN remain unchanged.
+
+The cron schedule is intentionally not created yet: it requires the worker to be deployed and the same `INTAKE_WORKER_SECRET` provisioned both as an Edge Function secret and in Vault. Public Intake remains disabled.
