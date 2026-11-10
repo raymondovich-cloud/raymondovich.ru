@@ -1,12 +1,13 @@
 .profile-screen,.profile-subscreen{width:min(100%,700px);margin:0 auto}
 .profile-toolbar{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;min-height:42px;margin-bottom:12px}
 .profile-toolbar h1{margin:0;text-align:center;font-size:19px;font-weight:700;letter-spacing:-.025em}
-.profile-identity{display:grid;justify-items:center;gap:8px;margin:8px 0 18px;padding:24px 16px 26px;border:1px solid var(--component-profile-group-border);border-radius:25px;background:var(--component-profile-identity-surface);box-shadow:var(--component-profile-identity-shadow);text-align:center}
-.profile-avatar{display:grid;width:104px;height:104px;overflow:hidden;place-items:center;margin-bottom:7px;border:2px solid var(--component-profile-avatar-ring);border-radius:50%;background:var(--gradient-owner-control-active);box-shadow:0 0 0 5px var(--component-profile-avatar-halo);color:var(--component-app-shell-active);font-size:34px;font-weight:700}
+.profile-identity{display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:12px;margin:8px 0 18px;padding:14px 16px;border:1px solid var(--component-profile-group-border);border-radius:18px;background:var(--component-profile-identity-surface);box-shadow:var(--component-profile-identity-shadow);text-align:left}
+.profile-avatar{display:grid;width:72px;height:72px;overflow:hidden;place-items:center;border:2px solid var(--component-profile-avatar-ring);border-radius:50%;background:var(--gradient-owner-control-active);box-shadow:0 0 0 4px var(--component-profile-avatar-halo);color:var(--component-app-shell-active);font-size:26px;font-weight:700}
 .profile-avatar img{width:100%;height:100%;object-fit:cover}
-.profile-identity h2{margin:0;font-size:23px;font-weight:750;letter-spacing:-.035em}
+.profile-identity-copy{display:grid;min-width:0;gap:5px}
+.profile-identity h2{margin:0;font-size:19px;font-weight:750;letter-spacing:-.035em;overflow-wrap:anywhere}
 .profile-identity p{max-width:100%;overflow-wrap:anywhere;margin:0;color:var(--component-app-shell-muted);font-size:13px}
-.profile-role{margin-top:4px;padding:7px 13px;border:1px solid var(--component-app-shell-active-outline);border-radius:999px;background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);font-size:11px;font-weight:650;letter-spacing:.02em}
+.profile-role{align-self:start;justify-self:end;margin:0;padding:6px 10px;border:1px solid var(--component-app-shell-active-outline);border-radius:999px;background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);font-size:11px;font-weight:650;letter-spacing:.02em;white-space:nowrap}
 .profile-groups{display:grid;gap:16px}
 .profile-group{overflow:hidden;border:1px solid var(--component-profile-group-border);border-radius:22px;background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
 .profile-group[hidden]{display:none}
