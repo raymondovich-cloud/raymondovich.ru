@@ -46,3 +46,5 @@ body:has(.app-welcome) .site-header .header-account,
 body:has(.app-welcome) .site-header .header-nav{display:none}
 body:has(.authenticated-app-shell) .site-header .header-inner,
 body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:54px}
+
+.app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--color-app-shell-active);outline-offset:3px}
