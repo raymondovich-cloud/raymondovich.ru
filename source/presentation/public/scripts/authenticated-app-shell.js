@@ -96,7 +96,6 @@ function shellMarkup(user, active) {
 function renderWelcome(root, user, requestedRoute) {
   const name = displayName(user);
   root.innerHTML = `
-    ${backMarkup}
     ${globalSearchMarkup()}
     <section class="app-welcome" aria-labelledby="app-welcome-title">
       <p class="app-welcome-eyebrow">RAYMONDOVICH / PRIVATE SPACE</p>
