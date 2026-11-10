@@ -33,6 +33,7 @@ if (legacySlug) {
 } else {
   let renderSequence = 0;
   let renderedRoute = null;
+  let renderedPageSlug = null;
 
   function updateNavigation(slug) {
     const activeSlug = ["partner-projects", "advertising-projects"].includes(slug)
@@ -56,6 +57,12 @@ if (legacySlug) {
     }
     const slug = route === "/" ? "home" : route.replace(/^#/, "") || "home";
     const routeSlug = slug.startsWith("authorization/") ? "authorization" : slug;
+    if (routeSlug === renderedPageSlug) {
+      renderedRoute = route;
+      renderedPageSlug = routeSlug;
+      updateNavigation(routeSlug);
+      return;
+    }
     const sequence = ++renderSequence;
     main.setAttribute("aria-busy", "true");
 
