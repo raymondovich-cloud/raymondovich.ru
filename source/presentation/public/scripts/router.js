@@ -11,7 +11,9 @@ const routes = {
   "settings": "/source/presentation/public/pages/settings.html",
   "help": "/source/presentation/public/pages/help.html",
   "plans": "/source/presentation/public/pages/plans.html",
-  "authorization": "/source/presentation/public/pages/authorization.html"
+  "authorization": "/source/presentation/public/pages/authorization.html",
+  "apply": "/source/presentation/public/pages/apply.html",
+  "privacy": "/source/presentation/public/pages/privacy.html"
 };
 
 const legacyPaths = {
@@ -71,7 +73,11 @@ if (legacySlug) {
         if (!pageMain) throw new Error("В документе отсутствует основной контент");
         if (sequence !== renderSequence) return;
         main.innerHTML = pageMain.innerHTML;
-        document.title = page.title || "RAYMONDOVICH";
+        const routeTitles = {
+          apply: "Заявка — RAYMONDOVICH",
+          privacy: "Обработка персональных данных — RAYMONDOVICH"
+        };
+        document.title = page.title || routeTitles[routeSlug] || "RAYMONDOVICH";
         const description = page.querySelector('meta[name="description"]')?.content;
         const descriptionTag = document.querySelector('meta[name="description"]');
         if (description && descriptionTag) descriptionTag.content = description;

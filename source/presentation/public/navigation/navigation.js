@@ -41,6 +41,8 @@ function emitNavigation(source = "navigation") {
     "help": "help",
     "plans": "plans",
     "authorization": state.route === "#authorization/ideas" ? "owner-ideas" : state.route.startsWith("#authorization/projects") ? "owner-projects" : "authorization",
+    "apply": "public-intake",
+    "privacy": "privacy-notice",
     "owner": "owner-control-center",
     "partner-workspace": "partner-workspace",
     "external-workspace": "external-workspace"

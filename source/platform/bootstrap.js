@@ -2,6 +2,7 @@ import { detectPlatform } from "./detect.js";
 
 const TELEGRAM_SCRIPT_URL = "https://telegram.org/js/telegram-web-app.js?64";
 const TELEGRAM_KEYS = ["tgWebAppData", "tgWebAppVersion", "tgWebAppPlatform", "tgWebAppThemeParams", "tgWebAppStartParam"];
+const INTAKE_START_PATTERN = /^(tg|ig|threads|site)(_[a-z0-9]{1,24})?$/;
 const START_ROUTES = Object.freeze({
   projects: "#authorization/projects",
   ideas: "#authorization/ideas",
@@ -46,8 +47,11 @@ function cleanTelegramParameters(parsed) {
     ? (routeSegment && !routeSegment.includes("=") ? "#" + routeSegment : "")
     : location.hash;
   const startParam = params.get("tgWebAppStartParam") || window.Telegram?.WebApp?.initDataUnsafe?.start_param || "";
-  const mappedRoute = Object.prototype.hasOwnProperty.call(START_ROUTES, startParam) ? START_ROUTES[startParam] : "";
-  const nextRoute = currentRoute || mappedRoute || (hashHadTelegram ? "" : location.hash);
+  const mappedRoute = Object.prototype.hasOwnProperty.call(START_ROUTES, startParam)
+    ? START_ROUTES[startParam]
+    : (INTAKE_START_PATTERN.test(startParam) ? "#apply" : "");
+  const isIntakeStart = INTAKE_START_PATTERN.test(startParam);
+  const nextRoute = isIntakeStart ? "#apply" : (currentRoute || mappedRoute || (hashHadTelegram ? "" : location.hash));
 
   TELEGRAM_KEYS.forEach((key) => query.delete(key));
   const search = query.toString();
@@ -68,9 +72,14 @@ async function initializePlatform() {
   await loadTelegramSdk();
   const webApp = window.Telegram?.WebApp;
   const launchParams = Object.fromEntries(parsed.params.entries());
+  const launchUser = webApp?.initDataUnsafe?.user;
+  const startParam = webApp?.initDataUnsafe?.start_param || launchParams.tgWebAppStartParam || "";
   window.RaymondovichTelegramLaunch = Object.freeze({
     params: Object.freeze(launchParams),
-    initData: webApp?.initData || launchParams.tgWebAppData || ""
+    initData: webApp?.initData || launchParams.tgWebAppData || "",
+    startParam,
+    displayName: [launchUser?.first_name, launchUser?.last_name].filter(Boolean).join(" ").slice(0, 80),
+    clientPlatform: webApp?.platform || "unknown"
   });
   cleanTelegramParameters(parsed);
   return platform;
