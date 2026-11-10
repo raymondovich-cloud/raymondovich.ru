@@ -180,10 +180,6 @@ export function bindProfileInteractions(root, navigate) {
       return;
     }
     if (event.target.closest("[data-auth-lock]")) window.RaymondovichPinGuard?.lock();
-    if (event.target.closest("[data-auth-signout]")) {
-      const { supabase } = await import("/source/infrastructure/supabase/client.js");
-      await supabase.auth.signOut();
-    }
   });
   root.addEventListener("input", event => {
     if (!event.target.matches("[data-profile-search]")) return;
