@@ -1,6 +1,9 @@
 import { submitApplication } from "/source/application/intake/intake-submit.js";
 
 const main = document.querySelector("#main");
+const TURNSTILE_SCRIPT_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+const TURNSTILE_SITEKEY = "0x4AAAAAAF7mQ44haZR2d1K4";
+let turnstileScriptPromise;
 
 const errorMessages = {
   intake_disabled: "Форма временно недоступна. Попробуйте позже.",
@@ -12,6 +15,8 @@ const errorMessages = {
   invalid_product_url: "Укажите корректную ссылку на продукт с HTTPS.",
   invalid_product_stage: "Выберите стадию продукта.",
   consent_required: "Необходимо согласие с актуальным уведомлением об обработке данных.",
+  invalid_challenge: "Подтвердите проверку безопасности и повторите отправку.",
+  challenge_unavailable: "Проверка безопасности временно недоступна. Обновите страницу и попробуйте позже.",
   persistence_failed: "Не удалось сохранить заявку. Попробуйте позже.",
   server_configuration_error: "Форма временно недоступна. Попробуйте позже.",
 };
@@ -30,6 +35,41 @@ function setNotice(element, message, type = "info") {
   element.textContent = message;
   element.dataset.type = type;
   element.hidden = !message;
+}
+
+function ensureTurnstileScript() {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  if (turnstileScriptPromise) return turnstileScriptPromise;
+
+  turnstileScriptPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-turnstile-api]');
+    const script = existing || document.createElement("script");
+    const timeout = window.setTimeout(() => reject(new Error("turnstile_timeout")), 15000);
+    const finish = () => {
+      window.clearTimeout(timeout);
+      if (window.turnstile) resolve(window.turnstile);
+      else reject(new Error("turnstile_unavailable"));
+    };
+    script.addEventListener("load", finish, { once: true });
+    script.addEventListener("error", () => {
+      window.clearTimeout(timeout);
+      reject(new Error("turnstile_load_failed"));
+    }, { once: true });
+    if (!existing) {
+      script.src = TURNSTILE_SCRIPT_URL;
+      script.async = true;
+      script.defer = true;
+      script.dataset.turnstileApi = "true";
+      document.head.append(script);
+    } else if (window.turnstile) {
+      finish();
+    }
+  }).catch((error) => {
+    turnstileScriptPromise = null;
+    throw error;
+  });
+
+  return turnstileScriptPromise;
 }
 
 function readTouch(timestamp) {
@@ -56,8 +96,9 @@ function initializeIntake(root) {
   const success = root.querySelector("[data-intake-success]");
   const notice = root.querySelector("[data-intake-notice]");
   const counter = root.querySelector("[data-intake-counter]");
+  const turnstileContainer = root.querySelector("[data-turnstile-container]");
   const submitButton = form?.querySelector('button[type="submit"]');
-  if (!form || !success || !submitButton) return;
+  if (!form || !success || !submitButton || !turnstileContainer) return;
 
   if (gate) gate.hidden = true;
   const noticeVersion = root.dataset.noticeVersion || "";
@@ -69,6 +110,7 @@ function initializeIntake(root) {
 
   legalBlock && (legalBlock.hidden = true);
   form.hidden = false;
+  submitButton.disabled = true;
 
   const interestInputs = form.querySelectorAll('input[name="interest"]');
   const conditionalGroups = form.querySelectorAll("[data-intake-fields]");
@@ -95,15 +137,47 @@ function initializeIntake(root) {
   const startedAt = Date.now();
   const firstTouch = readTouch(new Date(startedAt).toISOString());
   let idempotencyKey = createIdempotencyKey();
+  let turnstileWidgetId;
+  let turnstileToken = "";
+
+  ensureTurnstileScript()
+    .then((turnstile) => {
+      turnstileWidgetId = turnstile.render(turnstileContainer, {
+        sitekey: TURNSTILE_SITEKEY,
+        action: "intake_submit",
+        callback: (token) => {
+          turnstileToken = token;
+          submitButton.disabled = false;
+          setNotice(notice, "");
+        },
+        "expired-callback": () => {
+          turnstileToken = "";
+          submitButton.disabled = true;
+        },
+        "error-callback": () => {
+          turnstileToken = "";
+          submitButton.disabled = true;
+          setNotice(notice, errorMessages.challenge_unavailable, "error");
+        },
+      });
+    })
+    .catch(() => {
+      setNotice(notice, errorMessages.challenge_unavailable, "error");
+    });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
+    if (!turnstileToken) {
+      setNotice(notice, errorMessages.invalid_challenge, "error");
+      return;
+    }
 
     const data = new FormData(form);
     const values = {
       idempotencyKey,
       formStartedAt: startedAt,
+      turnstileToken,
       companyWebsite: String(data.get("companyWebsite") || ""),
       pageUrl: window.location.href.slice(0, 512),
       firstTouch,
@@ -136,8 +210,12 @@ function initializeIntake(root) {
     } catch {
       setNotice(notice, "Нет соединения с сервером. Проверьте интернет и повторите попытку.", "error");
     } finally {
-      submitButton.disabled = false;
+      turnstileToken = "";
+      if (window.turnstile && turnstileWidgetId !== undefined) {
+        window.turnstile.reset(turnstileWidgetId);
+      }
       submitButton.removeAttribute("aria-busy");
+      submitButton.disabled = true;
     }
   });
 }
