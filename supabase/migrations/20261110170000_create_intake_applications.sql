@@ -55,9 +55,7 @@ create table if not exists public.intake_applications (
   notify_error text,
   notified_at timestamptz,
   closed_at timestamptz,
-  retention_expires_at timestamptz generated always as (
-    case when closed_at is null then null else closed_at + interval '90 days' end
-  ) stored,
+  retention_expires_at timestamptz,
 
   constraint intake_applications_source_check
     check (source in ('tg', 'ig', 'threads', 'site', 'other')),
@@ -241,10 +239,12 @@ language plpgsql
 set search_path = ''
 as $function$
 begin
-  if new.status = 'closed' and old.status is distinct from 'closed' then
+  if new.status = 'closed' then
     new.closed_at := coalesce(new.closed_at, now());
-  elsif new.status <> 'closed' then
+    new.retention_expires_at := new.closed_at + interval '90 days';
+  else
     new.closed_at := null;
+    new.retention_expires_at := null;
   end if;
   return new;
 end;
@@ -254,7 +254,7 @@ revoke all on function public.intake_set_closed_at() from public, anon, authenti
 
 drop trigger if exists intake_applications_set_closed_at on public.intake_applications;
 create trigger intake_applications_set_closed_at
-before update of status on public.intake_applications
+before insert or update of status, closed_at on public.intake_applications
 for each row execute function public.intake_set_closed_at();
 
 do $schedule$
