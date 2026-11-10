@@ -75,7 +75,7 @@ export async function renderIdeasWorkspace(root, user) {
   }
 
   async function load() {
-    if (!cachedWorkspace) {
+    if (!ideasWorkspaceCache.has(user.id)) {
       list.innerHTML = '<p class="ideas-loading">Загрузка идей…</p>';
     }
     const [ideaResult, categoryResult] = await Promise.all([
