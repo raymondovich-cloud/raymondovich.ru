@@ -201,3 +201,17 @@
 - Документы Intake Specification и ADR-0004 дополнены owner-approved amendment.
 - Следующий шаг: реализовать совместимую DB migration, backend persistence/outbox/retry, web form submit и тесты. Сначала проверить миграционную историю/контракты; не выполнять Production DDL или deploy без отдельного разрешения.
 - INTAKE_ENABLED остаётся выключенным; legal gate остаётся закрытым. Никакие production secrets, Edge Functions, DB schema или frontend deployment в рамках документационного amendment не менялись.
+
+## 12. Website-first Intake — Production DB foundation applied (2026-11-10)
+
+- Owner explicitly authorized changes directly in Production Supabase and GitHub `main`.
+- Production project `yajybgdorhxebbigwjgi` received migrations:
+  - `20261110161352_website_first_intake_foundation`
+  - `20261110161410_fix_intake_lifecycle_trigger_order`
+  - `20261110161441_secure_intake_private_tables`
+- Database now supports nullable Telegram identity, request channel, separate application and notification statuses, consent notice version, first/last attribution JSONB, private durable notification outbox, status history and service-role-only website RPC `intake_submit_website`.
+- Legacy Telegram RPC overloads and legacy status fields remain for compatibility. Existing application count was 0 before the migration.
+- A rollback-only SQL smoke test verified website RPC persistence, atomic outbox creation, status history, close/retention behavior and notification delivery status remaining `sent` after application closure. Test transaction rolled back; Production application count remains 0.
+- Migration SQL source files were copied from remote migration history into `supabase/migrations/` on `main`.
+- No Edge Function deployment, frontend deployment, secrets change, `INTAKE_ENABLED` change or legal gate change was performed.
+- Next implementation slice: update Intake Edge Function for anonymous website submission and durable outbox delivery/retry; then update website form. Public Intake remains closed until legal readiness and end-to-end verification.
