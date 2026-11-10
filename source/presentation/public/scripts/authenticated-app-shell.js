@@ -63,6 +63,7 @@ function tabMarkup(key, label, user, active) {
 
 function shellMarkup(user, active) {
   return `
+    ${backMarkup}
     <div class="authenticated-app-shell">
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
       <nav class="authenticated-bottom-nav" aria-label="Основная навигация">
@@ -77,6 +78,7 @@ function shellMarkup(user, active) {
 function renderWelcome(root, user, requestedRoute) {
   const name = displayName(user);
   root.innerHTML = `
+    ${backMarkup}
     <section class="app-welcome" aria-labelledby="app-welcome-title">
       <p class="app-welcome-eyebrow">RAYMONDOVICH / PRIVATE SPACE</p>
       <div class="app-welcome-mark" aria-hidden="true">R.</div>
@@ -179,6 +181,10 @@ function bindShell(root, user) {
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
   root.addEventListener("click", event => {
+    if (event.target.closest("[data-global-back]")) {
+      window.RaymondovichNavigation?.back();
+      return;
+    }
     const tab = event.target.closest("[data-app-tab]");
     if (tab) {
       window.RaymondovichNavigation?.navigateRoute(TAB_ROUTES[tab.dataset.appTab]);
