@@ -1,6 +1,7 @@
 import {
   escapeTelegramHtml,
   escapeTelegramHtmlTruncated,
+  normalizeText,
   parseIntakeSource,
   resolveIntakeStartParam,
   validateTelegramInitData,
