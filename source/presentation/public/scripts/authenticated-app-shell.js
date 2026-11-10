@@ -13,8 +13,6 @@ import {
 const shellObservers = new WeakMap();
 const currentShellUsers = new WeakMap();
 
-const backMarkup = '<button class="authenticated-back-toggle" type="button" data-global-back aria-label="Назад" title="Назад"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 7-7m-7 7 7 7"/></svg></button>';
-
 function globalSearchMarkup() {
   return `<section class="authenticated-global-search" data-global-search hidden role="dialog" aria-modal="true" aria-label="Глобальный поиск">
     <div class="global-search-panel">
@@ -83,7 +81,6 @@ function tabMarkup(key, label, user, active) {
 
 function shellMarkup(user, active) {
   return `
-    ${backMarkup}
     ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
@@ -204,10 +201,6 @@ function bindShell(root, user) {
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
   root.addEventListener("click", event => {
-    if (event.target.closest("[data-global-back]")) {
-      window.RaymondovichNavigation?.back();
-      return;
-    }
     const tab = event.target.closest("[data-app-tab]");
     if (tab) {
       window.RaymondovichNavigation?.navigateRoute(TAB_ROUTES[tab.dataset.appTab]);
