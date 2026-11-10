@@ -200,9 +200,9 @@
   --component-app-shell-active-surface: var(--semantic-accent-subtle);
   --component-app-shell-focus-ring: var(--semantic-focus-ring);
   --component-app-shell-shadow: var(--color-app-shell-shadow);
-  --component-app-shell-material: linear-gradient(145deg, rgba(255, 255, 255, .90), rgba(237, 240, 245, .78));
+  --component-app-shell-material: linear-gradient(145deg, rgba(255, 255, 255, .74), rgba(237, 240, 245, .60));
   --component-app-shell-material-border: rgba(20, 24, 30, .16);
-  --component-app-shell-material-highlight: rgba(255, 255, 255, .82);
+  --component-app-shell-material-highlight: rgba(255, 255, 255, .68);
   --component-app-shell-material-shadow: 0 18px 48px rgba(26, 36, 50, .16), 0 3px 12px rgba(26, 36, 50, .08);
   --component-app-shell-active-outline: rgba(185, 76, 25, .24);
   --component-app-shell-hover-surface: rgba(20, 24, 30, .045);
