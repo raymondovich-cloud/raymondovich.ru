@@ -1,8 +1,71 @@
-import {
-  IntakeValidationError,
-  normalizeText,
-  validateTelegramInitData,
-} from "../_shared/intake.ts";
+class IntakeValidationError extends Error {
+  constructor(public readonly code: string) { super(code); this.name = "IntakeValidationError"; }
+}
+type VerifiedTelegramInitData = {
+  user: { id: number; username?: string; language_code?: string };
+  authDate: number;
+  startParam: string | null;
+};
+const encoder = new TextEncoder();
+function bytesToHex(bytes: Uint8Array): string {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+async function hmacSha256(keyBytes: Uint8Array, value: string): Promise<Uint8Array> {
+  const key = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return new Uint8Array(await crypto.subtle.sign("HMAC", key, encoder.encode(value)));
+}
+function equalHexConstantTime(left: string, right: string): boolean {
+  if (left.length !== right.length) return false;
+  let difference = 0;
+  for (let i = 0; i < left.length; i += 1) difference |= left.charCodeAt(i) ^ right.charCodeAt(i);
+  return difference === 0;
+}
+async function validateTelegramInitData(raw: string, botToken: string): Promise<VerifiedTelegramInitData> {
+  if (!raw || raw.length > 8192 || !botToken) throw new IntakeValidationError("invalid_init_data");
+  const params = new URLSearchParams(raw);
+  const entries = [...params.entries()];
+  const seen = new Set<string>();
+  for (const [key] of entries) {
+    if (seen.has(key)) throw new IntakeValidationError("invalid_init_data");
+    seen.add(key);
+  }
+  const receivedHash = params.get("hash") || "";
+  if (!/^[a-f0-9]{64}$/i.test(receivedHash)) throw new IntakeValidationError("invalid_init_data");
+  const checkString = entries.filter(([key]) => key !== "hash")
+    .sort(([a], [b]) => a.localeCompare(b)).map(([key, value]) => \`\${key}=\${value}\`).join("\n");
+  const secretKey = await hmacSha256(encoder.encode("WebAppData"), botToken);
+  const calculatedHash = bytesToHex(await hmacSha256(secretKey, checkString));
+  if (!equalHexConstantTime(calculatedHash, receivedHash.toLowerCase())) throw new IntakeValidationError("invalid_init_data");
+  const authDate = Number(params.get("auth_date"));
+  const now = Math.floor(Date.now() / 1000);
+  if (!Number.isSafeInteger(authDate) || authDate <= 0 || authDate > now + 60 || now - authDate > 86400) {
+    throw new IntakeValidationError("expired_init_data");
+  }
+  let user: Record<string, unknown>;
+  try { user = JSON.parse(params.get("user") || ""); }
+  catch { throw new IntakeValidationError("invalid_telegram_user"); }
+  if (!user || !Number.isSafeInteger(user.id) || Number(user.id) <= 0 || Number(user.id) > 2 ** 52) {
+    throw new IntakeValidationError("invalid_telegram_user");
+  }
+  return {
+    user: {
+      id: Number(user.id),
+      ...(typeof user.username === "string" && /^[A-Za-z0-9_]{5,32}$/.test(user.username) ? { username: user.username } : {}),
+      ...(typeof user.language_code === "string" && /^[A-Za-z0-9-]{2,16}$/.test(user.language_code) ? { language_code: user.language_code } : {}),
+    },
+    authDate,
+    startParam: params.get("start_param"),
+  };
+}
+function normalizeText(value: unknown, maximum: number, field: "name" | "message"): string {
+  if (typeof value !== "string") throw new IntakeValidationError(\`invalid_\${field}\`);
+  const normalized = value.normalize("NFKC").replace(/\r\n?/g, "\n").trim();
+  const forbidden = field === "message" ? /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/ : /[\u0000-\u001F\u007F]/;
+  if (forbidden.test(normalized) || [...normalized].length < 1 || [...normalized].length > maximum) {
+    throw new IntakeValidationError(\`invalid_\${field}\`);
+  }
+  return normalized;
+}
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SECRET_KEYS_RAW = Deno.env.get("SUPABASE_SECRET_KEYS") ?? "";
@@ -18,7 +81,7 @@ const OWNER_CHAT_ID = Deno.env.get("OWNER_CHAT_ID") ?? "";
 const ALLOWED_IDS_RAW = Deno.env.get("INTAKE_TEST_ALLOWED_USER_IDS") ?? "";
 
 const ALLOWED_IDS = new Set(
-  ALLOWED_IDS_RAW.split(/[,\\s]+/).map((value) => value.trim()).filter((value) => /^\d{1,20}$/.test(value)),
+  ALLOWED_IDS_RAW.split(/[,\s]+/).map((value) => value.trim()).filter((value) => /^\d{1,20}$/.test(value)),
 );
 const ALLOWED_ORIGINS = new Set([
   "https://raymondovich.ru",
