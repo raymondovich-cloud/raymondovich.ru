@@ -203,3 +203,5 @@
   --color-profile-field: rgba(255, 255, 255, .045);
   --color-profile-notice: rgba(255, 118, 47, .10);
 }
+
+:root { --color-app-shell-cta-text: #17110d; }
