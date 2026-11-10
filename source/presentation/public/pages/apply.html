@@ -26,20 +26,67 @@
 
   <form class="intake-form" data-intake-form hidden novalidate>
     <label class="intake-field">
-      <span>Ваше имя</span>
+      <span>Как к вам обращаться?</span>
       <input name="name" type="text" autocomplete="name" maxlength="80" required>
     </label>
 
     <fieldset class="intake-field intake-interest">
       <legend>Что вас интересует?</legend>
-      <label><input type="radio" name="interest" value="partner" checked><span>Партнёрство</span></label>
-      <label><input type="radio" name="interest" value="own_product"><span>Свой продукт</span></label>
-      <label><input type="radio" name="interest" value="question"><span>Вопрос</span></label>
+      <label><input type="radio" name="interest" value="partner" checked><span>Хочу стать партнёром</span></label>
+      <label><input type="radio" name="interest" value="own_product"><span>Есть свой продукт</span></label>
+      <label><input type="radio" name="interest" value="question"><span>Есть вопрос</span></label>
+    </fieldset>
+
+    <fieldset class="intake-conditional" data-intake-fields="partner">
+      <legend>О партнёрстве</legend>
+      <label class="intake-field">
+        <span>Ваша роль</span>
+        <select name="partnerRole" required>
+          <option value="">Выберите вариант</option>
+          <option value="co_development">Разработка и запуск проекта совместно с экосистемой</option>
+          <option value="ecosystem_tools">Запуск своего проекта, используя инструменты экосистемы</option>
+          <option value="promotion_only">Продвижение своего проекта в экосистеме без доступа к инструментам</option>
+        </select>
+      </label>
+      <label class="intake-field">
+        <span>Сколько времени готовы уделять в неделю?</span>
+        <select name="weeklyAvailability" required>
+          <option value="">Выберите вариант</option>
+          <option value="up_to_5">До 5 часов</option>
+          <option value="5_to_15">5–15 часов</option>
+          <option value="over_15">Больше 15 часов</option>
+        </select>
+      </label>
+      <label class="intake-field">
+        <span>Ссылка на портфолио или GitHub <small>(необязательно)</small></span>
+        <input name="portfolioUrl" type="url" inputmode="url" autocomplete="url" maxlength="2048" placeholder="https://">
+      </label>
+    </fieldset>
+
+    <fieldset class="intake-conditional" data-intake-fields="own_product" hidden>
+      <legend>О вашем продукте</legend>
+      <label class="intake-field">
+        <span>Название продукта <small>(необязательно)</small></span>
+        <input name="productName" type="text" maxlength="120">
+      </label>
+      <label class="intake-field">
+        <span>Ссылка на продукт <small>(необязательно)</small></span>
+        <input name="productUrl" type="url" inputmode="url" autocomplete="url" maxlength="2048" placeholder="https://">
+      </label>
+      <label class="intake-field">
+        <span>Стадия проекта</span>
+        <select name="productStage" required>
+          <option value="">Выберите стадию</option>
+          <option value="idea">Идея</option>
+          <option value="in_development">В разработке</option>
+          <option value="launched">Уже запущен</option>
+        </select>
+      </label>
     </fieldset>
 
     <label class="intake-field">
-      <span>Сообщение</span>
-      <textarea name="message" rows="6" maxlength="1000" required placeholder="Расскажите немного о своей идее или предложении…"></textarea>
+      <span>Расскажите коротко</span>
+      <textarea name="message" rows="6" maxlength="1000" required placeholder="Чем занимаетесь и чего хотите от сотрудничества"></textarea>
       <small class="intake-counter" data-intake-counter>0 / 1000</small>
     </label>
 
@@ -50,7 +97,7 @@
 
     <p class="intake-notice" data-intake-notice role="status" aria-live="polite" hidden></p>
     <button class="button primary intake-submit" type="submit">Отправить заявку <span aria-hidden="true">↗</span></button>
-    <p class="intake-footnote">Не отправляйте пароли, платёжные данные и документы. Для обращения достаточно имени и сообщения.</p>
+    <p class="intake-footnote">Не отправляйте пароли, платёжные данные и документы. Для обращения достаточно ответов на вопросы формы.</p>
   </form>
 
   <div class="intake-success" data-intake-success role="status" aria-live="polite" hidden>
