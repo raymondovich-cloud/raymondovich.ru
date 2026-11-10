@@ -53,3 +53,18 @@ This feature does not authenticate a Supabase account, link Telegram identity to
 | 1.2 | Approved for isolated implementation | 2026-11-10 | Corrected Telegram direct-link attribution trust model and added signed/unsigned source flag. |
 | 1.1 | Approved for isolated implementation | 2026-11-10 | Added database-managed owner binding and fail-closed activation until legal notice and staging verification are complete. |
 | 1.0 | Approved for isolated implementation | 2026-11-10 | Owner approved Telegram intake workflow and 90-day post-closure retention. |
+
+## Owner-approved amendment 1.3 — website-first submission and shared application record
+
+**Date:** 2026-11-10  
+**Status:** Approved by owner; supersedes the Telegram-required visitor flow in this ADR.
+
+The canonical visitor flow is **Website form → Intake Edge Function → database → Telegram notification to owner**. Visitors do not need Telegram, Telegram initData, a Telegram account, PIN or Mini App. Telegram is an owner-side notification channel only. The Mini App may remain an optional entry point to the same web form.
+
+The database record is the single source of truth. The future Raymondovich Control Center “Заявки” screen and Telegram notifications refer to the same application ID and record; no duplicate application records are created. Persistence must complete before notification is attempted. Notification delivery state is independent of application lifecycle status, and failed delivery must remain retryable through a durable outbox. Application statuses are new, in_review, approved, rejected, closed; notification statuses are pending, sent, failed.
+
+The future Control Center reads the same owner-scoped records through an authorized backend. Its UI is explicitly out of scope for this implementation slice. Anonymous clients must never receive direct table/RPC access to applications or notification jobs.
+
+Attribution must support separate first-touch and last-touch data, including normalized source, UTM fields, landing page, referrer and timestamps. Values are untrusted marketing metadata, strictly bounded and never used for authorization. Missing attribution must not block a request. The source model must be extensible without schema changes for each social platform.
+
+The anonymous endpoint must use server-side validation, explicit consent and notice-version capture, idempotency, request limits and abuse controls independent of Telegram identity. It must not trust client-supplied IP addresses. Keep INTAKE_ENABLED and the legal-readiness gate closed. This approval does not authorize production DDL, deploys, secret changes or public activation.
