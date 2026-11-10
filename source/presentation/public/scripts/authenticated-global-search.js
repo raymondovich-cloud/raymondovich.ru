@@ -120,6 +120,10 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
     const result = resultIndex.get(resultButton.dataset.globalSearchResult);
     if (!result) return;
     closeSearch();
+    if (root.querySelector(".app-welcome")) {
+      root.dataset.welcomeComplete = "true";
+      try { sessionStorage.setItem("raymondovich.auth-welcome-complete", "1"); } catch { /* Root state remains the fallback. */ }
+    }
     const navigation = window.RaymondovichNavigation;
     if (!navigation) return;
     navigation.navigateRoute(result.route);
@@ -128,6 +132,19 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
 
   root.addEventListener("keydown", event => {
     const panel = panelFor(root);
+    if (event.key === "Tab" && panel && !panel.hidden) {
+      const focusable = [...panel.querySelectorAll("input,button:not([disabled]),[tabindex]:not([tabindex=\"-1\"])")];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+      return;
+    }
     if (event.key === "Escape" && panel && !panel.hidden) {
       event.preventDefault();
       closeSearch();
