@@ -13,6 +13,7 @@ const routes = {
   "plans": "/source/presentation/public/pages/plans.html",
   "authorization": "/source/presentation/public/pages/authorization.html",
   "apply": "/source/presentation/public/pages/apply.html",
+  "apply-test": "/source/presentation/public/pages/apply-test.html",
   "privacy": "/source/presentation/public/pages/privacy.html"
 };
 
@@ -75,6 +76,7 @@ if (legacySlug) {
         main.innerHTML = pageMain.innerHTML;
         const routeTitles = {
           apply: "Заявка — RAYMONDOVICH",
+          "apply-test": "Тест Intake — RAYMONDOVICH",
           privacy: "Обработка персональных данных — RAYMONDOVICH"
         };
         document.title = page.title || routeTitles[routeSlug] || "RAYMONDOVICH";
