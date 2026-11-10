@@ -27,13 +27,7 @@
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
 @media(max-width:600px){.authenticated-app-content{padding-top:10px;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:6px}.app-tab{min-height:56px;font-size:10px}}
-@keyframes app-screen-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.app-welcome{animation:app-screen-enter .24s ease both}
-.authenticated-app-content>.profile-screen,
-.authenticated-app-content>.profile-subscreen,
-.authenticated-app-content>.app-placeholder-screen,
-.authenticated-app-content>.owner-console-shell{animation:app-screen-enter .22s ease both}
-@media(prefers-reduced-motion:reduce){.app-welcome-continue,.app-tab{transition:none}.app-welcome-continue:active,.app-tab:active{transform:none}.authenticated-app-content>.profile-screen,.authenticated-app-content>.profile-subscreen,.authenticated-app-content>.app-placeholder-screen,.authenticated-app-content>.owner-console-shell,.app-welcome{animation:none}}
+/* Motion is defined once for the authenticated shell and its direct screens. */
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
@@ -64,6 +58,8 @@ body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min
 .authenticated-app-content>*{animation:app-screen-enter .24s ease both}
 .app-welcome{animation:app-screen-enter .32s ease both}
 @media(prefers-reduced-motion:reduce){
+  .app-welcome-continue,.app-tab{transition:none}
+  .app-welcome-continue:active,.app-tab:active{transform:none}
   .authenticated-app-content>*,.app-welcome{animation:none}
 }
 
