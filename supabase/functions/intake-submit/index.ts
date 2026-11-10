@@ -100,6 +100,7 @@ function normalizeOptionalHttpsUrl(value: unknown, code: string): string | null 
     if (parsed.protocol !== "https:" || !parsed.hostname || parsed.username || parsed.password) {
       throw new Error("invalid_url");
     }
+    if (parsed.href.length > 2048) throw new Error("url_too_long");
     return parsed.href;
   } catch {
     throw new IntakeValidationError(code);
