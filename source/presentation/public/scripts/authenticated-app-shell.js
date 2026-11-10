@@ -1,4 +1,4 @@
-import { renderOwnerControlCenter, hydrateOwnerHubMetrics } from "./owner-control-center.js";
+import { renderOwnerControlCenter } from "./owner-control-center.js";
 import { renderIdeasWorkspace } from "./ideas.js";
 import { renderProjectsWorkspace } from "./projects.js";
 import {
@@ -139,7 +139,6 @@ function renderRoute(view, user, route) {
     }
     view.dataset.appScreen = "control-center";
     view.innerHTML = renderOwnerControlCenter(user);
-    hydrateOwnerHubMetrics(view);
     return;
   }
   if (route === "#authorization/projects") {
