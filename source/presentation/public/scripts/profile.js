@@ -179,7 +179,6 @@ export function bindProfileInteractions(root, navigate) {
       if (!search.hidden) search.querySelector("input")?.focus();
       return;
     }
-    if (event.target.closest("[data-auth-lock]")) window.RaymondovichPinGuard?.lock();
   });
   root.addEventListener("input", event => {
     if (!event.target.matches("[data-profile-search]")) return;
