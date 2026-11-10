@@ -196,7 +196,7 @@ async function sendOwnerNotification(
   const text = [
     `<b>Заявка №${safeId}</b>`,
     `Источник: ${escapeTelegramHtml(sourceText)}`,
-    `Метка источника: ${sourceParamSigned ? "подписана Telegram" : "не подписана Telegram"}`,
+    `Подпись параметра источника: ${sourceParamSigned ? "есть (Telegram)" : "нет (клиентская метка)"}`,
     `Интерес: ${escapeTelegramHtml(interestLabel(interest))}`,
     `Имя: ${escapeTelegramHtml(name)}`,
     `Telegram: <a href="${escapeTelegramHtml(profileUrl)}">${escapeTelegramHtml(telegramLabel)}</a>`,
