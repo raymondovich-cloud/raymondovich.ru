@@ -1,8 +1,6 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
 import { getAuthRedirectUrl } from "/source/platform/bridge.js";
-import { renderOwnerControlCenter, hydrateOwnerHubMetrics } from "./owner-control-center.js";
-import { renderIdeasWorkspace } from "./ideas.js";
-import { renderProjectsWorkspace } from "./projects.js";
+import { renderAuthenticatedApp } from "./authenticated-app-shell.js";
 
 const AUTH_REDIRECT_URL = getAuthRedirectUrl();
 const main = document.querySelector("#main");
@@ -114,47 +112,7 @@ function renderSignedOut(root) {
 function renderSignedIn(root, user) {
   const shell = root.matches?.("[data-auth-shell]") ? root : root.querySelector("[data-auth-shell]");
   if (!shell) return;
-  const role = user.app_metadata?.role || "user";
-  if (role !== "admin") delete shell.dataset.ownerWorkspace;
-  if (role === "admin") {
-    const route = window.RaymondovichNavigation?.getState()?.route || location.hash;
-    if (route === "#authorization/ideas") {
-      if (shell.dataset.ownerWorkspace !== "ideas") {
-        shell.dataset.ownerWorkspace = "ideas";
-        document.body.dataset.page = "owner-ideas";
-        renderIdeasWorkspace(shell, user);
-      }
-    } else if (route === "#authorization/projects") {
-      if (shell.dataset.ownerWorkspace !== "projects") {
-        document.body.dataset.page = "owner-projects";
-        renderProjectsWorkspace(shell, user);
-      }
-    } else {
-      shell.dataset.ownerWorkspace = "control-center";
-      document.body.dataset.page = "owner-control-center";
-      shell.innerHTML = renderOwnerControlCenter(user);
-      hydrateOwnerHubMetrics(shell);
-    }
-    return;
-  }
-  document.body.dataset.page = "authorization";
-  const roleLabels = { admin: "Владелец / администратор", partner: "Партнёр", student: "Ученик", user: "Пользователь" };
-  shell.innerHTML = `
-    <div class="auth-heading">
-      <p class="overline">RAYMONDOVICH / ACCOUNT</p>
-      <h2>Аккаунт активен</h2>
-      <p>Вы вошли в единую систему учётных записей экосистемы.</p>
-    </div>
-    <div class="auth-card auth-profile">
-      <span class="auth-profile-mark">ID</span>
-      <div><span class="auth-profile-label">ЭЛЕКТРОННАЯ ПОЧТА</span><strong>${escapeHtml(user.email || "")}</strong></div>
-      <div><span class="auth-profile-label">УРОВЕНЬ ДОСТУПА</span><strong>${escapeHtml(roleLabels[role] || "Пользователь")}</strong></div>
-      <p class="auth-legal">Доступ к проектам и функциям определяется назначенными разрешениями. Самостоятельно повысить свою роль через профиль нельзя.</p>
-      <button class="button secondary" type="button" data-pin-change>Изменить PIN-код</button>
-      <button class="button secondary" type="button" data-auth-lock>Заблокировать приложение</button>
-      <button class="button secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
-    </div>
-    <p class="auth-footnote">Сессия защищена Supabase Auth.</p>`;
+  renderAuthenticatedApp(shell, user);
 }
 
 function escapeHtml(value) {
@@ -302,6 +260,9 @@ supabase.auth.onAuthStateChange((event, session) => {
   currentSession = session;
   syncHeaderAccount(session);
   if (event === "PASSWORD_RECOVERY") recoveryMode = true;
+  if (event === "SIGNED_OUT") {
+    try { sessionStorage.removeItem("raymondovich.auth-welcome-complete"); } catch { /* Optional session preference. */ }
+  }
   if (!location.hash.startsWith("#authorization")) return;
   queueMicrotask(() => {
     const root = document.querySelector("#main");
@@ -323,7 +284,9 @@ supabase.auth.getSession().then(({ data, error }) => {
   }
 });
 document.addEventListener("raymondovich:navigation", event => {
-  if (event.detail?.route?.startsWith("#authorization") && currentSession?.user?.app_metadata?.role === "admin") {
+  if (event.detail?.route?.startsWith("#authorization")
+    && event.detail?.screen === "route"
+    && currentSession?.user) {
     renderSignedIn(main, currentSession.user);
   }
 });
