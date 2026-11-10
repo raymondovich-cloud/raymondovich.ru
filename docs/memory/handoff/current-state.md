@@ -215,3 +215,14 @@
 - Migration SQL source files were copied from remote migration history into `supabase/migrations/` on `main`.
 - No Edge Function deployment, frontend deployment, secrets change, `INTAKE_ENABLED` change or legal gate change was performed.
 - Next implementation slice: update Intake Edge Function for anonymous website submission and durable outbox delivery/retry; then update website form. Public Intake remains closed until legal readiness and end-to-end verification.
+
+
+## 13. Website-first Intake — code implementation status (2026-11-10)
+
+- Added source-only Edge Function `supabase/functions/intake-website-submit/index.ts`. It does not replace the existing Telegram `intake-submit` function.
+- Endpoint design: anonymous browser requests, allowlisted Origin, POST/OPTIONS, JSON content type and 16 KiB body limit, form schema validation, honeypot/minimum-duration filter, consent with exact server-configured notice version, idempotent website RPC, persistence before Telegram notification.
+- Added and applied Production migration `20261110161956_add_intake_notification_delivery_rpc`; `public.intake_set_notification_delivery` is service_role-only and updates outbox + notification status with attempt/backoff metadata.
+- Updated `source/presentation/public/scripts/intake.js`, `source/application/intake/intake-submit.js`, `source/presentation/public/pages/apply.html`, and `supabase/config.toml` for the website-first browser flow. Legacy Telegram Mini App backend is left untouched.
+- New function is not deployed. Frontend is not deployed. `INTAKE_ENABLED` remains false. Legal readiness remains false. No new secrets were set.
+- Important gaps: no robust rate-limit/challenge yet (honeypot and form-duration check are not sufficient as sole abuse protection); no scheduled outbox worker yet, so failed deliveries are persisted with retry metadata but are not automatically retried on a timer; approved notice version not configured; no Deno compile/HTTP/Telegram/browser/iPhone tests executed.
+- Public activation is blocked until abuse protection, scheduled retry worker, legal notice/version, and E2E verification are complete.
