@@ -243,7 +243,7 @@ Deno.serve(async (request: Request) => {
     return reply({ error: code }, code === "request_too_large" ? 413 : 400, origin);
   }
 
-  let verified;
+  let verified: VerifiedTelegramInitData;
   let name: string;
   let message: string;
   try {
