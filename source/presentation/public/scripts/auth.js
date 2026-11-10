@@ -286,9 +286,26 @@ supabase.auth.getSession().then(({ data, error }) => {
   }
 });
 document.addEventListener("raymondovich:navigation", event => {
-  if (event.detail?.route?.startsWith("#authorization")
-    && event.detail?.screen === "route"
-    && currentSession?.user) {
+  const state = event.detail;
+  if (!state?.route?.startsWith("#authorization") || !currentSession?.user) return;
+
+  const activeView = main?.querySelector("[data-app-view]");
+  const route = state.route;
+  const expectedScreen = route === "#authorization" || route === "#authorization/profile"
+    ? "profile"
+    : route === "#authorization/profile-settings" ? "profile-settings"
+      : route === "#authorization/projects" ? "projects"
+        : route === "#authorization/ideas" ? "ideas"
+          : route === "#authorization/tools" ? "tools"
+            : route === "#authorization/control-center" ? "control-center"
+              : route === "#authorization/favorites" ? "избранное"
+                : route === "#authorization/reports" ? "отчёты"
+                  : route === "#authorization/modules" ? "управление-модулями"
+                    : "profile";
+
+  // Existing module controllers restore nested screens themselves while their workspace remains mounted.
+  // Rebuild the shell when a route transition or browser Back returns to a workspace that is no longer mounted.
+  if (state.screen === "route" || activeView?.dataset.appScreen !== expectedScreen) {
     renderSignedIn(main, currentSession.user);
   }
 });
