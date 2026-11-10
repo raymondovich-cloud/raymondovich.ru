@@ -263,6 +263,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   if (event === "SIGNED_OUT") {
     try { sessionStorage.removeItem("raymondovich.auth-welcome-complete"); } catch { /* Optional session preference. */ }
   }
+  if (!["SIGNED_IN", "SIGNED_OUT", "PASSWORD_RECOVERY", "INITIAL_SESSION"].includes(event)) return;
   if (!location.hash.startsWith("#authorization")) return;
   queueMicrotask(() => {
     const root = document.querySelector("#main");
