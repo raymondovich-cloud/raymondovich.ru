@@ -6,3 +6,6 @@ verify_jwt = false
 
 [functions.intake-notification-worker]
 verify_jwt = false
+
+[functions.intake-test-submit]
+verify_jwt = false
