@@ -18,7 +18,7 @@ const OWNER_CHAT_ID = Deno.env.get("OWNER_CHAT_ID") ?? "";
 const ALLOWED_IDS_RAW = Deno.env.get("INTAKE_TEST_ALLOWED_USER_IDS") ?? "";
 
 const ALLOWED_IDS = new Set(
-  ALLOWED_IDS_RAW.split(/[,s]+/).map((value) => value.trim()).filter((value) => /^\d{1,20}$/.test(value)),
+  ALLOWED_IDS_RAW.split(/[,\\s]+/).map((value) => value.trim()).filter((value) => /^\d{1,20}$/.test(value)),
 );
 const ALLOWED_ORIGINS = new Set([
   "https://raymondovich.ru",
