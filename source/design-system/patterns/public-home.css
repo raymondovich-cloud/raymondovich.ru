@@ -225,3 +225,9 @@ details[open]>.home-principles summary .disclosure-icon::after,details[open]>sum
  .home-roadmap-list summary .disclosure-icon{grid-column:3;grid-row:1/3}
  .roadmap-details{padding-left:2rem}
 }
+
+
+/* Own products heading — compact single-line title. */
+.home-products-heading .home-section-heading h2{font-size:clamp(1.25rem,2.6vw,2.15rem);white-space:nowrap;letter-spacing:-.055em}
+@media(max-width:760px){.home-products-heading .home-section-heading h2{font-size:clamp(1.2rem,6.2vw,1.75rem)}}
+@media(max-width:380px){.home-products-heading .home-section-heading h2{font-size:clamp(1.05rem,5.8vw,1.35rem)}}
