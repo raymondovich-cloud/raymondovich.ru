@@ -6,7 +6,9 @@ alter table public.intake_applications
   add column portfolio_url text,
   add column product_name text,
   add column product_url text,
-  add column product_stage text;
+  add column product_stage text,
+  add column conditional_fields_version smallint not null default 0
+    check (conditional_fields_version in (0, 1));
 
 alter table public.intake_applications
   add constraint intake_applications_partner_role_check
@@ -24,7 +26,17 @@ alter table public.intake_applications
   add constraint intake_applications_conditional_fields_check
     check (
       (
-        interest = 'partner'
+        conditional_fields_version = 0
+        and partner_role is null
+        and weekly_availability is null
+        and portfolio_url is null
+        and product_name is null
+        and product_url is null
+        and product_stage is null
+      )
+      or (
+        conditional_fields_version = 1
+        and interest = 'partner'
         and partner_role is not null
         and weekly_availability is not null
         and product_name is null
@@ -61,6 +73,8 @@ comment on column public.intake_applications.product_url is
   'Optional HTTPS product URL for own-product requests.';
 comment on column public.intake_applications.product_stage is
   'Required product stage for own-product requests.';
+comment on column public.intake_applications.conditional_fields_version is
+  '0 for legacy requests created before conditional questions; 1 for requests validated against the conditional form contract.';
 
 drop function public.intake_submit(
   uuid, text, text, boolean, text, text, text, bigint, text, text, text, timestamptz
@@ -183,11 +197,13 @@ begin
   insert into public.intake_applications (
     owner_id, idempotency_key, source, campaign, source_param_signed, interest, name, message,
     telegram_user_id, telegram_username, language_code, client_platform, consent_at,
-    partner_role, weekly_availability, portfolio_url, product_name, product_url, product_stage
+    partner_role, weekly_availability, portfolio_url, product_name, product_url, product_stage,
+    conditional_fields_version
   ) values (
     v_owner_id, p_idempotency_key, p_source, p_campaign, p_source_param_signed, p_interest, p_name, p_message,
     p_telegram_user_id, p_telegram_username, p_language_code, p_client_platform, p_consent_at,
-    p_partner_role, p_weekly_availability, p_portfolio_url, p_product_name, p_product_url, p_product_stage
+    p_partner_role, p_weekly_availability, p_portfolio_url, p_product_name, p_product_url, p_product_stage,
+    1
   )
   returning * into v_application;
 
