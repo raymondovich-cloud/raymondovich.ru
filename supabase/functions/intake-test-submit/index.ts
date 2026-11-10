@@ -256,14 +256,19 @@ Deno.serve(async (request: Request) => {
     message = normalizeText(body.message, 1000, "message");
   } catch (error) {
     if (error instanceof IntakeValidationError) {
+      console.warn("Intake test request rejected", error.code);
       const status = error.code === "expired_init_data" ? 401 : 400;
       return reply({ error: error.code }, status, origin);
     }
+    console.warn("Intake test request rejected", "invalid_request");
     return reply({ error: "invalid_request" }, 400, origin);
   }
 
   const interest = String(body.interest || "");
-  if (!["partner", "own_product", "question"].includes(interest)) return reply({ error: "invalid_interest" }, 400, origin);
+  if (!["partner", "own_product", "question"].includes(interest)) {
+    console.warn("Intake test request rejected", "invalid_interest");
+    return reply({ error: "invalid_interest" }, 400, origin);
+  }
 
   let details = {
     partnerRole: null as string | null, weeklyAvailability: null as string | null, portfolioUrl: null as string | null,
@@ -289,7 +294,11 @@ Deno.serve(async (request: Request) => {
       };
     }
   } catch (error) {
-    if (error instanceof IntakeValidationError) return reply({ error: error.code }, 400, origin);
+    if (error instanceof IntakeValidationError) {
+      console.warn("Intake test request rejected", error.code);
+      return reply({ error: error.code }, 400, origin);
+    }
+    console.warn("Intake test request rejected", "invalid_request");
     return reply({ error: "invalid_request" }, 400, origin);
   }
 
