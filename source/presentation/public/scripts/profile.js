@@ -1,6 +1,8 @@
 import { getProjectsSummary } from "/source/application/projects/project-registry.js";
 import { changeProfileEmail, changeProfilePassword } from "/source/application/profile/profile-account.js";
 
+const projectCountCache = new Map();
+
 const escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 })[char]);
@@ -53,6 +55,7 @@ export function renderProfileScreen(root, user) {
   const name = userLabel(user);
   const avatar = avatarUrl(user);
   const admin = user.app_metadata?.role === "admin";
+  const cachedProjectCount = projectCountCache.get(user.id);
   root.dataset.appScreen = "profile";
   root.innerHTML = `
     <section class="profile-screen" aria-labelledby="profile-title">
@@ -78,7 +81,7 @@ export function renderProfileScreen(root, user) {
       <div class="profile-groups" data-profile-groups>
         ${admin ? `<section class="profile-group" data-profile-group><div class="profile-group-list">${row({icon:"control",title:"Control Center",route:"#authorization/control-center"})}</div></section>` : ""}
         <section class="profile-group" data-profile-group aria-label="Проекты">
-          <div class="profile-group-list">${row({icon:"projects",title:"Мои проекты",value:"…",route:"#authorization/projects"})}</div>
+          <div class="profile-group-list">${row({icon:"projects",title:"Мои проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}</div>
         </section>
         <section class="profile-group" data-profile-group aria-label="Избранное">
           <div class="profile-group-heading">Избранное</div>
@@ -100,6 +103,7 @@ export function renderProfileScreen(root, user) {
     getProjectsSummary().then(result => {
       if (root.dataset.appScreen !== "profile") return;
       const value = result.error ? "Недоступно" : String(result.total ?? "—");
+      if (!result.error) projectCountCache.set(user.id, result.total ?? "—");
       const counter = root.querySelector('[data-profile-route="#authorization/projects"] .profile-row-value');
       if (counter) counter.textContent = value;
     }).catch(() => {
