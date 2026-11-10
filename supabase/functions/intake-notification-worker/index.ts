@@ -191,8 +191,8 @@ Deno.serve(async (request: Request) => {
 
   try {
     const claimed = await rpc("intake_claim_notification_batch", {
-      p_batch_size: 10,
-      p_lock_seconds: 90,
+      p_batch_size: 5,
+      p_lock_seconds: 180,
     });
     const items: ClaimedItem[] = Array.isArray(claimed) ? claimed : claimed?.items ?? [];
     let sent = 0;
