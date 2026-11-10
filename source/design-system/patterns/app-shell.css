@@ -48,3 +48,5 @@ body:has(.authenticated-app-shell) .site-header .header-inner,
 body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:54px}
 
 .app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--color-app-shell-active);outline-offset:3px}
+
+.auth-layout:has(.authenticated-app-shell){max-width:1100px}
