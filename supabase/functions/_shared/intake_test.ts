@@ -142,3 +142,21 @@ Deno.test("client start_param is retained only as an unsigned attribution hint",
     throw new Error("Unsigned attribution hint was not marked correctly");
   }
 });
+
+Deno.test("invalid signed start_param is not replaced by a client hint", () => {
+  const result = resolveIntakeStartParam("not-allowed", "ig_paid");
+  if (result.value !== "not-allowed" || result.signed !== true) {
+    throw new Error("Invalid signed start_param incorrectly fell back to client input");
+  }
+  const source = parseIntakeSource(result.value);
+  if (source.source !== "other" || source.campaign !== null) {
+    throw new Error("Invalid signed start_param was not normalized to other");
+  }
+});
+
+Deno.test("oversized client attribution hint is discarded", () => {
+  const result = resolveIntakeStartParam(null, "ig_" + "a".repeat(100));
+  if (result.value !== null || result.signed !== false) {
+    throw new Error("Oversized client attribution hint was accepted");
+  }
+});
