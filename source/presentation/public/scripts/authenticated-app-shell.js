@@ -45,7 +45,7 @@ function avatarMarkup(user) {
   const candidate = user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
   try {
     const url = new URL(candidate);
-    if (["https:", "http:"].includes(url.protocol)) {
+    if (url.protocol === "https:") {
       return `<img src="${escape(url.href)}" alt="" class="app-tab-avatar">`;
     }
   } catch { /* Use initials when the identity provider has no valid avatar URL. */ }

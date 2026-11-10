@@ -66,3 +66,7 @@ body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min
 @media(prefers-reduced-motion:reduce){
   .authenticated-app-content>*,.app-welcome{animation:none}
 }
+
+/* Keep the public footer outside authenticated workspaces. */
+body[data-page="authenticated-welcome"] .footer,
+body[data-page="authenticated-workspace"] .footer{display:none}
