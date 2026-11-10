@@ -185,8 +185,17 @@ Deno.serve(async (request: Request) => {
   if (!WORKER_SECRET || !safeEqual(request.headers.get("x-intake-worker-secret") ?? "", WORKER_SECRET)) {
     return new Response("Unauthorized", { status: 401 });
   }
-  if (!SUPABASE_URL || !SERVICE_KEY || !BOT_TOKEN || !/^-?\d+$/.test(OWNER_CHAT_ID)) {
-    return new Response("Worker configuration error", { status: 503 });
+  const missingConfiguration = [
+    !SUPABASE_URL ? "SUPABASE_URL" : null,
+    !SERVICE_KEY ? "SUPABASE_SERVICE_ROLE_KEY" : null,
+    !BOT_TOKEN ? "TELEGRAM_BOT_TOKEN" : null,
+    !/^-?\d+$/.test(OWNER_CHAT_ID) ? "OWNER_CHAT_ID" : null,
+  ].filter((value): value is string => value !== null);
+  if (missingConfiguration.length > 0) {
+    return Response.json(
+      { error: "worker_configuration_error", missing: missingConfiguration },
+      { status: 503 },
+    );
   }
 
   try {
