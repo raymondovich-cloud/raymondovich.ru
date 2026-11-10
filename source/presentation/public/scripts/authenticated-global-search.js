@@ -24,7 +24,9 @@ function renderGroups(root, response, resultIndex) {
   let index = 0;
 
   if (!response.groups.length) {
-    renderMessage(root, "Ничего не найдено. Попробуйте изменить запрос.", "empty");
+    renderMessage(root, response.partial
+      ? "Не удалось получить результаты из доступных источников. Повторите попытку позже."
+      : "Ничего не найдено. Попробуйте изменить запрос.", response.partial ? "error" : "empty");
     return;
   }
 
