@@ -188,3 +188,16 @@
 - Не запускались Deno unit tests, реальный HTTP/Telegram Mini App E2E и browser/iPhone Safari QA.
 - `INTAKE_ENABLED` не включался; Production secrets не читались и не менялись; публичный приём заявок остаётся закрытым. Frontend не выкладывался: условная форма остаётся в Draft PR #20 до отдельной проверки и интеграции.
 - Production Supabase migration и Edge Function deploy выполнены по прямому подтверждению владельца от 2026-11-10. GitHub `main` не изменялся.
+
+## 11. Website-first Intake — owner-approved next implementation slice (2026-11-10)
+
+- Владелец одобрил вариант А: обычная веб-форма на raymondovich.ru без обязательного Telegram для посетителя.
+- Канонический поток: visitor → website form → Intake Edge Function → database → owner Telegram notification.
+- Telegram — только канал уведомления владельца; Mini App может остаться необязательной точкой входа, но не обязательным шагом.
+- База данных — единый источник истины для Telegram и будущего блока «Заявки» в Raymondovich Control Center. UI блока не входит в текущий срез.
+- Разделить application lifecycle status (new, in_review, approved, rejected, closed) и notification delivery status (pending, sent, failed). Нужен durable outbox/retry; запись заявки сохраняется до отправки Telegram.
+- Атрибуция: first-touch + last-touch отдельно; UTM source/medium/campaign/content/term, landing page, referrer, timestamps; отсутствие меток не блокирует заявку; источники расширяемые и недоверенные.
+- Публичный endpoint остаётся anonymous (verify_jwt=false) с обязательными серверными валидацией, idempotency, rate/abuse controls, consent timestamp + notice version; Telegram ID не используется как обязательная идентичность или rate-limit key.
+- Документы Intake Specification и ADR-0004 дополнены owner-approved amendment.
+- Следующий шаг: реализовать совместимую DB migration, backend persistence/outbox/retry, web form submit и тесты. Сначала проверить миграционную историю/контракты; не выполнять Production DDL или deploy без отдельного разрешения.
+- INTAKE_ENABLED остаётся выключенным; legal gate остаётся закрытым. Никакие production secrets, Edge Functions, DB schema или frontend deployment в рамках документационного amendment не менялись.
