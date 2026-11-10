@@ -1,2 +1,5 @@
 [functions.intake-submit]
 verify_jwt = false
+
+[functions.intake-website-submit]
+verify_jwt = false
