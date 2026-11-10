@@ -2,8 +2,8 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.7  
-> **Статус:** Актуально; Этапы 0–1 реализованы; Telegram Intake подготовлен в отдельной ветке и fail-closed; source migration history восстановлена и сверена  
+> **Версия:** 1.8  
+> **Статус:** Актуально; Этапы 0–1 реализованы; Telegram Intake подготовлен в отдельной ветке и fail-closed; source migration history восстановлена и сверена; staging preflight продолжается  
 > **Дата:** 2026-11-10
 
 ---
@@ -111,6 +111,15 @@
 - Проверки выполнялись read-only через Supabase migration history и GitHub branch contents. Никакой DDL, DML, `db push`, `apply_migration`, deploy, secret change или production mutation не выполнялись.
 - Ветка остаётся отдельной; `main` не менялся.
 
+### Staging preflight — дополнительная проверка 2026-11-10
+
+- Повторно прочитан актуальный HEAD ветки после восстановления migration sources; текущий commit на момент проверки — `8c5929a493678fd4012b80533b052945de15d131`.
+- Статическая проверка Deno test source выявила отсутствующий импорт `normalizeText` в `intake_test.ts`, хотя функция используется в тесте. Импорт добавлен отдельным коммитом `8c5929a493678fd4012b80533b052945de15d131`.
+- Deno runtime по-прежнему недоступен; исправление импорта не считать результатом запуска тестов. Deno tests остаются неисполненными.
+- Список Supabase projects проверен read-only. Существующий `Ai-Sistem-Staging` (`cjsgtpxsmlyzitxbbznv`) неактивен и не выбран для Intake. Новый staging project ещё не создан.
+- В организации обнаружена одна доступная организация: `fumlzfwzffhxbyplwchp` (`fumlzfwzffhxbyplwchp`). Создание нового Supabase project требует явного выбора организации владельцем; регион для staging предлагается `eu-central-1` (Frankfurt), чтобы совпадал с текущим target environment. До подтверждения проект не создаётся.
+- Production project `yajybgdorhxebbigwjgi` остаётся read-only; миграции, secrets, Edge Functions и настройки не менялись.
+
 ### Следующие действия для Intake
 
 1. Выполнено: source migration history сверена по всем 25 remote versions. Сохранить приватный шаг provisioning Telegram publications owner для чистой staging-среды.
@@ -123,6 +132,7 @@
 
 | Версия | Статус | Дата | Изменения |
 |---|---|---|---|
+| 1.8 | Актуально | 2026-11-10 | Завершена source migration reconciliation; исправлен отсутствующий импорт в Deno tests; staging project ожидает выбора организации владельцем. |
 | 1.7 | Актуально | 2026-11-10 | Восстановлены и сверены 25 source migration versions; отмечено безопасное исключение Telegram owner seed. |
 | 1.6 | Актуально | 2026-11-10 | Уточнена модель startapp direct links: signed start_param при наличии, иначе unsigned attribution hint с source_param_signed. |
 | 1.5 | Актуально | 2026-11-10 | Обновлён Git checkpoint после статических проверок; зафиксирован текущий SHA ветки и неизменность main. |
