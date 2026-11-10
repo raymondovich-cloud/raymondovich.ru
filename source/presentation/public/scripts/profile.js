@@ -117,7 +117,6 @@ export function renderProfileSettings(root, user) {
   root.innerHTML = `
     <section class="profile-subscreen" aria-labelledby="profile-settings-title">
       <header class="profile-subscreen-header">
-        <button class="profile-back" type="button" data-profile-back aria-label="Назад">←</button>
         <h1 id="profile-settings-title">Настройки профиля</h1>
       </header>
       <section class="profile-settings-card">
@@ -152,7 +151,6 @@ export function renderProfileEmptyScreen(root, title, message) {
   root.innerHTML = `
     <section class="profile-subscreen" aria-labelledby="profile-empty-title">
       <header class="profile-subscreen-header">
-        <button class="profile-back" type="button" data-profile-back aria-label="Назад">←</button>
         <h1 id="profile-empty-title">${escape(title)}</h1>
       </header>
       <div class="profile-empty-panel">${escape(message)}</div>
@@ -166,10 +164,6 @@ export function bindProfileInteractions(root, navigate) {
     const routeButton = event.target.closest("[data-profile-route]");
     if (routeButton) {
       navigate(routeButton.dataset.profileRoute);
-      return;
-    }
-    if (event.target.closest("[data-profile-back]")) {
-      window.RaymondovichNavigation?.back("#authorization/profile");
       return;
     }
     if (event.target.closest("[data-profile-search-toggle]")) {
