@@ -1,9 +1,7 @@
-import { getPlatform, onBackButtonSync, openExternal } from "/source/platform/bridge.js";
+import { getPlatform, openExternal } from "/source/platform/bridge.js";
 
 const menuButtons = document.querySelectorAll("[data-menu-toggle]");
 const closeTargets = document.querySelectorAll("[data-menu-close]");
-const header = document.querySelector(".site-header .header-inner");
-const menuButton = document.querySelector(".header-menu-toggle");
 const rootRoute = "/";
 
 function routeFromLocation() {
@@ -59,13 +57,88 @@ function emitNavigation(source = "navigation") {
     backButton.setAttribute("aria-hidden", String(isRoot));
     backButton.tabIndex = isRoot ? -1 : 0;
   });
-  header?.classList.toggle("has-back-navigation", !isRoot);
-  onBackButtonSync(isRoot);
 }
 
 function setMenu(open) {
   document.body.classList.toggle("menu-open", open);
-  menuButtons.forEach((button) => button.setAttribute("aria-expanded", String(open)));
+  
+// Native-style edge swipe: a rightward gesture from the left edge returns
+// through the same navigation history used by browser and Telegram controls.
+const BACK_SWIPE_EDGE = 24;
+const BACK_SWIPE_DISTANCE = 80;
+const BACK_SWIPE_VERTICAL_TOLERANCE = 60;
+let backSwipe = null;
+
+function canNavigateBack() {
+  const state = currentNavigation();
+  return Boolean(state && (state.route !== rootRoute || state.screen !== "route"));
+}
+
+function isBackSwipeBlocked(target) {
+  if (document.body.classList.contains("menu-open")) return true;
+  if (document.querySelector(".authenticated-global-search:not([hidden])")) return true;
+  return Boolean(target?.closest?.(
+    'input, textarea, select, button, a, [contenteditable="true"], [role="button"], [data-no-back-swipe]'
+  ));
+}
+
+document.addEventListener("touchstart", event => {
+  if (event.touches.length !== 1 || !canNavigateBack()) {
+    backSwipe = null;
+    return;
+  }
+  const touch = event.touches[0];
+  if (touch.clientX > BACK_SWIPE_EDGE || isBackSwipeBlocked(event.target)) {
+    backSwipe = null;
+    return;
+  }
+  backSwipe = { identifier: touch.identifier, startX: touch.clientX, startY: touch.clientY, active: true };
+}, { capture: true, passive: true });
+
+document.addEventListener("touchmove", event => {
+  if (!backSwipe?.active) return;
+  if (event.touches.length !== 1) {
+    backSwipe = null;
+    return;
+  }
+  const touch = Array.from(event.touches).find(item => item.identifier === backSwipe.identifier);
+  if (!touch) {
+    backSwipe = null;
+    return;
+  }
+  const deltaX = touch.clientX - backSwipe.startX;
+  const deltaY = touch.clientY - backSwipe.startY;
+  if (Math.abs(deltaY) > BACK_SWIPE_VERTICAL_TOLERANCE && Math.abs(deltaY) > Math.abs(deltaX)) {
+    backSwipe = null;
+    return;
+  }
+  if (deltaX < -8) {
+    backSwipe = null;
+    return;
+  }
+  if (deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY) && event.cancelable) {
+    event.preventDefault();
+  }
+}, { capture: true, passive: false });
+
+document.addEventListener("touchend", event => {
+  if (!backSwipe?.active) return;
+  const touch = Array.from(event.changedTouches).find(item => item.identifier === backSwipe.identifier);
+  const gesture = backSwipe;
+  backSwipe = null;
+  if (!touch) return;
+  const deltaX = touch.clientX - gesture.startX;
+  const deltaY = touch.clientY - gesture.startY;
+  if (deltaX >= BACK_SWIPE_DISTANCE && Math.abs(deltaY) <= BACK_SWIPE_VERTICAL_TOLERANCE) {
+    goBack();
+  }
+}, { capture: true, passive: true });
+
+document.addEventListener("touchcancel", () => {
+  backSwipe = null;
+}, { capture: true, passive: true });
+
+menuButtons.forEach((button) => button.setAttribute("aria-expanded", String(open)));
 }
 
 function writeState(state, url, replace = false) {
@@ -162,17 +235,6 @@ if (!currentNavigation()) {
     direct: initialRoute !== rootRoute
   };
   history.replaceState({ ...(history.state || {}), raymondovichNavigation: initialState }, "", location.href);
-}
-if (header && menuButton && !header.querySelector("[data-global-back]")) {
-  const back = document.createElement("button");
-  back.className = "header-back-toggle";
-  back.type = "button";
-  back.dataset.globalBack = "";
-  back.setAttribute("aria-label", "Назад");
-  back.setAttribute("title", "Назад");
-  back.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m0 0 7-7m-7 7 7 7"/></svg>';
-  back.addEventListener("click", () => goBack());
-  header.insertBefore(back, menuButton);
 }
 emitNavigation("init");
 
