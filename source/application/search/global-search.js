@@ -64,13 +64,13 @@ export async function searchGlobalContent(query, user) {
     {
       title: "Проекты",
       items: mapRows(rows[0], project => makeResult("Проекты", project.name,
-        project.description || project.goal || "Открыть проект", "#authorization/projects",
+        project.description || project.goal || project.concept || project.business_model || project.additional_info || "Открыть проект", "#authorization/projects",
         "project-overview", { projectId: project.id }, project.id))
     },
     {
       title: "Идеи",
       items: mapRows(rows[1], idea => makeResult("Идеи", idea.name,
-        idea.description || idea.concept || idea.goal || idea.additional_info || "Открыть идею",
+        idea.description || idea.concept || idea.goal || idea.business_model || idea.additional_info || "Открыть идею",
         "#authorization/ideas", "idea-detail", { ideaId: idea.id }, idea.id))
     },
     {
