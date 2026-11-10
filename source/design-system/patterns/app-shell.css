@@ -5,7 +5,7 @@
 .app-welcome h1 span{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;color:transparent}
 .app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--component-app-shell-muted);line-height:1.65}
 .app-welcome-role{padding:7px 12px;border:1px solid var(--component-app-shell-border);border-radius:999px;color:var(--component-app-shell-muted);font-size:12px}
-.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--semantic-accent);border-radius:999px;background:var(--gradient-accent);color:var(--component-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
+.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--semantic-accent);border-radius:999px;background:var(--semantic-accent);color:var(--component-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
 .app-welcome-continue:active{transform:scale(.98)}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--component-app-shell-text)}
 .authenticated-app-content{min-width:0;padding:clamp(14px,3vw,28px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
@@ -46,7 +46,7 @@ body:has(.app-welcome) .site-header .header-nav{display:none}
 body:has(.authenticated-app-shell) .site-header .header-inner,
 body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:54px}
 
-.app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--component-app-shell-active);outline-offset:3px}
+.app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:3px}
 
 .auth-layout:has(.authenticated-app-shell){max-width:1100px}
 
