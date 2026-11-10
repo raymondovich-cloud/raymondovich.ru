@@ -8,6 +8,9 @@ import {
   bindProfileInteractions
 } from "./profile.js";
 
+const shellObservers = new WeakMap();
+const currentShellUsers = new WeakMap();
+
 const TAB_ROUTES = {
   projects: "#authorization/projects",
   ideas: "#authorization/ideas",
@@ -181,7 +184,7 @@ function bindShell(root, user) {
       const requested = root.dataset.appWelcomeRoute;
       root.dataset.welcomeComplete = "true";
       try { sessionStorage.setItem("raymondovich.auth-welcome-complete", "1"); } catch { /* The root state remains available as a fallback. */ }
-      const activeUser = root._authenticatedUser || user;
+      const activeUser = currentShellUsers.get(root) || user;
       const target = requested && requested !== "#authorization"
         ? requested
         : (activeUser.app_metadata?.role === "admin" ? TAB_ROUTES.projects : TAB_ROUTES.profile);
@@ -198,12 +201,12 @@ function bindShell(root, user) {
     if (appShell) syncFullscreenState(appShell);
   });
   observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
-  root._appShellObserver = observer;
+  shellObservers.set(root, observer);
 }
 
 export function renderAuthenticatedApp(root, user) {
   if (!root || !user) return;
-  root._authenticatedUser = user;
+  currentShellUsers.set(root, user);
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
   bindShell(root, user);
