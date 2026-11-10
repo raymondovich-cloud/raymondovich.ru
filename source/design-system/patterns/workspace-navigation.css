@@ -92,3 +92,41 @@ html[data-platform="telegram"] .header-back-toggle {
 
 
 /* The authenticated workspace has its own back control; the public header stays unchanged. */
+
+/* Authenticated space uses a dedicated back control instead of the public header. */
+body[data-page="authenticated-welcome"] .site-header,
+body[data-page="authenticated-workspace"] .site-header{display:none}
+body[data-page="authenticated-welcome"] .sidebar,
+body[data-page="authenticated-welcome"] .scrim,
+body[data-page="authenticated-workspace"] .sidebar,
+body[data-page="authenticated-workspace"] .scrim{display:none}
+.authenticated-back-toggle{
+  position:fixed;
+  z-index:1101;
+  top:calc(env(safe-area-inset-top,0px) + 12px);
+  left:calc(env(safe-area-inset-left,0px) + 12px);
+  display:inline-flex;
+  width:42px;
+  height:42px;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid var(--component-app-shell-material-border);
+  border-radius:50%;
+  background:var(--component-app-shell-material);
+  color:var(--component-app-shell-active);
+  box-shadow:var(--component-app-shell-material-shadow);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  cursor:pointer;
+  transition:background-color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.authenticated-back-toggle[hidden]{display:none}
+.authenticated-back-toggle svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.authenticated-back-toggle:active{transform:scale(.94)}
+.authenticated-back-toggle:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:3px}
+@media(hover:hover){.authenticated-back-toggle:hover{border-color:var(--component-app-shell-active-outline);background:var(--component-app-shell-active-surface)}}
+@media(max-width:600px){.authenticated-back-toggle{top:calc(env(safe-area-inset-top,0px) + 8px);left:calc(env(safe-area-inset-left,0px) + 10px);width:40px;height:40px}}
+@media(prefers-reduced-motion:reduce){.authenticated-back-toggle{transition:none}}
+html[data-platform="telegram"] .authenticated-back-toggle{display:none!important}
+
