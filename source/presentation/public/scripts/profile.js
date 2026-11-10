@@ -136,25 +136,35 @@ export function renderProfileToolsScreen(root, user) {
         <h1 id="profile-tools-title">Инструменты</h1>
         <p class="profile-tools-intro">Каталог инструментов экосистемы Raymondovich. Доступ к использованию определяется ролью и подпиской.</p>
       </header>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-services">
-        <h2 id="profile-tools-services">Основные инструменты</h2>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-development">
+        <h2 id="profile-tools-development">Инструменты разработки</h2>
         <div class="profile-tools-list">
           <div class="profile-tool-category">
             <div class="profile-tool-category-heading"><strong>Сервисы</strong><small>Инфраструктура и подключённые сервисы</small></div>
             ${toolRow("Инфраструктура", "Домены, серверы, базы данных и ресурсы")}
             ${toolRow("Подключённые сервисы", "Внешние сервисы, используемые в проектах")}
           </div>
-          ${toolRow("Бухгалтерия", "Доходы, расходы и финансовые операции")}
-          ${toolRow("Аналитика", "Показатели и динамика проектов")}
-          ${toolRow("Маркетинг", "Маркетинговые площадки, аккаунты и кампании")}
         </div>
       </section>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-integrations">
-        <h2 id="profile-tools-integrations">Инструменты интеграции</h2>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-promotion">
+        <h2 id="profile-tools-promotion">Инструменты продвижения</h2>
+        <div class="profile-tools-list">
+          ${toolRow("Маркетинг", "Маркетинговые площадки, аккаунты и кампании")}
+          ${toolRow("Сообщество в Telegram", "Сообщество и коммуникации участников")}
+        </div>
+      </section>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-integration">
+        <h2 id="profile-tools-integration">Инструменты интеграции</h2>
         <div class="profile-tools-list">
           ${toolRow("ИИ", "Инструменты искусственного интеллекта")}
           ${toolRow("Telegram-бот", "Автоматизация взаимодействия через Telegram")}
-          ${toolRow("Сообщество в Telegram", "Сообщество и коммуникации участников")}
+        </div>
+      </section>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-analysis">
+        <h2 id="profile-tools-analysis">Инструменты анализа</h2>
+        <div class="profile-tools-list">
+          ${toolRow("Бухгалтерия", "Доходы, расходы и финансовые операции")}
+          ${toolRow("Аналитика", "Показатели и динамика проектов")}
         </div>
       </section>
     </section>`;
