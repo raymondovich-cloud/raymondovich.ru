@@ -2,8 +2,8 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Передача текущего состояния работы  
-> **Версия:** 1.8  
-> **Статус:** Актуально; Этапы 0–1 реализованы; Telegram Intake подготовлен в отдельной ветке и fail-closed; source migration history восстановлена и сверена; staging preflight продолжается  
+> **Версия:** 1.9  
+> **Статус:** Актуально с историческими разделами; Telegram Intake реализован в Production и остаётся fail-closed; расширение условных полей подготовлено в feature-ветке  
 > **Дата:** 2026-11-10
 
 ---
@@ -132,7 +132,7 @@
 
 | Версия | Статус | Дата | Изменения |
 |---|---|---|---|
-| 1.8 | Актуально | 2026-11-10 | Завершена source migration reconciliation; исправлен отсутствующий импорт в Deno tests; staging project ожидает выбора организации владельцем. |
+| 1.9 | Актуально | 2026-11-10 | Добавлена подготовка расширения условных полей Intake в feature-ветке; Production не менялся. |
 | 1.7 | Актуально | 2026-11-10 | Восстановлены и сверены 25 source migration versions; отмечено безопасное исключение Telegram owner seed. |
 | 1.6 | Актуально | 2026-11-10 | Уточнена модель startapp direct links: signed start_param при наличии, иначе unsigned attribution hint с source_param_signed. |
 | 1.5 | Актуально | 2026-11-10 | Обновлён Git checkpoint после статических проверок; зафиксирован текущий SHA ветки и неизменность main. |
@@ -156,3 +156,21 @@
 - Security advisor показал INFO по приватной таблице без RLS policy (ожидаемо: schema закрыта, доступ только service_role) и WARN по отключённой защите от скомпрометированных паролей в Auth. Также есть ранее существовавшие findings по Telegram таблицам и performance. Новых критических health findings не выявлено.
 - Перед публичным включением необходимо: проверить/установить приватные secrets, владелец должен начать чат с ботом командой `/start`, завершить юридическую проверку локализации/трансграничной передачи и privacy notice, затем выполнить end-to-end QA. До этого `INTAKE_ENABLED` оставить выключенным.
 
+
+
+## 10. Conditional Intake fields — implementation branch (2026-11-10)
+
+- Владелец согласовал расширение серверной части и условных полей формы.
+- Рабочая ветка: feature/intake-conditional-fields-2026-11-10, создана от main на момент SHA 578ea37fcbeca69a025f28f97f8dd0b53d203e12.
+- Обновлены source/presentation/public/pages/apply.html, source/presentation/public/scripts/intake.js и source/design-system/patterns/public-intake.css.
+- Общие поля: редактируемое имя, интерес, короткое сообщение до 1000 символов, consent checkbox.
+- Partner: required role enum, required weekly availability enum, optional HTTPS portfolio/GitHub URL.
+- Own product: optional product name and HTTPS URL, required product stage enum.
+- Question: только общие поля.
+- Неактивные conditional controls скрываются и disabled; в FormData не попадают.
+- Edge Function supabase/functions/intake-submit/index.ts проверяет conditional requirements, enum values, optional text length и HTTPS URLs; Telegram notification включает соответствующие поля.
+- Добавлена миграция supabase/migrations/20261110183000_add_intake_conditional_fields.sql: шесть типизированных колонок, CHECK constraints и обновлённая RPC сигнатура. Существующие записи должны остаться совместимыми за счёт nullable дополнительных полей и проверки формы по interest; однако реальный migration dry-run ещё не выполнен.
+- Обновлена спецификация docs/product/intake-module-specification.md до версии 1.3 и changelog за 2026-11-10.
+- Production migration не применялась. Edge Function не развёртывалась. Secrets не менялись. INTAKE_ENABLED не менялся. Main не менялся.
+- Проверено чтением содержимого файлов в feature branch. Deno runtime недоступен; SQL migration не исполнялась; нет browser/iPhone Safari/Telegram E2E тестов.
+- Порядок будущего rollout обязателен: сначала применить миграцию, затем deploy новой Edge Function. Если поменять порядок наоборот, текущая БД не примет RPC-вызов с новыми параметрами и заявки не будут сохраняться. До согласованного rollout Production остаётся на прежней версии формы/backend.
