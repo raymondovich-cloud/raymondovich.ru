@@ -167,3 +167,24 @@
 }
 
 :root[data-theme="light"] { --color-app-shell-cta-text: #17110d; }
+
+/* Canonical semantic color layer — light theme compatibility mapping. */
+:root[data-theme="light"] {
+  --semantic-background: var(--color-bg);
+  --semantic-surface: var(--color-surface);
+  --semantic-surface-raised: var(--color-surface-raised);
+  --semantic-text-primary: var(--color-text);
+  --semantic-text-secondary: var(--color-muted);
+  --semantic-text-tertiary: var(--color-subtle);
+  --semantic-border: var(--color-line);
+  --semantic-divider: var(--color-owner-line);
+  --semantic-accent: var(--color-accent);
+  --semantic-accent-strong: var(--color-accent-bright);
+  --semantic-accent-subtle: var(--color-app-shell-active-surface);
+  --semantic-accent-foreground: #17100b;
+  --semantic-success: var(--color-owner-success);
+  --semantic-warning: var(--ws-warning);
+  --semantic-danger: var(--color-ideas-danger);
+  --semantic-focus-ring: var(--color-accent-bright);
+  --semantic-selection: rgba(255, 118, 47, .30);
+}
