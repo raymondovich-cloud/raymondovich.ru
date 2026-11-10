@@ -183,11 +183,18 @@ function bindShell(root, user) {
       const target = requested && requested !== "#authorization"
         ? requested
         : (user.app_metadata?.role === "admin" ? TAB_ROUTES.projects : TAB_ROUTES.profile);
-      window.RaymondovichNavigation?.navigateRoute(target);
-      if (!window.RaymondovichNavigation) location.hash = target;
+      const currentRoute = window.RaymondovichNavigation?.getState()?.route || location.hash;
+      if (target === currentRoute) renderAuthenticatedApp(root, user);
+      else {
+        window.RaymondovichNavigation?.navigateRoute(target);
+        if (!window.RaymondovichNavigation) location.hash = target;
+      }
     }
   });
-  const observer = new MutationObserver(() => syncFullscreenState(root));
+  const observer = new MutationObserver(() => {
+    const appShell = root.querySelector(".authenticated-app-shell");
+    if (appShell) syncFullscreenState(appShell);
+  });
   observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
   root._appShellObserver = observer;
 }
@@ -196,6 +203,7 @@ export function renderAuthenticatedApp(root, user) {
   if (!root || !user) return;
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
+  bindShell(root, user);
   let welcomed = false;
   try { welcomed = sessionStorage.getItem("raymondovich.auth-welcome-complete") === "1"; } catch { /* Treat storage as unavailable. */ }
 
@@ -210,7 +218,6 @@ export function renderAuthenticatedApp(root, user) {
   const shell = root.querySelector(".authenticated-app-shell");
   const view = root.querySelector("[data-app-view]");
   document.body.dataset.page = "authenticated-workspace";
-  bindShell(root, user);
   renderRoute(view, user, route);
   syncFullscreenState(shell);
   bindProfileInteractions(view, target => window.RaymondovichNavigation?.navigateRoute(target));
