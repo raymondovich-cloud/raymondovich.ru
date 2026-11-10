@@ -78,10 +78,10 @@ comment on column public.intake_applications.product_stage is
 comment on column public.intake_applications.conditional_fields_version is
   '0 for legacy requests created before conditional questions; 1 for requests validated against the conditional form contract.';
 
-drop function public.intake_submit(
-  uuid, text, text, boolean, text, text, text, bigint, text, text, text, timestamptz
-);
-
+-- Keep the legacy 12-argument RPC overload during the rolling deployment.
+-- The currently deployed Edge Function continues using it until the new
+-- Edge Function version is deployed. Remove the legacy overload in a later
+-- cleanup migration after rollout verification.
 create function public.intake_submit(
   p_idempotency_key uuid,
   p_source text,
