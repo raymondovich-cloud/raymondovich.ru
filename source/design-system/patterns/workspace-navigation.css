@@ -89,3 +89,6 @@
 html[data-platform="telegram"] .header-back-toggle {
   display: none !important;
 }
+
+
+/* The authenticated workspace has its own back control; the public header stays unchanged. */
