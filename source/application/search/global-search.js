@@ -10,7 +10,7 @@ import {
 const SECTION_ROUTES = [
   { title: "Проекты", description: "Реестр цифровых проектов", keywords: "разработка рабочее пространство", route: "#authorization/projects", admin: true },
   { title: "Идеи", description: "Реестр идей и концепций", keywords: "замысел концепция", route: "#authorization/ideas", admin: true },
-  { title: "Инструменты", description: "Инструменты и подключённые сервисы", keywords: "сервисы интеграции ресурсы", route: "#authorization/tools" },
+  { title: "Инструменты", description: "Инструменты и подключённые сервисы", keywords: "сервисы интеграции ресурсы", route: "#authorization/profile-tools" },
   { title: "Профиль", description: "Личные данные и параметры аккаунта", keywords: "аккаунт пользователь", route: "#authorization/profile" },
   { title: "Редактирование профиля", description: "Настройки профиля", keywords: "имя аватар данные", route: "#authorization/profile-settings" },
   { title: "Избранное", description: "Избранные проекты и инструменты", keywords: "закладки", route: "#authorization/favorites" },
@@ -76,10 +76,10 @@ export async function searchGlobalContent(query, user) {
     {
       title: "Инструменты и сервисы",
       items: mapRows(rows[2], tool => makeResult("Инструменты и сервисы", tool.name,
-        [tool.category, tool.description].filter(Boolean).join(" · "), "#authorization/tools", null, null, tool.id))
+        [tool.category, tool.description].filter(Boolean).join(" · "), "#authorization/profile-tools", null, null, tool.id))
         .concat(mapRows(rows[3], resource => makeResult("Инструменты и сервисы", resource.name,
           [resource.resource_type, resource.environment, resource.description].filter(Boolean).join(" · "),
-          "#authorization/tools", null, null, resource.id)))
+          "#authorization/profile-tools", null, null, resource.id)))
     },
     {
       title: "Сервисы проектов",
