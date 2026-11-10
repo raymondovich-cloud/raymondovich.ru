@@ -57,6 +57,10 @@ if (legacySlug) {
     }
     const slug = route === "/" ? "home" : route.replace(/^#/, "") || "home";
     const routeSlug = slug.startsWith("authorization/") ? "authorization" : slug;
+    if (routeSlug !== "authorization"
+      && ["authenticated-welcome", "authenticated-workspace"].includes(document.body.dataset.page)) {
+      delete document.body.dataset.page;
+    }
     if (routeSlug === renderedPageSlug) {
       renderedRoute = route;
       renderedPageSlug = routeSlug;
