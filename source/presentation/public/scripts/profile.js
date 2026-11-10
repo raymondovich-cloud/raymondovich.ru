@@ -13,6 +13,7 @@ const icons = {
   reports: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>',
   settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 4-2-1-2 1v2H9v-2l-2-1-2 1-2-4 2-1v-2l-2-1 2-4 2 1 2-1V4h6v2l2 1 2-1 2 4-2 1v2Z"/></svg>',
   modules: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6 18 10M4 20l7-7m-2-2 7-7a4 4 0 0 1 5 5l-7 7M3 4l6 6m-5-8 7 7"/></svg>',
   control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
 };
 
@@ -83,6 +84,9 @@ export function renderProfileScreen(root, user) {
         <section class="profile-group" data-profile-group aria-label="Проекты">
           <div class="profile-group-list">${row({icon:"projects",title:"Мои проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}</div>
         </section>
+        <section class="profile-group" data-profile-group aria-label="Инструменты">
+          <div class="profile-group-list">${row({icon:"tools",title:"Инструменты",value:"Каталог платформы",route:"#authorization/profile-tools"})}</div>
+        </section>
         <section class="profile-group" data-profile-group aria-label="Избранное">
           <div class="profile-group-heading">Избранное</div>
           <div class="profile-empty">Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</div>
@@ -114,6 +118,46 @@ export function renderProfileScreen(root, user) {
     const counter = root.querySelector('[data-profile-route="#authorization/projects"] .profile-row-value');
     if (counter) counter.textContent = "Нет доступа";
   }
+}
+
+
+export function renderProfileToolsScreen(root, user) {
+  const owner = user.app_metadata?.role === "admin";
+  const accessLabel = owner ? "Доступ владельца" : "Доступ по подписке";
+  const toolRow = (title, description = "") => `
+    <div class="profile-tool-row">
+      <span class="profile-tool-row-copy"><strong>${escape(title)}</strong>${description ? `<small>${escape(description)}</small>` : ""}</span>
+      <span class="profile-tool-access">${accessLabel}</span>
+    </div>`;
+  root.dataset.appScreen = "profile-tools";
+  root.innerHTML = `
+    <section class="profile-subscreen profile-tools-screen" aria-labelledby="profile-tools-title">
+      <header class="profile-subscreen-header">
+        <h1 id="profile-tools-title">Инструменты</h1>
+        <p class="profile-tools-intro">Каталог инструментов экосистемы Raymondovich. Доступ к использованию определяется ролью и подпиской.</p>
+      </header>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-services">
+        <h2 id="profile-tools-services">Основные инструменты</h2>
+        <div class="profile-tools-list">
+          <div class="profile-tool-category">
+            <div class="profile-tool-category-heading"><strong>Сервисы</strong><small>Инфраструктура и подключённые сервисы</small></div>
+            ${toolRow("Инфраструктура", "Домены, серверы, базы данных и ресурсы")}
+            ${toolRow("Подключённые сервисы", "Внешние сервисы, используемые в проектах")}
+          </div>
+          ${toolRow("Бухгалтерия", "Доходы, расходы и финансовые операции")}
+          ${toolRow("Аналитика", "Показатели и динамика проектов")}
+          ${toolRow("Маркетинг", "Маркетинговые площадки, аккаунты и кампании")}
+        </div>
+      </section>
+      <section class="profile-tools-group" aria-labelledby="profile-tools-integrations">
+        <h2 id="profile-tools-integrations">Инструменты интеграции</h2>
+        <div class="profile-tools-list">
+          ${toolRow("ИИ", "Инструменты искусственного интеллекта")}
+          ${toolRow("Telegram-бот", "Автоматизация взаимодействия через Telegram")}
+          ${toolRow("Сообщество в Telegram", "Сообщество и коммуникации участников")}
+        </div>
+      </section>
+    </section>`;
 }
 
 export function renderProfileSettings(root, user) {
