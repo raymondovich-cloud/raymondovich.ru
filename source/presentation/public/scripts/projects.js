@@ -26,6 +26,7 @@ const MODULES = {
   marketing: { title: "Маркетинг", eyebrow: "PROJECT / MARKETING", description: "Площадки продвижения, аккаунты, кампании и статистика." }
 };
 let activeController = null;
+const projectsWorkspaceCache = new Map();
 
 export async function renderProjectsWorkspace(root, user) {
   activeController?.abort();
@@ -48,13 +49,18 @@ export async function renderProjectsWorkspace(root, user) {
   let currentProjectId = null;
   let loadSequence = 0;
   let projectFilters = { status: "", priority: "", origin: "" };
+  const cachedWorkspace = projectsWorkspaceCache.get(user.id);
+  if (cachedWorkspace) {
+    projects = cachedWorkspace.projects;
+    moduleSummaries = cachedWorkspace.moduleSummaries;
+  }
 
   const statusLabel = status => PROJECT_STATUS[status] || status || "Не указан";
   const priorityLabel = priority => PROJECT_PRIORITY[priority] || priority || "Обычный";
 
   async function loadProjects() {
     const sequence=++loadSequence;
-    host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
+    if (!projects.length) host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
     const result = await loadProjectsWorkspace();
     if(sequence!==loadSequence||controller.signal.aborted)return false;
     if (result.error) {
@@ -63,6 +69,7 @@ export async function renderProjectsWorkspace(root, user) {
     }
     projects = result.projects;
     moduleSummaries = result.moduleSummaries || {};
+    projectsWorkspaceCache.set(user.id, { projects, moduleSummaries, updatedAt: Date.now() });
     return true;
   }
 
@@ -300,8 +307,14 @@ export async function renderProjectsWorkspace(root, user) {
     }
   },listenerOptions);
 
+  const navigation = window.RaymondovichNavigation;
+  const initialState = navigation?.getState();
+  if (cachedWorkspace && initialState?.route === "#authorization/projects") {
+    renderNavigation(initialState);
+  }
+
   const loaded=await loadProjects();
   if(!loaded || controller.signal.aborted)return;
-  const state=window.RaymondovichNavigation?.getState();
+  const state=navigation?.getState();
   if(state?.route==="#authorization/projects") renderNavigation(state);
 }
