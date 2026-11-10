@@ -54,12 +54,11 @@ function emitNavigation(source = "navigation") {
     detail: { ...state, source }
   }));
   const isRoot = state.route === rootRoute && state.screen === "route";
-  const backButton = document.querySelector("[data-global-back]");
-  if (backButton) {
+  document.querySelectorAll("[data-global-back]").forEach(backButton => {
     backButton.hidden = isRoot;
     backButton.setAttribute("aria-hidden", String(isRoot));
     backButton.tabIndex = isRoot ? -1 : 0;
-  }
+  });
   header?.classList.toggle("has-back-navigation", !isRoot);
   onBackButtonSync(isRoot);
 }
