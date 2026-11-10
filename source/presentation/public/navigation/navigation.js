@@ -51,12 +51,6 @@ function emitNavigation(source = "navigation") {
   document.dispatchEvent(new CustomEvent("raymondovich:navigation", {
     detail: { ...state, source }
   }));
-  const isRoot = state.route === rootRoute && state.screen === "route";
-  document.querySelectorAll("[data-global-back]").forEach(backButton => {
-    backButton.hidden = isRoot;
-    backButton.setAttribute("aria-hidden", String(isRoot));
-    backButton.tabIndex = isRoot ? -1 : 0;
-  });
 }
 
 function setMenu(open) {
