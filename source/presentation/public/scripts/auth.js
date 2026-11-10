@@ -66,6 +66,7 @@ function renderSignedOut(root) {
   const shell = root.querySelector("[data-auth-shell]");
   if (!shell) return;
   delete shell.dataset.ownerWorkspace;
+  delete shell.dataset.welcomeComplete;
   shell.innerHTML = `
     <div class="auth-heading">
       <p class="overline">RAYMONDOVICH / ACCOUNT</p>
