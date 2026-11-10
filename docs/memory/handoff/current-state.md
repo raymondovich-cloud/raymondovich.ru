@@ -249,3 +249,14 @@
 - Блокер: не создан `intake_claim_notification_batch` и не настроен cron. Supabase CLI отсутствует; согласно Supabase workflow миграцию нужно создавать через `supabase migration new`. Не обходить это ручным созданием миграции или прямым DDL.
 - Не деплоить worker и не создавать cron до claim RPC, pg_net migration, настройки одинакового worker secret в Edge Functions и Vault, и проверки worker. `INTAKE_ENABLED=false`, legal gate закрыт; website function и frontend не развернуты/не опубликованы.
 - Текущий статус тестирования: source review выполнен; Deno compile, SQL concurrency tests, Telegram HTTP integration и iPhone Safari QA не выполнялись.
+
+
+### Retry worker — database claim primitive applied (2026-11-10)
+
+- Production migration `20261110164405_add_intake_notification_claim_and_pg_net` применена; remote migration history подтверждает версию `20261110164405`. SQL source находится в `supabase/migrations/20261110164405_add_intake_notification_claim_and_pg_net.sql`.
+- Установлен pg_net 0.20.4. HTTP functions доступны в schema `net`.
+- Создан service_role-only RPC `public.intake_claim_notification_batch(integer, integer)`: `FOR UPDATE SKIP LOCKED`, lock expiry, batch bounds, return application_id only.
+- Rollback-only SQL smoke test: first claim PASS; active lock prevents second claim PASS; expired lock can be reclaimed PASS. Transaction rolled back; live application/outbox counts remain 0/0.
+- Security Advisor теперь дополнительно показывает `extension_in_public` WARN для pg_net (extension metadata schema public; extension non-relocatable; HTTP functions schema net). Не пытаться перемещать extension без отдельного обоснования. Другие advisor findings не менялись.
+- Migration fallback: Supabase CLI отсутствовал в runtime, поэтому migration была применена через MCP `apply_migration`, remote version проверена и source восстановлен в GitHub. Не выдавать это за CLI workflow.
+- Остаётся: настроить `INTAKE_WORKER_SECRET` одновременно в Edge Function Secrets и Vault; развернуть worker после проверки; создать pg_cron schedule с pg_net; выполнить реальный HTTP/Telegram integration test. Не создавать cron до deploy и secret provisioning. Публичный Intake всё ещё закрыт.
