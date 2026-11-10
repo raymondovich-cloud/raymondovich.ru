@@ -177,16 +177,19 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
     }
   });
 
-  root.addEventListener("touchstart", event => {
-    if (panelFor(root)?.hidden === false || event.touches.length !== 1) return;
+  // Listen at document level: iOS Safari may start native Pull to Refresh
+  // before a bubbling/captured listener attached to the app root can cancel it.
+  document.addEventListener("touchstart", event => {
+    if (!root.contains(event.target) || panelFor(root)?.hidden === false || event.touches.length !== 1) return;
     if ((document.scrollingElement?.scrollTop || window.scrollY || 0) > 0) return;
     const touch = event.changedTouches[0];
     if (!touch || touch.clientY > TOP_EDGE_START) return;
-    if (event.target.closest("input,textarea,select,button,a,[contenteditable='true']")) return;
+    if (event.target instanceof Element
+      && event.target.closest("input,textarea,select,button,a,[contenteditable='true']")) return;
     gesture = { startX: touch.clientX, startY: touch.clientY };
   }, { capture: true, passive: true });
 
-  root.addEventListener("touchmove", event => {
+  document.addEventListener("touchmove", event => {
     if (!gesture || event.touches.length !== 1) return;
     const touch = event.changedTouches[0];
     if (!touch) return;
@@ -198,15 +201,18 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
       root.removeAttribute("data-global-search-pull-ready");
       return;
     }
+
+    // Cancel native refresh as soon as a downward intent is established.
+    // Waiting for the visual threshold gives Safari time to claim the gesture.
+    if (deltaY > 2 && event.cancelable) event.preventDefault();
     if (deltaY > 6) {
-      event.preventDefault();
       root.setAttribute("data-global-search-pulling", "true");
       if (deltaY >= PULL_THRESHOLD) root.setAttribute("data-global-search-pull-ready", "true");
       else root.removeAttribute("data-global-search-pull-ready");
     }
   }, { capture: true, passive: false });
 
-  root.addEventListener("touchend", event => {
+  document.addEventListener("touchend", event => {
     if (!gesture) return;
     const touch = event.changedTouches[0];
     const distance = touch ? touch.clientY - gesture.startY : 0;
@@ -216,7 +222,7 @@ export function bindAuthenticatedGlobalSearch(root, getUser) {
     if (distance >= PULL_THRESHOLD) openSearch();
   }, { capture: true, passive: true });
 
-  root.addEventListener("touchcancel", () => {
+  document.addEventListener("touchcancel", () => {
     gesture = null;
     root.removeAttribute("data-global-search-pulling");
     root.removeAttribute("data-global-search-pull-ready");
