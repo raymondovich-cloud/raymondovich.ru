@@ -270,3 +270,17 @@
 - Add Supabase Edge Function Secret `OWNER_CHAT_ID` with the numeric owner Telegram chat ID. Then repeat empty-batch invocation; expected 200 JSON `{ok:true, claimed:0, sent:0, failed:0}`.
 - No Telegram message sent; 0 applications / 0 outbox. Cron not scheduled. Public Intake remains disabled and legal gate closed.
 - Current worker source is on main; diagnostic missing-config names are returned only after worker-secret authentication. Latest relevant commit: `6ebdb87e505e5f39ec4f42b63b04c65bf39a7138`.
+
+
+### Restricted Telegram Intake test — deployed 2026-11-10
+
+- Test route is live at Telegram deep link: `https://t.me/raymondovich_bot/raymondovich?startapp=apply-test`.
+- Frontend: `#apply-test` mapped by Telegram start parameter; form only renders in Telegram Mini App with non-empty initData and exact startParam `apply-test`.
+- Backend: Production Edge Function `intake-test-submit`, ACTIVE v1, `verify_jwt=false`; validates Telegram initData HMAC, auth_date, signed start_param, and allowlist secret `INTAKE_TEST_ALLOWED_USER_IDS`. Fail-closed if configuration is absent.
+- Owner reported adding `INTAKE_TEST_ALLOWED_USER_IDS=1969734974`; value cannot be read through current tools. A probe with invalid initData returned 400 `invalid_init_data`, not 503, proving required config presence but not verifying the exact allowlist value.
+- Test submissions use the existing `intake_submit` RPC and are stored in `public.intake_applications` with fixed `source=other`, `campaign=test`; Telegram group notification is direct and carries a prominent test label. Filter `campaign=test` from real applicant reporting.
+- Test endpoint uses the legacy intake RPC rate limits: one submission per 10 minutes and five per 24 hours per Telegram ID. Idempotent duplicate does not send a second Telegram notification.
+- Frontend live HTTP GET checks: apply-test page, test client, bootstrap, router and index returned 200; live bootstrap/router/index contain the new route/client module. Supabase deploy returned ACTIVE v1. No actual Telegram signed initData, DB insert, group message, or iPhone UI interaction has yet been tested.
+- This test path does not use the notification outbox worker. It tests direct Telegram delivery from the isolated test submit function.
+- Public website Intake remains disabled. No change to `INTAKE_ENABLED`, legal readiness gate, public submit handler, or cron.
+- Next: owner opens the Telegram link, submits only dummy test data, then confirm the Telegram group notification and DB row with `campaign=test`. Do not mark end-to-end as passed until both are observed.
