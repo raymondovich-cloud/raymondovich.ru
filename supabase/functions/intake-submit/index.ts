@@ -331,6 +331,18 @@ Deno.serve(async (request: Request) => {
   const interest = String(body.interest);
   const clientPlatform = normalizeClientPlatform(body.clientPlatform);
 
+  const conditionalFieldNames = [
+    "partnerRole",
+    "weeklyAvailability",
+    "portfolioUrl",
+    "productName",
+    "productUrl",
+    "productStage",
+  ];
+  const hasConditionalFields = conditionalFieldNames.some((field) =>
+    Object.prototype.hasOwnProperty.call(body, field)
+  );
+
   let details: {
     partnerRole: string | null;
     weeklyAvailability: string | null;
@@ -340,7 +352,18 @@ Deno.serve(async (request: Request) => {
     productStage: string | null;
   };
   try {
-    if (interest === "partner") {
+    if (!hasConditionalFields) {
+      // Backward compatibility: the currently deployed Mini App sends only
+      // common fields. Keep accepting it during the Edge Function/frontend rollout.
+      details = {
+        partnerRole: null,
+        weeklyAvailability: null,
+        portfolioUrl: null,
+        productName: null,
+        productUrl: null,
+        productStage: null,
+      };
+    } else if (interest === "partner") {
       const partnerRole = body.partnerRole;
       const weeklyAvailability = body.weeklyAvailability;
       if (typeof partnerRole !== "string" || !PARTNER_ROLES.has(partnerRole)) {
@@ -400,12 +423,14 @@ Deno.serve(async (request: Request) => {
       p_language_code: verified.user.language_code || null,
       p_client_platform: clientPlatform,
       p_consent_at: new Date().toISOString(),
-      p_partner_role: details.partnerRole,
-      p_weekly_availability: details.weeklyAvailability,
-      p_portfolio_url: details.portfolioUrl,
-      p_product_name: details.productName,
-      p_product_url: details.productUrl,
-      p_product_stage: details.productStage,
+      ...(hasConditionalFields ? {
+        p_partner_role: details.partnerRole,
+        p_weekly_availability: details.weeklyAvailability,
+        p_portfolio_url: details.portfolioUrl,
+        p_product_name: details.productName,
+        p_product_url: details.productUrl,
+        p_product_stage: details.productStage,
+      } : {}),
     });
   } catch (error) {
     if (error instanceof IntakeValidationError) {
