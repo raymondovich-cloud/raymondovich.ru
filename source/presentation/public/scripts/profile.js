@@ -68,8 +68,10 @@ export function renderProfileScreen(root, user) {
         <div class="profile-avatar" aria-hidden="true">
           ${avatar ? `<img src="${escape(avatar)}" alt="">` : `<span>${escape(initials(name))}</span>`}
         </div>
-        <h2>${escape(name)}</h2>
-        <p>${escape(user.email || "")}</p>
+        <div class="profile-identity-copy">
+          <h2>${escape(name)}</h2>
+          <p>${escape(user.email || "")}</p>
+        </div>
         <span class="profile-role">${escape(roleLabel(user))}</span>
       </header>
       <div class="profile-groups" data-profile-groups>
