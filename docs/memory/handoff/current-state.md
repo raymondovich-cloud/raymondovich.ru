@@ -168,9 +168,9 @@
 - Own product: optional product name and HTTPS URL, required product stage enum.
 - Question: только общие поля.
 - Неактивные conditional controls скрываются и disabled; в FormData не попадают.
-- Edge Function supabase/functions/intake-submit/index.ts проверяет conditional requirements, enum values, optional text length и HTTPS URLs; Telegram notification включает соответствующие поля.
+- Edge Function supabase/functions/intake-submit/index.ts проверяет conditional requirements, enum values, optional text length и HTTPS URLs; Telegram notification включает соответствующие поля. Для безопасного rolling deployment Edge Function также распознаёт старый payload без conditional keys и использует прежний RPC overload.
 - Добавлена миграция supabase/migrations/20261110183000_add_intake_conditional_fields.sql: шесть типизированных колонок, CHECK constraints и обновлённая RPC сигнатура. Совместимость старых заявок обеспечивается conditional_fields_version=0 и пустыми дополнительными полями; новые RPC-вставки записываются с версией 1 и проходят проверку выбранного interest. Реальный migration dry-run ещё не выполнен.
 - Обновлена спецификация docs/product/intake-module-specification.md до версии 1.3 и changelog за 2026-11-10.
 - Production migration не применялась. Edge Function не развёртывалась. Secrets не менялись. INTAKE_ENABLED не менялся. Main не менялся.
 - Проверено чтением содержимого файлов в feature branch. Deno runtime недоступен; SQL migration не исполнялась; нет browser/iPhone Safari/Telegram E2E тестов.
-- Порядок будущего rollout обязателен: сначала применить миграцию, затем deploy новой Edge Function. Если поменять порядок наоборот, текущая БД не примет RPC-вызов с новыми параметрами и заявки не будут сохраняться. До согласованного rollout Production остаётся на прежней версии формы/backend.
+- Rollout без простоя: (1) применить миграцию, сохранив старый 12-параметрический RPC overload; (2) deploy новой Edge Function, которая принимает старый payload и маршрутизирует его в legacy RPC, а новый payload — в расширенный RPC; (3) опубликовать новый frontend. После проверки старый RPC overload можно удалить отдельной cleanup migration. Если Edge Function развернуть до миграции, новые заявки не сохранятся. До согласованного rollout Production остаётся на прежней версии.
