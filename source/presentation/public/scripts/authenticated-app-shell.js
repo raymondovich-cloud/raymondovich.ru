@@ -220,7 +220,15 @@ function bindShell(root, user) {
     }
     const tab = event.target.closest("[data-app-tab]");
     if (tab) {
-      window.RaymondovichNavigation?.navigateRoute(TAB_ROUTES[tab.dataset.appTab]);
+      const targetRoute = TAB_ROUTES[tab.dataset.appTab];
+      const navigation = window.RaymondovichNavigation;
+      const currentState = navigation?.getState();
+      if (tab.dataset.appTab === "ideas" && currentState?.route === targetRoute) {
+        // Re-selecting the active Ideas tab returns from a nested idea screen to the registry.
+        navigation?.navigateScreen("ideas-registry", {}, { replace: true });
+      } else {
+        navigation?.navigateRoute(targetRoute);
+      }
       return;
     }
     if (event.target.closest("[data-app-welcome-continue]")) {
