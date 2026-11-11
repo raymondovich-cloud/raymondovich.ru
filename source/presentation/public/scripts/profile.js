@@ -185,39 +185,48 @@ export function renderProfileSettings(root, user) {
   const themeIsLight = document.documentElement.dataset.theme === "light";
   root.dataset.appScreen = "profile-settings";
   root.innerHTML = `
-    <section class="profile-subscreen app-ui-v3-frame" aria-labelledby="profile-settings-title">
+    <section class="profile-subscreen profile-settings-screen app-ui-v3-frame" aria-labelledby="profile-settings-title">
       <header class="profile-subscreen-header">
-        <h1 class="app-ui-v3-heading" id="profile-settings-title">Настройки профиля</h1>
+        <h1 class="app-ui-v3-heading" id="profile-settings-title">Настройки</h1>
       </header>
-      <section class="profile-settings-card app-ui-v3-group profile-appearance-settings">
-        <h2>Оформление</h2>
-        <button class="profile-theme-toggle" type="button" role="switch" data-theme-toggle aria-checked="${!themeIsLight}">
-          <span data-theme-label>Тёмная тема</span>
-          <span class="rv3-switch" aria-hidden="true"></span>
-        </button>
+      <section class="profile-settings-section" aria-labelledby="profile-settings-appearance">
+        <h2 class="profile-settings-heading" id="profile-settings-appearance">Оформление</h2>
+        <div class="profile-settings-card app-ui-v3-group profile-appearance-settings">
+          <button class="profile-theme-toggle" type="button" role="switch" data-theme-toggle aria-checked="${!themeIsLight}">
+            <span data-theme-label>Тёмная тема</span>
+            <span class="rv3-switch" aria-hidden="true"></span>
+          </button>
+        </div>
       </section>
-      <section class="profile-settings-card app-ui-v3-group">
-        <h2>Электронная почта</h2>
-        <p class="profile-current-value">${escape(user.email || "Адрес не указан")}</p>
-        <form data-profile-email-form>
-          <label>Новый e-mail<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
-          <button class="profile-submit app-ui-v3-button" type="submit">Изменить e-mail</button>
-        </form>
+      <section class="profile-settings-section" aria-labelledby="profile-settings-data">
+        <h2 class="profile-settings-heading" id="profile-settings-data">Пользовательские данные</h2>
+        <div class="profile-settings-card app-ui-v3-group">
+          <div class="profile-settings-subsection">
+            <h3>Электронная почта</h3>
+            <p class="profile-current-value">${escape(user.email || "Адрес не указан")}</p>
+            <form data-profile-email-form>
+              <label>Новый e-mail<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+              <button class="profile-submit app-ui-v3-button" type="submit">Изменить e-mail</button>
+            </form>
+          </div>
+          <div class="profile-settings-subsection">
+            <h3>Пароль</h3>
+            <form data-profile-password-form>
+              <label>Новый пароль<input name="password" type="password" autocomplete="new-password" required minlength="10"></label>
+              <label>Повторите пароль<input name="confirmation" type="password" autocomplete="new-password" required minlength="10"></label>
+              <button class="profile-submit app-ui-v3-button" type="submit">Изменить пароль</button>
+            </form>
+          </div>
+        </div>
       </section>
-      <section class="profile-settings-card app-ui-v3-group">
-        <h2>Пароль</h2>
-        <form data-profile-password-form>
-          <label>Новый пароль<input name="password" type="password" autocomplete="new-password" required minlength="10"></label>
-          <label>Повторите пароль<input name="confirmation" type="password" autocomplete="new-password" required minlength="10"></label>
-          <button class="profile-submit app-ui-v3-button" type="submit">Изменить пароль</button>
-        </form>
-      </section>
-      <section class="profile-settings-card app-ui-v3-group">
-        <h2>Безопасность</h2>
-        <p>PIN-код защищает доступ к приложению на этом устройстве.</p>
-        <button class="profile-secondary" type="button" data-pin-change>Изменить PIN-код</button>
-        <button class="profile-secondary" type="button" data-auth-lock>Заблокировать приложение</button>
-        <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
+      <section class="profile-settings-section" aria-labelledby="profile-settings-privacy">
+        <h2 class="profile-settings-heading" id="profile-settings-privacy">Конфиденциальность</h2>
+        <div class="profile-settings-card app-ui-v3-group">
+          <p>PIN-код защищает доступ к приложению на этом устройстве.</p>
+          <button class="profile-secondary" type="button" data-pin-change>Изменить PIN-код</button>
+          <button class="profile-secondary" type="button" data-auth-lock>Заблокировать приложение</button>
+          <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
+        </div>
       </section>
       <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
     </section>`;

@@ -339,3 +339,14 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 @media(max-width:360px){
  .authenticated-bottom-nav .app-ui-v3-tab{font-size:10px;letter-spacing:-.02em;white-space:nowrap}
 }
+
+.profile-settings-screen{display:grid;gap:0}
+.profile-settings-section{display:grid;gap:10px;margin:0 0 22px}
+.profile-settings-heading{margin:0 6px;padding:0;border:0;color:var(--rv3-muted);font:500 11px/1.2 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
+.profile-settings-card{margin:0}
+.profile-settings-subsection{display:grid;gap:14px}
+.profile-settings-subsection h3{margin:0;color:var(--rv3-text);font-size:16px;font-weight:650}
+.profile-settings-subsection+.profile-settings-subsection{margin-top:4px;padding-top:18px;border-top:1px solid var(--rv3-line)}
+.profile-appearance-settings{padding:0}
+.profile-theme-toggle{min-height:64px;padding:10px 16px;border:0;background:transparent;color:var(--rv3-text);font-size:16px}
+.profile-settings-section .profile-settings-card .profile-secondary{min-height:48px}
