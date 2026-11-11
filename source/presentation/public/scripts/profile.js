@@ -172,6 +172,13 @@ export function renderProfileSettings(root, user) {
       <header class="profile-subscreen-header">
         <h1 class="app-ui-v3-heading" id="profile-settings-title">Настройки профиля</h1>
       </header>
+      <section class="profile-settings-card app-ui-v3-group profile-appearance-settings">
+        <h2>Оформление</h2>
+        <button class="profile-theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <span data-theme-label>Светлая тема</span>
+          <span class="rv3-switch" aria-hidden="true"></span>
+        </button>
+      </section>
       <section class="profile-settings-card app-ui-v3-group">
         <h2>Электронная почта</h2>
         <p class="profile-current-value">${escape(user.email || "Адрес не указан")}</p>
