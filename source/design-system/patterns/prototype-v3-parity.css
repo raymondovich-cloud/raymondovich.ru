@@ -333,3 +333,5 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-identity.app-ui-v3-group .profile-identity-copy p{line-height:1.25}
 .profile-identity.app-ui-v3-group .profile-role{padding:2px 11px;line-height:1.2}
 .profile-empty{min-height:140px}
+
+.authenticated-app-content .owner-console-title{margin:0 0 10px}
