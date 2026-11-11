@@ -182,6 +182,9 @@
   --semantic-accent-strong: #A94416;
   --semantic-accent-subtle: rgba(185, 76, 25, .10);
   --semantic-accent-foreground: #FFFFFF;
+  --semantic-accent-gradient: linear-gradient(110deg, #B94C19 0%, #D65B1F 100%);
+  --semantic-accent-glow: rgba(185, 76, 25, .08);
+  --semantic-accent-border: rgba(185, 76, 25, .24);
   --semantic-success: var(--color-owner-success);
   --semantic-warning: var(--ws-warning);
   --semantic-danger: var(--color-ideas-danger);
