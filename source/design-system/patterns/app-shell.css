@@ -15,8 +15,8 @@
 .app-tab-icon{display:grid;width:28px;height:25px;place-items:center}
 .app-tab-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .app-tab-label{overflow:hidden;max-width:100%;text-overflow:ellipsis;white-space:nowrap}
-.app-tab.is-active{border-color:var(--component-app-shell-active-outline);background:var(--component-app-shell-active-surface);color:var(--component-app-shell-active);box-shadow:inset 0 1px 0 var(--component-app-shell-material-highlight)}
-.app-tab.is-active::after{content:"";position:absolute;left:50%;bottom:3px;width:15px;height:3px;border-radius:999px;background:var(--component-app-shell-active);transform:translateX(-50%)}
+.app-tab.is-active{border-color:var(--component-app-shell-active-outline);background:linear-gradient(110deg,var(--semantic-accent-subtle),transparent 145%);color:var(--component-app-shell-active);box-shadow:inset 0 1px 0 var(--component-app-shell-material-highlight),0 0 18px var(--semantic-accent-glow)}
+.app-tab.is-active::after{content:"";position:absolute;left:50%;bottom:3px;width:15px;height:3px;border-radius:999px;background:var(--semantic-accent-gradient);transform:translateX(-50%)}
 .app-tab:active{transform:scale(.96)}
 @media(hover:hover){.app-tab:not(.is-active):hover{background:var(--component-app-shell-hover-surface);color:var(--component-app-shell-text)}}
 .app-tab-avatar{width:25px;height:25px;border:1px solid var(--component-app-shell-border);border-radius:50%;object-fit:cover}
