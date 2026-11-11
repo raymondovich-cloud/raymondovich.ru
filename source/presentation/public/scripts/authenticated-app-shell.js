@@ -226,6 +226,9 @@ function bindShell(root, user) {
       if (tab.dataset.appTab === "ideas" && currentState?.route === targetRoute) {
         // Re-selecting the active Ideas tab returns from a nested idea screen to the registry.
         navigation?.navigateScreen("ideas-registry", {}, { replace: true });
+        // Keep the Ideas module's visible state deterministic even when the router
+        // treats re-selecting the current route as a no-op.
+        document.dispatchEvent(new CustomEvent("raymondovich:ideas-registry-request"));
       } else {
         navigation?.navigateRoute(targetRoute);
       }
