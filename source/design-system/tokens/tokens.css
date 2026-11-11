@@ -594,3 +594,5 @@
 }
 
 :root { --app-ui-profile-icon-stroke-width: 1.7; }
+
+:root { --app-ui-tab-item-height-mobile: 58px; --app-ui-tab-bar-padding-mobile: 7px; }
