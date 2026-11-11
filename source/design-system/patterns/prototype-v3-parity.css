@@ -297,3 +297,27 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-identity.app-ui-v3-group .profile-role{grid-column:2;grid-row:2;justify-self:start;margin-top:0}
 .profile-section>.profile-group-heading{padding:0;border:0;font-size:11px;line-height:1.2;font-weight:500;letter-spacing:.14em}
 @media(max-width:600px){.profile-identity.app-ui-v3-group{grid-template-columns:68px minmax(0,1fr);column-gap:16px;row-gap:5px;padding:18px}.profile-identity.app-ui-v3-group .profile-avatar{width:68px;height:68px}}
+
+.authenticated-app-content{padding-top:calc(56px + env(safe-area-inset-top,0px))}
+.authenticated-top-bar{
+  position:absolute;z-index:8;top:0;right:0;left:0;display:flex;align-items:center;justify-content:center;
+  height:calc(52px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);
+  border-bottom:1px solid transparent;color:var(--rv3-text);transition:background .18s ease,border-color .18s ease,backdrop-filter .18s ease
+}
+.authenticated-app-shell.is-scrolled .authenticated-top-bar{
+  border-bottom-color:var(--rv3-line);background:var(--rv3-glass);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)
+}
+.authenticated-top-bar-title{max-width:70%;overflow:hidden;color:var(--rv3-text);font-size:17px;font-weight:600;opacity:0;text-overflow:ellipsis;white-space:nowrap;transform:translateY(5px);transition:opacity .18s ease,transform .36s cubic-bezier(.32,.72,0,1)}
+.authenticated-app-shell.is-scrolled .authenticated-top-bar-title{opacity:1;transform:none}
+.authenticated-back-button{
+  position:absolute;top:calc(env(safe-area-inset-top,0px) + 4px);left:10px;display:grid;width:44px;height:44px;place-items:center;
+  border:0;border-radius:50%;background:transparent;color:var(--rv3-accent);cursor:pointer
+}
+.authenticated-back-button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.authenticated-back-button:focus-visible{outline:2px solid var(--rv3-accent);outline-offset:2px}
+.authenticated-back-button:active{background:var(--rv3-press)}
+.authenticated-back-button[hidden]{display:none}
+@media(prefers-reduced-motion:reduce){
+ .authenticated-top-bar,.authenticated-top-bar-title{transition:none}
+}

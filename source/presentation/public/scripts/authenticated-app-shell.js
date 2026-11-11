@@ -83,6 +83,12 @@ function shellMarkup(user, active) {
   return `
     ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
+      <header class="authenticated-top-bar" data-app-top-bar>
+        <button class="authenticated-back-button" type="button" data-app-back aria-label="Назад" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+        </button>
+        <span class="authenticated-top-bar-title" data-app-bar-title></span>
+      </header>
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
       <nav class="authenticated-bottom-nav app-ui-tab-bar app-ui-v3-tabbar" aria-label="Основная навигация">
         ${tabMarkup("projects", "Проекты", user, active)}
@@ -194,6 +200,10 @@ function bindShell(root, user) {
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
   root.addEventListener("click", event => {
+    if (event.target.closest("[data-app-back]")) {
+      window.RaymondovichNavigation?.back();
+      return;
+    }
     const tab = event.target.closest("[data-app-tab]");
     if (tab) {
       window.RaymondovichNavigation?.navigateRoute(TAB_ROUTES[tab.dataset.appTab]);
@@ -256,10 +266,17 @@ export function renderAuthenticatedApp(root, user) {
   }
 
   document.body.dataset.page = "authenticated-workspace";
+  if (view.dataset.appScrollBound !== "true") {
+    view.addEventListener("scroll", () => shell.classList.toggle("is-scrolled", view.scrollTop > 36), { passive: true });
+    view.dataset.appScrollBound = "true";
+  }
   renderRoute(view, user, route);
   view.dataset.appRoute = route;
   const isPushScreen = !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
-  view.classList.toggle("is-push-screen", isPushScreen);
+  shell.classList.toggle("is-push-screen", isPushScreen);
+  shell.querySelector("[data-app-back]")?.toggleAttribute("hidden", !isPushScreen);
+  const barTitle = shell.querySelector("[data-app-bar-title]");
+  if (barTitle) barTitle.textContent = view.querySelector("h1")?.textContent?.trim() || "Raymondovich";
   view.classList.remove("app-ui-v3-screen-enter");
   void view.offsetWidth;
   view.classList.add("app-ui-v3-screen-enter");
