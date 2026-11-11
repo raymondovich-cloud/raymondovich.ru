@@ -50,5 +50,5 @@ export function workspaceScreenHead({ title, subtitle = "" }) {
 }
 
 export function workspacePageTitle(text) {
-  return `<h1 class="ws-visually-hidden">${escapeHtml(text)}</h1>`;
+  return `<h1 class="ws-page-title">${escapeHtml(text)}</h1>`;
 }

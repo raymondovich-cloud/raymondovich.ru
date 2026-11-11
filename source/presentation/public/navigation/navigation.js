@@ -45,9 +45,14 @@ function emitNavigation(source = "navigation") {
     "partner-workspace": "partner-workspace",
     "external-workspace": "external-workspace"
   };
-  document.body.dataset.page = state.route === rootRoute
-    ? "home"
-    : (pageByRoute[routeKey] || "home");
+  const isAuthenticatedRoute = state.route === "#authorization" || state.route?.startsWith("#authorization/");
+  const authenticatedWorkspaceMounted = isAuthenticatedRoute
+    && Boolean(document.querySelector(".authenticated-app-shell"));
+  document.body.dataset.page = authenticatedWorkspaceMounted
+    ? "authenticated-workspace"
+    : state.route === rootRoute
+      ? "home"
+      : (pageByRoute[routeKey] || "home");
   document.dispatchEvent(new CustomEvent("raymondovich:navigation", {
     detail: { ...state, source }
   }));

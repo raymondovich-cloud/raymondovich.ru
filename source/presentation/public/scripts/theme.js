@@ -12,8 +12,13 @@ function readStoredTheme() {
 function applyTheme(theme) {
   root.dataset.theme = theme;
   document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-    button.setAttribute("aria-pressed", String(theme === "light"));
     const label = button.querySelector("[data-theme-label]");
+    if (button.getAttribute("role") === "switch") {
+      button.setAttribute("aria-checked", String(theme === "dark"));
+      if (label) label.textContent = "Тёмная тема";
+      return;
+    }
+    button.setAttribute("aria-pressed", String(theme === "light"));
     if (label) label.textContent = theme === "light" ? "Тёмная тема" : "Светлая тема";
   });
 }

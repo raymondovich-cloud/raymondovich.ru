@@ -596,3 +596,67 @@
 :root { --app-ui-profile-icon-stroke-width: 1.7; }
 
 :root { --app-ui-tab-item-height-mobile: 58px; --app-ui-tab-bar-padding-mobile: 7px; }
+
+
+/* Authenticated UI prototype v3 — isolated opt-in foundation. */
+:root {
+  --app-ui-v3-bg: #08090b;
+  --app-ui-v3-glow: radial-gradient(circle 340px at 92% 6%, rgba(255,105,38,.17), transparent 70%);
+  --app-ui-v3-text: #f4f5f7;
+  --app-ui-v3-muted: #9a9fa9;
+  --app-ui-v3-subtle: #6f7580;
+  --app-ui-v3-line: rgba(255,255,255,.08);
+  --app-ui-v3-surface-secondary: #1a1d23;
+  --app-ui-v3-surface-gradient: linear-gradient(145deg, rgba(255,118,47,.05), rgba(23,26,32,.92) 55%);
+  --app-ui-v3-surface-accent-gradient: linear-gradient(145deg, rgba(255,118,47,.17), rgba(36,21,14,.95) 62%);
+  --app-ui-v3-button-gradient: linear-gradient(110deg, #ff6a27, #ffb078);
+  --app-ui-v3-on-accent: #1a110b;
+  --app-ui-v3-accent: #ff762f;
+  --app-ui-v3-accent-tint: rgba(255,118,47,.14);
+  --app-ui-v3-accent-line: rgba(255,118,47,.34);
+  --app-ui-v3-accent-glow: rgba(255,118,47,.26);
+  --app-ui-v3-glass: rgba(26,28,34,.68);
+  --app-ui-v3-glass-line: rgba(255,255,255,.12);
+  --app-ui-v3-glass-edge: rgba(255,255,255,.1);
+  --app-ui-v3-press: rgba(255,255,255,.06);
+  --app-ui-v3-scrim: rgba(0,0,0,.55);
+  --app-ui-v3-sheet: #14161a;
+  --app-ui-v3-shadow: 0 14px 40px rgba(0,0,0,.45);
+  --app-ui-v3-success: #65cb8c;
+  --app-ui-v3-teal: #5cc8b4;
+  --app-ui-v3-teal-tint: rgba(92,200,180,.14);
+  --app-ui-v3-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", sans-serif;
+  --app-ui-v3-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --app-ui-v3-max-width: 480px;
+  --app-ui-v3-row-height: 64px;
+  --app-ui-v3-tabbar-height: 68px;
+  --app-ui-v3-header-height: 52px;
+  --app-ui-v3-title-size: 34px;
+  --app-ui-v3-row-title-size: 16px;
+  --app-ui-v3-row-detail-size: 13px;
+  --app-ui-v3-group-label-size: 11px;
+  --app-ui-v3-group-label-spacing: .14em;
+  --app-ui-v3-tile-size: 40px;
+  --app-ui-v3-tile-radius: 12px;
+  --app-ui-v3-chevron-size: 16px;
+  --app-ui-v3-row-divider-inset: 66px;
+  --app-ui-v3-group-radius: 22px;
+  --app-ui-v3-tabbar-radius: 28px;
+  --app-ui-v3-tab-radius: 22px;
+  --app-ui-v3-tabbar-inset-inline: 14px;
+  --app-ui-v3-tabbar-inset-bottom: 10px;
+  --app-ui-v3-tabbar-blur: 24px;
+  --app-ui-v3-search-height: 48px;
+  --app-ui-v3-search-radius: 16px;
+  --app-ui-v3-switch-width: 51px;
+  --app-ui-v3-switch-height: 31px;
+  --app-ui-v3-sheet-radius: 28px;
+  --app-ui-v3-icon-size: 22px;
+  --app-ui-v3-icon-stroke: 1.7;
+  --app-ui-v3-motion-fast: 180ms;
+  --app-ui-v3-motion-screen: 360ms;
+  --app-ui-v3-ease: cubic-bezier(.32,.72,0,1);
+  --app-ui-v3-underlay-shift: 24%;
+  --app-ui-v3-underlay-opacity: .45;
+  --app-ui-v3-scroll-collapse-threshold: 36px;
+}

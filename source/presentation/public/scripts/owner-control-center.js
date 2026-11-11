@@ -43,10 +43,10 @@ const groups = [
 
 function renderSection(section) {
   return `
-    <div class="profile-row owner-console-row" aria-label="${section.title}: В разработке">
-      <span class="profile-row-icon owner-console-row-icon">${icons[section.icon]}</span>
-      <span class="profile-row-title">${section.title}</span>
-      <span class="profile-row-value">В разработке</span>
+    <div class="profile-row owner-console-row app-ui-v3-row" aria-label="${section.title}: В разработке">
+      <span class="profile-row-icon owner-console-row-icon app-ui-v3-tile">${icons[section.icon]}</span>
+      <span class="profile-row-title app-ui-v3-row__title">${section.title}</span>
+      <span class="profile-row-value app-ui-v3-pill">В разработке</span>
     </div>`;
 }
 
@@ -62,13 +62,18 @@ document.addEventListener("toggle", (event) => {
 export function renderOwnerControlCenter(user) {
   return `
     <div class="owner-console-shell">
+      <header class="owner-console-header">
+        <p class="owner-console-eyebrow">RAYMONDOVICH / CONTROL CENTER</p>
+        <h1 class="owner-console-title">Центр управления</h1>
+        <p class="owner-console-lead">Управление самой экосистемой: партнёры, финансы, интеграции и система.</p>
+      </header>
       <section class="owner-console-groups" aria-label="Панель управления владельца">
         ${groups.map(group => `
-          <details class="owner-console-group" name="owner-control-center-group">
-            <summary class="profile-row owner-console-group-summary">
-              <span class="profile-row-icon owner-console-row-icon">${icons[group.id === "business" ? "projects" : group.id === "integrations" ? "ai" : "security"]}</span>
-              <span class="profile-row-title">${group.title.charAt(0) + group.title.slice(1).toLowerCase()}</span>
-              <svg class="profile-row-chevron owner-console-group-chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          <details class="owner-console-group app-ui-v3-group" name="owner-control-center-group" ${group.id === "business" ? "open" : ""}>
+            <summary class="profile-row owner-console-group-summary app-ui-v3-row">
+              <span class="profile-row-icon owner-console-row-icon app-ui-v3-tile">${icons[group.id === "business" ? "projects" : group.id === "integrations" ? "ai" : "security"]}</span>
+              <span class="profile-row-title app-ui-v3-row__title">${group.title.charAt(0) + group.title.slice(1).toLowerCase()}</span>
+              <svg class="profile-row-chevron owner-console-group-chevron app-ui-v3-row__chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
             </summary>
             <div class="owner-console-group-list" aria-label="Разделы: ${group.title.toLowerCase()}">
               ${group.sections.map(renderSection).join("")}

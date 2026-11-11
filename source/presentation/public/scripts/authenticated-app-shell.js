@@ -6,6 +6,7 @@ import {
   renderProfileScreen,
   renderProfileToolsScreen,
   renderProfileSettings,
+  renderProfileSecretsScreen,
   renderProfileEmptyScreen,
   bindProfileInteractions
 } from "./profile.js";
@@ -40,7 +41,7 @@ const TAB_ROUTES = {
 const TAB_ICONS = {
   projects: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
   ideas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M8.2 14.5a7 7 0 1 1 7.6 0c-.9.6-1.3 1.4-1.3 2.5h-5c0-1.1-.4-1.9-1.3-2.5Z"/></svg>',
-  tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6 4 4M4 20l7-7m-2-2 7-7a4 4 0 0 1 5 5l-7 7M3 4l6 6m-5-8 7 7"/></svg>',
+  tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
   profile: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.2-6 7.5-6s6.8 2 7.5 6"/></svg>'
 };
 
@@ -60,6 +61,15 @@ function displayName(user) {
     || "Пользователь";
 }
 
+function userRenderKey(user) {
+  return JSON.stringify({
+    id: user.id,
+    email: user.email,
+    metadata: user.user_metadata || {},
+    role: user.app_metadata?.role || "user"
+  });
+}
+
 function avatarMarkup(user) {
   const candidate = user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
   try {
@@ -73,7 +83,7 @@ function avatarMarkup(user) {
 
 function tabMarkup(key, label, user, active) {
   const icon = key === "profile" ? avatarMarkup(user) : TAB_ICONS[key];
-  return `<button class="app-tab app-ui-tab${active === key ? " is-active" : ""}" type="button"
+  return `<button class="app-tab app-ui-tab app-ui-v3-tab${active === key ? " is-active" : ""}" type="button"
     data-app-tab="${key}" aria-label="${label}" ${active === key ? 'aria-current="page"' : ""}>
     <span class="app-tab-icon app-ui-tab__icon">${icon}</span><span class="app-tab-label app-ui-tab__label">${label}</span>
   </button>`;
@@ -83,8 +93,14 @@ function shellMarkup(user, active) {
   return `
     ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
+      <header class="authenticated-top-bar" data-app-top-bar>
+        <button class="authenticated-back-button" type="button" data-app-back aria-label="Назад" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+        </button>
+        <span class="authenticated-top-bar-title" data-app-bar-title></span>
+      </header>
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
-      <nav class="authenticated-bottom-nav app-ui-tab-bar" aria-label="Основная навигация">
+      <nav class="authenticated-bottom-nav app-ui-tab-bar app-ui-v3-tabbar" aria-label="Основная навигация">
         ${tabMarkup("projects", "Проекты", user, active)}
         ${tabMarkup("ideas", "Идеи", user, active)}
         ${tabMarkup("tools", "Инструменты", user, active)}
@@ -115,14 +131,36 @@ function activeTabForRoute(route) {
   return "profile";
 }
 
-function renderTools(view) {
-  view.dataset.appScreen = "tools";
-  view.innerHTML = `
-    <section class="app-placeholder-screen" aria-labelledby="tools-title">
-      <p class="app-placeholder-eyebrow">RAYMONDOVICH / TOOLS</p>
-      <h1 id="tools-title">Инструменты</h1>
-      <div class="app-placeholder-state"><span class="app-placeholder-mark" aria-hidden="true">⌘</span><strong>В разработке</strong><p>Раздел пока не подключён. Доступные инструменты появятся здесь после реализации.</p></div>
-    </section>`;
+function isNestedNavigationState(state) {
+  const route = state?.route || "";
+  const screen = state?.screen || "";
+  if (route === TAB_ROUTES.projects) return Boolean(screen && !["route", "projects-registry"].includes(screen));
+  if (route === TAB_ROUTES.ideas) return Boolean(screen && !["route", "ideas-registry"].includes(screen));
+  return !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
+}
+
+function syncNavigationChrome(root, state) {
+  const shell = root.querySelector(".authenticated-app-shell");
+  const view = shell?.querySelector("[data-app-view]");
+  if (!shell || !view) return;
+
+  const nested = isNestedNavigationState(state);
+  shell.classList.toggle("is-push-screen", nested);
+  view.classList.toggle("is-push-screen", nested);
+  shell.querySelector("[data-app-back]")?.toggleAttribute("hidden", !nested);
+  view.dataset.appNavigationScreen = state?.screen || "route";
+
+  const updateTitle = () => {
+    const title = view.querySelector("h1")?.textContent?.trim() || "Raymondovich";
+    const barTitle = shell.querySelector("[data-app-bar-title]");
+    if (barTitle) barTitle.textContent = title;
+  };
+  if (typeof requestAnimationFrame === "function") requestAnimationFrame(updateTitle);
+  else updateTitle();
+}
+
+function renderTools(view, user) {
+  renderProfileToolsScreen(view, user);
 }
 
 function renderRoute(view, user, route) {
@@ -139,6 +177,10 @@ function renderRoute(view, user, route) {
   }
   if (route === "#authorization/profile-settings") {
     renderProfileSettings(view, user);
+    return;
+  }
+  if (route === "#authorization/profile-secrets") {
+    renderProfileSecretsScreen(view);
     return;
   }
   if (route === "#authorization/favorites") {
@@ -199,10 +241,31 @@ function bindShell(root, user) {
   bindAuthenticatedGlobalSearch(root, () => currentShellUsers.get(root) || user);
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
+  if (root.dataset.appNavigationChromeBound !== "true") {
+    document.addEventListener("raymondovich:navigation", event => {
+      syncNavigationChrome(root, event.detail);
+    });
+    root.dataset.appNavigationChromeBound = "true";
+  }
   root.addEventListener("click", event => {
+    if (event.target.closest("[data-app-back]")) {
+      window.RaymondovichNavigation?.back();
+      return;
+    }
     const tab = event.target.closest("[data-app-tab]");
     if (tab) {
-      window.RaymondovichNavigation?.navigateRoute(TAB_ROUTES[tab.dataset.appTab]);
+      const targetRoute = TAB_ROUTES[tab.dataset.appTab];
+      const navigation = window.RaymondovichNavigation;
+      const currentState = navigation?.getState();
+      if (tab.dataset.appTab === "ideas" && currentState?.route === targetRoute) {
+        // Re-selecting the active Ideas tab returns from a nested idea screen to the registry.
+        navigation?.navigateScreen("ideas-registry", {}, { replace: true });
+        // Keep the Ideas module's visible state deterministic even when the router
+        // treats re-selecting the current route as a no-op.
+        document.dispatchEvent(new CustomEvent("raymondovich:ideas-registry-request"));
+      } else {
+        navigation?.navigateRoute(targetRoute);
+      }
       return;
     }
     if (event.target.closest("[data-app-welcome-continue]")) {
@@ -231,6 +294,8 @@ function bindShell(root, user) {
 
 export function renderAuthenticatedApp(root, user) {
   if (!root || !user) return;
+  const previousUser = currentShellUsers.get(root);
+  const nextUserKey = userRenderKey(user);
   currentShellUsers.set(root, user);
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
@@ -262,7 +327,28 @@ export function renderAuthenticatedApp(root, user) {
   }
 
   document.body.dataset.page = "authenticated-workspace";
+  if (
+    view.dataset.appRoute === route
+    && view.dataset.appScreen
+    && view.dataset.appUserKey === nextUserKey
+    && previousUser?.id === user.id
+  ) {
+    syncFullscreenState(shell);
+    return;
+  }
+  view.scrollTop = 0;
+  shell.classList.remove("is-scrolled");
+  if (view.dataset.appScrollBound !== "true") {
+    view.addEventListener("scroll", () => shell.classList.toggle("is-scrolled", view.scrollTop > 36), { passive: true });
+    view.dataset.appScrollBound = "true";
+  }
   renderRoute(view, user, route);
+  view.dataset.appRoute = route;
+  view.dataset.appUserKey = nextUserKey;
+  syncNavigationChrome(root, state || { route });
+  view.classList.remove("app-ui-v3-screen-enter");
+  void view.offsetWidth;
+  view.classList.add("app-ui-v3-screen-enter");
   syncFullscreenState(shell);
   bindProfileInteractions(view, target => window.RaymondovichNavigation?.navigateRoute(target));
 }

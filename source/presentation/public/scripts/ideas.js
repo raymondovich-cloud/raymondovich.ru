@@ -21,7 +21,7 @@ export async function renderIdeasWorkspace(root, user) {
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <div class="owner-console-shell">
-      <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
+      <section class="owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
         <div class="ideas-workspace">
       <section class="ideas-registry" data-ideas-registry>
         ${workspacePageTitle("Идеи")}
@@ -134,10 +134,18 @@ export async function renderIdeasWorkspace(root, user) {
     const card = (idea, focused = false) => {
       const categoryName = categories.find(c=>c.id===idea.category_id)?.name || "Без категории";
       const statusName = STATUS[idea.status] || idea.status || "Новая";
-      return `<button class="ws-card idea-card ${focused ? "is-focused idea-card-focused" : "is-compact idea-card-compact"}" type="button" data-idea-open="${escape(idea.id)}">
-        <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span>${focused ? '<span class="idea-card-arrow" aria-hidden="true">↗</span>' : ""}</span>
+      if (!focused) {
+        const description = idea.description || idea.goal || statusName;
+        return `<button class="idea-registry-row" type="button" data-idea-open="${escape(idea.id)}">
+          <span class="idea-registry-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></span>
+          <span class="idea-registry-copy"><span class="idea-registry-name">${escape(idea.name)}</span><small class="idea-registry-description">${escape(description)}</small></span>
+          <span class="idea-registry-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>
+        </button>`;
+      }
+      return `<button class="ws-card idea-card is-focused idea-card-focused" type="button" data-idea-open="${escape(idea.id)}">
+        <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span><span class="idea-card-arrow" aria-hidden="true">↗</span></span>
         <span class="idea-card-title">${escape(idea.name)}</span>
-        ${focused ? `<span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>` : `<span class="idea-card-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>`}
+        <span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>
       </button>`;
     };
 
@@ -155,7 +163,7 @@ export async function renderIdeasWorkspace(root, user) {
       ${focused.length ? `<section class="ideas-focus">${workspaceSectionTitle("В ФОКУСЕ")}<div class="ideas-focus-list ws-card-list">${focused.map(idea => card(idea,true)).join("")}</div></section>` : ""}
       ${remaining.length ? `<section class="ideas-others">${workspaceSectionTitle("ОСТАЛЬНЫЕ",{muted:true})}<div class="ws-groups ideas-groups">${[...groups.entries()].map(([label,items],index) => `
         <details class="ws-group ideas-group" ${groups.size===1 ? "open" : ""}>
-          <summary><span>${escape(label)} · ${items.length}</span><span class="ideas-group-chevron" aria-hidden="true">⌄</span></summary>
+          <summary><span class="ideas-group-name">${escape(label)}</span><span class="ideas-group-meta"><span class="ideas-group-count">${items.length}</span><span class="ws-group-chevron" aria-hidden="true">⌄</span></span></summary>
           <div class="ws-group-content ideas-group-items">${items.map(idea => card(idea,false)).join("")}</div>
         </details>`).join("")}</div></section>` : ""}
       `;
@@ -184,7 +192,7 @@ export async function renderIdeasWorkspace(root, user) {
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
       ${workspaceScreenHead({title:idea.name})}
-      <article class="ideas-detail">
+      <article class="ideas-detail-content">
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
           <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
@@ -386,6 +394,8 @@ export async function renderIdeasWorkspace(root, user) {
       button.disabled=false;
     }
   }, listenerOptions);
+
+  document.addEventListener("raymondovich:ideas-registry-request", showRegistry, listenerOptions);
 
   document.addEventListener("raymondovich:navigation", (event) => {
     const state = event.detail;
