@@ -482,3 +482,9 @@
   --app-ui-transform-dialog-scale: .985;
   --app-ui-transform-none: none;
 }
+
+:root {
+  --app-ui-type-compact-heading: 1.1875rem;
+  --app-ui-tab-bar-wide-gutter: 1.75rem;
+  --app-ui-tab-bar-narrow-gutter: 1.375rem;
+}
