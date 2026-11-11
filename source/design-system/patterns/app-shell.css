@@ -28,7 +28,7 @@
 .app-placeholder-state p{max-width:400px;margin:0;color:var(--component-app-shell-muted);line-height:1.6}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
-@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom))}}
+@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom));padding:var(--app-ui-tab-bar-padding-mobile)}.authenticated-bottom-nav .app-ui-tab{min-height:var(--app-ui-tab-item-height-mobile)}}
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
