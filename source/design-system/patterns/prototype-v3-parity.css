@@ -263,7 +263,7 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 
 /* Navigation depth and screen motion follow the prototype's tab/push distinction. */
 .authenticated-app-content.is-push-screen{padding-bottom:40px}
-.authenticated-app-shell:has(.authenticated-app-content.is-push-screen) .authenticated-bottom-nav{
+.authenticated-app-shell.is-push-screen .authenticated-bottom-nav{
   transform:translate(-50%,140%);pointer-events:none
 }
 .authenticated-app-content.app-ui-v3-screen-enter:not(.is-push-screen){animation:rv3-tab-enter .18s cubic-bezier(.32,.72,0,1) both}
@@ -272,7 +272,7 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 @keyframes rv3-push-enter{from{opacity:.65;transform:translateX(24%)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){
  .authenticated-app-content.app-ui-v3-screen-enter{animation:none}
- .authenticated-app-shell:has(.authenticated-app-content.is-push-screen) .authenticated-bottom-nav{transition:none}
+ .authenticated-app-shell.is-push-screen .authenticated-bottom-nav{transition:none}
 }
 
 .profile-empty{justify-items:center;gap:12px;min-height:126px;padding:18px 20px 20px;text-align:center;align-content:center}
