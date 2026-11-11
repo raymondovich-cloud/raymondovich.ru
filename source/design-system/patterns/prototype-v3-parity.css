@@ -392,3 +392,21 @@ body[data-page="authenticated-workspace"] .authenticated-app-shell{
   border:0;
   border-radius:0;
 }
+
+/* iPhone viewport: keep the notch/status-bar area clear, but do not reserve
+   an empty hidden-header band above the root workspace screens. */
+@media(max-width:600px){
+  .authenticated-app-content{
+    padding-top:calc(var(--safe-top) + 12px);
+  }
+  .authenticated-app-content.is-push-screen{
+    padding-top:calc(var(--safe-top) + 56px);
+  }
+  .authenticated-top-bar{
+    height:calc(52px + var(--safe-top));
+    padding-top:var(--safe-top);
+  }
+  .authenticated-back-button{
+    top:calc(var(--safe-top) + 4px);
+  }
+}
