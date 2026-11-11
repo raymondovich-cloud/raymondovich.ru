@@ -276,6 +276,7 @@ export function renderAuthenticatedApp(root, user) {
   view.dataset.appRoute = route;
   const isPushScreen = !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
   shell.classList.toggle("is-push-screen", isPushScreen);
+  view.classList.toggle("is-push-screen", isPushScreen);
   shell.querySelector("[data-app-back]")?.toggleAttribute("hidden", !isPushScreen);
   const barTitle = shell.querySelector("[data-app-bar-title]");
   if (barTitle) barTitle.textContent = view.querySelector("h1")?.textContent?.trim() || "Raymondovich";
