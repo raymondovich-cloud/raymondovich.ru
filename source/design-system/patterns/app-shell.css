@@ -1,38 +1,37 @@
-.app-welcome{display:grid;justify-items:center;gap:18px;width:min(100%,620px);margin:clamp(36px,9vh,100px) auto;padding:clamp(28px,6vw,56px) 22px;text-align:center;border:1px solid var(--component-app-shell-border);border-radius:var(--radius-lg);background:var(--gradient-owner-panel);box-shadow:var(--shadow-panel);color:var(--component-app-shell-text)}
-.app-welcome-eyebrow,.app-placeholder-eyebrow{margin:0;color:var(--component-app-shell-muted);font:600 10px/1.4 var(--font-mono);letter-spacing:.16em}
-.app-welcome-mark{display:grid;width:68px;height:68px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:22px;background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:28px;font-weight:800}
-.app-welcome h1{max-width:560px;margin:4px 0 0;font-size:clamp(28px,6vw,44px);line-height:1.08;letter-spacing:-.045em}
-.app-welcome h1 span{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;color:transparent}
-.app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--component-app-shell-muted);line-height:1.65}
-.app-welcome-role{padding:7px 12px;border:1px solid var(--component-app-shell-border);border-radius:999px;color:var(--component-app-shell-muted);font-size:12px}
-.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--semantic-accent);border-radius:999px;background:var(--semantic-accent);color:var(--component-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
-.app-welcome-continue:active{transform:scale(.98)}
+/* First authenticated entry — same semantic component language as Profile. */
+.app-welcome{display:grid;justify-items:center;gap:var(--app-ui-space-4);width:min(100%,620px);margin:clamp(var(--app-ui-space-9),9vh,var(--app-ui-size-110)) auto;padding:clamp(var(--app-ui-space-6),6vw,var(--app-ui-space-11)) var(--app-ui-space-5);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-sheet);background:var(--app-ui-surface-warm);box-shadow:var(--app-ui-shadow-card);color:var(--component-app-shell-text);text-align:center}
+.app-welcome-eyebrow,.app-placeholder-eyebrow{margin:0;color:var(--component-app-shell-muted);font:var(--app-ui-weight-semibold) var(--app-ui-type-caption)/var(--app-ui-line-detail) var(--app-ui-font-mono);letter-spacing:var(--app-ui-letter-spacing-label)}
+.app-welcome-mark{display:grid;width:var(--app-ui-size-68);height:var(--app-ui-size-68);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:var(--app-ui-type-display);font-weight:var(--app-ui-weight-bold)}
+.app-welcome h1{max-width:560px;margin:var(--app-ui-space-1) 0 0;color:var(--app-ui-text-primary);font-size:var(--app-ui-type-display);line-height:var(--app-ui-line-tight);letter-spacing:var(--app-ui-letter-spacing-tight);overflow-wrap:anywhere}
+.app-welcome h1 span{background:var(--semantic-accent-gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+.app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
+.app-welcome-role{padding:var(--app-ui-space-2) var(--app-ui-space-3);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-pill);color:var(--component-app-shell-muted);font-size:var(--app-ui-type-caption)}
+.app-welcome-continue{display:inline-flex;min-width:min(100%,220px);min-height:var(--app-ui-control-height);align-items:center;justify-content:center;gap:var(--app-ui-space-3);margin-top:var(--app-ui-space-2);padding:0 var(--app-ui-space-5);border:0;border-radius:var(--app-ui-radius-pill);background:var(--semantic-accent-gradient);color:var(--component-app-shell-cta-text);font:var(--app-ui-weight-bold) var(--app-ui-type-small)/1.2 var(--app-ui-font-family);cursor:pointer;transition:transform var(--app-ui-motion-fast) var(--app-ui-ease-standard),filter var(--app-ui-motion-standard) var(--app-ui-ease-standard)}
+.app-welcome-continue:active{transform:scale(var(--app-ui-scale-pressed))}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--component-app-shell-text)}
 .authenticated-app-content{min-width:0;padding:clamp(3px,.75vw,8px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
-.authenticated-bottom-nav{position:fixed;z-index:1000;isolation:isolate;overflow:visible;left:50%;bottom:calc(12px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;width:min(520px,calc(100% - 28px - var(--safe-left) - var(--safe-right)));padding:8px;border:1px solid var(--component-app-shell-material-border);border-radius:30px;background:var(--component-app-shell-material);box-shadow:var(--component-app-shell-material-shadow),inset 0 1px 0 var(--color-nav-edge);backdrop-filter:blur(32px) saturate(190%);-webkit-backdrop-filter:blur(32px) saturate(190%);transform:translateX(-50%)}
-.authenticated-bottom-nav::before{content:"";position:absolute;z-index:0;inset:1px;border-radius:inherit;background:linear-gradient(180deg,var(--component-app-shell-material-highlight),transparent 48%);pointer-events:none}
-.authenticated-bottom-nav::after{content:"";position:absolute;z-index:-1;top:-26px;right:-1px;left:-1px;height:26px;background:linear-gradient(180deg,transparent,var(--semantic-background));pointer-events:none}
-.app-tab{position:relative;z-index:1;display:grid;min-width:0;min-height:60px;align-content:center;justify-items:center;gap:5px;padding:6px 3px;border:1px solid transparent;border-radius:22px;background:transparent;color:var(--component-app-shell-muted);font:550 10.5px/1.15 var(--font-body);cursor:pointer;transition:background-color .18s ease,border-color .18s ease,color .18s ease}
-.app-tab-icon{display:grid;width:28px;height:25px;place-items:center}
-.app-tab-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.app-tab-label{overflow:hidden;max-width:100%;text-overflow:ellipsis;white-space:nowrap}
-.app-tab.is-active{border-color:var(--color-accent-line);background:var(--gradient-accent-surface);color:var(--semantic-accent);box-shadow:inset 0 1px 0 var(--component-app-shell-material-highlight)}
-.app-tab.is-active .app-tab-icon svg{filter:drop-shadow(0 1px 3px var(--semantic-accent-glow))}
-.app-tab.is-active::after{content:"";position:absolute;left:50%;bottom:3px;width:15px;height:3px;border-radius:999px;background:var(--semantic-accent-gradient);transform:translateX(-50%)}
-.app-tab:not(.is-active):active{color:var(--component-app-shell-text);background:var(--component-app-shell-hover-surface)}
-@media(hover:hover){.app-tab:not(.is-active):hover{background:var(--component-app-shell-hover-surface);color:var(--component-app-shell-text)}}
-.app-tab-avatar{width:25px;height:25px;border:1px solid var(--component-app-shell-border);border-radius:50%;object-fit:cover}
-.app-tab.is-active .app-tab-avatar,.app-tab.is-active .app-tab-avatar-fallback{border:2px solid var(--semantic-accent);box-shadow:0 0 0 2px var(--component-app-shell-material)}
-.app-tab-avatar-fallback{display:grid;width:25px;height:25px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:50%;background:var(--gradient-owner-control-active);color:var(--component-app-shell-active);font-size:11px;font-weight:700}
-.app-placeholder-screen{width:min(100%,760px);margin:0 auto;padding:clamp(12px,3vw,26px) 0}
-.app-placeholder-screen h1{margin:12px 0 24px;font-size:clamp(30px,5vw,44px);letter-spacing:-.045em}
-.app-placeholder-state{display:grid;justify-items:center;gap:12px;padding:clamp(28px,6vw,52px) 20px;border:1px solid var(--component-app-shell-border);border-radius:var(--radius-lg);background:var(--component-profile-surface);text-align:center}
-.app-placeholder-mark{display:grid;width:54px;height:54px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:17px;background:var(--gradient-owner-control);color:var(--semantic-accent);font-size:24px}
-.app-placeholder-state strong{font-size:18px}
-.app-placeholder-state p{max-width:400px;margin:0;color:var(--component-app-shell-muted);line-height:1.6}
+.authenticated-bottom-nav{isolation:isolate;overflow:visible}
+.authenticated-bottom-nav::before{content:"";position:absolute;z-index:0;inset:var(--app-ui-size-1);border-radius:inherit;background:linear-gradient(180deg,var(--component-app-shell-material-highlight),transparent 48%);pointer-events:none}
+.authenticated-bottom-nav::after{content:"";position:absolute;z-index:-1;top:calc(-1 * var(--app-ui-size-26));right:calc(-1 * var(--app-ui-size-1));left:calc(-1 * var(--app-ui-size-1));height:var(--app-ui-size-26);background:linear-gradient(180deg,transparent,var(--semantic-background));pointer-events:none}
+.authenticated-bottom-nav .app-ui-tab{position:relative;z-index:1;font-size:var(--app-ui-tab-label-size);-webkit-tap-highlight-color:transparent}
+.authenticated-bottom-nav .app-ui-tab.is-active{box-shadow:inset 0 var(--app-ui-size-1) 0 var(--component-app-shell-material-highlight)}
+.authenticated-bottom-nav .app-ui-tab.is-active::after{content:"";position:absolute;left:50%;bottom:var(--app-ui-tab-active-indicator-inset);width:var(--app-ui-tab-active-indicator-width);height:var(--app-ui-tab-active-indicator-height);border-radius:var(--app-ui-radius-pill);background:var(--semantic-accent-gradient);transform:translateX(-50%)}
+.authenticated-bottom-nav .app-ui-tab.is-active .app-ui-tab__icon svg{filter:drop-shadow(var(--app-ui-tab-icon-active-shadow) var(--semantic-accent-glow))}
+.authenticated-bottom-nav .app-ui-tab:not(.is-active):active{color:var(--app-ui-text-primary);background:var(--app-ui-hover-surface)}
+.app-tab-avatar{width:var(--app-ui-tab-avatar-size);height:var(--app-ui-tab-avatar-size);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-avatar);object-fit:cover}
+.app-tab.is-active .app-tab-avatar,.app-ui-tab.is-active .app-tab-avatar-fallback{border:var(--app-ui-profile-avatar-border) solid var(--semantic-accent);box-shadow:0 0 0 var(--app-ui-profile-avatar-shadow-inner) var(--component-app-shell-material)}
+.app-tab-avatar-fallback{display:grid;width:var(--app-ui-tab-avatar-size);height:var(--app-ui-tab-avatar-size);place-items:center;border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-avatar);background:var(--gradient-owner-control-active);color:var(--component-app-shell-active);font-size:var(--app-ui-type-caption);font-weight:var(--app-ui-weight-strong)}
+.app-placeholder-screen{width:min(100%,var(--app-ui-size-760));margin:0 auto;padding:var(--app-ui-space-6) 0}
+.app-placeholder-screen .app-placeholder-eyebrow{margin-bottom:var(--app-ui-space-2)}
+.app-placeholder-screen h1{margin:0 0 var(--app-ui-space-6);color:var(--component-app-shell-text);font-size:var(--app-ui-type-display);font-weight:var(--app-ui-weight-bold);line-height:var(--app-ui-line-tight);letter-spacing:var(--app-ui-letter-spacing-tight);overflow-wrap:anywhere}
+.app-placeholder-state{display:grid;justify-items:center;gap:var(--app-ui-space-3);padding:clamp(var(--app-ui-space-7),6vw,var(--app-ui-space-11)) var(--app-ui-space-5);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-sheet);background:var(--component-profile-surface);box-shadow:var(--app-ui-shadow-card);color:var(--component-app-shell-text);text-align:center}
+.app-placeholder-mark{display:grid;width:var(--app-ui-size-68);height:var(--app-ui-size-68);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:var(--app-ui-type-title)}
+.app-placeholder-state strong{font-size:var(--app-ui-type-section);font-weight:var(--app-ui-weight-semibold)}
+.app-placeholder-state p{max-width:var(--app-ui-size-440);margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
+@media(max-width:600px){.app-placeholder-screen{padding:var(--app-ui-space-5) var(--app-ui-space-3)}.app-placeholder-state{padding-inline:var(--app-ui-space-4)}}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
-@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{width:calc(100% - 22px - var(--safe-left) - var(--safe-right));bottom:calc(8px + var(--safe-bottom));padding:7px}.app-tab{min-height:58px;font-size:10px}}
+@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:var(--app-ui-space-6) auto;border-radius:var(--app-ui-radius-sheet)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom));padding:var(--app-ui-tab-bar-padding-mobile)}.authenticated-bottom-nav .app-ui-tab{min-height:var(--app-ui-tab-item-height-mobile)}}
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
@@ -52,7 +51,7 @@ body:has(.app-welcome) .site-header .header-nav{display:none}
 body:has(.authenticated-app-shell) .site-header .header-inner,
 body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min-height:21px}
 
-.app-tab:focus-visible,.app-welcome-continue:focus-visible{outline:2px solid var(--component-app-shell-focus-ring);outline-offset:3px}
+.app-ui-tab:focus-visible,.app-welcome-continue:focus-visible{outline:var(--app-ui-focus-outline-width) solid var(--app-ui-focus);outline-offset:var(--app-ui-focus-outline-offset-large)}
 
 .auth-layout:has(.authenticated-app-shell){max-width:1100px}
 

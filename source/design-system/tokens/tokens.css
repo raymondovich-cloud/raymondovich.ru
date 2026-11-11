@@ -273,3 +273,326 @@
   --component-profile-field: var(--color-profile-field);
   --component-profile-notice: var(--color-profile-notice);
 }
+
+
+/* Authenticated UI foundation — shared geometry, typography and motion. */
+:root {
+  --app-ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --app-ui-font-mono: var(--font-mono);
+
+  --app-ui-type-caption: .6875rem;
+  --app-ui-type-small: .8125rem;
+  --app-ui-type-row: .9375rem;
+  --app-ui-type-body: 1rem;
+  --app-ui-type-section: 1.125rem;
+  --app-ui-type-title: clamp(1.75rem, 4.8vw, 2.25rem);
+  --app-ui-type-display: clamp(2rem, 6vw, 2.75rem);
+
+  --app-ui-line-tight: 1.15;
+  --app-ui-line-normal: 1.4;
+  --app-ui-line-relaxed: 1.6;
+  --app-ui-weight-regular: 400;
+  --app-ui-weight-medium: 550;
+  --app-ui-weight-semibold: 650;
+  --app-ui-weight-bold: 750;
+
+  --app-ui-space-1: .25rem;
+  --app-ui-space-2: .5rem;
+  --app-ui-space-3: .75rem;
+  --app-ui-space-4: 1rem;
+  --app-ui-space-5: 1.25rem;
+  --app-ui-space-6: 1.5rem;
+  --app-ui-space-7: 1.75rem;
+  --app-ui-space-8: 2rem;
+  --app-ui-space-9: 2.5rem;
+
+  --app-ui-radius-control: 14px;
+  --app-ui-radius-card: 20px;
+  --app-ui-radius-group: 22px;
+  --app-ui-radius-sheet: 28px;
+  --app-ui-radius-pill: 999px;
+
+  --app-ui-touch-target: 44px;
+  --app-ui-control-height: 48px;
+  --app-ui-row-height: 68px;
+  --app-ui-row-icon-size: 38px;
+  --app-ui-tab-item-height: 60px;
+  --app-ui-tab-bar-height: 78px;
+  --app-ui-tab-bar-inset: 12px;
+  --app-ui-tab-bar-mobile-inset: 8px;
+
+  --app-ui-motion-fast: 160ms;
+  --app-ui-motion-standard: 220ms;
+  --app-ui-motion-emphasis: 320ms;
+  --app-ui-ease-standard: cubic-bezier(.2, .7, .2, 1);
+  --app-ui-ease-enter: cubic-bezier(.16, 1, .3, 1);
+
+  --app-ui-blur-menu: 18px;
+  --app-ui-blur-sheet: 24px;
+  --app-ui-blur-navigation: 32px;
+}
+
+/* Authenticated UI component color and material mapping — dark theme. */
+:root {
+  --app-ui-surface: var(--semantic-surface);
+  --app-ui-surface-raised: var(--semantic-surface-raised);
+  --app-ui-surface-warm: var(--gradient-accent-surface);
+  --app-ui-text-primary: var(--semantic-text-primary);
+  --app-ui-text-secondary: var(--semantic-text-secondary);
+  --app-ui-text-tertiary: var(--semantic-text-tertiary);
+  --app-ui-border: var(--semantic-border);
+  --app-ui-divider: var(--semantic-divider);
+  --app-ui-accent: var(--semantic-accent);
+  --app-ui-accent-foreground: var(--semantic-accent-foreground);
+  --app-ui-success: var(--semantic-success);
+  --app-ui-warning: var(--semantic-warning);
+  --app-ui-danger: var(--semantic-danger);
+  --app-ui-focus: var(--semantic-focus-ring);
+
+  --app-ui-overlay: rgba(0, 0, 0, .58);
+  --app-ui-glass-surface: rgba(22, 25, 30, .78);
+  --app-ui-glass-border: rgba(255, 255, 255, .18);
+  --app-ui-glass-highlight: rgba(255, 255, 255, .13);
+  --app-ui-field-surface: rgba(255, 255, 255, .045);
+  --app-ui-hover-surface: rgba(255, 255, 255, .045);
+  --app-ui-pressed-surface: var(--semantic-accent-subtle);
+  --app-ui-skeleton-base: rgba(255, 255, 255, .065);
+  --app-ui-skeleton-highlight: rgba(255, 255, 255, .13);
+  --app-ui-success-surface: color-mix(in srgb, var(--semantic-success) 12%, var(--semantic-surface));
+  --app-ui-warning-surface: color-mix(in srgb, var(--semantic-warning) 12%, var(--semantic-surface));
+  --app-ui-danger-surface: color-mix(in srgb, var(--semantic-danger) 12%, var(--semantic-surface));
+  --app-ui-disabled-opacity: .44;
+
+  --app-ui-shadow-card: 0 10px 30px rgba(0, 0, 0, .18);
+  --app-ui-shadow-sheet: 0 24px 72px rgba(0, 0, 0, .38);
+  --app-ui-shadow-menu: 0 14px 40px rgba(0, 0, 0, .30);
+}
+
+
+/* Authenticated UI micro-geometry tokens — shared across themes. */
+:root {
+  --app-ui-content-max-width: 68.75rem;
+  --app-ui-copy-max-width: 48rem;
+  --app-ui-state-copy-max-width: 28rem;
+  --app-ui-sheet-max-width: 40rem;
+  --app-ui-dialog-max-width: 27.5rem;
+  --app-ui-menu-width: 17.5rem;
+  --app-ui-menu-viewport-gutter: 1.5rem;
+  --app-ui-dialog-viewport-gutter: 2rem;
+  --app-ui-sheet-max-height: 88dvh;
+  --app-ui-dialog-max-height: 86dvh;
+  --app-ui-sheet-height-cap: 47.5rem;
+  --app-ui-dialog-height-cap: 45rem;
+  --app-ui-mobile-breakpoint: 37.5rem;
+  --app-ui-compact-breakpoint: 23.75rem;
+
+  --app-ui-space-0: 0;
+  --app-ui-space-0-5: .125rem;
+  --app-ui-space-1-5: .375rem;
+  --app-ui-space-2-5: .625rem;
+  --app-ui-space-3-5: .875rem;
+  --app-ui-space-10: 3rem;
+  --app-ui-space-11: 3.5rem;
+
+  --app-ui-size-1: 1px;
+  --app-ui-size-2: 2px;
+  --app-ui-size-3: 3px;
+  --app-ui-size-4: 4px;
+  --app-ui-size-5: 5px;
+  --app-ui-size-8: 8px;
+  --app-ui-size-12: 12px;
+  --app-ui-size-14: 14px;
+  --app-ui-size-16: 16px;
+  --app-ui-size-18: 18px;
+  --app-ui-size-19: 19px;
+  --app-ui-size-22: 22px;
+  --app-ui-size-23: 23px;
+  --app-ui-size-25: 25px;
+  --app-ui-size-26: 26px;
+  --app-ui-size-28: 28px;
+  --app-ui-size-30: 30px;
+  --app-ui-size-36: 36px;
+  --app-ui-size-42: 42px;
+  --app-ui-size-50: 50px;
+  --app-ui-size-68: 68px;
+  --app-ui-size-76: 76px;
+  --app-ui-size-78: 78px;
+  --app-ui-size-110: 110px;
+  --app-ui-size-180: 180px;
+  --app-ui-size-280: 280px;
+  --app-ui-size-420: 420px;
+  --app-ui-size-440: 440px;
+  --app-ui-size-520: 520px;
+  --app-ui-size-640: 640px;
+  --app-ui-size-720: 720px;
+  --app-ui-size-760: 760px;
+  --app-ui-size-1100: 1100px;
+
+  --app-ui-radius-none: 0;
+  --app-ui-radius-icon: 12px;
+  --app-ui-radius-tab: 22px;
+  --app-ui-radius-navigation: 30px;
+  --app-ui-radius-avatar: 50%;
+
+  --app-ui-opacity-subtle: .44;
+  --app-ui-opacity-handle: .55;
+  --app-ui-opacity-underlay: .84;
+  --app-ui-opacity-reduced-underlay: .92;
+  --app-ui-scale-pressed: .98;
+  --app-ui-scale-menu: .985;
+  --app-ui-scale-dialog: .985;
+
+  --app-ui-motion-instant: 1ms;
+  --app-ui-motion-skeleton: 1.5s;
+  --app-ui-ease-linear: linear;
+  --app-ui-ease-default: ease;
+  --app-ui-ease-out: ease-out;
+
+  --app-ui-letter-spacing-tight: -.04em;
+  --app-ui-letter-spacing-compact: -.02em;
+  --app-ui-letter-spacing-label: .12em;
+  --app-ui-line-caption: 1.2;
+  --app-ui-line-row: 1.3;
+  --app-ui-line-detail: 1.4;
+  --app-ui-line-field: 1.45;
+  --app-ui-line-heading-compact: 1.2;
+
+  --app-ui-grid-chevron: 16px;
+  --app-ui-grid-chevron-compact: 12px;
+  --app-ui-tab-grid-gap: 5px;
+  --app-ui-tab-icon-width: 28px;
+  --app-ui-tab-icon-height: 25px;
+  --app-ui-tab-icon-size: 22px;
+  --app-ui-row-value-max: 10rem;
+  --app-ui-row-value-max-compact: 7rem;
+  --app-ui-button-pressed-brightness: 1.04;
+  --app-ui-skeleton-background-size: 200% 100%;
+  --app-ui-skeleton-title-width: 68%;
+  --app-ui-skeleton-text-width: 92%;
+  --app-ui-skeleton-short-width: 42%;
+  --app-ui-row-title-width: 100%;
+  --app-ui-focus-outline-width: 2px;
+  --app-ui-focus-outline-offset: 2px;
+  --app-ui-focus-outline-offset-large: 3px;
+  --app-ui-transform-sheet-enter: 18px;
+  --app-ui-transform-menu-enter: 4px;
+  --app-ui-transform-screen-enter: 14px;
+  --app-ui-transform-screen-leave: 8px;
+  --app-ui-transform-dialog-enter: 8px;
+  --app-ui-transform-menu-scale: .985;
+  --app-ui-transform-dialog-scale: .985;
+  --app-ui-transform-none: none;
+}
+
+:root {
+  --app-ui-type-compact-heading: 1.1875rem;
+  --app-ui-tab-bar-wide-gutter: 1.75rem;
+  --app-ui-tab-bar-narrow-gutter: 1.375rem;
+}
+
+:root {
+  --app-ui-type-chevron: 1.25rem;
+  --app-ui-space-row-copy-gap: 3px;
+  --app-ui-border-width: 1px;
+  --app-ui-skeleton-title-max: 280px;
+  --app-ui-skeleton-text-max: 420px;
+  --app-ui-skeleton-short-max: 180px;
+  --app-ui-tab-bar-max-width: 520px;
+  --app-ui-tab-bar-radius: 30px;
+  --app-ui-tab-radius: 22px;
+  --app-ui-dialog-backdrop-blur: 4px;
+  --app-ui-skeleton-title-min-height: 28px;
+  --app-ui-skeleton-avatar-size: 42px;
+  --app-ui-skeleton-title-ratio: 68%;
+  --app-ui-skeleton-text-ratio: 92%;
+  --app-ui-skeleton-short-ratio: 42%;
+  --app-ui-input-visually-hidden-size: 1px;
+  --app-ui-mobile-tab-gutter: 22px;
+  --app-ui-wide-tab-gutter: 28px;
+  --app-ui-motion-reduced-duration: 1ms;
+  --app-ui-opacity-disabled: .44;
+}
+
+/* Profile reference-screen geometry tokens. */
+:root {
+  --app-ui-profile-max-width: 700px;
+  --app-ui-profile-toolbar-height: 42px;
+  --app-ui-profile-toolbar-gap: 12px;
+  --app-ui-profile-title-size: 19px;
+  --app-ui-profile-identity-size: 72px;
+  --app-ui-profile-identity-gap: 12px;
+  --app-ui-profile-identity-margin-top: 8px;
+  --app-ui-profile-identity-margin-bottom: 18px;
+  --app-ui-profile-identity-padding-block: 14px;
+  --app-ui-profile-identity-padding-inline: 16px;
+  --app-ui-profile-identity-radius: 18px;
+  --app-ui-profile-avatar-border: 2px;
+  --app-ui-profile-avatar-font-size: 26px;
+  --app-ui-profile-copy-gap: 5px;
+  --app-ui-profile-role-padding-block: 6px;
+  --app-ui-profile-role-padding-inline: 10px;
+  --app-ui-profile-role-font-size: 11px;
+  --app-ui-profile-collapse-height: 120px;
+  --app-ui-profile-collapse-duration: 1s;
+  --app-ui-profile-collapse-range: 132px;
+  --app-ui-profile-collapse-offset: -8px;
+  --app-ui-profile-collapse-scale: .985;
+  --app-ui-profile-groups-gap: 16px;
+  --app-ui-profile-group-radius: 22px;
+  --app-ui-profile-heading-padding-top: 16px;
+  --app-ui-profile-heading-padding-inline: 17px;
+  --app-ui-profile-heading-padding-bottom: 12px;
+  --app-ui-profile-heading-font-size: 10px;
+  --app-ui-profile-heading-letter-spacing: .10em;
+  --app-ui-profile-row-icon-column: 40px;
+  --app-ui-profile-row-chevron-column: 15px;
+  --app-ui-profile-row-gap: 12px;
+  --app-ui-profile-row-height: 68px;
+  --app-ui-profile-row-padding-block: 10px;
+  --app-ui-profile-row-padding-inline: 15px;
+  --app-ui-profile-row-font-size: 14px;
+  --app-ui-profile-icon-size: 38px;
+  --app-ui-profile-icon-radius: 12px;
+  --app-ui-profile-icon-glyph-size: 19px;
+  --app-ui-profile-value-font-size: 12px;
+  --app-ui-profile-chevron-font-size: 23px;
+  --app-ui-profile-empty-padding-top: 13px;
+  --app-ui-profile-empty-padding-inline: 16px;
+  --app-ui-profile-empty-padding-bottom: 17px;
+  --app-ui-profile-empty-font-size: 13px;
+  --app-ui-profile-empty-line-height: 1.55;
+  --app-ui-profile-favorite-icon-size: 38px;
+  --app-ui-profile-favorite-icon-font-size: 18px;
+  --app-ui-profile-favorite-icon-radius: 12px;
+  --app-ui-tab-label-size: 10.5px;
+  --app-ui-tab-active-indicator-width: 15px;
+  --app-ui-tab-active-indicator-height: 3px;
+  --app-ui-tab-active-indicator-inset: 3px;
+  --app-ui-tab-icon-active-shadow: 0 1px 3px;
+  --app-ui-tab-avatar-size: 25px;
+}
+
+:root {
+  --app-ui-profile-compact-icon-column: 38px;
+  --app-ui-profile-compact-row-gap: 8px;
+  --app-ui-profile-compact-row-padding-inline: 10px;
+  --app-ui-profile-compact-value-font-size: 11px;
+}
+
+:root {
+  --app-ui-weight-strong: 700;
+  --app-ui-profile-title-letter-spacing: -.025em;
+  --app-ui-profile-name-letter-spacing: -.035em;
+  --app-ui-profile-role-letter-spacing: .02em;
+  --app-ui-profile-favorites-letter-spacing: .13em;
+  --app-ui-profile-row-value-pill-padding-block: 4px;
+  --app-ui-profile-row-value-pill-padding-inline: 8px;
+  --app-ui-profile-favorites-gap: 9px;
+  --app-ui-profile-row-motion: 180ms;
+  --app-ui-profile-avatar-shadow-inner: 2px;
+  --app-ui-profile-avatar-shadow-outer: 4px;
+}
+
+:root { --app-ui-profile-icon-stroke-width: 1.7; }
+
+:root { --app-ui-tab-item-height-mobile: 58px; --app-ui-tab-bar-padding-mobile: 7px; }

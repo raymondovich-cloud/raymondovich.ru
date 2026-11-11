@@ -1,148 +1,22 @@
-html.pin-guard-pending body > :not(#pin-lock-root),
-html.pin-guard-locked body > :not(#pin-lock-root) {
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-.pin-lock-root {
-  position: fixed;
-  z-index: 2147483000;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  overflow-y: auto;
-  padding: max(24px, var(--safe-top)) max(20px, var(--safe-right)) max(24px, var(--safe-bottom)) max(20px, var(--safe-left));
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(244, 112, 36, .16), transparent 48%),
-    var(--pin-background);
-  color: var(--pin-text);
-}
-
-.pin-lock-root[hidden] {
-  display: none;
-}
-
-.pin-lock-card {
-  width: min(100%, 440px);
-  padding: clamp(28px, 6vw, 44px);
-  border: 1px solid rgba(255, 255, 255, .13);
-  border-radius: 24px;
-  background: linear-gradient(145deg, rgba(25, 26, 29, .98), rgba(12, 13, 15, .98));
-  box-shadow: 0 28px 90px rgba(0, 0, 0, .5);
-}
-
-.pin-lock-overline {
-  margin: 0 0 26px;
-  color: #a7a7a7;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .2em;
-}
-
-.pin-lock-mark {
-  display: grid;
-  width: 54px;
-  height: 54px;
-  place-items: center;
-  margin-bottom: 24px;
-  border: 1px solid rgba(255, 133, 61, .5);
-  border-radius: 16px;
-  background: linear-gradient(145deg, rgba(255, 132, 56, .2), rgba(255, 132, 56, .04));
-  color: var(--pin-accent);
-  font-size: 23px;
-  font-weight: 800;
-}
-
-.pin-lock-card h1 {
-  margin: 0 0 12px;
-  color: var(--pin-title);
-  font-size: clamp(26px, 5vw, 34px);
-  letter-spacing: -.04em;
-}
-
-.pin-lock-description {
-  margin: 0 0 28px;
-  color: #a7a7a7;
-  font-size: 14px;
-  line-height: 1.65;
-}
-
-.pin-lock-label {
-  display: grid;
-  gap: 9px;
-  margin: 0 0 17px;
-  color: #d7d7d7;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.pin-lock-label input {
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 54px;
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, .16);
-  border-radius: 12px;
-  outline: none;
-  background: rgba(255, 255, 255, .045);
-  color: #fff;
-  font-size: 22px;
-  letter-spacing: .45em;
-  text-align: center;
-}
-
-.pin-lock-label input:focus {
-  border-color: #f58a48;
-  box-shadow: 0 0 0 3px rgba(245, 138, 72, .14);
-}
-
-.pin-lock-submit {
-  width: 100%;
-  min-height: 52px;
-  margin-top: 6px;
-  border: 0;
-  border-radius: 12px;
-  background: linear-gradient(100deg, #f06b2d, #ff9b52);
-  color: var(--pin-submit-text);
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.pin-lock-submit:disabled {
-  opacity: .55;
-  cursor: wait;
-}
-
-.pin-lock-notice {
-  margin: 0 0 14px;
-  color: #ffad7d;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.pin-lock-link,
-.pin-lock-exit {
-  display: block;
-  width: 100%;
-  margin-top: 17px;
-  padding: 8px;
-  border: 0;
-  background: transparent;
-  color: #ffad7d;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.pin-lock-exit {
-  margin-top: 5px;
-  color: #888;
-}
-
-.pin-lock-footnote {
-  margin: 27px 0 0;
-  color: #686868;
-  font-size: 10px;
-  text-align: center;
-}
+/* PIN gate — security behavior remains in pin-lock.js; this file owns presentation only. */
+html.pin-guard-pending body>:not(#pin-lock-root),html.pin-guard-locked body>:not(#pin-lock-root){visibility:hidden!important;pointer-events:none!important}
+.pin-lock-root{position:fixed;z-index:2147483000;inset:0;display:grid;place-items:center;overflow-y:auto;padding:max(var(--app-ui-space-6),var(--safe-top)) max(var(--app-ui-space-5),var(--safe-right)) max(var(--app-ui-space-6),var(--safe-bottom)) max(var(--app-ui-space-5),var(--safe-left));background:radial-gradient(ellipse at 50% 0%,var(--semantic-accent-glow),transparent 52%),var(--semantic-background);color:var(--app-ui-text-primary)}
+.pin-lock-root[hidden]{display:none}
+.pin-lock-card{width:min(100%,440px);min-width:0;padding:clamp(var(--app-ui-space-6),6vw,var(--app-ui-space-9));border:var(--app-ui-border-width) solid var(--app-ui-border);border-radius:var(--app-ui-radius-sheet);background:var(--app-ui-surface-raised);box-shadow:var(--app-ui-shadow-sheet)}
+.pin-lock-overline{margin:0 0 var(--app-ui-space-6);color:var(--app-ui-text-tertiary);font:var(--app-ui-weight-semibold) var(--app-ui-type-caption)/var(--app-ui-line-detail) var(--app-ui-font-mono);letter-spacing:var(--app-ui-letter-spacing-label)}
+.pin-lock-mark{display:grid;width:var(--app-ui-size-50);height:var(--app-ui-size-50);place-items:center;margin-bottom:var(--app-ui-space-5);border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--app-ui-surface-warm);color:var(--app-ui-accent);font-size:var(--app-ui-type-section);font-weight:var(--app-ui-weight-bold)}
+.pin-lock-card h1{margin:0 0 var(--app-ui-space-3);color:var(--app-ui-text-primary);font-size:var(--app-ui-type-title);line-height:var(--app-ui-line-tight);letter-spacing:var(--app-ui-letter-spacing-tight)}
+.pin-lock-description{margin:0 0 var(--app-ui-space-6);color:var(--app-ui-text-secondary);font-size:var(--app-ui-type-small);line-height:var(--app-ui-line-relaxed)}
+.pin-lock-label{display:grid;gap:var(--app-ui-space-2);margin:0 0 var(--app-ui-space-4);color:var(--app-ui-text-secondary);font-size:var(--app-ui-type-small);font-weight:var(--app-ui-weight-semibold)}
+.pin-lock-label input{box-sizing:border-box;width:100%;min-width:0;min-height:var(--app-ui-control-height);padding:var(--app-ui-space-3) var(--app-ui-space-4);border:var(--app-ui-border-width) solid var(--app-ui-border);border-radius:var(--app-ui-radius-control);outline:none;background:var(--app-ui-field-surface);color:var(--app-ui-text-primary);font:var(--app-ui-type-title)/var(--app-ui-line-field) var(--app-ui-font-family);letter-spacing:var(--app-ui-letter-spacing-label);text-align:center}
+.pin-lock-label input:focus-visible{border-color:var(--app-ui-focus);outline:var(--app-ui-focus-outline-width) solid var(--app-ui-focus);outline-offset:var(--app-ui-focus-outline-offset)}
+.pin-lock-submit{display:flex;width:100%;min-height:var(--app-ui-control-height);align-items:center;justify-content:center;margin-top:var(--app-ui-space-2);padding:0 var(--app-ui-space-5);border:0;border-radius:var(--app-ui-radius-pill);background:var(--semantic-accent-gradient);color:var(--app-ui-accent-foreground);font:var(--app-ui-weight-bold) var(--app-ui-type-small)/1.2 var(--app-ui-font-family);cursor:pointer;transition:opacity var(--app-ui-motion-standard) var(--app-ui-ease-standard),transform var(--app-ui-motion-fast) var(--app-ui-ease-standard)}
+.pin-lock-submit:active:not(:disabled){transform:scale(var(--app-ui-scale-pressed))}
+.pin-lock-submit:disabled{opacity:var(--app-ui-opacity-disabled);cursor:wait}
+.pin-lock-notice{margin:0 0 var(--app-ui-space-4);padding:var(--app-ui-space-3);border:var(--app-ui-border-width) solid color-mix(in srgb,var(--app-ui-danger) 35%,transparent);border-radius:var(--app-ui-radius-control);background:var(--app-ui-danger-surface);color:var(--app-ui-danger);font-size:var(--app-ui-type-small);line-height:var(--app-ui-line-relaxed)}
+.pin-lock-link,.pin-lock-exit{display:flex;width:100%;min-height:var(--app-ui-touch-target);align-items:center;justify-content:center;margin-top:var(--app-ui-space-3);padding:var(--app-ui-space-2);border:0;border-radius:var(--app-ui-radius-control);background:transparent;color:var(--app-ui-accent);font:var(--app-ui-weight-medium) var(--app-ui-type-small)/1.3 var(--app-ui-font-family);cursor:pointer}
+.pin-lock-exit{margin-top:var(--app-ui-space-1);color:var(--app-ui-text-tertiary)}
+.pin-lock-footnote{margin:var(--app-ui-space-5) 0 0;color:var(--app-ui-text-tertiary);font-size:var(--app-ui-type-caption);text-align:center}
+.pin-lock-submit:focus-visible,.pin-lock-link:focus-visible,.pin-lock-exit:focus-visible{outline:var(--app-ui-focus-outline-width) solid var(--app-ui-focus);outline-offset:var(--app-ui-focus-outline-offset)}
+@media(max-width:360px){.pin-lock-card{padding:var(--app-ui-space-5)}}
+@media(prefers-reduced-motion:reduce){.pin-lock-submit{transition:none}.pin-lock-submit:active:not(:disabled){transform:none}}
