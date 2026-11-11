@@ -1,0 +1,300 @@
+:root[data-theme="light"]{
+  color-scheme:light;
+  --color-bg:#f3f4f6;
+  --color-header-background:#08090b;
+  --color-surface:#fff;
+  --color-surface-raised:#e9ebef;
+  --color-text:#17191d;
+  --color-muted:#555d68;
+  --color-subtle:#707782;
+  --color-line:rgba(20,24,30,.14);
+  --shadow-panel:0 24px 80px rgba(22,28,38,.09);
+  --color-atmosphere-primary: rgba(214, 91, 31, .105);
+  --color-atmosphere-secondary: rgba(214, 91, 31, .062);
+  --color-atmosphere-tertiary: rgba(214, 91, 31, .032);
+  --color-atmosphere-sidebar: rgba(214, 91, 31, .042);
+  --gradient-text:linear-gradient(100deg,#191b20 8%,#d65b1f 82%);
+  --gradient-home-atmosphere: radial-gradient(circle 280px at 88% 20%, rgba(214,91,31,.15), transparent 68%);
+  --color-owner-panel:rgba(255,255,255,.48);
+  --color-owner-panel-text:#17191d;
+  --color-owner-surface:rgba(255,255,255,.64);
+  --color-owner-surface-raised:rgba(233,235,239,.78);
+  --color-owner-text:#17191d;
+  --color-owner-muted:#555d68;
+  --color-owner-secondary:#555d68;
+  --color-owner-subtle:#626b77;
+  --color-owner-line:rgba(20,24,30,.09);
+  --color-owner-line-strong:rgba(20,24,30,.14);
+  --color-owner-separator:rgba(20,24,30,.34);
+  --color-owner-planned:#555d68;
+  --color-owner-hover:rgba(20,24,30,.035);
+  --color-owner-success:#218653;
+  --shadow-owner-success:0 0 8px rgba(33,134,83,.35);
+
+  /* Ideas workspace semantic palette — light theme. */
+  --color-ideas-text:#17191d;
+  --color-ideas-muted:#626b77;
+  --color-ideas-subtle:#626b77;
+  --color-ideas-border:rgba(20,24,30,.10);
+  --color-ideas-surface:var(--color-owner-surface);
+  --color-ideas-accent:#d65b1f;
+  --color-ideas-accent-contrast:#100d0c;
+  --color-ideas-divider:rgba(20,24,30,.075);
+  --color-ideas-accent-soft:#b94c19;
+  --color-ideas-control-border:rgba(20,24,30,.13);
+  --color-ideas-control-hover:rgba(20,24,30,.035);
+  --color-ideas-panel:var(--color-owner-surface);
+  --color-ideas-label:#555d68;
+  --color-ideas-card-gradient:linear-gradient(145deg,rgba(255,255,255,.72),rgba(241,243,246,.62));
+  --color-ideas-card-border:rgba(20,24,30,.075);
+  --color-ideas-card-hover-border:#c47750;
+  --color-ideas-priority:#a6531d;
+  --color-ideas-description:#555d68;
+  --color-ideas-empty-border:rgba(20,24,30,.15);
+  --color-ideas-footer-border:rgba(20,24,30,.085);
+  --color-ideas-code:#707782;
+  --color-ideas-detail-description:#414852;
+  --color-ideas-field-label:#626b77;
+  --color-ideas-field-value:#242a32;
+  --color-ideas-button-border:#c9a18d;
+  --color-ideas-danger:#b33e32;
+  --color-ideas-danger-border:#d6a29b;
+  --color-ideas-confirm-border:#d49b7c;
+  --color-ideas-confirm-bg:#fff5ef;
+  --color-ideas-confirm-title:#a94b20;
+  --color-ideas-confirm-text:#5c514c;
+  --color-ideas-form-label:#414852;
+  --color-ideas-error:#b33e32;
+  --color-ideas-form-back-border:rgba(20,24,30,.24);
+}
+
+/* Owner Control Center gradient language — light theme mapping. */
+:root[data-theme="light"] {
+  --gradient-owner-panel: linear-gradient(145deg, rgba(214,91,31,.075) 0%, rgba(255,255,255,.91) 48%, rgba(241,243,246,.84) 100%);
+  --gradient-owner-surface: linear-gradient(145deg, rgba(214,91,31,.065), rgba(255,255,255,.88) 54%, rgba(241,243,246,.82));
+  --gradient-owner-control: linear-gradient(115deg, rgba(214,91,31,.10), rgba(214,91,31,.025));
+  --gradient-owner-control-active: linear-gradient(115deg, rgba(214,91,31,.18), rgba(255,176,120,.10));
+  --gradient-owner-input: linear-gradient(145deg, rgba(214,91,31,.055), rgba(255,255,255,.82));
+  --gradient-ideas-surface: linear-gradient(145deg, rgba(214,91,31,.10), rgba(255,255,255,.90) 48%, rgba(241,243,246,.84));
+  --gradient-ideas-button:linear-gradient(110deg,var(--color-ideas-accent),var(--color-ideas-accent));
+}
+
+
+/* Owner Control Center shared workspace semantic tokens — light theme. */
+:root[data-theme="light"]{
+  --ws-background:var(--color-bg);
+  --ws-surface:var(--color-owner-surface);
+  --ws-surface-2:var(--color-owner-surface-raised);
+  --ws-list-item:var(--color-ideas-card-gradient);
+  --ws-line:var(--color-ideas-divider);
+  --ws-strong-line:var(--color-ideas-control-border);
+  --ws-accent-line:var(--color-ideas-confirm-border);
+  --ws-accent-surface:var(--gradient-ideas-surface);
+  --ws-accent:var(--color-ideas-accent);
+  --ws-accent-text:#a94b20;
+  --ws-accent-contrast:#100d0c;
+  --ws-text:var(--color-ideas-text);
+  --ws-muted:var(--color-ideas-muted);
+  --ws-subtle:var(--color-ideas-subtle);
+  --ws-description:var(--color-ideas-description);
+  --ws-card-focused:var(--gradient-ideas-surface);
+  --ws-card-compact:var(--color-ideas-card-gradient);
+  --ws-group-surface:var(--color-owner-surface);
+  --ws-group-line:var(--color-ideas-divider);
+  --ws-progress-track:var(--color-ideas-control-border);
+  --ws-card-line:var(--color-ideas-confirm-border);
+  --ws-card-text:var(--color-ideas-text);
+  --ws-card-muted:var(--color-ideas-description);
+  --ws-section-muted:var(--color-ideas-muted);
+
+  --ws-button-text:#100d0c;
+  --ws-success:#218653;
+  --ws-warning:#a6531d;
+  --ws-warning-text:#a6531d;
+  --ws-danger:#b33e32;
+  --ws-project-line:var(--color-ideas-confirm-border);
+  --ws-project-line-strong:var(--color-ideas-divider);
+  --ws-project-hero-bg:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,243,246,.86));
+  --ws-project-group-bg:linear-gradient(145deg,rgba(255,255,255,.92),rgba(241,243,246,.86));
+  --ws-project-icon-bg:var(--color-ideas-card-gradient);
+  --ws-project-category-gradient:var(--color-ideas-card-gradient);
+  --ws-project-hover:var(--color-ideas-control-hover);
+  --ws-project-muted:var(--color-ideas-description);
+  --ws-project-subtle:var(--color-ideas-muted);
+  --ws-empty-line:var(--color-ideas-empty-border);
+  --ws-empty-surface:var(--color-ideas-surface);
+  --ws-control-panel-text:var(--color-owner-panel-text);
+  --ws-control-panel:var(--color-owner-panel);
+  --ws-control-surface:var(--color-owner-surface);
+  --ws-control-surface-raised:var(--color-owner-surface-raised);
+  --ws-control-text:var(--color-owner-text);
+  --ws-control-muted:var(--color-owner-muted);
+  --ws-control-subtle:var(--color-owner-subtle);
+  --ws-control-line:var(--color-owner-line);
+  --ws-control-strong-line:var(--color-owner-line-strong);
+  --ws-control-separator:var(--color-owner-separator);
+  --ws-control-planned:var(--color-owner-planned);
+  --ws-control-hover:var(--color-owner-hover);
+  --ws-control-accent:var(--color-accent);
+  --ws-control-accent-bright:var(--color-accent-bright);
+}
+
+:root[data-platform="telegram"][data-tg-color-scheme="light"] { color-scheme: light; }
+:root[data-platform="telegram"][data-tg-color-scheme="dark"] { color-scheme: dark; }
+
+
+/* Authenticated app shell and Telegram-style profile — light theme. */
+:root[data-theme="light"] {
+  --color-app-shell-surface: rgba(255, 255, 255, .91);
+  --color-app-shell-border: rgba(20, 24, 30, .14);
+  --color-app-shell-text: var(--color-text);
+  --color-app-shell-muted: var(--color-muted);
+  --color-app-shell-active: #d65b1f;
+  --color-app-shell-active-surface: rgba(214, 91, 31, .12);
+  --color-app-shell-shadow: rgba(22, 28, 38, .14);
+  --color-profile-surface: rgba(255, 255, 255, .88);
+  --color-profile-divider: rgba(20, 24, 30, .09);
+  --color-profile-row-hover: rgba(20, 24, 30, .035);
+  --color-profile-icon-projects: #b94c19;
+  --color-profile-icon-favorites: #a94d80;
+  --color-profile-icon-reports: #286fae;
+  --color-profile-icon-settings: #6559b8;
+  --color-profile-icon-modules: #237b65;
+  --color-profile-icon-control: #b94c19;
+  --color-profile-icon-surface: rgba(20, 24, 30, .045);
+  --color-profile-field: rgba(20, 24, 30, .04);
+  --color-profile-notice: rgba(214, 91, 31, .08);
+}
+
+:root[data-theme="light"] { --color-app-shell-cta-text: #17110d; }
+
+/* Canonical semantic color layer — light theme compatibility mapping. */
+:root[data-theme="light"] {
+  --semantic-background: var(--color-bg);
+  --semantic-surface: var(--color-surface);
+  --semantic-surface-raised: var(--color-surface-raised);
+  --semantic-text-primary: var(--color-text);
+  --semantic-text-secondary: var(--color-muted);
+  --semantic-text-tertiary: var(--color-subtle);
+  --semantic-border: var(--color-line);
+  --semantic-divider: var(--color-owner-line);
+  --semantic-accent: #B94C19;
+  --semantic-accent-strong: #A94416;
+  --semantic-accent-subtle: rgba(185, 76, 25, .08);
+  --semantic-accent-foreground: #FFFFFF;
+  --semantic-accent-gradient: linear-gradient(110deg, #B94C19 0%, #D65B1F 100%);
+  --semantic-accent-glow: rgba(185, 76, 25, .08);
+  --semantic-accent-border: rgba(185, 76, 25, .24);
+  --gradient-accent-surface: linear-gradient(145deg, rgba(214, 91, 31, .08) 0%, rgba(255, 255, 255, .96) 58%, rgba(241, 243, 246, .92) 100%);
+  --color-accent-line: rgba(185, 76, 25, .30);
+  --color-accent-tint: rgba(185, 76, 25, .10);
+  --shadow-accent-glow: 0 0 16px rgba(185, 76, 25, .07);
+  --color-nav-edge: rgba(255, 255, 255, .08);
+  --semantic-success: var(--color-owner-success);
+  --semantic-warning: var(--ws-warning);
+  --semantic-danger: var(--color-ideas-danger);
+  --semantic-focus-ring: #B94C19;
+  --semantic-selection: rgba(255, 118, 47, .30);
+}
+
+
+/* Authenticated workspace component tokens — light theme compatibility mapping. */
+:root[data-theme="light"] {
+  --component-app-shell-surface: var(--color-app-shell-surface);
+  --component-app-shell-border: var(--color-app-shell-border);
+  --component-app-shell-text: var(--color-app-shell-text);
+  --component-app-shell-muted: var(--color-app-shell-muted);
+  --component-app-shell-active: var(--semantic-accent);
+  --component-app-shell-active-surface: var(--semantic-accent-subtle);
+  --component-app-shell-focus-ring: var(--semantic-focus-ring);
+  --component-app-shell-shadow: var(--color-app-shell-shadow);
+  --component-app-shell-material: linear-gradient(145deg, rgba(255, 255, 255, .74), rgba(237, 240, 245, .60));
+  --component-app-shell-material-border: rgba(20, 24, 30, .16);
+  --component-app-shell-material-highlight: rgba(255, 255, 255, .68);
+  --component-app-shell-material-shadow: 0 18px 48px rgba(26, 36, 50, .16), 0 3px 12px rgba(26, 36, 50, .08);
+  --component-app-shell-active-outline: var(--semantic-accent-border);
+  --component-app-shell-hover-surface: rgba(20, 24, 30, .045);
+  --component-app-shell-cta-text: var(--semantic-accent-foreground);
+  --component-profile-surface: var(--color-profile-surface);
+  --component-profile-identity-surface: linear-gradient(145deg, rgba(255, 255, 255, .98), rgba(237, 240, 245, .94));
+  --component-profile-identity-shadow: 0 14px 34px rgba(26, 36, 50, .08);
+  --component-profile-group-shadow: 0 10px 26px rgba(26, 36, 50, .05);
+  --component-profile-group-surface: rgba(255, 255, 255, .96);
+  --component-profile-group-border: rgba(20, 24, 30, .11);
+  --component-profile-heading-divider: rgba(20, 24, 30, .08);
+  --component-profile-avatar-ring: var(--semantic-accent-border);
+  --component-profile-avatar-halo: var(--semantic-accent-glow);
+  --component-profile-row-pressed: var(--semantic-accent-subtle);
+  --component-profile-divider: var(--color-profile-divider);
+  --component-profile-row-hover: var(--color-profile-row-hover);
+  --component-profile-icon-surface: var(--color-profile-icon-surface);
+  --component-profile-field: var(--color-profile-field);
+  --component-profile-notice: var(--color-profile-notice);
+}
+
+
+/* Authenticated UI component color and material mapping — light theme. */
+:root[data-theme="light"] {
+  --app-ui-surface: var(--semantic-surface);
+  --app-ui-surface-raised: var(--semantic-surface-raised);
+  --app-ui-surface-warm: var(--gradient-accent-surface);
+  --app-ui-text-primary: var(--semantic-text-primary);
+  --app-ui-text-secondary: var(--semantic-text-secondary);
+  --app-ui-text-tertiary: var(--semantic-text-tertiary);
+  --app-ui-border: var(--semantic-border);
+  --app-ui-divider: var(--semantic-divider);
+  --app-ui-accent: var(--semantic-accent);
+  --app-ui-accent-foreground: var(--semantic-accent-foreground);
+  --app-ui-success: var(--semantic-success);
+  --app-ui-warning: var(--semantic-warning);
+  --app-ui-danger: var(--semantic-danger);
+  --app-ui-focus: var(--semantic-focus-ring);
+
+  --app-ui-overlay: rgba(20, 24, 30, .30);
+  --app-ui-glass-surface: rgba(255, 255, 255, .82);
+  --app-ui-glass-border: rgba(20, 24, 30, .13);
+  --app-ui-glass-highlight: rgba(255, 255, 255, .76);
+  --app-ui-field-surface: rgba(20, 24, 30, .045);
+  --app-ui-hover-surface: rgba(20, 24, 30, .04);
+  --app-ui-pressed-surface: var(--semantic-accent-subtle);
+  --app-ui-skeleton-base: rgba(20, 24, 30, .065);
+  --app-ui-skeleton-highlight: rgba(20, 24, 30, .12);
+  --app-ui-success-surface: color-mix(in srgb, var(--semantic-success) 9%, var(--semantic-surface));
+  --app-ui-warning-surface: color-mix(in srgb, var(--semantic-warning) 9%, var(--semantic-surface));
+  --app-ui-danger-surface: color-mix(in srgb, var(--semantic-danger) 9%, var(--semantic-surface));
+  --app-ui-disabled-opacity: .48;
+
+  --app-ui-shadow-card: 0 10px 30px rgba(24, 30, 40, .07);
+  --app-ui-shadow-sheet: 0 24px 72px rgba(24, 30, 40, .18);
+  --app-ui-shadow-menu: 0 14px 40px rgba(24, 30, 40, .14);
+}
+
+
+/* Authenticated UI prototype v3 — isolated light theme mapping. */
+:root[data-theme="light"] {
+  --app-ui-v3-bg: #f2f3f6;
+  --app-ui-v3-glow: radial-gradient(circle 340px at 92% 6%, rgba(214,91,31,.16), transparent 70%);
+  --app-ui-v3-text: #17191d;
+  --app-ui-v3-muted: #5b626d;
+  --app-ui-v3-subtle: #8a919b;
+  --app-ui-v3-line: rgba(20,24,30,.09);
+  --app-ui-v3-surface-secondary: #eceef2;
+  --app-ui-v3-surface-gradient: linear-gradient(145deg, rgba(214,91,31,.05), rgba(255,255,255,.92) 55%);
+  --app-ui-v3-surface-accent-gradient: linear-gradient(145deg, rgba(214,91,31,.13), rgba(255,255,255,.93) 62%);
+  --app-ui-v3-button-gradient: linear-gradient(110deg, #d65b1f, #ee8a52);
+  --app-ui-v3-on-accent: #fff;
+  --app-ui-v3-accent: #d65b1f;
+  --app-ui-v3-accent-tint: rgba(214,91,31,.11);
+  --app-ui-v3-accent-line: rgba(214,91,31,.32);
+  --app-ui-v3-accent-glow: rgba(214,91,31,.22);
+  --app-ui-v3-glass: rgba(255,255,255,.72);
+  --app-ui-v3-glass-line: rgba(20,24,30,.1);
+  --app-ui-v3-glass-edge: rgba(255,255,255,.9);
+  --app-ui-v3-press: rgba(20,24,30,.055);
+  --app-ui-v3-scrim: rgba(10,12,16,.38);
+  --app-ui-v3-sheet: #fff;
+  --app-ui-v3-shadow: 0 14px 40px rgba(22,28,38,.14);
+  --app-ui-v3-success: #218653;
+  --app-ui-v3-teal: #14907c;
+  --app-ui-v3-teal-tint: rgba(20,144,124,.12);
+}

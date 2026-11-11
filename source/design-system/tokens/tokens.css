@@ -1,0 +1,662 @@
+:root {
+  color-scheme: dark;
+  --color-bg: #08090b;
+  --color-header-background: #08090b;
+  --color-surface: #101216;
+  --color-surface-raised: #171a20;
+  --color-text: #f4f5f7;
+  --color-muted: #a2a7b0;
+  --color-subtle: #747b86;
+  --color-line: rgba(255,255,255,.12);
+  --color-owner-panel: rgba(8,9,11,.34);
+  --color-owner-panel-text: #f4f3f5;
+  --color-owner-surface: rgba(16,18,22,.58);
+  --color-owner-surface-raised: rgba(23,26,32,.72);
+  --color-owner-text: #f2f0f3;
+  --color-owner-muted: #85838c;
+  --color-owner-secondary: #aaa8b0;
+  --color-owner-subtle: #92909a;
+  --color-owner-line: rgba(255,255,255,.085);
+  --color-owner-line-strong: rgba(255,255,255,.13);
+  --color-owner-separator: rgba(255,255,255,.28);
+  --color-owner-planned: #d0ced3;
+  --color-owner-hover: rgba(255,255,255,.045);
+  --color-owner-success: #65c994;
+  --shadow-owner-success: 0 0 10px rgba(101,201,148,.55);
+
+  /* Ideas workspace semantic palette — dark theme. */
+  --color-ideas-text: #f4f3f5;
+  --color-ideas-muted: #85838c;
+  --color-ideas-subtle: #92909a;
+  --color-ideas-border: rgba(255,255,255,.10);
+  --color-ideas-surface: var(--color-owner-surface);
+  --color-ideas-accent: #ff7133;
+  --color-ideas-accent-contrast: #100d0c;
+  --color-ideas-divider: rgba(255,255,255,.075);
+  --color-ideas-accent-soft: #ff8a4f;
+  --color-ideas-control-border: rgba(255,255,255,.12);
+  --color-ideas-control-hover: rgba(255,255,255,.045);
+  --color-ideas-panel: var(--color-owner-surface);
+  --color-ideas-label: #a8a5ae;
+  --color-ideas-card-gradient: linear-gradient(145deg,rgba(23,26,32,.68),rgba(16,18,22,.52));
+  --color-ideas-card-border: rgba(255,255,255,.075);
+  --color-ideas-card-hover-border: #77503e;
+  --color-ideas-priority: #ffb17e;
+  --color-ideas-description: #aaa8b0;
+  --color-ideas-empty-border: rgba(255,255,255,.16);
+  --color-ideas-footer-border: rgba(255,255,255,.085);
+  --color-ideas-code: #77747d;
+  --color-ideas-detail-description: #c0bdc5;
+  --color-ideas-field-label: #8c8992;
+  --color-ideas-field-value: #e0dde3;
+  --color-ideas-button-border: #554238;
+  --color-ideas-danger: #ff927c;
+  --color-ideas-danger-border: #75483f;
+  --color-ideas-confirm-border: #8b4f32;
+  --color-ideas-confirm-bg: #1b1513;
+  --color-ideas-confirm-title: #ff9a65;
+  --color-ideas-confirm-text: #c1bbc1;
+  --color-ideas-form-label: #b9b6bf;
+  --color-ideas-error: #ff8d73;
+  --color-ideas-form-back-border: #454149;
+  --color-accent: #ff762f;
+  --color-accent-bright: #ff9a5b;
+  --gradient-accent: linear-gradient(110deg,#ff6a27 0%,#ffb078 100%);
+  --gradient-text: linear-gradient(100deg,#fff 8%,#ffb17c 82%);
+  --gradient-home-atmosphere: radial-gradient(circle 280px at 88% 20%, rgba(255,105,38,.15), transparent 68%);
+  --color-atmosphere-primary: rgba(255, 105, 38, .145);
+  --color-atmosphere-secondary: rgba(255, 157, 91, .075);
+  --color-atmosphere-tertiary: rgba(255, 118, 47, .04);
+  --color-atmosphere-sidebar: rgba(255, 105, 38, .055);
+  --shadow-panel: 0 24px 80px rgba(0,0,0,.28);
+  --font-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sidebar-width: 286px;
+  --header-height: 76px;
+  --content-width: 1240px;
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+/* Owner Control Center gradient language — structure shared, palette scoped. */
+:root {
+  --gradient-owner-panel: linear-gradient(145deg, rgba(255,118,47,.085) 0%, rgba(23,26,32,.78) 46%, rgba(16,18,22,.66) 100%);
+  --gradient-owner-surface: linear-gradient(145deg, rgba(255,118,47,.075), rgba(23,26,32,.72) 54%, rgba(16,18,22,.62));
+  --gradient-owner-control: linear-gradient(115deg, rgba(255,106,39,.14), rgba(255,176,120,.045));
+  --gradient-owner-control-active: linear-gradient(115deg, rgba(255,106,39,.24), rgba(255,176,120,.10));
+  --gradient-owner-input: linear-gradient(145deg, rgba(255,118,47,.07), rgba(16,18,22,.72));
+
+  /* Ideas keeps its own semantic accent and surface identity. */
+  --gradient-ideas-surface: linear-gradient(145deg, rgba(255,113,51,.12), rgba(23,26,32,.86) 48%, rgba(16,18,22,.76));
+  --gradient-ideas-control: linear-gradient(115deg, color-mix(in srgb, var(--color-ideas-accent) 12%, transparent), color-mix(in srgb, var(--color-ideas-accent-soft) 4%, var(--color-ideas-surface)));
+  --gradient-ideas-input: linear-gradient(145deg, color-mix(in srgb, var(--color-ideas-accent) 6%, var(--color-ideas-surface)), var(--color-ideas-surface));
+  --gradient-ideas-button: linear-gradient(110deg, var(--color-ideas-accent), var(--color-ideas-accent-soft));
+}
+
+
+/* Owner Control Center shared workspace semantic tokens — dark theme. */
+:root{
+  --ws-background:var(--color-bg);
+  --ws-surface:var(--color-owner-surface);
+  --ws-surface-2:var(--color-owner-surface-raised);
+  --ws-list-item:var(--color-ideas-card-gradient);
+  --ws-line:var(--color-ideas-divider);
+  --ws-strong-line:var(--color-ideas-control-border);
+  --ws-accent-line:var(--color-ideas-confirm-border);
+  --ws-accent-surface:var(--gradient-ideas-surface);
+  --ws-accent:var(--color-ideas-accent);
+  --ws-accent-text:var(--color-ideas-accent-soft);
+  --ws-accent-contrast:var(--color-ideas-accent-contrast);
+  --ws-text:var(--color-ideas-text);
+  --ws-muted:var(--color-ideas-muted);
+  --ws-subtle:var(--color-ideas-subtle);
+  --ws-description:var(--color-ideas-description);
+  --ws-card-focused:#21140e;
+  --ws-card-compact:#100e0c;
+  --ws-group-surface:#14110e;
+  --ws-group-line:#2b241e;
+  --ws-progress-track:#30251d;
+  --ws-card-line:#57301d;
+  --ws-card-text:#f4f0ec;
+  --ws-card-muted:#b4aaa1;
+  --ws-section-muted:#918a83;
+
+  --ws-button-text:#100d0c;
+  --ws-success:#65cb8c;
+  --ws-warning:#e9a05f;
+  --ws-warning-text:#e99a65;
+  --ws-danger:#d98272;
+  --ws-project-line:#59311e;
+  --ws-project-line-strong:#50301f;
+  --ws-project-hero-bg:linear-gradient(145deg,#25160f,#1b110d);
+  --ws-project-group-bg:linear-gradient(145deg,#21140f,#1a110d);
+  --ws-project-icon-bg:#301a10;
+  --ws-project-category-gradient:linear-gradient(145deg,#2a170f,#1b100c);
+  --ws-project-hover:#27170f;
+  --ws-project-muted:#a69b92;
+  --ws-project-subtle:#958a81;
+  --ws-empty-line:#49301f;
+  --ws-empty-surface:#17120e;
+  --ws-control-panel-text:var(--color-owner-panel-text);
+  --ws-control-panel:var(--color-owner-panel);
+  --ws-control-surface:var(--color-owner-surface);
+  --ws-control-surface-raised:var(--color-owner-surface-raised);
+  --ws-control-text:var(--color-owner-text);
+  --ws-control-muted:var(--color-owner-muted);
+  --ws-control-subtle:var(--color-owner-subtle);
+  --ws-control-line:var(--color-owner-line);
+  --ws-control-strong-line:var(--color-owner-line-strong);
+  --ws-control-separator:var(--color-owner-separator);
+  --ws-control-planned:var(--color-owner-planned);
+  --ws-control-hover:var(--color-owner-hover);
+  --ws-control-accent:var(--color-accent);
+  --ws-control-accent-bright:var(--color-accent-bright);
+}
+
+
+/* Cross-platform viewport and safe-area tokens. */
+:root {
+  --safe-top: max(env(safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px), var(--tg-content-safe-area-inset-top, 0px));
+  --safe-right: max(env(safe-area-inset-right, 0px), var(--tg-safe-area-inset-right, 0px), var(--tg-content-safe-area-inset-right, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--tg-safe-area-inset-bottom, 0px), var(--tg-content-safe-area-inset-bottom, 0px));
+  --safe-left: max(env(safe-area-inset-left, 0px), var(--tg-safe-area-inset-left, 0px), var(--tg-content-safe-area-inset-left, 0px));
+  --telegram-color-bg-fallback: #08090b;
+  --telegram-color-surface-fallback: #101216;
+  --telegram-color-text-fallback: #f4f5f7;
+  --telegram-color-muted-fallback: #a2a7b0;
+  --telegram-color-hint-fallback: #747b86;
+  --telegram-color-accent-fallback: #ff762f;
+  --pin-background: #08090b;
+  --pin-text: #f5f5f5;
+  --pin-title: #ffffff;
+  --pin-accent: #ff9a58;
+  --pin-submit-text: #16110e;
+}
+
+
+/* Authenticated app shell and Telegram-style profile — dark theme. */
+:root {
+  --color-app-shell-surface: rgba(18, 20, 24, .88);
+  --color-app-shell-border: rgba(255, 255, 255, .14);
+  --color-app-shell-text: var(--color-text);
+  --color-app-shell-muted: var(--color-muted);
+  --color-app-shell-active: var(--color-accent);
+  --color-app-shell-active-surface: rgba(255, 118, 47, .14);
+  --color-app-shell-shadow: rgba(0, 0, 0, .32);
+  --color-profile-surface: rgba(20, 22, 27, .76);
+  --color-profile-divider: rgba(255, 255, 255, .085);
+  --color-profile-row-hover: rgba(255, 255, 255, .045);
+  --color-profile-icon-projects: #ff985f;
+  --color-profile-icon-favorites: #e9a6cb;
+  --color-profile-icon-reports: #79b8f2;
+  --color-profile-icon-settings: #a9a0f5;
+  --color-profile-icon-modules: #70c8ae;
+  --color-profile-icon-control: var(--color-accent);
+  --color-profile-icon-surface: rgba(255, 255, 255, .055);
+  --color-profile-field: rgba(255, 255, 255, .045);
+  --color-profile-notice: rgba(255, 118, 47, .10);
+}
+
+:root { --color-app-shell-cta-text: #17110d; }
+
+/*
+ * Canonical semantic color layer — dark theme compatibility mapping.
+ * Values intentionally alias the existing palette so this first migration
+ * step does not change the rendered interface.
+ */
+:root {
+  --semantic-background: var(--color-bg);
+  --semantic-surface: var(--color-surface);
+  --semantic-surface-raised: var(--color-surface-raised);
+  --semantic-text-primary: var(--color-text);
+  --semantic-text-secondary: var(--color-muted);
+  --semantic-text-tertiary: var(--color-subtle);
+  --semantic-border: var(--color-line);
+  --semantic-divider: var(--color-owner-line);
+  --semantic-accent: #FF762F;
+  --semantic-accent-strong: #FF9A5B;
+  --semantic-accent-subtle: rgba(255, 118, 47, .14);
+  --semantic-accent-foreground: #100D0C;
+  --semantic-accent-gradient: linear-gradient(110deg, #FF6A27 0%, #FFB078 100%);
+  --semantic-accent-glow: rgba(255, 118, 47, .10);
+  --semantic-accent-border: rgba(255, 118, 47, .30);
+  --gradient-accent-surface: linear-gradient(145deg, #25160F 0%, #1B110D 100%);
+  --color-accent-line: #57301D;
+  --color-accent-tint: rgba(255, 118, 47, .12);
+  --shadow-accent-glow: 0 0 16px rgba(255, 118, 47, .10);
+  --color-nav-edge: rgba(255, 255, 255, .08);
+  --semantic-success: var(--color-owner-success);
+  --semantic-warning: var(--ws-warning);
+  --semantic-danger: var(--color-ideas-danger);
+  --semantic-focus-ring: #FF9A5B;
+  --semantic-selection: rgba(255, 118, 47, .30);
+}
+
+
+/* Authenticated workspace component tokens — dark theme compatibility mapping. */
+:root {
+  --component-app-shell-surface: var(--color-app-shell-surface);
+  --component-app-shell-border: var(--color-app-shell-border);
+  --component-app-shell-text: var(--color-app-shell-text);
+  --component-app-shell-muted: var(--color-app-shell-muted);
+  --component-app-shell-active: var(--semantic-accent);
+  --component-app-shell-active-surface: var(--semantic-accent-subtle);
+  --component-app-shell-focus-ring: var(--semantic-focus-ring);
+  --component-app-shell-shadow: var(--color-app-shell-shadow);
+  --component-app-shell-material: linear-gradient(145deg, rgba(34, 37, 44, .64), rgba(13, 15, 19, .54));
+  --component-app-shell-material-border: rgba(255, 255, 255, .22);
+  --component-app-shell-material-highlight: rgba(255, 255, 255, .15);
+  --component-app-shell-material-shadow: 0 18px 52px rgba(0, 0, 0, .42), 0 3px 12px rgba(0, 0, 0, .24);
+  --component-app-shell-active-outline: var(--semantic-accent-border);
+  --component-app-shell-hover-surface: rgba(255, 255, 255, .06);
+  --component-app-shell-cta-text: var(--semantic-accent-foreground);
+  --component-profile-surface: var(--color-profile-surface);
+  --component-profile-identity-surface: linear-gradient(145deg, rgba(30, 33, 40, .96), rgba(16, 18, 23, .92));
+  --component-profile-identity-shadow: 0 14px 34px rgba(0, 0, 0, .22);
+  --component-profile-group-shadow: 0 10px 26px rgba(0, 0, 0, .14);
+  --component-profile-group-surface: rgba(20, 22, 27, .92);
+  --component-profile-group-border: rgba(255, 255, 255, .13);
+  --component-profile-heading-divider: rgba(255, 255, 255, .08);
+  --component-profile-avatar-ring: var(--semantic-accent-border);
+  --component-profile-avatar-halo: var(--semantic-accent-glow);
+  --component-profile-row-pressed: var(--semantic-accent-subtle);
+  --component-profile-divider: var(--color-profile-divider);
+  --component-profile-row-hover: var(--color-profile-row-hover);
+  --component-profile-icon-surface: var(--color-profile-icon-surface);
+  --component-profile-field: var(--color-profile-field);
+  --component-profile-notice: var(--color-profile-notice);
+}
+
+
+/* Authenticated UI foundation — shared geometry, typography and motion. */
+:root {
+  --app-ui-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --app-ui-font-mono: var(--font-mono);
+
+  --app-ui-type-caption: .6875rem;
+  --app-ui-type-small: .8125rem;
+  --app-ui-type-row: .9375rem;
+  --app-ui-type-body: 1rem;
+  --app-ui-type-section: 1.125rem;
+  --app-ui-type-title: clamp(1.75rem, 4.8vw, 2.25rem);
+  --app-ui-type-display: clamp(2rem, 6vw, 2.75rem);
+
+  --app-ui-line-tight: 1.15;
+  --app-ui-line-normal: 1.4;
+  --app-ui-line-relaxed: 1.6;
+  --app-ui-weight-regular: 400;
+  --app-ui-weight-medium: 550;
+  --app-ui-weight-semibold: 650;
+  --app-ui-weight-bold: 750;
+
+  --app-ui-space-1: .25rem;
+  --app-ui-space-2: .5rem;
+  --app-ui-space-3: .75rem;
+  --app-ui-space-4: 1rem;
+  --app-ui-space-5: 1.25rem;
+  --app-ui-space-6: 1.5rem;
+  --app-ui-space-7: 1.75rem;
+  --app-ui-space-8: 2rem;
+  --app-ui-space-9: 2.5rem;
+
+  --app-ui-radius-control: 14px;
+  --app-ui-radius-card: 20px;
+  --app-ui-radius-group: 22px;
+  --app-ui-radius-sheet: 28px;
+  --app-ui-radius-pill: 999px;
+
+  --app-ui-touch-target: 44px;
+  --app-ui-control-height: 48px;
+  --app-ui-row-height: 68px;
+  --app-ui-row-icon-size: 38px;
+  --app-ui-tab-item-height: 60px;
+  --app-ui-tab-bar-height: 78px;
+  --app-ui-tab-bar-inset: 12px;
+  --app-ui-tab-bar-mobile-inset: 8px;
+
+  --app-ui-motion-fast: 160ms;
+  --app-ui-motion-standard: 220ms;
+  --app-ui-motion-emphasis: 320ms;
+  --app-ui-ease-standard: cubic-bezier(.2, .7, .2, 1);
+  --app-ui-ease-enter: cubic-bezier(.16, 1, .3, 1);
+
+  --app-ui-blur-menu: 18px;
+  --app-ui-blur-sheet: 24px;
+  --app-ui-blur-navigation: 32px;
+}
+
+/* Authenticated UI component color and material mapping — dark theme. */
+:root {
+  --app-ui-surface: var(--semantic-surface);
+  --app-ui-surface-raised: var(--semantic-surface-raised);
+  --app-ui-surface-warm: var(--gradient-accent-surface);
+  --app-ui-text-primary: var(--semantic-text-primary);
+  --app-ui-text-secondary: var(--semantic-text-secondary);
+  --app-ui-text-tertiary: var(--semantic-text-tertiary);
+  --app-ui-border: var(--semantic-border);
+  --app-ui-divider: var(--semantic-divider);
+  --app-ui-accent: var(--semantic-accent);
+  --app-ui-accent-foreground: var(--semantic-accent-foreground);
+  --app-ui-success: var(--semantic-success);
+  --app-ui-warning: var(--semantic-warning);
+  --app-ui-danger: var(--semantic-danger);
+  --app-ui-focus: var(--semantic-focus-ring);
+
+  --app-ui-overlay: rgba(0, 0, 0, .58);
+  --app-ui-glass-surface: rgba(22, 25, 30, .78);
+  --app-ui-glass-border: rgba(255, 255, 255, .18);
+  --app-ui-glass-highlight: rgba(255, 255, 255, .13);
+  --app-ui-field-surface: rgba(255, 255, 255, .045);
+  --app-ui-hover-surface: rgba(255, 255, 255, .045);
+  --app-ui-pressed-surface: var(--semantic-accent-subtle);
+  --app-ui-skeleton-base: rgba(255, 255, 255, .065);
+  --app-ui-skeleton-highlight: rgba(255, 255, 255, .13);
+  --app-ui-success-surface: color-mix(in srgb, var(--semantic-success) 12%, var(--semantic-surface));
+  --app-ui-warning-surface: color-mix(in srgb, var(--semantic-warning) 12%, var(--semantic-surface));
+  --app-ui-danger-surface: color-mix(in srgb, var(--semantic-danger) 12%, var(--semantic-surface));
+  --app-ui-disabled-opacity: .44;
+
+  --app-ui-shadow-card: 0 10px 30px rgba(0, 0, 0, .18);
+  --app-ui-shadow-sheet: 0 24px 72px rgba(0, 0, 0, .38);
+  --app-ui-shadow-menu: 0 14px 40px rgba(0, 0, 0, .30);
+}
+
+
+/* Authenticated UI micro-geometry tokens — shared across themes. */
+:root {
+  --app-ui-content-max-width: 68.75rem;
+  --app-ui-copy-max-width: 48rem;
+  --app-ui-state-copy-max-width: 28rem;
+  --app-ui-sheet-max-width: 40rem;
+  --app-ui-dialog-max-width: 27.5rem;
+  --app-ui-menu-width: 17.5rem;
+  --app-ui-menu-viewport-gutter: 1.5rem;
+  --app-ui-dialog-viewport-gutter: 2rem;
+  --app-ui-sheet-max-height: 88dvh;
+  --app-ui-dialog-max-height: 86dvh;
+  --app-ui-sheet-height-cap: 47.5rem;
+  --app-ui-dialog-height-cap: 45rem;
+  --app-ui-mobile-breakpoint: 37.5rem;
+  --app-ui-compact-breakpoint: 23.75rem;
+
+  --app-ui-space-0: 0;
+  --app-ui-space-0-5: .125rem;
+  --app-ui-space-1-5: .375rem;
+  --app-ui-space-2-5: .625rem;
+  --app-ui-space-3-5: .875rem;
+  --app-ui-space-10: 3rem;
+  --app-ui-space-11: 3.5rem;
+
+  --app-ui-size-1: 1px;
+  --app-ui-size-2: 2px;
+  --app-ui-size-3: 3px;
+  --app-ui-size-4: 4px;
+  --app-ui-size-5: 5px;
+  --app-ui-size-8: 8px;
+  --app-ui-size-12: 12px;
+  --app-ui-size-14: 14px;
+  --app-ui-size-16: 16px;
+  --app-ui-size-18: 18px;
+  --app-ui-size-19: 19px;
+  --app-ui-size-22: 22px;
+  --app-ui-size-23: 23px;
+  --app-ui-size-25: 25px;
+  --app-ui-size-26: 26px;
+  --app-ui-size-28: 28px;
+  --app-ui-size-30: 30px;
+  --app-ui-size-36: 36px;
+  --app-ui-size-42: 42px;
+  --app-ui-size-50: 50px;
+  --app-ui-size-68: 68px;
+  --app-ui-size-76: 76px;
+  --app-ui-size-78: 78px;
+  --app-ui-size-110: 110px;
+  --app-ui-size-180: 180px;
+  --app-ui-size-280: 280px;
+  --app-ui-size-420: 420px;
+  --app-ui-size-440: 440px;
+  --app-ui-size-520: 520px;
+  --app-ui-size-640: 640px;
+  --app-ui-size-720: 720px;
+  --app-ui-size-760: 760px;
+  --app-ui-size-1100: 1100px;
+
+  --app-ui-radius-none: 0;
+  --app-ui-radius-icon: 12px;
+  --app-ui-radius-tab: 22px;
+  --app-ui-radius-navigation: 30px;
+  --app-ui-radius-avatar: 50%;
+
+  --app-ui-opacity-subtle: .44;
+  --app-ui-opacity-handle: .55;
+  --app-ui-opacity-underlay: .84;
+  --app-ui-opacity-reduced-underlay: .92;
+  --app-ui-scale-pressed: .98;
+  --app-ui-scale-menu: .985;
+  --app-ui-scale-dialog: .985;
+
+  --app-ui-motion-instant: 1ms;
+  --app-ui-motion-skeleton: 1.5s;
+  --app-ui-ease-linear: linear;
+  --app-ui-ease-default: ease;
+  --app-ui-ease-out: ease-out;
+
+  --app-ui-letter-spacing-tight: -.04em;
+  --app-ui-letter-spacing-compact: -.02em;
+  --app-ui-letter-spacing-label: .12em;
+  --app-ui-line-caption: 1.2;
+  --app-ui-line-row: 1.3;
+  --app-ui-line-detail: 1.4;
+  --app-ui-line-field: 1.45;
+  --app-ui-line-heading-compact: 1.2;
+
+  --app-ui-grid-chevron: 16px;
+  --app-ui-grid-chevron-compact: 12px;
+  --app-ui-tab-grid-gap: 5px;
+  --app-ui-tab-icon-width: 28px;
+  --app-ui-tab-icon-height: 25px;
+  --app-ui-tab-icon-size: 22px;
+  --app-ui-row-value-max: 10rem;
+  --app-ui-row-value-max-compact: 7rem;
+  --app-ui-button-pressed-brightness: 1.04;
+  --app-ui-skeleton-background-size: 200% 100%;
+  --app-ui-skeleton-title-width: 68%;
+  --app-ui-skeleton-text-width: 92%;
+  --app-ui-skeleton-short-width: 42%;
+  --app-ui-row-title-width: 100%;
+  --app-ui-focus-outline-width: 2px;
+  --app-ui-focus-outline-offset: 2px;
+  --app-ui-focus-outline-offset-large: 3px;
+  --app-ui-transform-sheet-enter: 18px;
+  --app-ui-transform-menu-enter: 4px;
+  --app-ui-transform-screen-enter: 14px;
+  --app-ui-transform-screen-leave: 8px;
+  --app-ui-transform-dialog-enter: 8px;
+  --app-ui-transform-menu-scale: .985;
+  --app-ui-transform-dialog-scale: .985;
+  --app-ui-transform-none: none;
+}
+
+:root {
+  --app-ui-type-compact-heading: 1.1875rem;
+  --app-ui-tab-bar-wide-gutter: 1.75rem;
+  --app-ui-tab-bar-narrow-gutter: 1.375rem;
+}
+
+:root {
+  --app-ui-type-chevron: 1.25rem;
+  --app-ui-space-row-copy-gap: 3px;
+  --app-ui-border-width: 1px;
+  --app-ui-skeleton-title-max: 280px;
+  --app-ui-skeleton-text-max: 420px;
+  --app-ui-skeleton-short-max: 180px;
+  --app-ui-tab-bar-max-width: 520px;
+  --app-ui-tab-bar-radius: 30px;
+  --app-ui-tab-radius: 22px;
+  --app-ui-dialog-backdrop-blur: 4px;
+  --app-ui-skeleton-title-min-height: 28px;
+  --app-ui-skeleton-avatar-size: 42px;
+  --app-ui-skeleton-title-ratio: 68%;
+  --app-ui-skeleton-text-ratio: 92%;
+  --app-ui-skeleton-short-ratio: 42%;
+  --app-ui-input-visually-hidden-size: 1px;
+  --app-ui-mobile-tab-gutter: 22px;
+  --app-ui-wide-tab-gutter: 28px;
+  --app-ui-motion-reduced-duration: 1ms;
+  --app-ui-opacity-disabled: .44;
+}
+
+/* Profile reference-screen geometry tokens. */
+:root {
+  --app-ui-profile-max-width: 700px;
+  --app-ui-profile-toolbar-height: 42px;
+  --app-ui-profile-toolbar-gap: 12px;
+  --app-ui-profile-title-size: 19px;
+  --app-ui-profile-identity-size: 72px;
+  --app-ui-profile-identity-gap: 12px;
+  --app-ui-profile-identity-margin-top: 8px;
+  --app-ui-profile-identity-margin-bottom: 18px;
+  --app-ui-profile-identity-padding-block: 14px;
+  --app-ui-profile-identity-padding-inline: 16px;
+  --app-ui-profile-identity-radius: 18px;
+  --app-ui-profile-avatar-border: 2px;
+  --app-ui-profile-avatar-font-size: 26px;
+  --app-ui-profile-copy-gap: 5px;
+  --app-ui-profile-role-padding-block: 6px;
+  --app-ui-profile-role-padding-inline: 10px;
+  --app-ui-profile-role-font-size: 11px;
+  --app-ui-profile-collapse-height: 120px;
+  --app-ui-profile-collapse-duration: 1s;
+  --app-ui-profile-collapse-range: 132px;
+  --app-ui-profile-collapse-offset: -8px;
+  --app-ui-profile-collapse-scale: .985;
+  --app-ui-profile-groups-gap: 16px;
+  --app-ui-profile-group-radius: 22px;
+  --app-ui-profile-heading-padding-top: 16px;
+  --app-ui-profile-heading-padding-inline: 17px;
+  --app-ui-profile-heading-padding-bottom: 12px;
+  --app-ui-profile-heading-font-size: 10px;
+  --app-ui-profile-heading-letter-spacing: .10em;
+  --app-ui-profile-row-icon-column: 40px;
+  --app-ui-profile-row-chevron-column: 15px;
+  --app-ui-profile-row-gap: 12px;
+  --app-ui-profile-row-height: 68px;
+  --app-ui-profile-row-padding-block: 10px;
+  --app-ui-profile-row-padding-inline: 15px;
+  --app-ui-profile-row-font-size: 14px;
+  --app-ui-profile-icon-size: 38px;
+  --app-ui-profile-icon-radius: 12px;
+  --app-ui-profile-icon-glyph-size: 19px;
+  --app-ui-profile-value-font-size: 12px;
+  --app-ui-profile-chevron-font-size: 23px;
+  --app-ui-profile-empty-padding-top: 13px;
+  --app-ui-profile-empty-padding-inline: 16px;
+  --app-ui-profile-empty-padding-bottom: 17px;
+  --app-ui-profile-empty-font-size: 13px;
+  --app-ui-profile-empty-line-height: 1.55;
+  --app-ui-profile-favorite-icon-size: 38px;
+  --app-ui-profile-favorite-icon-font-size: 18px;
+  --app-ui-profile-favorite-icon-radius: 12px;
+  --app-ui-tab-label-size: 10.5px;
+  --app-ui-tab-active-indicator-width: 15px;
+  --app-ui-tab-active-indicator-height: 3px;
+  --app-ui-tab-active-indicator-inset: 3px;
+  --app-ui-tab-icon-active-shadow: 0 1px 3px;
+  --app-ui-tab-avatar-size: 25px;
+}
+
+:root {
+  --app-ui-profile-compact-icon-column: 38px;
+  --app-ui-profile-compact-row-gap: 8px;
+  --app-ui-profile-compact-row-padding-inline: 10px;
+  --app-ui-profile-compact-value-font-size: 11px;
+}
+
+:root {
+  --app-ui-weight-strong: 700;
+  --app-ui-profile-title-letter-spacing: -.025em;
+  --app-ui-profile-name-letter-spacing: -.035em;
+  --app-ui-profile-role-letter-spacing: .02em;
+  --app-ui-profile-favorites-letter-spacing: .13em;
+  --app-ui-profile-row-value-pill-padding-block: 4px;
+  --app-ui-profile-row-value-pill-padding-inline: 8px;
+  --app-ui-profile-favorites-gap: 9px;
+  --app-ui-profile-row-motion: 180ms;
+  --app-ui-profile-avatar-shadow-inner: 2px;
+  --app-ui-profile-avatar-shadow-outer: 4px;
+}
+
+:root { --app-ui-profile-icon-stroke-width: 1.7; }
+
+:root { --app-ui-tab-item-height-mobile: 58px; --app-ui-tab-bar-padding-mobile: 7px; }
+
+
+/* Authenticated UI prototype v3 — isolated opt-in foundation. */
+:root {
+  --app-ui-v3-bg: #08090b;
+  --app-ui-v3-glow: radial-gradient(circle 340px at 92% 6%, rgba(255,105,38,.17), transparent 70%);
+  --app-ui-v3-text: #f4f5f7;
+  --app-ui-v3-muted: #9a9fa9;
+  --app-ui-v3-subtle: #6f7580;
+  --app-ui-v3-line: rgba(255,255,255,.08);
+  --app-ui-v3-surface-secondary: #1a1d23;
+  --app-ui-v3-surface-gradient: linear-gradient(145deg, rgba(255,118,47,.05), rgba(23,26,32,.92) 55%);
+  --app-ui-v3-surface-accent-gradient: linear-gradient(145deg, rgba(255,118,47,.17), rgba(36,21,14,.95) 62%);
+  --app-ui-v3-button-gradient: linear-gradient(110deg, #ff6a27, #ffb078);
+  --app-ui-v3-on-accent: #1a110b;
+  --app-ui-v3-accent: #ff762f;
+  --app-ui-v3-accent-tint: rgba(255,118,47,.14);
+  --app-ui-v3-accent-line: rgba(255,118,47,.34);
+  --app-ui-v3-accent-glow: rgba(255,118,47,.26);
+  --app-ui-v3-glass: rgba(26,28,34,.68);
+  --app-ui-v3-glass-line: rgba(255,255,255,.12);
+  --app-ui-v3-glass-edge: rgba(255,255,255,.1);
+  --app-ui-v3-press: rgba(255,255,255,.06);
+  --app-ui-v3-scrim: rgba(0,0,0,.55);
+  --app-ui-v3-sheet: #14161a;
+  --app-ui-v3-shadow: 0 14px 40px rgba(0,0,0,.45);
+  --app-ui-v3-success: #65cb8c;
+  --app-ui-v3-teal: #5cc8b4;
+  --app-ui-v3-teal-tint: rgba(92,200,180,.14);
+  --app-ui-v3-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", sans-serif;
+  --app-ui-v3-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --app-ui-v3-max-width: 480px;
+  --app-ui-v3-row-height: 64px;
+  --app-ui-v3-tabbar-height: 68px;
+  --app-ui-v3-header-height: 52px;
+  --app-ui-v3-title-size: 34px;
+  --app-ui-v3-row-title-size: 16px;
+  --app-ui-v3-row-detail-size: 13px;
+  --app-ui-v3-group-label-size: 11px;
+  --app-ui-v3-group-label-spacing: .14em;
+  --app-ui-v3-tile-size: 40px;
+  --app-ui-v3-tile-radius: 12px;
+  --app-ui-v3-chevron-size: 16px;
+  --app-ui-v3-row-divider-inset: 66px;
+  --app-ui-v3-group-radius: 22px;
+  --app-ui-v3-tabbar-radius: 28px;
+  --app-ui-v3-tab-radius: 22px;
+  --app-ui-v3-tabbar-inset-inline: 14px;
+  --app-ui-v3-tabbar-inset-bottom: 10px;
+  --app-ui-v3-tabbar-blur: 24px;
+  --app-ui-v3-search-height: 48px;
+  --app-ui-v3-search-radius: 16px;
+  --app-ui-v3-switch-width: 51px;
+  --app-ui-v3-switch-height: 31px;
+  --app-ui-v3-sheet-radius: 28px;
+  --app-ui-v3-icon-size: 22px;
+  --app-ui-v3-icon-stroke: 1.7;
+  --app-ui-v3-motion-fast: 180ms;
+  --app-ui-v3-motion-screen: 360ms;
+  --app-ui-v3-ease: cubic-bezier(.32,.72,0,1);
+  --app-ui-v3-underlay-shift: 24%;
+  --app-ui-v3-underlay-opacity: .45;
+  --app-ui-v3-scroll-collapse-threshold: 36px;
+}

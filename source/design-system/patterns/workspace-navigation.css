@@ -1,0 +1,6 @@
+body[data-page="authenticated-welcome"] .site-header,
+body[data-page="authenticated-workspace"] .site-header{display:none}
+body[data-page="authenticated-welcome"] .sidebar,
+body[data-page="authenticated-welcome"] .scrim,
+body[data-page="authenticated-workspace"] .sidebar,
+body[data-page="authenticated-workspace"] .scrim{display:none}
