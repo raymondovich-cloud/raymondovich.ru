@@ -1,5 +1,4 @@
 import { getProjectsSummary } from "/source/application/projects/project-registry.js";
-import { changeProfileEmail, changeProfilePassword } from "/source/application/profile/profile-account.js";
 
 const projectCountCache = new Map();
 
@@ -20,7 +19,12 @@ const icons = {
   spark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
   bot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg>',
   chat: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v9h-9l-4 4v-4H5z"/></svg>',
-  control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
+  control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>',
+  user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3"/><path d="m4 8 8 6 8-6"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" rx="3"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>',
+  key: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3M14 9l2 2"/></svg>'
 };
 
 function row({ icon, title, value = "", route, status = "", description = "" }) {
@@ -169,8 +173,35 @@ export function renderProfileToolsScreen(root, user) {
     </section>`;
 }
 
+function settingsActionRow({ icon, title, value, action }) {
+  return `<button class="profile-row app-ui-row app-ui-v3-row" type="button" data-settings-action="${escape(action)}">
+    <span class="profile-row-icon app-ui-row__icon app-ui-v3-tile is-${icon}">${icons[icon]}</span>
+    <span class="profile-row-copy app-ui-row__copy app-ui-v3-row__copy">
+      <span class="profile-row-title app-ui-row__title app-ui-v3-row__title">${escape(title)}</span>
+    </span>
+    <span class="profile-row-value app-ui-row__value app-ui-v3-row__value">${escape(value)}</span>
+    <span class="profile-row-chevron app-ui-row__chevron app-ui-v3-row__chevron" aria-hidden="true">›</span>
+  </button>`;
+}
+
+function settingsDialogMarkup() {
+  return `<dialog class="profile-settings-dialog" data-settings-dialog aria-labelledby="profile-settings-dialog-title">
+    <form method="dialog" class="profile-settings-dialog-panel">
+      <button class="profile-settings-dialog-close" type="submit" aria-label="Закрыть">×</button>
+      <h2 id="profile-settings-dialog-title" data-settings-dialog-title></h2>
+      <label class="profile-settings-dialog-field" data-settings-dialog-field>
+        <span data-settings-dialog-label></span>
+        <input data-settings-dialog-input type="text" autocomplete="off">
+      </label>
+      <p class="profile-settings-dialog-note">Интерфейс подготовлен. Подключение функции будет выполнено на следующем этапе.</p>
+      <button class="profile-submit app-ui-v3-button" type="button" data-settings-dialog-save>Сохранить</button>
+    </form>
+  </dialog>`;
+}
+
 export function renderProfileSettings(root, user) {
-  const themeIsLight = document.documentElement.dataset.theme === "light";
+  const themeIsDark = document.documentElement.dataset.theme !== "light";
+  const login = user.user_metadata?.username || user.user_metadata?.login || "Не задан";
   root.dataset.appScreen = "profile-settings";
   root.innerHTML = `
     <section class="profile-subscreen profile-settings-screen app-ui-v3-frame" aria-labelledby="profile-settings-title">
@@ -180,7 +211,7 @@ export function renderProfileSettings(root, user) {
       <section class="profile-settings-section" aria-labelledby="profile-settings-appearance">
         <h2 class="profile-settings-heading" id="profile-settings-appearance">Оформление</h2>
         <div class="profile-settings-card app-ui-v3-group profile-appearance-settings">
-          <button class="profile-theme-toggle" type="button" role="switch" data-theme-toggle aria-checked="${!themeIsLight}">
+          <button class="profile-theme-toggle" type="button" role="switch" data-theme-toggle aria-checked="${themeIsDark}">
             <span data-theme-label>Тёмная тема</span>
             <span class="rv3-switch" aria-hidden="true"></span>
           </button>
@@ -188,33 +219,38 @@ export function renderProfileSettings(root, user) {
       </section>
       <section class="profile-settings-section" aria-labelledby="profile-settings-data">
         <h2 class="profile-settings-heading" id="profile-settings-data">Пользовательские данные</h2>
-        <div class="profile-settings-card app-ui-v3-group">
-          <div class="profile-settings-subsection">
-            <h3>Электронная почта</h3>
-            <p class="profile-current-value">${escape(user.email || "Адрес не указан")}</p>
-            <form data-profile-email-form>
-              <label>Новый e-mail<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
-              <button class="profile-submit app-ui-v3-button" type="submit">Изменить e-mail</button>
-            </form>
-          </div>
-          <div class="profile-settings-subsection">
-            <h3>Пароль</h3>
-            <form data-profile-password-form>
-              <label>Новый пароль<input name="password" type="password" autocomplete="new-password" required minlength="10"></label>
-              <label>Повторите пароль<input name="confirmation" type="password" autocomplete="new-password" required minlength="10"></label>
-              <button class="profile-submit app-ui-v3-button" type="submit">Изменить пароль</button>
-            </form>
-          </div>
+        <div class="profile-settings-card app-ui-v3-group profile-settings-list">
+          ${settingsActionRow({icon:"user",title:"Логин",value:login,action:"login"})}
+          ${settingsActionRow({icon:"mail",title:"Почта",value:user.email || "Не указана",action:"email"})}
+          ${settingsActionRow({icon:"lock",title:"Пароль",value:"••••••••",action:"password"})}
+          ${settingsActionRow({icon:"pin",title:"PIN-код",value:"Не настроен",action:"pin"})}
         </div>
       </section>
-      <section class="profile-settings-section" aria-labelledby="profile-settings-session">
-        <h2 class="profile-settings-heading" id="profile-settings-session">Сеанс</h2>
-        <div class="profile-settings-card app-ui-v3-group">
-          <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
+      <section class="profile-settings-section" aria-labelledby="profile-settings-privacy">
+        <h2 class="profile-settings-heading" id="profile-settings-privacy">Конфиденциальность</h2>
+        <div class="profile-settings-card app-ui-v3-group profile-settings-list">
+          ${row({icon:"key",title:"Секреты",description:"Ключи и токены",value:"",route:"#authorization/profile-secrets"})}
         </div>
       </section>
-      <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
-    </section>`;
+    </section>
+    ${settingsDialogMarkup()}`;
+}
+
+export function renderProfileSecretsScreen(root) {
+  root.dataset.appScreen = "profile-secrets";
+  root.innerHTML = `
+    <section class="profile-subscreen profile-secrets-screen app-ui-v3-frame" aria-labelledby="profile-secrets-title">
+      <header class="profile-subscreen-header">
+        <h1 class="app-ui-v3-heading" id="profile-secrets-title">Секреты</h1>
+      </header>
+      <p class="profile-secrets-intro">Здесь будут отображаться подключённые ключи и токены. Значения секретов не будут показываться в интерфейсе.</p>
+      <div class="profile-settings-card app-ui-v3-group profile-secrets-empty" role="status">
+        <span class="profile-secrets-empty-icon" aria-hidden="true">${icons.key}</span>
+        <span>Хранилище секретов будет подключено позже. Пока здесь нет добавленных ключей и токенов.</span>
+      </div>
+      <button class="profile-submit app-ui-v3-button profile-secrets-add" type="button" data-settings-action="secret">Добавить секрет</button>
+    </section>
+    ${settingsDialogMarkup()}`;
 }
 
 export function renderProfileEmptyScreen(root, title, message) {
@@ -231,40 +267,43 @@ export function renderProfileEmptyScreen(root, title, message) {
 export function bindProfileInteractions(root, navigate) {
   if (root.dataset.profileInteractions === "bound") return;
   root.dataset.profileInteractions = "bound";
-  root.addEventListener("click", async event => {
+
+  root.addEventListener("click", event => {
     const routeButton = event.target.closest("[data-profile-route]");
     if (routeButton) {
       navigate(routeButton.dataset.profileRoute);
       return;
     }
 
+    const actionButton = event.target.closest("[data-settings-action]");
+    if (!actionButton) return;
+    const action = actionButton.dataset.settingsAction;
+    const dialog = root.querySelector("[data-settings-dialog]");
+    if (!dialog) return;
+
+    const config = {
+      login: ["Изменить логин", "Новый логин", "text"],
+      email: ["Изменить почту", "Новая почта", "email"],
+      password: ["Изменить пароль", "Новый пароль", "password"],
+      pin: ["Изменить PIN-код", "Новый PIN-код", "password"],
+      secret: ["Добавить секрет", "Название секрета", "text"]
+    }[action];
+    if (!config) return;
+
+    dialog.querySelector("[data-settings-dialog-title]").textContent = config[0];
+    dialog.querySelector("[data-settings-dialog-label]").textContent = config[1];
+    const input = dialog.querySelector("[data-settings-dialog-input]");
+    input.type = config[2];
+    input.value = "";
+    dialog.showModal();
+    input.focus();
   });
 
-  root.addEventListener("submit", async event => {
-    const emailForm = event.target.closest("[data-profile-email-form]");
-    const passwordForm = event.target.closest("[data-profile-password-form]");
-    if (!emailForm && !passwordForm) return;
-    event.preventDefault();
-    const form = emailForm || passwordForm;
-    const button = form.querySelector('button[type="submit"]');
-    const notice = root.querySelector("[data-profile-notice]");
-    const data = new FormData(form);
-    button.disabled = true;
-    notice.hidden = false;
-    notice.textContent = "Сохранение…";
-    try {
-      const result = emailForm
-        ? await changeProfileEmail(data.get("email"))
-        : await changeProfilePassword(data.get("password"), data.get("confirmation"));
-      if (result.error) throw result.error;
-      notice.textContent = emailForm
-        ? "Запрос принят. Проверьте новую почту и подтвердите адрес по ссылке Supabase Auth."
-        : "Пароль успешно изменён.";
-      form.reset();
-    } catch (error) {
-      notice.textContent = error?.message || "Не удалось сохранить изменения.";
-    } finally {
-      button.disabled = false;
+  root.addEventListener("click", event => {
+    if (event.target.closest("[data-settings-dialog-save]")) {
+      const dialog = root.querySelector("[data-settings-dialog]");
+      const note = dialog?.querySelector(".profile-settings-dialog-note");
+      if (note) note.textContent = "Сохранение пока не подключено. Введённые данные не отправлены и не сохранены.";
     }
   });
 }
