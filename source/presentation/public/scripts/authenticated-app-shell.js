@@ -73,9 +73,9 @@ function avatarMarkup(user) {
 
 function tabMarkup(key, label, user, active) {
   const icon = key === "profile" ? avatarMarkup(user) : TAB_ICONS[key];
-  return `<button class="app-tab${active === key ? " is-active" : ""}" type="button"
+  return `<button class="app-tab app-ui-tab${active === key ? " is-active" : ""}" type="button"
     data-app-tab="${key}" aria-label="${label}" ${active === key ? 'aria-current="page"' : ""}>
-    <span class="app-tab-icon">${icon}</span><span class="app-tab-label">${label}</span>
+    <span class="app-tab-icon app-ui-tab__icon">${icon}</span><span class="app-tab-label app-ui-tab__label">${label}</span>
   </button>`;
 }
 
@@ -84,7 +84,7 @@ function shellMarkup(user, active) {
     ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
-      <nav class="authenticated-bottom-nav" aria-label="Основная навигация">
+      <nav class="authenticated-bottom-nav app-ui-tab-bar" aria-label="Основная навигация">
         ${tabMarkup("projects", "Проекты", user, active)}
         ${tabMarkup("ideas", "Идеи", user, active)}
         ${tabMarkup("tools", "Инструменты", user, active)}
