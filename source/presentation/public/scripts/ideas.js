@@ -21,7 +21,7 @@ export async function renderIdeasWorkspace(root, user) {
   const listenerOptions = { signal: controller.signal };
   root.innerHTML = `
     <div class="owner-console-shell">
-      <section class="owner-console owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
+      <section class="owner-console-workspace" aria-label="Рабочее пространство владельца: идеи">
         <div class="ideas-workspace">
       <section class="ideas-registry" data-ideas-registry>
         ${workspacePageTitle("Идеи")}
