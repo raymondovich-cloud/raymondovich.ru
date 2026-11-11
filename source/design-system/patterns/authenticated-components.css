@@ -8,8 +8,7 @@
   width: min(100%, 1100px);
   min-width: 0;
   margin-inline: auto;
-  padding-inline: var(--app-ui-space-4);
-  padding-bottom: calc(var(--app-ui-tab-bar-height) + var(--app-ui-space-9) + var(--safe-bottom));
+  padding-inline: 0;
   color: var(--app-ui-text-primary);
   font-family: var(--app-ui-font-family);
 }
@@ -465,6 +464,7 @@
 
 .app-ui-sheet {
   width: min(100%, 640px);
+  max-height: 88vh;
   max-height: min(88dvh, 760px);
   overflow: auto;
   overscroll-behavior: contain;
@@ -575,6 +575,7 @@
 
 .app-ui-dialog {
   width: min(calc(100% - 32px), 440px);
+  max-height: 86vh;
   max-height: min(86dvh, 720px);
   overflow: auto;
   padding: var(--app-ui-space-6);
