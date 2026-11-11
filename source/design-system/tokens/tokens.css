@@ -227,6 +227,11 @@
   --semantic-accent-gradient: linear-gradient(110deg, #FF6A27 0%, #FFB078 100%);
   --semantic-accent-glow: rgba(255, 118, 47, .10);
   --semantic-accent-border: rgba(255, 118, 47, .30);
+  --gradient-accent-surface: linear-gradient(145deg, #25160F 0%, #1B110D 100%);
+  --color-accent-line: #57301D;
+  --color-accent-tint: rgba(255, 118, 47, .12);
+  --shadow-accent-glow: 0 0 16px rgba(255, 118, 47, .10);
+  --color-nav-edge: rgba(255, 255, 255, .08);
   --semantic-success: var(--color-owner-success);
   --semantic-warning: var(--ws-warning);
   --semantic-danger: var(--color-ideas-danger);
