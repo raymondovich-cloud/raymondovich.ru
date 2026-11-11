@@ -275,6 +275,7 @@ export async function renderProjectsWorkspace(root, user) {
       moveToTrash.disabled=true;
       const result=await moveProjectToTrashRecord(project.id);
       if(result.error){window.alert(result.error.message||"Не удалось переместить проект в корзину.");moveToTrash.disabled=false;return;}
+      projects=projects.filter(item=>item.id!==project.id);
       projectsWorkspaceCache.delete(user.id);
       await loadProjects();
       navigation?.navigateScreen("projects-registry",{}, {replace:true});
