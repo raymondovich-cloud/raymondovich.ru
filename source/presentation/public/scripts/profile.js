@@ -189,13 +189,10 @@ export function renderProfileSettings(root, user) {
         </form>
       </section>
       <section class="profile-settings-card">
-        <h2>Безопасность</h2>
-        <p>PIN-код защищает доступ к приложению на этом устройстве.</p>
-        <button class="profile-secondary" type="button" data-pin-change>Изменить PIN-код</button>
-        <button class="profile-secondary" type="button" data-auth-lock>Заблокировать приложение</button>
+        <h2>Сеанс</h2>
         <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
       </section>
-      <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
+      <p class="profile-form-notice data-profile-notice role="status" aria-live="polite" hidden></p>
     </section>`;
 }
 
