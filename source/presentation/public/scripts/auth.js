@@ -151,14 +151,6 @@ function bindForms(root) {
       showPanel(root, switcher.dataset.authSwitch);
       return;
     }
-    if (event.target.closest("[data-pin-change]")) {
-      window.RaymondovichPinGuard?.changePin();
-      return;
-    }
-    if (event.target.closest("[data-auth-lock]")) {
-      window.RaymondovichPinGuard?.lock();
-      return;
-    }
     if (event.target.closest("[data-auth-signout]")) {
       const { error } = await supabase.auth.signOut();
       if (error) setNotice(root, errorText(error), "error");
