@@ -136,48 +136,33 @@ export function renderProfileScreen(root, user) {
 
 
 export function renderProfileToolsScreen(root, user) {
-  const toolRow = (title, description = "") => `
-    <div class="profile-tool-row">
-      <span class="profile-tool-row-copy"><strong>${escape(title)}</strong>${description ? `<small>${escape(description)}</small>` : ""}</span>
-    </div>`;
+  const tools = [
+    ["tools", "ИИ", "Инструменты искусственного интеллекта"],
+    ["control", "Telegram-бот", "Автоматизация взаимодействия и уведомления"],
+    ["tools", "Сообщество в Telegram", "Коммуникации участников экосистемы"],
+    ["modules", "Инфраструктура", "Домены, серверы, базы данных и ресурсы"],
+    ["settings", "Подключённые сервисы", "Внешние сервисы, используемые в проектах"],
+    ["chart", "Маркетинг", "Маркетинговые площадки, аккаунты и кампании"],
+    ["reports", "Бухгалтерия", "Доходы, расходы и финансовые операции"],
+    ["chart", "Аналитика", "Показатели и динамика проектов"]
+  ];
   root.dataset.appScreen = "profile-tools";
   root.innerHTML = `
     <section class="profile-subscreen profile-tools-screen app-ui-v3-frame" aria-labelledby="profile-tools-title">
       <header class="profile-subscreen-header">
         <h1 class="app-ui-v3-heading" id="profile-tools-title">Инструменты</h1>
-        <p class="profile-tools-intro">Каталог инструментов и сервисов, используемых в экосистеме Raymondovich.</p>
       </header>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-development">
-        <h2 id="profile-tools-development">Инструменты разработки</h2>
-        <div class="profile-tools-list">
-          <div class="profile-tool-category">
-            <div class="profile-tool-category-heading"><strong>Сервисы</strong><small>Инфраструктура и подключённые сервисы</small></div>
-            ${toolRow("Инфраструктура", "Домены, серверы, базы данных и ресурсы")}
-            ${toolRow("Подключённые сервисы", "Внешние сервисы, используемые в проектах")}
-          </div>
-        </div>
-      </section>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-promotion">
-        <h2 id="profile-tools-promotion">Инструменты продвижения</h2>
-        <div class="profile-tools-list">
-          ${toolRow("Маркетинг", "Маркетинговые площадки, аккаунты и кампании")}
-          ${toolRow("Сообщество в Telegram", "Сообщество и коммуникации участников")}
-        </div>
-      </section>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-integration">
-        <h2 id="profile-tools-integration">Инструменты интеграции</h2>
-        <div class="profile-tools-list">
-          ${toolRow("ИИ", "Инструменты искусственного интеллекта")}
-          ${toolRow("Telegram-бот", "Автоматизация взаимодействия через Telegram")}
-        </div>
-      </section>
-      <section class="profile-tools-group" aria-labelledby="profile-tools-analysis">
-        <h2 id="profile-tools-analysis">Инструменты анализа</h2>
-        <div class="profile-tools-list">
-          ${toolRow("Бухгалтерия", "Доходы, расходы и финансовые операции")}
-          ${toolRow("Аналитика", "Показатели и динамика проектов")}
-        </div>
-      </section>
+      <h2 class="profile-group-heading">Инструменты экосистемы</h2>
+      <div class="profile-group app-ui-v3-group" aria-label="Каталог инструментов">
+        ${tools.map(([icon, title, description]) => `
+          <div class="profile-row app-ui-v3-row profile-tool-row">
+            <span class="profile-row-icon app-ui-v3-tile is-${icon}">${icons[icon]}</span>
+            <span class="profile-row-copy app-ui-v3-row__copy">
+              <span class="profile-row-title app-ui-v3-row__title">${escape(title)}</span>
+              <span class="profile-row-description">${escape(description)}</span>
+            </span>
+          </div>`).join("")}
+      </div>
     </section>`;
 }
 
