@@ -175,7 +175,33 @@ export async function renderProjectsWorkspace(root, user) {
               <span class="projects-module-arrow" aria-hidden="true">↗</span>
             </button>`).join("")}
         </div>
+        <div class="projects-overview-actions"><button type="button" class="projects-secondary" data-project-move-to-trash="${escape(project.id)}">Переместить в корзину</button></div>
       </div>`;
+  }
+
+  async function renderTrash() {
+    const sequence=++loadSequence;
+    host.innerHTML='<div class="projects-loading">Загрузка корзины…</div>';
+    const result=await loadProjectsTrash();
+    if(sequence!==loadSequence||controller.signal.aborted)return;
+    if(result.error){
+      host.innerHTML='<section class="projects-state projects-error"><strong>Не удалось загрузить корзину</strong><p>Проверьте подключение и права доступа.</p></section>';
+      return;
+    }
+    const items=result.projects||[];
+    host.innerHTML=`
+      <section class="ws-page projects-trash" data-project-trash-page>
+        ${workspaceScreenHead({title:"Корзина",subtitle:"Удалённые проекты хранятся здесь до восстановления или окончательного удаления."})}
+        <div class="projects-trash-actions"><button type="button" class="projects-secondary" data-project-back-registry>← К проектам</button></div>
+        ${items.length?`<div class="projects-trash-list">${items.map(project=>`
+          <article class="projects-trash-item">
+            <div class="projects-trash-copy"><strong>${escape(project.name)}</strong><span>Перемещён: ${escape(project.deleted_at?new Date(project.deleted_at).toLocaleString("ru-RU"):"дата неизвестна")}</span></div>
+            <div class="projects-trash-item-actions">
+              <button type="button" class="projects-secondary" data-project-restore="${escape(project.id)}">Восстановить</button>
+              <button type="button" class="projects-danger" data-project-delete-forever="${escape(project.id)}">Удалить навсегда</button>
+            </div>
+          </article>`).join("")}</div>`:`<div class="ws-empty"><strong>Корзина пуста</strong><p>Проекты, перемещённые в корзину, появятся здесь.</p></div>`}
+      </section>`;
   }
 
   async function renderModule(project, key) {
