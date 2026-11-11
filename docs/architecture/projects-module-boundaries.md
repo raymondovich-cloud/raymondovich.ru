@@ -2,7 +2,7 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Архитектурные границы Projects  
-> **Версия:** 1.2  
+> **Версия:** 1.3  
 > **Статус:** Согласовано для реализации первой вертикали  
 > **Дата:** 2026-11-10
 
@@ -107,6 +107,36 @@ Accounting не читает Services. Координатор не объеди�
 `source/application/owner/owner-hub-summary.js` обращается только к публичным контрактам `getProjectsSummary()` и `getIdeasSummary()`. Контракт Projects возвращает `{ total, activeCount }`, исключая архивные проекты из `total`. Контракт Ideas возвращает `{ total, newCount, highPriorityCount }`, считая только строки, у которых `status !== "archived"` и `archived_at IS NULL`. Для агрегатов используются count/head-запросы без загрузки строк. Ошибка одного модуля не должна ломать хаб или скрывать успешный счётчик другого модуля.
 
 Presentation вызывает координатор и получает DTO; прямые обращения к Supabase из `owner-control-center.js` запрещены.
+
+## 9. Жизненный цикл проекта: корзина
+
+### 9.1 Модель данных
+
+- `public.projects.deleted_at timestamptz NULL` — единственный признак soft delete.
+- `NULL` означает активный проект; ненулевое значение — проект в корзине.
+- Индекс `(owner_id, deleted_at DESC)` применяется к строкам корзины.
+- Обычный Projects repository всегда фильтрует `deleted_at IS NULL`; отдельный метод получает строки корзины через `deleted_at IS NOT NULL`.
+
+### 9.2 Слои приложения
+
+- Infrastructure repository предоставляет `listTrashedProjects`, `moveProjectToTrash`, `restoreProjectFromTrash` и `permanentlyDeleteTrashedProject`.
+- Application registry валидирует идентификатор и предоставляет отдельные use-case функции загрузки, перемещения, восстановления и окончательного удаления.
+- Presentation отвечает только за навигацию, отображение и подтверждения; прямые обращения к Supabase запрещены.
+- Design System оформляет состояния корзины, кнопки и опасное действие в `source/design-system/patterns/projects.css`.
+
+### 9.3 RLS и целостность
+
+- Существующая общая policy `admin manages projects` разделяется на SELECT, INSERT, UPDATE и DELETE policies с сохранением проверок `app_metadata.role = 'admin'` и `auth.uid() = owner_id`.
+- DELETE policy дополнительно требует `deleted_at IS NOT NULL`. Это не позволяет обойти корзину прямым DELETE активного проекта через Data API.
+- UPDATE policy сохраняет `USING` и `WITH CHECK`; она позволяет владельцу менять `deleted_at` и восстанавливать проект.
+- Удаление проекта опирается на проверенные FK: project history, milestones, tool relations и resource relations удаляются каскадно; tasks удаляются через каскад milestone.
+- Shared catalog (`ecosystem_tools`, `tool_resources`) не является дочерним набором проекта и не удаляется из-за удаления project relations.
+- `projects.source_idea_id` имеет `ON DELETE SET NULL` со стороны идеи; удаление проекта не удаляет идею.
+- Корзина не имеет автоматической очистки. Permanent delete запускается только из корзины после отдельного подтверждения.
+
+### 9.4 Среды
+
+Миграция подготовлена в feature branch. Применение DDL к production Supabase не входит в текущую работу и требует отдельного согласования после staging-проверки.
 
 ## История версий
 
