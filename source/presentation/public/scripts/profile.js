@@ -81,28 +81,36 @@ export function renderProfileScreen(root, user) {
       </header>
       <div class="profile-groups" data-profile-groups>
         ${admin ? `<section class="profile-group is-accent app-ui-group app-ui-v3-group" data-profile-group><div class="profile-group-list app-ui-list">${row({icon:"control",title:"Control Center",route:"#authorization/control-center"})}</div></section>` : ""}
-        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Разработка">
-          <div class="profile-group-heading app-ui-v3-group-label">Разработка</div>
-          <div class="profile-group-list app-ui-list">
-            ${row({icon:"projects",title:"Проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
-            ${row({icon:"ideas",title:"Идеи",route:"#authorization/ideas"})}
-            ${row({icon:"tools",title:"Инструменты",value:"Каталог платформы",route:"#authorization/profile-tools"})}
+        <section class="profile-section" aria-label="Разработка">
+          <h2 class="profile-group-heading app-ui-v3-group-label">Разработка</h2>
+          <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group>
+            <div class="profile-group-list app-ui-list">
+              ${row({icon:"projects",title:"Проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
+              ${row({icon:"ideas",title:"Идеи",route:"#authorization/ideas"})}
+              ${row({icon:"tools",title:"Инструменты",value:"Каталог платформы",route:"#authorization/profile-tools"})}
+            </div>
           </div>
         </section>
-        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Действующие проекты">
-          <div class="profile-group-heading app-ui-v3-group-label">Действующие проекты</div>
-          <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon is-success" aria-hidden="true">${icons.chart}</span><span>Здесь появятся проекты, которые уже работают и приносят доход. Пока таких нет.</span></div>
+        <section class="profile-section" aria-label="Действующие проекты">
+          <h2 class="profile-group-heading app-ui-v3-group-label">Действующие проекты</h2>
+          <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Действующие проекты">
+            <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon is-success" aria-hidden="true">${icons.chart}</span><span>Здесь появятся проекты, которые уже работают и приносят доход. Пока таких нет.</span></div>
+          </div>
         </section>
-        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Избранное">
-          <div class="profile-group-heading app-ui-v3-group-label">Избранное</div>
-          <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon" aria-hidden="true">${icons.favorites}</span><span>Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</span></div>
+        <section class="profile-section" aria-label="Избранное">
+          <h2 class="profile-group-heading app-ui-v3-group-label">Избранное</h2>
+          <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Избранное">
+            <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon" aria-hidden="true">${icons.favorites}</span><span>Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</span></div>
+          </div>
         </section>
-        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Аккаунт">
-          <div class="profile-group-heading app-ui-v3-group-label">Аккаунт</div>
-          <div class="profile-group-list app-ui-list">
-            ${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}
-            ${row({icon:"edit",title:"Редактировать профиль",route:"#authorization/profile-settings"})}
-            ${row({icon:"modules",title:"Управление модулями",status:"Скоро",route:"#authorization/modules"})}
+        <section class="profile-section" aria-label="Аккаунт">
+          <h2 class="profile-group-heading app-ui-v3-group-label">Аккаунт</h2>
+          <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group>
+            <div class="profile-group-list app-ui-list">
+              ${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}
+              ${row({icon:"edit",title:"Редактировать профиль",route:"#authorization/profile-settings"})}
+              ${row({icon:"modules",title:"Управление модулями",status:"Скоро",route:"#authorization/modules"})}
+            </div>
           </div>
         </section>
       </div>

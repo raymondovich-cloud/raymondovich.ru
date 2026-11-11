@@ -59,18 +59,18 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .authenticated-app-content .owner-console-shell,
 .authenticated-app-content .projects-shell{width:100%;max-width:100%;margin:0 auto}
 .profile-screen{padding:0}
-.profile-toolbar{min-height:0;margin:0 0 18px}
+.profile-toolbar{min-height:0;margin:0}
 .profile-toolbar h1{text-align:left}
 .profile-identity{
-  display:grid;grid-template-columns:68px minmax(0,1fr);align-items:center;gap:16px;
+  display:grid;grid-template-columns:68px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:16px;row-gap:5px;
   min-height:104px;margin:0 0 12px;padding:18px;border:1px solid var(--rv3-accent-line);
   border-radius:22px;background:var(--rv3-gradient-accent);box-shadow:none;
 }
-.profile-avatar{width:68px;height:68px;border:0;border-radius:50%;background:var(--rv3-accent-tint);color:var(--rv3-accent);box-shadow:0 0 0 2px var(--rv3-bg),0 0 0 3.5px var(--rv3-accent-line),0 0 30px rgba(214,91,31,.18)}
-.profile-identity-copy{display:grid;gap:5px;min-width:0}
+.profile-avatar{grid-column:1;grid-row:1 / span 2;width:68px;height:68px;border:0;border-radius:50%;background:var(--rv3-accent-tint);color:var(--rv3-accent);box-shadow:0 0 0 2px var(--rv3-bg),0 0 0 3.5px var(--rv3-accent-line),0 0 30px rgba(214,91,31,.18)}
+.profile-identity-copy{grid-column:2;grid-row:1;display:grid;gap:5px;min-width:0}
 .profile-identity-copy h2{margin:0;color:var(--rv3-text);font-size:20px;font-weight:650;letter-spacing:-.02em;overflow-wrap:anywhere}
 .profile-identity-copy p{margin:0;color:var(--rv3-muted);font-size:14px}
-.profile-role{grid-column:2;justify-self:start;margin-top:-4px;padding:3px 11px;border:1px solid var(--rv3-accent-line);border-radius:99px;background:var(--rv3-accent-tint);color:var(--rv3-accent);font-size:12px;font-weight:600}
+.profile-role{grid-column:2;grid-row:2;justify-self:start;margin-top:-4px;padding:3px 11px;border:1px solid var(--rv3-accent-line);border-radius:99px;background:var(--rv3-accent-tint);color:var(--rv3-accent);font-size:12px;font-weight:600}
 .profile-groups{display:grid;gap:12px}
 .profile-group,.owner-console-group,.profile-settings-card{
   overflow:hidden;border:1px solid var(--rv3-line);border-radius:22px;background:var(--rv3-gradient);box-shadow:none;color:var(--rv3-text)
@@ -285,3 +285,8 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-theme-toggle[aria-pressed="false"] .rv3-switch::after{transform:translateX(20px)}
 .profile-theme-toggle[aria-pressed="true"] .rv3-switch{background:var(--rv3-surface-2)}
 .profile-theme-toggle[aria-pressed="true"] .rv3-switch::after{transform:translateX(0)}
+
+.profile-section{display:grid;gap:10px;min-width:0}
+.profile-groups{gap:22px}
+.profile-section>.profile-group-heading{margin:0 6px;color:var(--rv3-muted);font:500 11px/1.2 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
+.profile-section[aria-label="Избранное"]>.profile-group-heading{color:var(--rv3-accent)}
