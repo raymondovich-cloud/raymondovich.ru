@@ -94,7 +94,7 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
   display:grid;width:40px;height:40px;place-items:center;flex:none;border:0;border-radius:12px;
   background:var(--rv3-accent-tint);color:var(--rv3-accent);box-shadow:none
 }
-.profile-row-title.app-ui-v3-v3-row__title,.profile-row-title.app-ui-v3-row__title,
+.profile-row-title.app-ui-v3-row__title,
 .owner-console-row .app-ui-v3-row__title{flex:1;min-width:0;color:var(--rv3-text);font-size:16px;font-weight:500}
 .profile-row-value.app-ui-v3-row__value{max-width:48%;color:var(--rv3-muted);font-size:14px}
 .profile-row-chevron.app-ui-v3-row__chevron{color:var(--rv3-subtle)}
@@ -170,3 +170,19 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
  .authenticated-bottom-nav.app-ui-v3-tabbar,.authenticated-bottom-nav .app-ui-v3-tab,
  .owner-console-group-summary .owner-console-group-chevron{transition:none}
 }
+
+.owner-console-header{margin:0 4px 22px}
+.owner-console-eyebrow{margin:6px 0 4px;color:var(--rv3-accent);font:500 11px/1.4 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
+.owner-console-title{margin:0 0 10px;font-size:34px;line-height:1.1;font-weight:700;letter-spacing:-.03em}
+.owner-console-lead{margin:0;color:var(--rv3-muted);font-size:14px;line-height:1.55}
+.profile-tools-screen{width:100%;max-width:100%;padding:0}
+.profile-subscreen-header{margin:0 4px 20px}
+.profile-subscreen-header h1{margin:6px 0 10px}
+.profile-tools-intro{margin:0;color:var(--rv3-muted);font-size:14px;line-height:1.55}
+.profile-tools-group{margin:22px 0 0}
+.profile-tools-group>h2{margin:0 6px 10px;color:var(--rv3-muted);font:500 11px/1.2 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
+.profile-tools-list{overflow:hidden;border:1px solid var(--rv3-line);border-radius:22px;background:var(--rv3-gradient)}
+.profile-tool-category-heading{display:grid;gap:3px;padding:14px 16px;color:var(--rv3-text)}
+.profile-tool-category-heading small,.profile-tool-row small{color:var(--rv3-muted);font-size:13px}
+.profile-tool-row{display:flex;align-items:center;min-height:var(--rv3-row-height);padding:10px 16px;border-top:1px solid var(--rv3-line)}
+.profile-tool-row-copy{display:grid;gap:3px;color:var(--rv3-text);font-size:15px}

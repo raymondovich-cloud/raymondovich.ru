@@ -115,14 +115,8 @@ function activeTabForRoute(route) {
   return "profile";
 }
 
-function renderTools(view) {
-  view.dataset.appScreen = "tools";
-  view.innerHTML = `
-    <section class="app-placeholder-screen app-ui-v3-frame" aria-labelledby="tools-title">
-      <p class="app-placeholder-eyebrow">RAYMONDOVICH / TOOLS</p>
-      <h1 class="app-ui-v3-heading" id="tools-title">Инструменты</h1>
-      <div class="app-placeholder-state app-ui-v3-group"><span class="app-placeholder-mark app-ui-v3-tile" aria-hidden="true">⌘</span><strong>В разработке</strong><p>Раздел пока не подключён. Доступные инструменты появятся здесь после реализации.</p></div>
-    </section>`;
+function renderTools(view, user) {
+  renderProfileToolsScreen(view, user);
 }
 
 function renderRoute(view, user, route) {

@@ -64,6 +64,11 @@ document.addEventListener("toggle", (event) => {
 export function renderOwnerControlCenter(user) {
   return `
     <div class="owner-console-shell">
+      <header class="owner-console-header">
+        <p class="owner-console-eyebrow">RAYMONDOVICH / CONTROL CENTER</p>
+        <h1 class="owner-console-title">Центр управления</h1>
+        <p class="owner-console-lead">Управление экосистемой: бизнес, интеграции и система.</p>
+      </header>
       <section class="owner-console-groups" aria-label="Панель управления владельца">
         ${groups.map(group => `
           <details class="owner-console-group app-ui-v3-group" name="owner-control-center-group">
