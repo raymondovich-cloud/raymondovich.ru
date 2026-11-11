@@ -225,7 +225,7 @@ export function renderProfileSettings(root, user) {
           <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
         </div>
       </section>
-      <p class="profile-form-notice data-profile-notice role="status" aria-live="polite" hidden></p>
+      <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
     </section>`;
 }
 
