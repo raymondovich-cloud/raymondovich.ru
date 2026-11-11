@@ -578,3 +578,17 @@
   --app-ui-profile-compact-row-padding-inline: 10px;
   --app-ui-profile-compact-value-font-size: 11px;
 }
+
+:root {
+  --app-ui-weight-strong: 700;
+  --app-ui-profile-title-letter-spacing: -.025em;
+  --app-ui-profile-name-letter-spacing: -.035em;
+  --app-ui-profile-role-letter-spacing: .02em;
+  --app-ui-profile-favorites-letter-spacing: .13em;
+  --app-ui-profile-row-value-pill-padding-block: 4px;
+  --app-ui-profile-row-value-pill-padding-inline: 8px;
+  --app-ui-profile-favorites-gap: 9px;
+  --app-ui-profile-row-motion: 180ms;
+  --app-ui-profile-avatar-shadow-inner: 2px;
+  --app-ui-profile-avatar-shadow-outer: 4px;
+}
