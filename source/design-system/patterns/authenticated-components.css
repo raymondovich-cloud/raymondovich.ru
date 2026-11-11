@@ -68,7 +68,7 @@
 
 .app-ui-group-heading {
   display: flex;
-  min-height: 44px;
+  min-height: var(--app-ui-touch-target);
   align-items: center;
   justify-content: space-between;
   gap: var(--app-ui-space-3);
@@ -678,7 +678,7 @@
   border: var(--app-ui-border-width) solid var(--app-ui-glass-border);
   border-radius: var(--app-ui-tab-bar-radius);
   background: var(--app-ui-glass-surface);
-  box-shadow: var(--app-ui-shadow-menu), inset 0 1px 0 var(--app-ui-glass-highlight);
+  box-shadow: var(--app-ui-shadow-menu), inset 0 var(--app-ui-size-1) 0 var(--app-ui-glass-highlight);
   backdrop-filter: blur(var(--app-ui-blur-navigation)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--app-ui-blur-navigation)) saturate(180%);
   transform: translateX(-50%);
