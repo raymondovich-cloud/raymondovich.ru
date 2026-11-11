@@ -335,3 +335,7 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-empty{min-height:140px}
 
 .authenticated-app-content .owner-console-title{margin:0 0 10px}
+
+@media(max-width:360px){
+ .authenticated-bottom-nav .app-ui-v3-tab{font-size:10px;letter-spacing:-.02em;white-space:nowrap}
+}
