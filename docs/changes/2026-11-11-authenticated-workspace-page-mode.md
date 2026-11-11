@@ -24,9 +24,11 @@
 ## Проверки
 
 - Статически подтверждена связь между условным CSS полноэкранной оболочки и `body[data-page]`.
-- Статически проверено, что обработчик вложенной навигации больше не сбрасывает режим авторизованного пространства на `owner-ideas` / `owner-projects`, если оболочка смонтирована.
-- Требуется браузерная регрессия последовательностей Ideas → idea-detail → Ideas и Projects → project-overview → project-module, включая выход из авторизованного пространства на публичный маршрут.
-- Реальная проверка на iPhone Safari остаётся отдельной проверкой устройства; автоматический Chromium-тест не считается доказательством поведения WebKit.
+- Через Cloudflare Browser Rendering проверена опубликованная сборка с реальным `navigation.js` и CSS из Preview. Тестовый DOM shell использовался как fixture без входа в Supabase.
+- На viewport 390×844 проверены `idea-detail`, повторный выбор вкладки Ideas, `project-overview`, `project-services`, `project-accounting`, `project-analytics`, `project-marketing` и `project-create`: во всех состояниях `body[data-page]` оставался `authenticated-workspace`, а computed `position` оболочки — `fixed`.
+- На viewport 320×740 повторно проверены вложенные экраны Ideas и Accounting: оболочка сохраняет `position: fixed` и ширину viewport.
+- После перехода на публичный маршрут `#help` режим корректно меняется на `help`, а оболочка больше не получает полноэкранное позиционирование.
+- Это браузерная регрессия на Chromium, а не эмуляция WebKit. Реальная проверка на iPhone Safari остаётся отдельной проверкой устройства.
 
 ## Область изменения
 
