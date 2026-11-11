@@ -28,7 +28,6 @@
 .app-placeholder-mark{display:grid;width:var(--app-ui-size-68);height:var(--app-ui-size-68);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:var(--app-ui-type-title)}
 .app-placeholder-state strong{font-size:var(--app-ui-type-section);font-weight:var(--app-ui-weight-semibold)}
 .app-placeholder-state p{max-width:var(--app-ui-size-440);margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
-.app-placeholder-screen:focus-visible{outline:var(--app-ui-focus-outline-width) solid var(--app-ui-focus);outline-offset:var(--app-ui-focus-outline-offset-large)}
 @media(max-width:600px){.app-placeholder-screen{padding:var(--app-ui-space-5) var(--app-ui-space-3)}.app-placeholder-state{padding-inline:var(--app-ui-space-4)}}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
