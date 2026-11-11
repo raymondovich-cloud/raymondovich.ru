@@ -35,13 +35,14 @@
   }
 }
 body[data-page="authenticated-workspace"]{background:var(--rv3-bg);color:var(--rv3-text);font-family:var(--rv3-font)}
+body[data-page="authenticated-workspace"] .site-header{display:none}
 body[data-page="authenticated-workspace"] #main,
 body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none;margin:0;padding:0}
 .authenticated-app-shell{
-  position:relative;display:flex;flex-direction:column;width:min(100%,var(--rv3-max-width));height:100dvh;min-height:560px;
-  margin:0 auto;overflow:hidden;background-color:var(--rv3-bg);
+  position:relative;display:flex;flex-direction:column;width:100%;max-width:none;height:100dvh;min-height:100dvh;
+  margin:0;overflow:hidden;background-color:var(--rv3-bg);
   background-image:radial-gradient(circle 340px at 92% 6%,rgba(214,91,31,.16),transparent 70%);
-  border-inline:1px solid var(--rv3-line);
+  border:0;
 }
 :root[data-theme="dark"] .authenticated-app-shell{background-image:radial-gradient(circle 340px at 92% 6%,rgba(255,105,38,.17),transparent 70%)}
 .authenticated-app-content{
@@ -350,3 +351,9 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-appearance-settings{padding:0}
 .profile-theme-toggle{min-height:64px;padding:10px 16px;border:0;background:transparent;color:var(--rv3-text);font-size:16px}
 .profile-settings-section .profile-settings-card .profile-secondary{min-height:48px}
+
+/* Workspace screens occupy the full authenticated canvas, not a nested outer card. */
+.owner-console-workspace:has(.ideas-workspace){padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+
+/* Prototype v3: the selected tab is indicated by its accent frame only. */
+.authenticated-bottom-nav .app-ui-v3-tab.is-active::after{content:none;display:none}
