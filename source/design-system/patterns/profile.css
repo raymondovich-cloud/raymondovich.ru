@@ -42,8 +42,8 @@
 .profile-row-icon.is-settings{color:var(--color-profile-icon-settings)}
 .profile-row-icon.is-modules{color:var(--color-profile-icon-modules)}
 .profile-row-icon.is-control{color:var(--semantic-accent)}
-.profile-row-title{min-width:0;overflow-wrap:anywhere}
-.profile-row-value{color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-value-font-size);white-space:nowrap}
+.profile-row-title{min-width:0;overflow:visible;overflow-wrap:anywhere;text-overflow:clip;white-space:normal}
+.profile-row-value{max-width:none;color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-value-font-size);white-space:nowrap}
 .profile-row-chevron{color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-chevron-font-size);line-height:1}
 .profile-row[data-profile-route="#authorization/control-center"]{background:var(--gradient-accent-surface);box-shadow:inset 0 0 0 var(--app-ui-size-1) var(--color-accent-line)}
 .profile-row[data-profile-route="#authorization/control-center"] .profile-row-icon{background:var(--color-accent-tint);color:var(--semantic-accent)}
