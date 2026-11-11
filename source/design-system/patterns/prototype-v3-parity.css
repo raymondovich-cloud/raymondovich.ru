@@ -274,3 +274,13 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
  .authenticated-app-content.app-ui-v3-screen-enter{animation:none}
  .authenticated-app-shell:has(.authenticated-app-content.is-push-screen) .authenticated-bottom-nav{transition:none}
 }
+
+.profile-empty{justify-items:center;gap:12px;min-height:126px;padding:18px 20px 20px;text-align:center;align-content:center}
+.profile-empty-icon{display:grid;width:40px;height:40px;place-items:center;border-radius:13px;background:var(--rv3-accent-tint);color:var(--rv3-accent)}
+.profile-empty-icon svg{width:20px;height:20px}
+.profile-empty-icon.is-success{background:rgba(33,134,83,.13);color:#218653}
+.profile-group[aria-label="Избранное"] .profile-group-heading{color:var(--rv3-accent)}
+.profile-theme-toggle[aria-pressed="false"] .rv3-switch{background:var(--rv3-accent)}
+.profile-theme-toggle[aria-pressed="false"] .rv3-switch::after{transform:translateX(20px)}
+.profile-theme-toggle[aria-pressed="true"] .rv3-switch{background:var(--rv3-surface-2)}
+.profile-theme-toggle[aria-pressed="true"] .rv3-switch::after{transform:translateX(0)}
