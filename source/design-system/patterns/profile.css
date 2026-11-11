@@ -1,13 +1,13 @@
 .profile-screen,.profile-subscreen{width:min(100%,var(--app-ui-profile-max-width));margin:0 auto}
-.profile-toolbar{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;min-height:var(--app-ui-profile-toolbar-height);margin-bottom:var(--app-ui-profile-toolbar-gap)}
-.profile-toolbar h1{margin:0;text-align:center;font-size:var(--app-ui-profile-title-size);font-weight:700;letter-spacing:-.025em}
-.profile-identity{display:grid;grid-template-columns:var(--app-ui-profile-identity-size) minmax(0,1fr) auto;align-items:center;gap:var(--app-ui-profile-identity-gap);margin:var(--app-ui-profile-identity-margin-top) 0 var(--app-ui-profile-identity-margin-bottom);padding:var(--app-ui-profile-identity-padding-block) var(--app-ui-profile-identity-padding-inline);border:1px solid var(--color-accent-line);border-radius:var(--app-ui-profile-identity-radius);background:var(--gradient-accent-surface);box-shadow:var(--component-profile-identity-shadow);text-align:left}
-.profile-avatar{display:grid;width:var(--app-ui-profile-identity-size);height:var(--app-ui-profile-identity-size);overflow:hidden;place-items:center;border:var(--app-ui-profile-avatar-border) solid var(--semantic-accent);border-radius:50%;background:var(--gradient-owner-control-active);box-shadow:0 0 0 2px var(--component-profile-identity-surface),0 0 0 4px var(--color-accent-line),var(--shadow-accent-glow);color:var(--component-app-shell-active);font-size:var(--app-ui-profile-avatar-font-size);font-weight:700}
+.profile-toolbar{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;min-height:var(--app-ui-profile-toolbar-height);margin-block-start:0;margin-bottom:var(--app-ui-profile-toolbar-gap)}
+.profile-toolbar h1{margin:0;text-align:center;font-size:var(--app-ui-profile-title-size);font-weight:var(--app-ui-weight-strong);letter-spacing:var(--app-ui-profile-title-letter-spacing)}
+.profile-identity{display:grid;grid-template-columns:var(--app-ui-profile-identity-size) minmax(0,1fr) auto;align-items:center;gap:var(--app-ui-profile-identity-gap);margin:var(--app-ui-profile-identity-margin-top) 0 var(--app-ui-profile-identity-margin-bottom);padding:var(--app-ui-profile-identity-padding-block) var(--app-ui-profile-identity-padding-inline);border:var(--app-ui-border-width) solid var(--color-accent-line);border-radius:var(--app-ui-profile-identity-radius);background:var(--gradient-accent-surface);box-shadow:var(--component-profile-identity-shadow);text-align:left}
+.profile-avatar{display:grid;width:var(--app-ui-profile-identity-size);height:var(--app-ui-profile-identity-size);overflow:hidden;place-items:center;border:var(--app-ui-profile-avatar-border) solid var(--semantic-accent);border-radius:var(--app-ui-radius-avatar);background:var(--gradient-owner-control-active);box-shadow:0 0 0 var(--app-ui-profile-avatar-shadow-inner) var(--component-profile-identity-surface),0 0 0 var(--app-ui-profile-avatar-shadow-outer) var(--color-accent-line),var(--shadow-accent-glow);color:var(--component-app-shell-active);font-size:var(--app-ui-profile-avatar-font-size);font-weight:var(--app-ui-weight-strong)}
 .profile-avatar img{width:100%;height:100%;object-fit:cover}
 .profile-identity-copy{display:grid;min-width:0;gap:var(--app-ui-profile-copy-gap)}
-.profile-identity h2{margin:0;font-size:var(--app-ui-profile-title-size);font-weight:750;letter-spacing:-.035em;overflow-wrap:anywhere}
+.profile-identity h2{margin:0;font-size:var(--app-ui-profile-title-size);font-weight:var(--app-ui-weight-bold);letter-spacing:var(--app-ui-profile-name-letter-spacing);overflow-wrap:anywhere}
 .profile-identity p{min-width:0;max-width:100%;overflow:hidden;margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-value-font-size);text-overflow:ellipsis;white-space:nowrap}
-.profile-role{align-self:start;justify-self:end;margin:0;padding:var(--app-ui-profile-role-padding-block) var(--app-ui-profile-role-padding-inline);border:1px solid var(--color-accent-line);border-radius:999px;background:var(--color-accent-tint);color:var(--semantic-accent);font-size:var(--app-ui-profile-role-font-size);font-weight:650;letter-spacing:.02em;white-space:nowrap}
+.profile-role{align-self:start;justify-self:end;margin:0;padding:var(--app-ui-profile-role-padding-block) var(--app-ui-profile-role-padding-inline);border:var(--app-ui-border-width) solid var(--color-accent-line);border-radius:var(--app-ui-radius-pill);background:var(--color-accent-tint);color:var(--semantic-accent);font-size:var(--app-ui-profile-role-font-size);font-weight:var(--app-ui-weight-semibold);letter-spacing:var(--app-ui-profile-role-letter-spacing);white-space:nowrap}
 
 @keyframes profile-identity-scroll-collapse{
   from{max-height:var(--app-ui-profile-collapse-height);margin-bottom:var(--app-ui-profile-identity-margin-bottom);padding-block:var(--app-ui-profile-identity-padding-block);padding-inline:var(--app-ui-profile-identity-padding-inline);border-width:var(--app-ui-border-width);border-radius:var(--app-ui-profile-identity-radius);opacity:1;transform:translateY(0) scale(1)}
@@ -18,7 +18,7 @@
     overflow:hidden;
     animation-name:profile-identity-scroll-collapse;
     animation-duration:var(--app-ui-profile-collapse-duration);
-    animation-timing-function:linear;
+    animation-timing-function:var(--app-ui-ease-linear);
     animation-fill-mode:both;
     animation-timeline:scroll(root block);
     animation-range:0 var(--app-ui-profile-collapse-range);
@@ -28,12 +28,12 @@
   .profile-identity{animation:none}
 }
 .profile-groups{display:grid;gap:var(--app-ui-profile-groups-gap)}
-.profile-group{overflow:hidden;border:1px solid var(--component-profile-group-border);border-radius:var(--app-ui-profile-group-radius);background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
+.profile-group{overflow:hidden;border:var(--app-ui-border-width) solid var(--component-profile-group-border);border-radius:var(--app-ui-profile-group-radius);background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
 .profile-group[hidden]{display:none}
-.profile-group-heading{padding:var(--app-ui-profile-heading-padding-top) var(--app-ui-profile-heading-padding-inline) var(--app-ui-profile-heading-padding-bottom);border-bottom:1px solid var(--component-profile-heading-divider);color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-heading-font-size);font-weight:750;letter-spacing:var(--app-ui-profile-heading-letter-spacing);text-transform:uppercase}
+.profile-group-heading{padding:var(--app-ui-profile-heading-padding-top) var(--app-ui-profile-heading-padding-inline) var(--app-ui-profile-heading-padding-bottom);border-bottom:1px solid var(--component-profile-heading-divider);color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-heading-font-size);font-weight:var(--app-ui-weight-bold);letter-spacing:var(--app-ui-profile-heading-letter-spacing);text-transform:uppercase}
 .profile-group-list{display:grid}
-.profile-row{display:grid;grid-template-columns:var(--app-ui-profile-row-icon-column) minmax(0,1fr) auto var(--app-ui-profile-row-chevron-column);align-items:center;gap:var(--app-ui-profile-row-gap);min-width:0;min-height:var(--app-ui-profile-row-height);padding:var(--app-ui-profile-row-padding-block) var(--app-ui-profile-row-padding-inline);border:0;background:transparent;color:var(--component-app-shell-text);text-align:left;font:550 var(--app-ui-profile-row-font-size)/var(--app-ui-line-row) var(--font-body);cursor:pointer;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease}
-.profile-row+.profile-row{border-top:1px solid var(--component-profile-divider)}
+.profile-row{display:grid;grid-template-columns:var(--app-ui-profile-row-icon-column) minmax(0,1fr) auto var(--app-ui-profile-row-chevron-column);align-items:center;gap:var(--app-ui-profile-row-gap);min-width:0;min-height:var(--app-ui-profile-row-height);padding:var(--app-ui-profile-row-padding-block) var(--app-ui-profile-row-padding-inline);border:0;background:transparent;color:var(--component-app-shell-text);text-align:left;font:var(--app-ui-weight-medium) var(--app-ui-profile-row-font-size)/var(--app-ui-line-row) var(--font-body);cursor:pointer;transition:background-color var(--app-ui-profile-row-motion) var(--app-ui-ease-default),border-color var(--app-ui-profile-row-motion) var(--app-ui-ease-default),box-shadow var(--app-ui-profile-row-motion) var(--app-ui-ease-default),color var(--app-ui-profile-row-motion) var(--app-ui-ease-default)}
+.profile-row+.profile-row{border-top:var(--app-ui-border-width) solid var(--component-profile-divider)}
 .profile-row-icon{display:grid;width:var(--app-ui-profile-icon-size);height:var(--app-ui-profile-icon-size);place-items:center;border-radius:var(--app-ui-profile-icon-radius);background:var(--component-profile-icon-surface)}
 .profile-row-icon svg{width:var(--app-ui-profile-icon-glyph-size);height:var(--app-ui-profile-icon-glyph-size);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .profile-row-icon.is-projects{color:var(--color-profile-icon-projects)}
@@ -45,15 +45,15 @@
 .profile-row-title{min-width:0;overflow-wrap:anywhere}
 .profile-row-value{color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-value-font-size);white-space:nowrap}
 .profile-row-chevron{color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-chevron-font-size);line-height:1}
-.profile-row[data-profile-route="#authorization/control-center"]{background:var(--gradient-accent-surface);box-shadow:inset 0 0 0 1px var(--color-accent-line)}
+.profile-row[data-profile-route="#authorization/control-center"]{background:var(--gradient-accent-surface);box-shadow:inset 0 0 0 var(--app-ui-size-1) var(--color-accent-line)}
 .profile-row[data-profile-route="#authorization/control-center"] .profile-row-icon{background:var(--color-accent-tint);color:var(--semantic-accent)}
 .profile-row[data-profile-route="#authorization/control-center"] .profile-row-chevron{color:var(--semantic-accent)}
 .profile-row[data-profile-route="#authorization/projects"],.profile-row[data-profile-route="#authorization/profile-tools"]{background:var(--gradient-owner-surface)}
 .profile-row[data-profile-route="#authorization/projects"] .profile-row-icon{background:var(--color-accent-tint);color:var(--semantic-accent)}
 .profile-row[data-profile-route="#authorization/profile-tools"] .profile-row-icon{background:color-mix(in srgb,var(--color-profile-icon-modules) 12%,transparent);color:var(--color-profile-icon-modules)}
-.profile-row[data-profile-route="#authorization/projects"] .profile-row-value,.profile-row[data-profile-route="#authorization/profile-tools"] .profile-row-value{padding:4px 8px;border:1px solid var(--component-app-shell-border);border-radius:999px;background:var(--component-profile-group-surface)}
-.profile-group[aria-label="Избранное"] .profile-group-heading{color:var(--semantic-accent);font-family:var(--font-mono);letter-spacing:.13em}
-.profile-group[aria-label="Избранное"] .profile-empty{display:grid;justify-items:start;gap:9px}
+.profile-row[data-profile-route="#authorization/projects"] .profile-row-value,.profile-row[data-profile-route="#authorization/profile-tools"] .profile-row-value{padding:var(--app-ui-profile-row-value-pill-padding-block) var(--app-ui-profile-row-value-pill-padding-inline);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-pill);background:var(--component-profile-group-surface)}
+.profile-group[aria-label="Избранное"] .profile-group-heading{color:var(--semantic-accent);font-family:var(--font-mono);letter-spacing:var(--app-ui-profile-favorites-letter-spacing)}
+.profile-group[aria-label="Избранное"] .profile-empty{display:grid;justify-items:start;gap:var(--app-ui-profile-favorites-gap)}
 .profile-group[aria-label="Избранное"] .profile-empty::before{content:"★";display:grid;width:var(--app-ui-profile-icon-size);height:var(--app-ui-profile-icon-size);place-items:center;border-radius:var(--app-ui-profile-icon-radius);background:var(--color-accent-tint);color:var(--semantic-accent);font-size:var(--app-ui-profile-favorite-icon-font-size)}
 .profile-empty{padding:var(--app-ui-profile-empty-padding-top) var(--app-ui-profile-empty-padding-inline) var(--app-ui-profile-empty-padding-bottom);color:var(--component-app-shell-muted);font-size:var(--app-ui-profile-empty-font-size);line-height:var(--app-ui-profile-empty-line-height)}
 .profile-subscreen-header{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:10px;margin-bottom:20px}
