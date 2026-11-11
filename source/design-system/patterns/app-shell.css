@@ -21,12 +21,15 @@
 .app-tab-avatar{width:var(--app-ui-tab-avatar-size);height:var(--app-ui-tab-avatar-size);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-avatar);object-fit:cover}
 .app-tab.is-active .app-tab-avatar,.app-ui-tab.is-active .app-tab-avatar-fallback{border:var(--app-ui-profile-avatar-border) solid var(--semantic-accent);box-shadow:0 0 0 var(--app-ui-profile-avatar-shadow-inner) var(--component-app-shell-material)}
 .app-tab-avatar-fallback{display:grid;width:var(--app-ui-tab-avatar-size);height:var(--app-ui-tab-avatar-size);place-items:center;border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-avatar);background:var(--gradient-owner-control-active);color:var(--component-app-shell-active);font-size:var(--app-ui-type-caption);font-weight:var(--app-ui-weight-strong)}
-.app-placeholder-screen{width:min(100%,760px);margin:0 auto;padding:clamp(12px,3vw,26px) 0}
-.app-placeholder-screen h1{margin:12px 0 24px;font-size:clamp(30px,5vw,44px);letter-spacing:-.045em}
-.app-placeholder-state{display:grid;justify-items:center;gap:12px;padding:clamp(28px,6vw,52px) 20px;border:1px solid var(--component-app-shell-border);border-radius:var(--radius-lg);background:var(--component-profile-surface);text-align:center}
-.app-placeholder-mark{display:grid;width:54px;height:54px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:17px;background:var(--gradient-owner-control);color:var(--semantic-accent);font-size:24px}
-.app-placeholder-state strong{font-size:18px}
-.app-placeholder-state p{max-width:400px;margin:0;color:var(--component-app-shell-muted);line-height:1.6}
+.app-placeholder-screen{width:min(100%,var(--app-ui-size-760));margin:0 auto;padding:var(--app-ui-space-6) 0}
+.app-placeholder-screen .app-placeholder-eyebrow{margin-bottom:var(--app-ui-space-2)}
+.app-placeholder-screen h1{margin:0 0 var(--app-ui-space-6);color:var(--component-app-shell-text);font-size:var(--app-ui-type-display);font-weight:var(--app-ui-weight-bold);line-height:var(--app-ui-line-tight);letter-spacing:var(--app-ui-letter-spacing-tight);overflow-wrap:anywhere}
+.app-placeholder-state{display:grid;justify-items:center;gap:var(--app-ui-space-3);padding:clamp(var(--app-ui-space-7),6vw,var(--app-ui-space-11)) var(--app-ui-space-5);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-sheet);background:var(--component-profile-surface);box-shadow:var(--app-ui-shadow-card);color:var(--component-app-shell-text);text-align:center}
+.app-placeholder-mark{display:grid;width:var(--app-ui-size-68);height:var(--app-ui-size-68);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:var(--app-ui-type-title)}
+.app-placeholder-state strong{font-size:var(--app-ui-type-section);font-weight:var(--app-ui-weight-semibold)}
+.app-placeholder-state p{max-width:var(--app-ui-size-440);margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
+.app-placeholder-screen:focus-visible{outline:var(--app-ui-focus-outline-width) solid var(--app-ui-focus);outline-offset:var(--app-ui-focus-outline-offset-large)}
+@media(max-width:600px){.app-placeholder-screen{padding:var(--app-ui-space-5) var(--app-ui-space-3)}.app-placeholder-state{padding-inline:var(--app-ui-space-4)}}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
 @media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:var(--app-ui-space-6) auto;border-radius:var(--app-ui-radius-sheet)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom));padding:var(--app-ui-tab-bar-padding-mobile)}.authenticated-bottom-nav .app-ui-tab{min-height:var(--app-ui-tab-item-height-mobile)}}

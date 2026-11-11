@@ -77,16 +77,17 @@
 @media(prefers-reduced-motion:reduce){.profile-row{transition:none}}
 
 .profile-row-icon.is-tools{color:var(--color-profile-icon-modules)}
-.profile-tools-intro{margin:10px 0 0;color:var(--component-app-shell-muted);font-size:13px;line-height:1.55}
-.profile-tools-group{margin:0 0 18px}
-.profile-tools-group>h2{margin:0 0 10px;color:var(--component-app-shell-muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.profile-tools-list{overflow:hidden;border:1px solid var(--component-profile-group-border);border-radius:20px;background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
-.profile-tool-row{display:flex;min-height:62px;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px}
-.profile-tool-row+.profile-tool-row,.profile-tool-category+.profile-tool-row,.profile-tool-row+.profile-tool-category{border-top:1px solid var(--component-profile-divider)}
-.profile-tool-row-copy{display:grid;min-width:0;gap:4px}
-.profile-tool-row-copy strong,.profile-tool-category-heading strong{font-size:14px;font-weight:600}
-.profile-tool-row-copy small,.profile-tool-category-heading small{color:var(--component-app-shell-muted);font-size:12px;line-height:1.4}
-.profile-tool-access{flex:0 0 auto;color:var(--component-app-shell-muted);font-size:11px;text-align:right}
-.profile-tool-category-heading{display:grid;gap:4px;padding:14px 14px 9px}
-.profile-tool-category .profile-tool-row{padding-left:25px}
-@media(max-width:380px){.profile-tool-row{gap:8px;padding-inline:11px}.profile-tool-access{max-width:105px;white-space:normal}}
+.profile-tools-screen{display:grid;gap:var(--app-ui-space-5)}
+.profile-tools-intro{max-width:var(--app-ui-size-640);margin:var(--app-ui-space-2) 0 0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
+.profile-tools-group{min-width:0;margin:0}
+.profile-tools-group>h2{margin:0 0 var(--app-ui-space-2);color:var(--component-app-shell-muted);font-size:var(--app-ui-type-caption);font-weight:var(--app-ui-weight-bold);letter-spacing:var(--app-ui-letter-spacing-label);text-transform:uppercase}
+.profile-tools-list{overflow:hidden;border:var(--app-ui-border-width) solid var(--component-profile-group-border);border-radius:var(--app-ui-profile-group-radius);background:var(--component-profile-group-surface);box-shadow:var(--component-profile-group-shadow)}
+.profile-tool-row{display:flex;min-width:0;min-height:var(--app-ui-profile-row-height);align-items:center;justify-content:space-between;gap:var(--app-ui-space-3);padding:var(--app-ui-space-3) var(--app-ui-space-4)}
+.profile-tool-row+.profile-tool-row,.profile-tool-category+.profile-tool-row,.profile-tool-row+.profile-tool-category{border-top:var(--app-ui-border-width) solid var(--component-profile-divider)}
+.profile-tool-row-copy{display:grid;min-width:0;gap:var(--app-ui-space-1)}
+.profile-tool-row-copy strong,.profile-tool-category-heading strong{color:var(--component-app-shell-text);font-size:var(--app-ui-type-row);font-weight:var(--app-ui-weight-semibold);line-height:var(--app-ui-line-normal)}
+.profile-tool-row-copy small,.profile-tool-category-heading small{color:var(--component-app-shell-muted);font-size:var(--app-ui-type-caption);line-height:var(--app-ui-line-detail)}
+.profile-tool-access{flex:0 0 auto;max-width:42%;padding:var(--app-ui-space-1) var(--app-ui-space-2);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-pill);background:var(--component-profile-surface);color:var(--component-app-shell-muted);font-size:var(--app-ui-type-caption);line-height:var(--app-ui-line-caption);text-align:center;overflow-wrap:anywhere}
+.profile-tool-category-heading{display:grid;gap:var(--app-ui-space-1);padding:var(--app-ui-space-3) var(--app-ui-space-4) var(--app-ui-space-2)}
+.profile-tool-category .profile-tool-row{padding-inline-start:var(--app-ui-space-6)}
+@media(max-width:380px){.profile-tool-row{align-items:flex-start;gap:var(--app-ui-space-2);padding-inline:var(--app-ui-space-3)}.profile-tool-access{max-width:38%;white-space:normal}.profile-tool-category .profile-tool-row{padding-inline-start:var(--app-ui-space-5)}}
