@@ -290,3 +290,10 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-groups{gap:22px}
 .profile-section>.profile-group-heading{margin:0 6px;color:var(--rv3-muted);font:500 11px/1.2 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
 .profile-section[aria-label="Избранное"]>.profile-group-heading{color:var(--rv3-accent)}
+
+.profile-identity.app-ui-v3-group{grid-template-columns:68px minmax(0,1fr);grid-template-rows:auto auto;column-gap:16px;row-gap:5px;min-height:104px;margin:0 0 12px;padding:18px}
+.profile-identity.app-ui-v3-group .profile-avatar{grid-column:1;grid-row:1 / span 2;width:68px;height:68px;border:0;border-radius:50%;background:var(--rv3-accent-tint);color:var(--rv3-accent);box-shadow:0 0 0 2px var(--rv3-bg),0 0 0 3.5px var(--rv3-accent-line)}
+.profile-identity.app-ui-v3-group .profile-identity-copy{grid-column:2;grid-row:1;min-width:0}
+.profile-identity.app-ui-v3-group .profile-role{grid-column:2;grid-row:2;justify-self:start;margin-top:0}
+.profile-section>.profile-group-heading{padding:0;border:0;font-size:11px;line-height:1.2;font-weight:500;letter-spacing:.14em}
+@media(max-width:600px){.profile-identity.app-ui-v3-group{grid-template-columns:68px minmax(0,1fr);column-gap:16px;row-gap:5px;padding:18px}.profile-identity.app-ui-v3-group .profile-avatar{width:68px;height:68px}}
