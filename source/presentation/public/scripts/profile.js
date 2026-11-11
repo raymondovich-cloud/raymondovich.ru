@@ -23,7 +23,6 @@ const icons = {
   user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>',
   mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3"/><path d="m4 8 8 6 8-6"/></svg>',
   lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
-  pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" rx="3"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>',
   key: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3M14 9l2 2"/></svg>'
 };
 
@@ -223,7 +222,6 @@ export function renderProfileSettings(root, user) {
           ${settingsActionRow({icon:"user",title:"Логин",value:login,action:"login"})}
           ${settingsActionRow({icon:"mail",title:"Почта",value:user.email || "Не указана",action:"email"})}
           ${settingsActionRow({icon:"lock",title:"Пароль",value:"••••••••",action:"password"})}
-          ${settingsActionRow({icon:"pin",title:"PIN-код",value:"Не настроен",action:"pin"})}
         </div>
       </section>
       <section class="profile-settings-section" aria-labelledby="profile-settings-privacy">
@@ -285,7 +283,6 @@ export function bindProfileInteractions(root, navigate) {
       login: ["Изменить логин", "Новый логин", "text"],
       email: ["Изменить почту", "Новая почта", "email"],
       password: ["Изменить пароль", "Новый пароль", "password"],
-      pin: ["Изменить PIN-код", "Новый PIN-код", "password"],
       secret: ["Добавить секрет", "Название секрета", "text"]
     }[action];
     if (!config) return;
