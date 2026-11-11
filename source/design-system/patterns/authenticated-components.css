@@ -115,7 +115,6 @@
 }
 
 .app-ui-row--information {
-  min-height: var(--app-ui-info-row-height);
   cursor: default;
 }
 
@@ -151,23 +150,29 @@
 
 .app-ui-row__title {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-ui-row__detail {
   min-width: 0;
+  overflow: hidden;
   color: var(--app-ui-text-secondary);
   font-size: var(--app-ui-type-caption);
   line-height: 1.4;
-  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-ui-row__value {
   max-width: 10rem;
+  overflow: hidden;
   color: var(--app-ui-text-secondary);
   font-size: var(--app-ui-type-caption);
   text-align: end;
-  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-ui-row__chevron {
