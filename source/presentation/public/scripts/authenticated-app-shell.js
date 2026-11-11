@@ -6,6 +6,7 @@ import {
   renderProfileScreen,
   renderProfileToolsScreen,
   renderProfileSettings,
+  renderProfileSecretsScreen,
   renderProfileEmptyScreen,
   bindProfileInteractions
 } from "./profile.js";
@@ -139,6 +140,10 @@ function renderRoute(view, user, route) {
   }
   if (route === "#authorization/profile-settings") {
     renderProfileSettings(view, user);
+    return;
+  }
+  if (route === "#authorization/profile-secrets") {
+    renderProfileSecretsScreen(view);
     return;
   }
   if (route === "#authorization/favorites") {
