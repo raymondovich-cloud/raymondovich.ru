@@ -93,6 +93,9 @@
 @media(max-width:380px){.profile-tool-row{align-items:flex-start;gap:var(--app-ui-space-2);padding-inline:var(--app-ui-space-3)}.profile-tool-access{max-width:38%;white-space:normal}.profile-tool-category .profile-tool-row{padding-inline-start:var(--app-ui-space-5)}}
 
 
+/* Tool catalog iconography — exact SVG silhouettes and teal tile treatment from prototype v3. */
+.profile-tool-row .profile-row-icon.app-ui-v3-tile{background:var(--app-ui-v3-teal-tint);color:var(--app-ui-v3-teal)}
+
 /* Profile and secondary screens — prototype v3 component contract. */
 .profile-screen.app-ui-v3-frame,.profile-subscreen.app-ui-v3-frame{width:min(100%,var(--app-ui-v3-max-width));min-width:0;min-height:100%;margin-inline:auto;overflow:visible;background-color:transparent;background-image:none;color:var(--app-ui-v3-text);font-family:var(--app-ui-v3-font-family)}
 .profile-toolbar{min-height:var(--app-ui-v3-header-height);margin:0 0 18px}
