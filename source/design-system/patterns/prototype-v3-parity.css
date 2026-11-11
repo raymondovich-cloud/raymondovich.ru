@@ -150,7 +150,7 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 }
 .authenticated-bottom-nav .app-ui-v3-tab{min-height:0;padding:0;border:1px solid transparent;border-radius:22px;color:var(--rv3-muted);font-size:11px;font-weight:500}
 .authenticated-bottom-nav .app-ui-v3-tab.is-active{border-color:var(--rv3-accent-line);background:var(--rv3-gradient-accent);color:var(--rv3-accent);box-shadow:none}
-.authenticated-bottom-nav .app-ui-v3-tab.is-active svg{filter:drop-shadow(0 0 7px rgba(214,91,31,.22))}
+.authenticated-bottom-nav .app-ui-v3-tab.is-active svg{filter:drop-shadow(0 0 7px var(--rv3-accent-glow))}
 .authenticated-bottom-nav .app-ui-v3-tab:not(.is-active):active{background:var(--rv3-press);color:var(--rv3-text)}
 @media(hover:hover){
  .profile-row.app-ui-v3-row:hover,.owner-console-row.app-ui-v3-row:hover{background:var(--rv3-press)}
