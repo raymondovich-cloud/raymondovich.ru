@@ -91,6 +91,7 @@ export function renderProfileScreen(root, user) {
             <div class="profile-group-list app-ui-list">
               ${row({icon:"projects",title:"Проекты",description:"Реестр проектов",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
               ${row({icon:"ideas",title:"Идеи",description:"Задумки и предложения",route:"#authorization/ideas"})}
+              ${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}
               ${row({icon:"tools",title:"Инструменты",description:"Вся экосистема",route:"#authorization/profile-tools"})}
             </div>
           </div>
@@ -111,7 +112,6 @@ export function renderProfileScreen(root, user) {
           <h2 class="profile-group-heading app-ui-v3-group-label">Аккаунт</h2>
           <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group>
             <div class="profile-group-list app-ui-list">
-              ${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}
               ${row({icon:"edit",title:"Редактировать профиль",route:"#authorization/profile-settings"})}
               ${row({icon:"modules",title:"Управление модулями",status:"Скоро",route:"#authorization/modules"})}
             </div>
