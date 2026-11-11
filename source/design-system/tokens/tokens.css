@@ -488,3 +488,26 @@
   --app-ui-tab-bar-wide-gutter: 1.75rem;
   --app-ui-tab-bar-narrow-gutter: 1.375rem;
 }
+
+:root {
+  --app-ui-type-chevron: 1.25rem;
+  --app-ui-space-row-copy-gap: 3px;
+  --app-ui-border-width: 1px;
+  --app-ui-skeleton-title-max: 280px;
+  --app-ui-skeleton-text-max: 420px;
+  --app-ui-skeleton-short-max: 180px;
+  --app-ui-tab-bar-max-width: 520px;
+  --app-ui-tab-bar-radius: 30px;
+  --app-ui-tab-radius: 22px;
+  --app-ui-dialog-backdrop-blur: 4px;
+  --app-ui-skeleton-title-min-height: 28px;
+  --app-ui-skeleton-avatar-size: 42px;
+  --app-ui-skeleton-title-ratio: 68%;
+  --app-ui-skeleton-text-ratio: 92%;
+  --app-ui-skeleton-short-ratio: 42%;
+  --app-ui-input-visually-hidden-size: 1px;
+  --app-ui-mobile-tab-gutter: 22px;
+  --app-ui-wide-tab-gutter: 28px;
+  --app-ui-motion-reduced-duration: 1ms;
+  --app-ui-opacity-disabled: .44;
+}
