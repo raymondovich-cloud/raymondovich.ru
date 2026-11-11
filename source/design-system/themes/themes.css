@@ -180,12 +180,12 @@
   --semantic-divider: var(--color-owner-line);
   --semantic-accent: #B94C19;
   --semantic-accent-strong: #A94416;
-  --semantic-accent-subtle: rgba(185, 76, 25, .10);
+  --semantic-accent-subtle: rgba(185, 76, 25, .08);
   --semantic-accent-foreground: #FFFFFF;
   --semantic-accent-gradient: linear-gradient(110deg, #B94C19 0%, #D65B1F 100%);
   --semantic-accent-glow: rgba(185, 76, 25, .08);
   --semantic-accent-border: rgba(185, 76, 25, .24);
-  --gradient-accent-surface: linear-gradient(145deg, rgba(214, 91, 31, .13) 0%, rgba(255, 255, 255, .96) 58%, rgba(241, 243, 246, .92) 100%);
+  --gradient-accent-surface: linear-gradient(145deg, rgba(214, 91, 31, .08) 0%, rgba(255, 255, 255, .96) 58%, rgba(241, 243, 246, .92) 100%);
   --color-accent-line: rgba(185, 76, 25, .30);
   --color-accent-tint: rgba(185, 76, 25, .10);
   --shadow-accent-glow: 0 0 16px rgba(185, 76, 25, .07);
