@@ -592,3 +592,5 @@
   --app-ui-profile-avatar-shadow-inner: 2px;
   --app-ui-profile-avatar-shadow-outer: 4px;
 }
+
+:root { --app-ui-profile-icon-stroke-width: 1.7; }
