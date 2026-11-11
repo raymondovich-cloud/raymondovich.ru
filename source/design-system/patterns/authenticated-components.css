@@ -365,7 +365,7 @@
 .app-ui-field__error {
   margin: 0;
   font-size: var(--app-ui-type-caption);
-  line-height: var(--app-ui-line-detail)5;
+  line-height: var(--app-ui-line-field);
 }
 
 .app-ui-field__hint {
