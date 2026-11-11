@@ -16,7 +16,10 @@ const icons = {
   settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 4-2-1-2 1v2H9v-2l-2-1-2 1-2-4 2-1v-2l-2-1 2-4 2 1 2-1V4h6v2l2 1 2-1 2 4-2 1v2Z"/></svg>',
   edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5 5 5M4 20l4.5-1 11-11a2.1 2.1 0 0 0-3-3l-11 11L4 20Z"/></svg>',
   modules: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
-  tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6 18 10M4 20l7-7m-2-2 7-7a4 4 0 0 1 5 5l-7 7M3 4l6 6m-5-8 7 7"/></svg>',
+  tools: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
+  spark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
+  bot: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v9h-9l-4 4v-4H5z"/></svg>',
   control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
 };
 
@@ -137,9 +140,9 @@ export function renderProfileScreen(root, user) {
 
 export function renderProfileToolsScreen(root, user) {
   const tools = [
-    ["tools", "ИИ", "Инструменты искусственного интеллекта"],
-    ["control", "Telegram-бот", "Автоматизация взаимодействия и уведомления"],
-    ["tools", "Сообщество в Telegram", "Коммуникации участников экосистемы"],
+    ["spark", "ИИ", "Ассистенты и автоматизация"],
+    ["bot", "Telegram-бот", "Заявки и уведомления"],
+    ["chat", "Сообщество в Telegram", "Канал и чат экосистемы"],
     ["modules", "Инфраструктура", "Домены, серверы, базы данных и ресурсы"],
     ["settings", "Подключённые сервисы", "Внешние сервисы, используемые в проектах"],
     ["chart", "Маркетинг", "Маркетинговые площадки, аккаунты и кампании"],
