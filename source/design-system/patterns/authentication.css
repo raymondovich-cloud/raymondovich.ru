@@ -24,7 +24,7 @@
 .auth-legal,.auth-footnote{margin:0;color:var(--app-ui-text-tertiary);font-size:var(--app-ui-type-caption);line-height:var(--app-ui-line-relaxed)}
 .auth-footnote{margin-top:var(--app-ui-space-4);text-align:center}
 .auth-profile{display:grid;gap:var(--app-ui-space-4)}
-.auth-profile-mark{display:grid;width:var(--app-ui-size-48);height:var(--app-ui-size-48);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-icon);background:var(--app-ui-surface-warm);color:var(--app-ui-accent);font-weight:var(--app-ui-weight-bold)}
+.auth-profile-mark{display:grid;width:var(--app-ui-size-50);height:var(--app-ui-size-50);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-icon);background:var(--app-ui-surface-warm);color:var(--app-ui-accent);font-weight:var(--app-ui-weight-bold)}
 .auth-profile>div{display:grid;gap:var(--app-ui-space-1)}
 .auth-profile-label{color:var(--app-ui-text-tertiary);font-size:var(--app-ui-type-caption);letter-spacing:var(--app-ui-letter-spacing-label)}
 .auth-profile strong{overflow-wrap:anywhere;color:var(--app-ui-text-primary)}
