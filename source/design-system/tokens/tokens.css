@@ -366,3 +366,119 @@
   --app-ui-shadow-sheet: 0 24px 72px rgba(0, 0, 0, .38);
   --app-ui-shadow-menu: 0 14px 40px rgba(0, 0, 0, .30);
 }
+
+
+/* Authenticated UI micro-geometry tokens — shared across themes. */
+:root {
+  --app-ui-content-max-width: 68.75rem;
+  --app-ui-copy-max-width: 48rem;
+  --app-ui-state-copy-max-width: 28rem;
+  --app-ui-sheet-max-width: 40rem;
+  --app-ui-dialog-max-width: 27.5rem;
+  --app-ui-menu-width: 17.5rem;
+  --app-ui-menu-viewport-gutter: 1.5rem;
+  --app-ui-dialog-viewport-gutter: 2rem;
+  --app-ui-sheet-max-height: 88dvh;
+  --app-ui-dialog-max-height: 86dvh;
+  --app-ui-sheet-height-cap: 47.5rem;
+  --app-ui-dialog-height-cap: 45rem;
+  --app-ui-mobile-breakpoint: 37.5rem;
+  --app-ui-compact-breakpoint: 23.75rem;
+
+  --app-ui-space-0: 0;
+  --app-ui-space-0-5: .125rem;
+  --app-ui-space-1-5: .375rem;
+  --app-ui-space-2-5: .625rem;
+  --app-ui-space-3-5: .875rem;
+  --app-ui-space-10: 3rem;
+  --app-ui-space-11: 3.5rem;
+
+  --app-ui-size-1: 1px;
+  --app-ui-size-2: 2px;
+  --app-ui-size-3: 3px;
+  --app-ui-size-4: 4px;
+  --app-ui-size-5: 5px;
+  --app-ui-size-8: 8px;
+  --app-ui-size-12: 12px;
+  --app-ui-size-14: 14px;
+  --app-ui-size-16: 16px;
+  --app-ui-size-18: 18px;
+  --app-ui-size-19: 19px;
+  --app-ui-size-22: 22px;
+  --app-ui-size-23: 23px;
+  --app-ui-size-25: 25px;
+  --app-ui-size-26: 26px;
+  --app-ui-size-28: 28px;
+  --app-ui-size-30: 30px;
+  --app-ui-size-36: 36px;
+  --app-ui-size-42: 42px;
+  --app-ui-size-50: 50px;
+  --app-ui-size-68: 68px;
+  --app-ui-size-76: 76px;
+  --app-ui-size-78: 78px;
+  --app-ui-size-110: 110px;
+  --app-ui-size-180: 180px;
+  --app-ui-size-280: 280px;
+  --app-ui-size-420: 420px;
+  --app-ui-size-440: 440px;
+  --app-ui-size-520: 520px;
+  --app-ui-size-640: 640px;
+  --app-ui-size-720: 720px;
+  --app-ui-size-760: 760px;
+  --app-ui-size-1100: 1100px;
+
+  --app-ui-radius-none: 0;
+  --app-ui-radius-icon: 12px;
+  --app-ui-radius-tab: 22px;
+  --app-ui-radius-navigation: 30px;
+  --app-ui-radius-avatar: 50%;
+
+  --app-ui-opacity-subtle: .44;
+  --app-ui-opacity-handle: .55;
+  --app-ui-opacity-underlay: .84;
+  --app-ui-opacity-reduced-underlay: .92;
+  --app-ui-scale-pressed: .98;
+  --app-ui-scale-menu: .985;
+  --app-ui-scale-dialog: .985;
+
+  --app-ui-motion-instant: 1ms;
+  --app-ui-motion-skeleton: 1.5s;
+  --app-ui-ease-linear: linear;
+  --app-ui-ease-default: ease;
+  --app-ui-ease-out: ease-out;
+
+  --app-ui-letter-spacing-tight: -.04em;
+  --app-ui-letter-spacing-compact: -.02em;
+  --app-ui-letter-spacing-label: .12em;
+  --app-ui-line-caption: 1.2;
+  --app-ui-line-row: 1.3;
+  --app-ui-line-detail: 1.4;
+  --app-ui-line-field: 1.45;
+  --app-ui-line-heading-compact: 1.2;
+
+  --app-ui-grid-chevron: 16px;
+  --app-ui-grid-chevron-compact: 12px;
+  --app-ui-tab-grid-gap: 5px;
+  --app-ui-tab-icon-width: 28px;
+  --app-ui-tab-icon-height: 25px;
+  --app-ui-tab-icon-size: 22px;
+  --app-ui-row-value-max: 10rem;
+  --app-ui-row-value-max-compact: 7rem;
+  --app-ui-button-pressed-brightness: 1.04;
+  --app-ui-skeleton-background-size: 200% 100%;
+  --app-ui-skeleton-title-width: 68%;
+  --app-ui-skeleton-text-width: 92%;
+  --app-ui-skeleton-short-width: 42%;
+  --app-ui-row-title-width: 100%;
+  --app-ui-focus-outline-width: 2px;
+  --app-ui-focus-outline-offset: 2px;
+  --app-ui-focus-outline-offset-large: 3px;
+  --app-ui-transform-sheet-enter: 18px;
+  --app-ui-transform-menu-enter: 4px;
+  --app-ui-transform-screen-enter: 14px;
+  --app-ui-transform-screen-leave: 8px;
+  --app-ui-transform-dialog-enter: 8px;
+  --app-ui-transform-menu-scale: .985;
+  --app-ui-transform-dialog-scale: .985;
+  --app-ui-transform-none: none;
+}
