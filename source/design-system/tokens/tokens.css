@@ -571,3 +571,10 @@
   --app-ui-tab-icon-active-shadow: 0 1px 3px;
   --app-ui-tab-avatar-size: 25px;
 }
+
+:root {
+  --app-ui-profile-compact-icon-column: 38px;
+  --app-ui-profile-compact-row-gap: 8px;
+  --app-ui-profile-compact-row-padding-inline: 10px;
+  --app-ui-profile-compact-value-font-size: 11px;
+}
