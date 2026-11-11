@@ -73,7 +73,7 @@ function avatarMarkup(user) {
 
 function tabMarkup(key, label, user, active) {
   const icon = key === "profile" ? avatarMarkup(user) : TAB_ICONS[key];
-  return `<button class="app-tab app-ui-tab${active === key ? " is-active" : ""}" type="button"
+  return `<button class="app-tab app-ui-tab app-ui-v3-tab${active === key ? " is-active" : ""}" type="button"
     data-app-tab="${key}" aria-label="${label}" ${active === key ? 'aria-current="page"' : ""}>
     <span class="app-tab-icon app-ui-tab__icon">${icon}</span><span class="app-tab-label app-ui-tab__label">${label}</span>
   </button>`;
@@ -84,7 +84,7 @@ function shellMarkup(user, active) {
     ${globalSearchMarkup()}
     <div class="authenticated-app-shell">
       <div class="authenticated-app-content" data-app-view tabindex="-1"></div>
-      <nav class="authenticated-bottom-nav app-ui-tab-bar" aria-label="Основная навигация">
+      <nav class="authenticated-bottom-nav app-ui-tab-bar app-ui-v3-tabbar" aria-label="Основная навигация">
         ${tabMarkup("projects", "Проекты", user, active)}
         ${tabMarkup("ideas", "Идеи", user, active)}
         ${tabMarkup("tools", "Инструменты", user, active)}
@@ -118,10 +118,10 @@ function activeTabForRoute(route) {
 function renderTools(view) {
   view.dataset.appScreen = "tools";
   view.innerHTML = `
-    <section class="app-placeholder-screen" aria-labelledby="tools-title">
+    <section class="app-placeholder-screen app-ui-v3-frame" aria-labelledby="tools-title">
       <p class="app-placeholder-eyebrow">RAYMONDOVICH / TOOLS</p>
-      <h1 id="tools-title">Инструменты</h1>
-      <div class="app-placeholder-state"><span class="app-placeholder-mark" aria-hidden="true">⌘</span><strong>В разработке</strong><p>Раздел пока не подключён. Доступные инструменты появятся здесь после реализации.</p></div>
+      <h1 class="app-ui-v3-heading" id="tools-title">Инструменты</h1>
+      <div class="app-placeholder-state app-ui-v3-group"><span class="app-placeholder-mark app-ui-v3-tile" aria-hidden="true">⌘</span><strong>В разработке</strong><p>Раздел пока не подключён. Доступные инструменты появятся здесь после реализации.</p></div>
     </section>`;
 }
 

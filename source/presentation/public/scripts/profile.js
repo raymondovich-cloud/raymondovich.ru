@@ -18,13 +18,16 @@ const icons = {
   control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
 };
 
-function row({ icon, title, value = "", route, status = "", control = false }) {
-  return `<button class="profile-row app-ui-row" type="button" data-profile-route="${escape(route)}">
-    <span class="profile-row-icon app-ui-row__icon is-${icon}">${icons[icon]}</span>
-    <span class="profile-row-title app-ui-row__title">${escape(title)}</span>
-    <span class="profile-row-value app-ui-row__value">${escape(value || status)}</span>
-    <span class="profile-row-chevron app-ui-row__chevron" aria-hidden="true">›</span>
-  </button>`;
+function row({ icon, title, value = "", route, status = "" }) {
+  const detail = value || status;
+  return '<button class="profile-row app-ui-row app-ui-v3-row" type="button" data-profile-route="' + escape(route) + '">' +
+    '<span class="profile-row-icon app-ui-row__icon app-ui-v3-tile is-' + icon + '">' + icons[icon] + '</span>' +
+    '<span class="profile-row-copy app-ui-v3-row__copy">' +
+      '<span class="profile-row-title app-ui-row__title app-ui-v3-row__title">' + escape(title) + '</span>' +
+      (detail ? '<span class="profile-row-value app-ui-row__value app-ui-v3-row__value">' + escape(detail) + '</span>' : '') +
+    '</span>' +
+    '<span class="profile-row-chevron app-ui-row__chevron app-ui-v3-row__chevron" aria-hidden="true">›</span>' +
+  '</button>';
 }
 
 function userLabel(user) {
@@ -60,11 +63,11 @@ export function renderProfileScreen(root, user) {
   const cachedProjectCount = projectCountCache.get(user.id);
   root.dataset.appScreen = "profile";
   root.innerHTML = `
-    <section class="profile-screen app-ui-screen" aria-labelledby="profile-title">
+    <section class="profile-screen app-ui-screen app-ui-v3-frame" aria-labelledby="profile-title">
       <div class="profile-toolbar app-ui-screen-header">
-        <h1 id="profile-title">Профиль</h1>
+        <h1 class="app-ui-v3-heading" id="profile-title">Профиль</h1>
       </div>
-      <header class="profile-identity app-ui-card app-ui-card--warm">
+      <header class="profile-identity app-ui-card app-ui-card--warm app-ui-v3-group app-ui-v3-group--accent">
         <div class="profile-avatar" aria-hidden="true">
           ${avatar ? `<img src="${escape(avatar)}" alt="">` : `<span>${escape(initials(name))}</span>`}
         </div>
@@ -75,24 +78,24 @@ export function renderProfileScreen(root, user) {
         <span class="profile-role">${escape(roleLabel(user))}</span>
       </header>
       <div class="profile-groups" data-profile-groups>
-        ${admin ? `<section class="profile-group app-ui-group" data-profile-group><div class="profile-group-list app-ui-list">${row({icon:"control",title:"Control Center",route:"#authorization/control-center"})}</div></section>` : ""}
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Проекты">
+        ${admin ? `<section class="profile-group app-ui-group app-ui-v3-group" data-profile-group><div class="profile-group-list app-ui-list">${row({icon:"control",title:"Control Center",route:"#authorization/control-center"})}</div></section>` : ""}
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Проекты">
           <div class="profile-group-list app-ui-list">${row({icon:"projects",title:"Мои проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}</div>
         </section>
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Инструменты">
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Инструменты">
           <div class="profile-group-list app-ui-list">${row({icon:"tools",title:"Инструменты",value:"Каталог платформы",route:"#authorization/profile-tools"})}</div>
         </section>
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Избранное">
-          <div class="profile-group-heading">Избранное</div>
-          <div class="profile-empty">Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</div>
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Избранное">
+          <div class="profile-group-heading app-ui-v3-group-label">Избранное</div>
+          <div class="profile-empty app-ui-v3-empty">Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</div>
         </section>
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Отчёты">
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Отчёты">
           <div class="profile-group-list app-ui-list">${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}</div>
         </section>
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Редактирование профиля">
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Редактирование профиля">
           <div class="profile-group-list app-ui-list">${row({icon:"edit",title:"Редактировать профиль",route:"#authorization/profile-settings"})}</div>
         </section>
-        <section class="profile-group app-ui-group" data-profile-group aria-label="Управление модулями">
+        <section class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Управление модулями">
           <div class="profile-group-list app-ui-list">${row({icon:"modules",title:"Управление модулями",status:"Скоро",route:"#authorization/modules"})}</div>
         </section>
       </div>
@@ -117,19 +120,16 @@ export function renderProfileScreen(root, user) {
 
 
 export function renderProfileToolsScreen(root, user) {
-  const owner = user.app_metadata?.role === "admin";
-  const accessLabel = owner ? "Доступ владельца" : "Доступ по подписке";
   const toolRow = (title, description = "") => `
     <div class="profile-tool-row">
       <span class="profile-tool-row-copy"><strong>${escape(title)}</strong>${description ? `<small>${escape(description)}</small>` : ""}</span>
-      <span class="profile-tool-access">${accessLabel}</span>
     </div>`;
   root.dataset.appScreen = "profile-tools";
   root.innerHTML = `
-    <section class="profile-subscreen profile-tools-screen" aria-labelledby="profile-tools-title">
+    <section class="profile-subscreen profile-tools-screen app-ui-v3-frame" aria-labelledby="profile-tools-title">
       <header class="profile-subscreen-header">
-        <h1 id="profile-tools-title">Инструменты</h1>
-        <p class="profile-tools-intro">Каталог инструментов экосистемы Raymondovich. Доступ к использованию определяется ролью и подпиской.</p>
+        <h1 class="app-ui-v3-heading" id="profile-tools-title">Инструменты</h1>
+        <p class="profile-tools-intro">Каталог инструментов и сервисов, используемых в экосистеме Raymondovich.</p>
       </header>
       <section class="profile-tools-group" aria-labelledby="profile-tools-development">
         <h2 id="profile-tools-development">Инструменты разработки</h2>
@@ -168,27 +168,27 @@ export function renderProfileToolsScreen(root, user) {
 export function renderProfileSettings(root, user) {
   root.dataset.appScreen = "profile-settings";
   root.innerHTML = `
-    <section class="profile-subscreen" aria-labelledby="profile-settings-title">
+    <section class="profile-subscreen app-ui-v3-frame" aria-labelledby="profile-settings-title">
       <header class="profile-subscreen-header">
-        <h1 id="profile-settings-title">Настройки профиля</h1>
+        <h1 class="app-ui-v3-heading" id="profile-settings-title">Настройки профиля</h1>
       </header>
-      <section class="profile-settings-card">
+      <section class="profile-settings-card app-ui-v3-group">
         <h2>Электронная почта</h2>
         <p class="profile-current-value">${escape(user.email || "Адрес не указан")}</p>
         <form data-profile-email-form>
           <label>Новый e-mail<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
-          <button class="profile-submit" type="submit">Изменить e-mail</button>
+          <button class="profile-submit app-ui-v3-button" type="submit">Изменить e-mail</button>
         </form>
       </section>
-      <section class="profile-settings-card">
+      <section class="profile-settings-card app-ui-v3-group">
         <h2>Пароль</h2>
         <form data-profile-password-form>
           <label>Новый пароль<input name="password" type="password" autocomplete="new-password" required minlength="10"></label>
           <label>Повторите пароль<input name="confirmation" type="password" autocomplete="new-password" required minlength="10"></label>
-          <button class="profile-submit" type="submit">Изменить пароль</button>
+          <button class="profile-submit app-ui-v3-button" type="submit">Изменить пароль</button>
         </form>
       </section>
-      <section class="profile-settings-card">
+      <section class="profile-settings-card app-ui-v3-group">
         <h2>Безопасность</h2>
         <p>PIN-код защищает доступ к приложению на этом устройстве.</p>
         <button class="profile-secondary" type="button" data-pin-change>Изменить PIN-код</button>
