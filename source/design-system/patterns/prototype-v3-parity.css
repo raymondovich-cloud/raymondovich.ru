@@ -281,10 +281,10 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 .profile-empty-icon.is-success{background:var(--app-ui-success-surface);color:var(--semantic-success)}
 .profile-group[aria-label="Избранное"] .profile-empty::before{content:none;display:none}
 .profile-group[aria-label="Избранное"] .profile-group-heading{color:var(--rv3-accent)}
-.profile-theme-toggle[aria-pressed="false"] .rv3-switch{background:var(--rv3-accent)}
-.profile-theme-toggle[aria-pressed="false"] .rv3-switch::after{transform:translateX(20px)}
-.profile-theme-toggle[aria-pressed="true"] .rv3-switch{background:var(--rv3-surface-2)}
-.profile-theme-toggle[aria-pressed="true"] .rv3-switch::after{transform:translateX(0)}
+.profile-theme-toggle[aria-checked="true"] .rv3-switch{background:var(--rv3-accent)}
+.profile-theme-toggle[aria-checked="true"] .rv3-switch::after{transform:translateX(20px)}
+.profile-theme-toggle[aria-checked="false"] .rv3-switch{background:var(--rv3-surface-2)}
+.profile-theme-toggle[aria-checked="false"] .rv3-switch::after{transform:translateX(0)}
 
 .profile-section{display:grid;gap:10px;min-width:0}
 .profile-groups{gap:22px}

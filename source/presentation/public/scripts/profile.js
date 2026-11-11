@@ -191,8 +191,8 @@ export function renderProfileSettings(root, user) {
       </header>
       <section class="profile-settings-card app-ui-v3-group profile-appearance-settings">
         <h2>Оформление</h2>
-        <button class="profile-theme-toggle" type="button" data-theme-toggle aria-pressed="${themeIsLight}">
-          <span data-theme-label>${themeIsLight ? "Тёмная тема" : "Светлая тема"}</span>
+        <button class="profile-theme-toggle" type="button" role="switch" data-theme-toggle aria-checked="${!themeIsLight}">
+          <span data-theme-label>Тёмная тема</span>
           <span class="rv3-switch" aria-hidden="true"></span>
         </button>
       </section>
