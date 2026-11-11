@@ -219,16 +219,13 @@ export function renderProfileSettings(root, user) {
           </div>
         </div>
       </section>
-      <section class="profile-settings-section" aria-labelledby="profile-settings-privacy">
-        <h2 class="profile-settings-heading" id="profile-settings-privacy">Конфиденциальность</h2>
+      <section class="profile-settings-section" aria-labelledby="profile-settings-session">
+        <h2 class="profile-settings-heading" id="profile-settings-session">Сеанс</h2>
         <div class="profile-settings-card app-ui-v3-group">
-          <p>PIN-код защищает доступ к приложению на этом устройстве.</p>
-          <button class="profile-secondary" type="button" data-pin-change>Изменить PIN-код</button>
-          <button class="profile-secondary" type="button" data-auth-lock>Заблокировать приложение</button>
           <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
         </div>
       </section>
-      <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
+      <p class="profile-form-notice data-profile-notice role="status" aria-live="polite" hidden></p>
     </section>`;
 }
 
