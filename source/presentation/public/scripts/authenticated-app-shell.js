@@ -266,6 +266,8 @@ export function renderAuthenticatedApp(root, user) {
   }
 
   document.body.dataset.page = "authenticated-workspace";
+  view.scrollTop = 0;
+  shell.classList.remove("is-scrolled");
   if (view.dataset.appScrollBound !== "true") {
     view.addEventListener("scroll", () => shell.classList.toggle("is-scrolled", view.scrollTop > 36), { passive: true });
     view.dataset.appScrollBound = "true";
