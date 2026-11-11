@@ -318,7 +318,7 @@
   --app-ui-row-icon-size: 38px;
   --app-ui-tab-item-height: 60px;
   --app-ui-tab-bar-height: 78px;
-  --app-ui-tab-bar-inset: 8px;
+  --app-ui-tab-bar-inset: 12px;
 
   --app-ui-motion-fast: 160ms;
   --app-ui-motion-standard: 220ms;
@@ -510,4 +510,63 @@
   --app-ui-wide-tab-gutter: 28px;
   --app-ui-motion-reduced-duration: 1ms;
   --app-ui-opacity-disabled: .44;
+}
+
+/* Profile reference-screen geometry tokens. */
+:root {
+  --app-ui-profile-max-width: 700px;
+  --app-ui-profile-toolbar-height: 42px;
+  --app-ui-profile-toolbar-gap: 12px;
+  --app-ui-profile-title-size: 19px;
+  --app-ui-profile-identity-size: 72px;
+  --app-ui-profile-identity-gap: 12px;
+  --app-ui-profile-identity-margin-top: 8px;
+  --app-ui-profile-identity-margin-bottom: 18px;
+  --app-ui-profile-identity-padding-block: 14px;
+  --app-ui-profile-identity-padding-inline: 16px;
+  --app-ui-profile-identity-radius: 18px;
+  --app-ui-profile-avatar-border: 2px;
+  --app-ui-profile-avatar-font-size: 26px;
+  --app-ui-profile-copy-gap: 5px;
+  --app-ui-profile-role-padding-block: 6px;
+  --app-ui-profile-role-padding-inline: 10px;
+  --app-ui-profile-role-font-size: 11px;
+  --app-ui-profile-collapse-height: 120px;
+  --app-ui-profile-collapse-duration: 1s;
+  --app-ui-profile-collapse-range: 132px;
+  --app-ui-profile-collapse-offset: -8px;
+  --app-ui-profile-collapse-scale: .985;
+  --app-ui-profile-groups-gap: 16px;
+  --app-ui-profile-group-radius: 22px;
+  --app-ui-profile-heading-padding-top: 16px;
+  --app-ui-profile-heading-padding-inline: 17px;
+  --app-ui-profile-heading-padding-bottom: 12px;
+  --app-ui-profile-heading-font-size: 10px;
+  --app-ui-profile-heading-letter-spacing: .10em;
+  --app-ui-profile-row-icon-column: 40px;
+  --app-ui-profile-row-chevron-column: 15px;
+  --app-ui-profile-row-gap: 12px;
+  --app-ui-profile-row-height: 68px;
+  --app-ui-profile-row-padding-block: 10px;
+  --app-ui-profile-row-padding-inline: 15px;
+  --app-ui-profile-row-font-size: 14px;
+  --app-ui-profile-icon-size: 38px;
+  --app-ui-profile-icon-radius: 12px;
+  --app-ui-profile-icon-glyph-size: 19px;
+  --app-ui-profile-value-font-size: 12px;
+  --app-ui-profile-chevron-font-size: 23px;
+  --app-ui-profile-empty-padding-top: 13px;
+  --app-ui-profile-empty-padding-inline: 16px;
+  --app-ui-profile-empty-padding-bottom: 17px;
+  --app-ui-profile-empty-font-size: 13px;
+  --app-ui-profile-empty-line-height: 1.55;
+  --app-ui-profile-favorite-icon-size: 38px;
+  --app-ui-profile-favorite-icon-font-size: 18px;
+  --app-ui-profile-favorite-icon-radius: 12px;
+  --app-ui-tab-label-size: 10.5px;
+  --app-ui-tab-active-indicator-width: 15px;
+  --app-ui-tab-active-indicator-height: 3px;
+  --app-ui-tab-active-indicator-inset: 3px;
+  --app-ui-tab-icon-active-shadow: 0 1px 3px;
+  --app-ui-tab-avatar-size: 25px;
 }
