@@ -357,3 +357,38 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 
 /* Prototype v3: the selected tab is indicated by its accent frame only. */
 .authenticated-bottom-nav .app-ui-v3-tab.is-active::after{content:none;display:none}
+
+/* Authenticated workspace must escape the public authorization section wrapper.
+   The app is a viewport-level workspace, not a card nested inside the public page. */
+body[data-page="authenticated-workspace"]{
+  width:100%;
+  min-width:0;
+  min-height:100dvh;
+  margin:0;
+  overflow:hidden;
+}
+body[data-page="authenticated-workspace"] #main > .section:has(.authenticated-app-shell){
+  width:100%;
+  min-height:0;
+  margin:0;
+  padding:0;
+}
+body[data-page="authenticated-workspace"] .auth-layout:has(.authenticated-app-shell){
+  display:contents;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+}
+body[data-page="authenticated-workspace"] .authenticated-app-shell{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  width:auto;
+  max-width:none;
+  height:100dvh;
+  min-height:100dvh;
+  margin:0;
+  border:0;
+  border-radius:0;
+}
