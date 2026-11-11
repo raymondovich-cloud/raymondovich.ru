@@ -67,11 +67,11 @@ export function renderOwnerControlCenter(user) {
       <header class="owner-console-header">
         <p class="owner-console-eyebrow">RAYMONDOVICH / CONTROL CENTER</p>
         <h1 class="owner-console-title">Центр управления</h1>
-        <p class="owner-console-lead">Управление экосистемой: бизнес, интеграции и система.</p>
+        <p class="owner-console-lead">Управление самой экосистемой: партнёры, финансы, интеграции и система.</p>
       </header>
       <section class="owner-console-groups" aria-label="Панель управления владельца">
         ${groups.map(group => `
-          <details class="owner-console-group app-ui-v3-group" name="owner-control-center-group">
+          <details class="owner-console-group app-ui-v3-group" name="owner-control-center-group" ${group.id === "business" ? "open" : ""}>
             <summary class="profile-row owner-console-group-summary app-ui-v3-row">
               <span class="profile-row-icon owner-console-row-icon app-ui-v3-tile">${icons[group.id === "business" ? "projects" : group.id === "integrations" ? "ai" : "security"]}</span>
               <span class="profile-row-title app-ui-v3-row__title">${group.title.charAt(0) + group.title.slice(1).toLowerCase()}</span>
