@@ -192,7 +192,7 @@ export function renderProfileSettings(root, user) {
         <h2>Сеанс</h2>
         <button class="profile-secondary" type="button" data-auth-signout>Выйти из аккаунта</button>
       </section>
-      <p class="profile-form-notice data-profile-notice role="status" aria-live="polite" hidden></p>
+      <p class="profile-form-notice" data-profile-notice role="status" aria-live="polite" hidden></p>
     </section>`;
 }
 
