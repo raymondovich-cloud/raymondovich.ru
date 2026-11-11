@@ -61,6 +61,15 @@ function displayName(user) {
     || "Пользователь";
 }
 
+function userRenderKey(user) {
+  return JSON.stringify({
+    id: user.id,
+    email: user.email,
+    metadata: user.user_metadata || {},
+    role: user.app_metadata?.role || "user"
+  });
+}
+
 function avatarMarkup(user) {
   const candidate = user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
   try {
@@ -240,6 +249,8 @@ function bindShell(root, user) {
 
 export function renderAuthenticatedApp(root, user) {
   if (!root || !user) return;
+  const previousUser = currentShellUsers.get(root);
+  const nextUserKey = userRenderKey(user);
   currentShellUsers.set(root, user);
   const state = window.RaymondovichNavigation?.getState();
   const route = state?.route || location.hash || "#authorization";
@@ -271,6 +282,15 @@ export function renderAuthenticatedApp(root, user) {
   }
 
   document.body.dataset.page = "authenticated-workspace";
+  if (
+    view.dataset.appRoute === route
+    && view.dataset.appScreen
+    && view.dataset.appUserKey === nextUserKey
+    && previousUser?.id === user.id
+  ) {
+    syncFullscreenState(shell);
+    return;
+  }
   view.scrollTop = 0;
   shell.classList.remove("is-scrolled");
   if (view.dataset.appScrollBound !== "true") {
@@ -279,6 +299,7 @@ export function renderAuthenticatedApp(root, user) {
   }
   renderRoute(view, user, route);
   view.dataset.appRoute = route;
+  view.dataset.appUserKey = nextUserKey;
   const isPushScreen = !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
   shell.classList.toggle("is-push-screen", isPushScreen);
   view.classList.toggle("is-push-screen", isPushScreen);
