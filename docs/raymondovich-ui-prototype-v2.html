@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAYMONDOVICH — прототип интерфейса v2</title>
+<style>
+/* ===== Tokens: light (root), dark (media + attribute) ===== */
+:root{
+  --bg:#f2f3f6;--glow:radial-gradient(circle 340px at 92% 6%,rgba(214,91,31,.16),transparent 70%);
+  --text:#17191d;--muted:#5b626d;--subtle:#8a919b;--line:rgba(20,24,30,.09);--surface-2:#eceef2;
+  --grad-surface:linear-gradient(145deg,rgba(214,91,31,.05),rgba(255,255,255,.92) 55%);
+  --grad-acc:linear-gradient(145deg,rgba(214,91,31,.13),rgba(255,255,255,.93) 62%);
+  --grad-btn:linear-gradient(110deg,#d65b1f,#ee8a52);--on-accent:#fff;
+  --accent:#d65b1f;--accent-tint:rgba(214,91,31,.11);--accent-line:rgba(214,91,31,.32);--accent-glow:rgba(214,91,31,.22);
+  --glass:rgba(255,255,255,.72);--glass-line:rgba(20,24,30,.1);--edge:rgba(255,255,255,.9);
+  --press:rgba(20,24,30,.055);--scrim:rgba(10,12,16,.38);--sheet:#fff;--shadow:0 14px 40px rgba(22,28,38,.14);
+  --ok:#218653;--teal:#14907c;--teal-tint:rgba(20,144,124,.12);
+  --ease:cubic-bezier(.32,.72,0,1);--t:.18s;--tm:.36s;--row:64px;--tab:68px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#08090b;--glow:radial-gradient(circle 340px at 92% 6%,rgba(255,105,38,.17),transparent 70%);
+  --text:#f4f5f7;--muted:#9a9fa9;--subtle:#6f7580;--line:rgba(255,255,255,.08);--surface-2:#1a1d23;
+  --grad-surface:linear-gradient(145deg,rgba(255,118,47,.05),rgba(23,26,32,.92) 55%);
+  --grad-acc:linear-gradient(145deg,rgba(255,118,47,.17),rgba(36,21,14,.95) 62%);
+  --grad-btn:linear-gradient(110deg,#ff6a27,#ffb078);--on-accent:#1a110b;
+  --accent:#ff762f;--accent-tint:rgba(255,118,47,.14);--accent-line:rgba(255,118,47,.34);--accent-glow:rgba(255,118,47,.26);
+  --glass:rgba(26,28,34,.68);--glass-line:rgba(255,255,255,.12);--edge:rgba(255,255,255,.1);
+  --press:rgba(255,255,255,.06);--scrim:rgba(0,0,0,.55);--sheet:#14161a;--shadow:0 14px 40px rgba(0,0,0,.45);
+  --ok:#65cb8c;--teal:#5cc8b4;--teal-tint:rgba(92,200,180,.14);color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#08090b;--glow:radial-gradient(circle 340px at 92% 6%,rgba(255,105,38,.17),transparent 70%);
+  --text:#f4f5f7;--muted:#9a9fa9;--subtle:#6f7580;--line:rgba(255,255,255,.08);--surface-2:#1a1d23;
+  --grad-surface:linear-gradient(145deg,rgba(255,118,47,.05),rgba(23,26,32,.92) 55%);
+  --grad-acc:linear-gradient(145deg,rgba(255,118,47,.17),rgba(36,21,14,.95) 62%);
+  --grad-btn:linear-gradient(110deg,#ff6a27,#ffb078);--on-accent:#1a110b;
+  --accent:#ff762f;--accent-tint:rgba(255,118,47,.14);--accent-line:rgba(255,118,47,.34);--accent-glow:rgba(255,118,47,.26);
+  --glass:rgba(26,28,34,.68);--glass-line:rgba(255,255,255,.12);--edge:rgba(255,255,255,.1);
+  --press:rgba(255,255,255,.06);--scrim:rgba(0,0,0,.55);--sheet:#14161a;--shadow:0 14px 40px rgba(0,0,0,.45);
+  --ok:#65cb8c;--teal:#5cc8b4;--teal-tint:rgba(92,200,180,.14);color-scheme:dark;}
+
+/* ===== Base ===== */
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{position:relative;height:100%;max-width:480px;margin:0 auto;overflow:hidden;background-color:var(--bg);background-image:var(--glow)}
+@media(min-width:520px){.app{border-inline:1px solid var(--line)}}
+
+/* ===== Screens and transitions ===== */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;
+  transition:opacity var(--tm) var(--ease),transform var(--tm) var(--ease),visibility 0s var(--tm)}
+.screen.is-active{opacity:1;visibility:visible;transition-delay:0s}
+.screen.tab{z-index:1;transform:translateY(8px)}
+.screen.tab.is-active{transform:none}
+.screen.push{z-index:3;opacity:1;transform:translateX(100%);background-color:var(--bg);background-image:var(--glow);box-shadow:-18px 0 40px rgba(0,0,0,.25)}
+.screen.push.is-active{transform:none}
+.screen.is-active.is-under{transform:translateX(-24%);opacity:.45}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:56px 16px calc(var(--tab) + 48px);scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.push .scroll{padding-bottom:40px}
+.bar{position:absolute;top:0;left:0;right:0;height:52px;z-index:5;display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid transparent;transition:background var(--t),border-color var(--t)}
+.is-scrolled .bar{background:var(--glass);border-bottom-color:var(--line);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.bar-title{font-weight:600;font-size:17px;opacity:0;transform:translateY(5px);transition:opacity var(--t),transform var(--tm) var(--ease)}
+.is-scrolled .bar-title{opacity:1;transform:none}
+.back{position:absolute;left:12px;top:8px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+  border:1px solid var(--glass-line);background:var(--glass);color:var(--accent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);transition:transform var(--t) var(--ease)}
+.back:active{transform:scale(.9)}
+
+/* ===== Typography ===== */
+.large{margin:6px 4px 18px;font-size:34px;line-height:1.1;font-weight:700;letter-spacing:-.03em}
+.eyebrow{margin:6px 4px 0;font:500 11px/1.4 var(--mono);letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+.eyebrow+.large{margin-top:4px}
+.gh{margin:24px 6px 10px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gh.acc{color:var(--accent)}
+.note{margin:22px 6px 0;text-align:center;font-size:12px;color:var(--subtle)}
+
+/* ===== Groups and rows ===== */
+.group{border:1px solid var(--line);border-radius:22px;background:var(--grad-surface);overflow:hidden}
+.group.acc{border-color:var(--accent-line);background:var(--grad-acc)}
+.row{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:var(--row);padding:0 16px 0 12px;border:0;background:none;text-align:left;cursor:pointer;transition:background var(--t)}
+.row+.row::before,.fold-body .row::before{content:"";position:absolute;top:0;left:66px;right:0;height:1px;background:var(--line)}
+.row:active{background:var(--press)}
+@media(hover:hover){.row:hover{background:var(--press)}}
+.row>svg{width:16px;height:16px;color:var(--subtle)}
+.row-title{flex:1;min-width:0;font-size:16px;font-weight:500}
+.row-sub{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--muted)}
+.tile{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--accent-tint);color:var(--accent);flex:none}
+.tile.teal{background:var(--teal-tint);color:var(--teal)}
+.tile.mute{background:var(--surface-2);color:var(--muted)}
+.group.acc .tile{box-shadow:inset 0 0 0 1px var(--accent-line)}
+.group.acc .row>svg{color:var(--accent)}
+.pill{display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--muted);white-space:nowrap}
+.pill.acc{color:var(--accent);border-color:var(--accent-line);background:var(--accent-tint)}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+
+.lead{margin:-6px 6px 16px;font-size:14px;line-height:1.55;color:var(--muted)}
+.val{max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;color:var(--muted)}
+.tile.ok{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+.group+.btn{margin-top:14px}
+/* ===== Switch ===== */
+.sw{position:relative;width:51px;height:31px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);flex:none;transition:background var(--tm) var(--ease)}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform var(--tm) var(--ease)}
+.sw[aria-checked="true"]{background:var(--accent)}
+.sw[aria-checked="true"]::after{transform:translateX(20px)}
+
+/* ===== Hero ===== */
+.hero{display:flex;align-items:center;gap:16px;padding:18px}
+.avatar{display:grid;place-items:center;width:68px;height:68px;border-radius:50%;flex:none;background:var(--accent-tint);color:var(--accent);font-size:24px;font-weight:700;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--accent-line),0 0 30px var(--accent-glow)}
+.hero-info{min-width:0;flex:1;display:grid;gap:5px;justify-items:start}
+.name{font-size:20px;font-weight:650;letter-spacing:-.02em;max-width:100%}
+.mail{max-width:100%;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{padding:3px 11px;border:1px solid var(--accent-line);border-radius:99px;background:var(--accent-tint);color:var(--accent);font-size:12px;font-weight:600}
+.empty{display:grid;justify-items:center;gap:10px;padding:26px 20px;text-align:center;font-size:14px;line-height:1.5;color:var(--muted)}
+
+/* ===== Search, buttons, stats ===== */
+.tools{display:flex;gap:10px;margin:6px 0 14px}
+.search{flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;border:1px solid var(--line);border-radius:16px;background:var(--grad-surface);color:var(--muted)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--text);font-size:16px}
+.ibtn{display:grid;place-items:center;width:48px;height:48px;flex:none;border:1px solid var(--line);border-radius:16px;background:var(--grad-surface);color:var(--text);cursor:pointer;transition:transform var(--t) var(--ease)}
+.ibtn.acc{border:0;background:var(--grad-btn);color:var(--on-accent)}
+.ibtn:active,.btn:active{transform:scale(.94)}
+.btn{width:100%;min-height:50px;border:0;border-radius:15px;background:var(--grad-btn);color:var(--on-accent);font-size:16px;font-weight:600;cursor:pointer;transition:transform var(--t) var(--ease)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.stat{display:grid;gap:10px;padding:16px 18px;border:1px solid var(--line);border-radius:20px;background:var(--grad-surface);font-size:14px;color:var(--muted)}
+.stat b{font-size:36px;line-height:1;font-weight:600;letter-spacing:-.03em;color:var(--text)}
+.stat.acc{border-color:var(--accent-line);background:var(--grad-acc);color:var(--accent)}
+.stat.acc b{color:var(--accent)}
+.meter{height:8px;margin:12px 0 10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.meter i{display:block;width:100%;height:100%;background:var(--grad-btn)}
+.fc{display:grid;gap:8px;width:100%;padding:18px;border:0;background:none;color:inherit;text-align:left;cursor:pointer}
+.fc h3{margin:0;font-size:20px;font-weight:600;letter-spacing:-.02em}
+.fc p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+.chips{display:flex;align-items:center;gap:10px;margin-top:6px}
+.chips svg{margin-left:auto;color:var(--accent)}
+.sk{display:block;width:60%;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--surface-2),var(--press),var(--surface-2));background-size:200% 100%;animation:sh 1.4s linear infinite}
+@keyframes sh{to{background-position:-200% 0}}
+
+/* ===== Collapsible group ===== */
+.fold+.fold,.group+.group{margin-top:12px}
+.fold-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--tm) var(--ease)}
+.fold-in{min-height:0;overflow:hidden}
+.fold.open .fold-body{grid-template-rows:1fr}
+.fold-head>svg{transition:transform var(--tm) var(--ease)}
+.fold.open .fold-head>svg{transform:rotate(90deg)}
+
+/* ===== Tab bar ===== */
+.fade{position:absolute;left:0;right:0;bottom:0;z-index:9;height:calc(var(--tab) + 44px);background:linear-gradient(transparent,var(--bg) 72%);pointer-events:none;transition:opacity var(--tm)}
+.tabbar{position:absolute;left:14px;right:14px;bottom:10px;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;height:var(--tab);padding:6px;
+  border:1px solid var(--glass-line);border-radius:28px;background:var(--glass);box-shadow:inset 0 1px 0 var(--edge),var(--shadow);
+  -webkit-backdrop-filter:blur(24px) saturate(1.5);backdrop-filter:blur(24px) saturate(1.5);transition:transform var(--tm) var(--ease)}
+.app:not([data-depth="0"]) .tabbar{transform:translateY(140%)}
+.app:not([data-depth="0"]) .fade{opacity:0}
+.tb{display:grid;justify-items:center;align-content:center;gap:3px;border:1px solid transparent;border-radius:22px;background:none;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;
+  transition:background var(--t),color var(--t),border-color var(--t),transform var(--t) var(--ease)}
+.tb:active{transform:scale(.94)}
+.tb svg,.mini{transition:transform var(--tm) var(--ease),filter var(--tm)}
+.tb[aria-selected="true"]{color:var(--accent);background:var(--grad-acc);border-color:var(--accent-line)}
+.tb[aria-selected="true"] svg,.tb[aria-selected="true"] .mini{transform:scale(1.1);filter:drop-shadow(0 0 7px var(--accent-glow))}
+.mini{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent-tint);box-shadow:inset 0 0 0 1px var(--accent-line);color:var(--accent);font-size:11px;font-weight:700}
+
+/* ===== Bottom sheet ===== */
+.scrim{position:absolute;inset:0;z-index:20;background:var(--scrim);opacity:0;visibility:hidden;transition:opacity var(--tm),visibility 0s var(--tm)}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;display:grid;gap:14px;padding:10px 18px 24px;border-radius:28px 28px 0 0;background:var(--sheet);border:1px solid var(--line);
+  box-shadow:var(--shadow);transform:translateY(105%);transition:transform var(--tm) var(--ease)}
+.app.sheet-open .scrim{opacity:1;visibility:visible;transition-delay:0s}
+.app.sheet-open .sheet{transform:none}
+.grab{width:38px;height:5px;margin:0 auto 4px;border-radius:99px;background:var(--line)}
+.sheet h2{margin:4px 0 0;font-size:22px;letter-spacing:-.02em}
+.field{display:grid;gap:7px;font-size:13px;color:var(--muted)}
+.field input{width:100%;min-height:50px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:var(--grad-surface);color:var(--text);font-size:16px;outline:0}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+.row:focus-visible,.tb:focus-visible,.ibtn:focus-visible,.back:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation:none!important}
+  .screen.push{transform:none;opacity:0}.screen.push.is-active{opacity:1}
+  .screen.is-active.is-under{transform:none}
+  .sheet{transform:none;opacity:0}.app.sheet-open .sheet{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="app" data-depth="0">
+
+  <!-- Профиль -->
+  <section class="screen tab is-active" data-s="profile" aria-label="Профиль">
+    <header class="bar"><span class="bar-title">Профиль</span></header>
+    <div class="scroll">
+      <h1 class="large">Профиль</h1>
+      <div class="group acc hero">
+        <div class="avatar" aria-hidden="true">БР</div>
+        <div class="hero-info">
+          <div class="name">Богдан Раймондович</div>
+          <div class="mail">shkeltinsh.b.r@gmail.com</div>
+          <span class="badge">Владелец</span>
+        </div>
+      </div>
+      <div class="group acc" id="p-cc"></div>
+      <h2 class="gh">Разработка</h2>
+      <div class="group" id="p-dev"></div>
+      <h2 class="gh">Действующие проекты</h2>
+      <div class="group"><div class="empty"><span class="tile ok">__CHART__</span>Здесь появятся проекты, которые уже работают и приносят доход. Пока таких нет.</div></div>
+      <h2 class="gh acc">Избранное</h2>
+      <div class="group"><div class="empty"><span class="tile">__STAR__</span>Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</div></div>
+      <h2 class="gh">Аккаунт</h2>
+      <div class="group" id="p-acc"></div>
+      <p class="note">Прототип интерфейса · данные демонстрационные</p>
+    </div>
+  </section>
+
+  <!-- Проекты -->
+  <section class="screen tab" data-s="projects" aria-label="Проекты">
+    <header class="bar"><span class="bar-title">Проекты</span></header>
+    <div class="scroll">
+      <h1 class="large">Проекты</h1>
+      <div class="tools">
+        <label class="search">__SEARCH__<input type="search" placeholder="Поиск проектов" aria-label="Поиск проектов"></label>
+        <button class="ibtn" type="button" aria-label="Фильтры">__FILTER__</button>
+        <button class="ibtn acc" type="button" data-sheet="Новый проект" aria-label="Добавить проект">__PLUS__</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Всего проектов</span><b>2</b></div>
+        <div class="stat acc"><span>Высокий приоритет</span><b>1</b></div>
+      </div>
+      <div class="stat"><span>По статусам · 0 завершено</span>
+        <div class="meter"><i></i></div><span>В работе: 2 · На паузе: 0 · Завершён: 0</span></div>
+      <h2 class="gh acc">В фокусе</h2>
+      <div class="group acc"><button class="fc" type="button" data-stub="raymondovich.ru" data-text="Страница проекта: обзор, Services, Accounting, Analytics и Marketing. В прототипе показан только переход.">
+        <h3>raymondovich.ru</h3>
+        <p>Коммерческая площадка. Продвижение и продажа своих проектов. Поиск партнёров.</p>
+        <div class="chips"><span class="pill ok">В работе</span><span class="pill">Высокий</span>__ARROW__</div>
+      </button></div>
+      <h2 class="gh">Остальные</h2>
+      <div class="group fold open">
+        <button class="row fold-head" type="button" data-fold aria-expanded="true"><span class="row-title">В работе</span><span class="pill">1</span>__CHEV__</button>
+        <div class="fold-body"><div class="fold-in">
+          <button class="row" type="button" data-stub="Телеграмм апп" data-text="Страница проекта: обзор, Services, Accounting, Analytics и Marketing. В прототипе показан только переход."><span class="tile mute">__GRID__</span><span class="row-title">Телеграмм апп<small class="row-sub">Телеграм</small></span><span class="pill ok">В работе</span></button>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Идеи -->
+  <section class="screen tab" data-s="ideas" aria-label="Идеи">
+    <header class="bar"><span class="bar-title">Идеи</span></header>
+    <div class="scroll">
+      <h1 class="large">Идеи</h1>
+      <div class="tools">
+        <label class="search">__SEARCH__<input type="search" placeholder="Поиск идей" aria-label="Поиск идей"></label>
+        <button class="ibtn" type="button" aria-label="Фильтры">__FILTER__</button>
+        <button class="ibtn acc" type="button" data-sheet="Новая идея" aria-label="Добавить идею">__PLUS__</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Всего идей</span><b>8</b></div>
+        <div class="stat acc"><span>Новые</span><b>8</b></div>
+      </div>
+      <h2 class="gh">Загрузка списка · skeleton</h2>
+      <div class="group" id="i-sk"></div>
+    </div>
+  </section>
+
+  <!-- Инструменты -->
+  <section class="screen tab" data-s="tools" aria-label="Инструменты">
+    <header class="bar"><span class="bar-title">Инструменты</span></header>
+    <div class="scroll">
+      <h1 class="large">Инструменты</h1>
+      <h2 class="gh">Доступно вам</h2>
+      <div class="group" id="t-list"></div>
+      <p class="note">Показаны только доступные вам инструменты. Полный каталог: Профиль → Инструменты.</p>
+    </div>
+  </section>
+
+  <!-- Push screens -->
+  <section class="screen push" data-s="cc" aria-label="Control Center">
+    <header class="bar"><button class="back" type="button" data-back aria-label="Назад">__BACK__</button><span class="bar-title">Control Center</span></header>
+    <div class="scroll">
+      <p class="eyebrow">Raymondovich / Control Center</p>
+      <h1 class="large">Центр управления</h1>
+      <p class="lead">Управление самой экосистемой: партнёры, финансы, интеграции и система.</p>
+      <div id="cc-list"></div></div>
+  </section>
+  <section class="screen push" data-s="alltools" aria-label="Инструменты">
+    <header class="bar"><button class="back" type="button" data-back aria-label="Назад">__BACK__</button><span class="bar-title">Инструменты</span></header>
+    <div class="scroll">
+      <p class="eyebrow">Профиль / Разработка</p>
+      <h1 class="large">Инструменты</h1>
+      <p class="lead">Все инструменты экосистемы. В нижней навигации показаны только доступные вам.</p>
+      <h2 class="gh">Доступно вам</h2><div class="group" id="at-ok"></div>
+      <h2 class="gh">Недоступно</h2><div class="group" id="at-no"></div></div>
+  </section>
+  <section class="screen push" data-s="settings" aria-label="Настройки">
+    <header class="bar"><button class="back" type="button" data-back aria-label="Назад">__BACK__</button><span class="bar-title">Настройки</span></header>
+    <div class="scroll">
+      <h1 class="large">Настройки</h1>
+      <h2 class="gh">Оформление</h2><div class="group" id="st-ui"></div>
+      <h2 class="gh">Пользовательские данные</h2><div class="group" id="st-data"></div>
+      <h2 class="gh">Конфиденциальность</h2><div class="group" id="st-priv"></div></div>
+  </section>
+  <section class="screen push" data-s="secrets" aria-label="Секреты">
+    <header class="bar"><button class="back" type="button" data-back aria-label="Назад">__BACK__</button><span class="bar-title">Секреты</span></header>
+    <div class="scroll">
+      <p class="eyebrow">Настройки / Конфиденциальность</p>
+      <h1 class="large">Секреты</h1>
+      <p class="lead">Ключи и токены хранятся в защищённом хранилище. В интерфейсе отображаются только название и статус, значения не показываются.</p>
+      <div class="group" id="sc-list"></div>
+      <button class="btn" type="button" data-sheet="Новый секрет" data-label="Название секрета" data-btn="Добавить" data-type="text">Добавить секрет</button></div>
+  </section>
+
+  <section class="screen push" data-s="stub" aria-label="Раздел">
+    <header class="bar"><button class="back" type="button" data-back aria-label="Назад">__BACK__</button><span class="bar-title" id="stub-bar"></span></header>
+    <div class="scroll">
+      <h1 class="large" id="stub-title"></h1>
+      <div class="group"><div class="empty"><span class="tile">__GEAR__</span><span id="stub-text"></span></div></div>
+    </div>
+  </section>
+
+  <div class="fade"></div>
+  <nav class="tabbar" role="tablist" aria-label="Основная навигация">
+    <button class="tb" role="tab" type="button" data-tab="projects" aria-selected="false">__GRID__<span>Проекты</span></button>
+    <button class="tb" role="tab" type="button" data-tab="ideas" aria-selected="false">__BULB__<span>Идеи</span></button>
+    <button class="tb" role="tab" type="button" data-tab="tools" aria-selected="false">__SPARK__<span>Инструменты</span></button>
+    <button class="tb" role="tab" type="button" data-tab="profile" aria-selected="true"><span class="mini">Б</span><span>Профиль</span></button>
+  </nav>
+
+  <div class="scrim" data-sheet-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
+    <div class="grab"></div>
+    <h2 id="sh-title">Новый проект</h2>
+    <label class="field"><span id="sh-label">Название</span><input id="sh-input" type="text" autocomplete="off"></label>
+    <button class="btn" id="sh-btn" type="button" data-sheet-close>Создать</button>
+  </div>
+</div>
+
+<script>
+(()=>{
+const I={
+grid:'<rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/>',
+bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
+shield:'<path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+chev:'<path d="M9 6l6 6-6 6"/>',
+star:'<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
+search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',
+filter:'<path d="M4 7h16M7 12h10M10 17h4"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+back:'<path d="M15 6l-6 6 6 6"/>',
+moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+users:'<circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.5M18 19a5 5 0 0 0-2-4"/>',
+ruble:'<path d="M8 20V5h5a3.5 3.5 0 0 1 0 7H8M6 15h8"/>',
+doc:'<path d="M7 4h8l4 4v12H7zM15 4v4h4M10 13h6M10 17h4"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>',
+bot:'<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/>',
+chat:'<path d="M5 6h14v9h-9l-4 4v-4H5z"/>',
+arrow:'<path d="M7 17L17 7M9 7h8v8"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/>',
+mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="3"/><path d="M4 8l8 6 8-6"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>',
+pin:'<rect x="3.5" y="6" width="17" height="12" rx="3"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',
+chart:'<path d="M5 20V10M12 20V4M19 20v-7"/>',
+pen:'<path d="M4 20l4-1 11-11-3-3L5 16z"/>'
+};
+const ic=n=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+I[n]+'</svg>';
+const appEl=document.querySelector('.app');appEl.innerHTML=appEl.innerHTML.replace(/__([A-Z]+)__/g,(m,k)=>ic(k.toLowerCase()));
+
+const row=(i,t,o={})=>'<button class="row" type="button"'+(o.go?' data-go="'+o.go+'"':'')+(o.tab?' data-tab="'+o.tab+'"':'')+(o.theme?' data-theme':'')+(o.stub?' data-stub="'+o.stub+'"'+(o.text?' data-text="'+o.text+'"':''):'')+
+ (o.sh?' data-sheet="'+o.sh[0]+'" data-label="'+o.sh[1]+'" data-btn="'+o.sh[2]+'" data-type="'+(o.sh[3]||'text')+'"':'')+'>'+
+ '<span class="tile '+(o.c||'')+'">'+ic(i)+'</span><span class="row-title">'+t+(o.sub?'<small class="row-sub">'+o.sub+'</small>':'')+'</span>'+
+ (o.val?'<span class="'+(o.txt?'val':'pill '+(o.p||''))+'">'+o.val+'</span>':'')+(o.sw?'<span class="sw" role="switch" aria-checked="false"></span>':ic('chev'))+'</button>';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+/* Инструменты: [иконка, название, описание, доступен пользователю] */
+const TOOLS=[['spark','ИИ','Ассистенты и автоматизация',1],['bot','Telegram-бот','Заявки и уведомления',1],['chat','Telegram-сообщество','Канал и чат экосистемы',1],
+ ['chart','Аналитика платформы','Отчёты по экосистеме',0],['pen','Контент-студия','Материалы для продвижения',0]];
+const avail=TOOLS.filter(t=>t[3]), locked=TOOLS.filter(t=>!t[3]);
+const tool=t=>t[3]?row(t[0],t[1],{c:'teal',sub:t[2],stub:t[1]}):row('lock',t[1],{c:'mute',sub:t[2],val:'Нет доступа',stub:t[1],text:'Нет доступа к этому инструменту. Доступ определяется вашей подпиской.'});
+
+$('#p-cc').innerHTML=row('shield','Control Center',{go:'cc',sub:'Управление экосистемой'});
+$('#p-dev').innerHTML=row('grid','Проекты',{tab:'projects',sub:'В разработке',val:'2',p:'acc'})+row('bulb','Идеи',{tab:'ideas',sub:'Задумки и предложения',val:'8',p:'acc'})+
+ row('spark','Инструменты',{go:'alltools',c:'teal',sub:'Вся экосистема',val:avail.length+' из '+TOOLS.length});
+$('#p-acc').innerHTML=row('gear','Настройки',{go:'settings',c:'mute',sub:'Оформление, данные, конфиденциальность'});
+$('#t-list').innerHTML=avail.map(tool).join('');
+$('#at-ok').innerHTML=avail.map(tool).join('');
+$('#at-no').innerHTML=locked.map(tool).join('');
+
+$('#st-ui').innerHTML=row('moon','Тёмная тема',{theme:1,sw:1,c:'mute'});
+$('#st-data').innerHTML=row('user','Логин',{c:'mute',val:'Не задан',txt:1,sh:['Изменить логин','Новый логин','Сохранить']})+
+ row('mail','Почта',{c:'mute',val:'shkeltinsh.b.r@gmail.com',txt:1,sh:['Изменить почту','Новая почта','Сохранить','email']})+
+ row('lock','Пароль',{c:'mute',val:'••••••••••',txt:1,sh:['Изменить пароль','Новый пароль','Сохранить','password']})+
+ row('pin','PIN-код',{c:'mute',val:'Включён',p:'ok',sh:['Сменить PIN-код','Новый PIN-код','Сохранить','password']});
+$('#st-priv').innerHTML=row('key','Секреты',{go:'secrets',c:'mute',sub:'Ключи и токены',val:'3',txt:1});
+$('#sc-list').innerHTML=[['Токен Telegram-бота',1],['Ключ ИИ-сервиса',0],['Платёжный ключ',0]].map(r=>
+ row('key',r[0],{c:r[1]?'ok':'mute',sub:'Значение скрыто',val:r[1]?'Задан':'Не задан',p:r[1]?'ok':'',sh:['Обновить секрет','Новое значение','Сохранить','password']})).join('');
+
+const cc=[['Бизнес',1,[['users','Партнёры','Программа партнёров'],['ruble','Финансы','Выплаты и доходы']]],
+ ['Интеграции',0,[['spark','ИИ','Ассистенты'],['bot','Telegram-бот','Заявки и уведомления'],['chat','Telegram-сообщество','Канал и чат']]],
+ ['Система',0,[['users','Пользователи','Аккаунты и доступы'],['lock','Безопасность','Защита и контроль'],['doc','Системные журналы','История событий'],['gear','Настройки платформы','Параметры экосистемы']]]];
+$('#cc-list').innerHTML=cc.map(g=>'<div class="group fold'+(g[1]?' open':'')+'"><button class="row fold-head" type="button" data-fold aria-expanded="'+!!g[1]+'"><span class="row-title">'+g[0]+'</span><span class="pill">'+g[2].length+'</span>'+ic('chev')+'</button><div class="fold-body"><div class="fold-in">'+
+ g[2].map(r=>row(r[0],r[1],{sub:r[2],stub:r[1]})).join('')+'</div></div></div>').join('');
+
+const app=$('.app'), root=document.documentElement, stack=[];
+const scr=n=>$('.screen[data-s="'+n+'"]');
+const cur=()=>stack.length?scr(stack[stack.length-1]):$('.screen.tab.is-active');
+function setTab(n){
+  $$('.screen.tab').forEach(s=>s.classList.toggle('is-active',s.dataset.s===n));
+  $$('.tb').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===n)));
+}
+function push(n){cur().classList.add('is-under');scr(n).classList.add('is-active');stack.push(n);app.dataset.depth=stack.length}
+function pop(){const n=stack.pop();if(!n)return;scr(n).classList.remove('is-active');cur().classList.remove('is-under');app.dataset.depth=stack.length}
+function sheet(open,c={}){
+  if(open){$('#sh-title').textContent=c.sheet||'Новый проект';$('#sh-label').textContent=c.label||'Название';$('#sh-btn').textContent=c.btn||'Создать';
+    const i=$('#sh-input');i.type=c.type||'text';i.value=''}
+  app.classList.toggle('sheet-open',open);
+  if(open)setTimeout(()=>$('#sh-input').focus(),360);
+}
+const dark=()=>root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const syncSw=()=>$$('.sw').forEach(s=>s.setAttribute('aria-checked',String(dark())));
+syncSw();
+
+app.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go],[data-stub],[data-tab],[data-fold],[data-back],[data-sheet],[data-sheet-close],[data-theme]');
+  if(!t)return;
+  if(t.dataset.tab){const cur=$('.screen.tab.is-active');if(cur.dataset.s===t.dataset.tab)cur.querySelector('.scroll').scrollTo({top:0,behavior:'smooth'});else setTab(t.dataset.tab)}
+  else if(t.dataset.go)push(t.dataset.go);
+  else if(t.dataset.stub){$('#stub-title').textContent=t.dataset.stub;$('#stub-bar').textContent=t.dataset.stub;
+    $('#stub-text').textContent=t.dataset.text||'Раздел готовится. В прототипе показан только переход на экран.';push('stub')}
+  else if('back' in t.dataset)pop();
+  else if('fold' in t.dataset){const f=t.closest('.fold');f.classList.toggle('open');t.setAttribute('aria-expanded',String(f.classList.contains('open')))}
+  else if(t.dataset.sheet)sheet(true,t.dataset);
+  else if('sheetClose' in t.dataset)sheet(false);
+  else if('theme' in t.dataset){root.dataset.theme=dark()?'light':'dark';syncSw()}
+});
+$$('.scroll').forEach(s=>s.addEventListener('scroll',()=>s.parentElement.classList.toggle('is-scrolled',s.scrollTop>36),{passive:true}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){app.classList.contains('sheet-open')?sheet(false):pop()}});
+let sx=null;
+app.addEventListener('touchstart',e=>{sx=e.touches[0].clientX<28?e.touches[0].clientX:null},{passive:true});
+app.addEventListener('touchend',e=>{if(sx!==null&&e.changedTouches[0].clientX-sx>70)pop();sx=null},{passive:true});
+})();
+</script>
+</body>
+</html>
