@@ -231,3 +231,40 @@
   --component-profile-field: var(--color-profile-field);
   --component-profile-notice: var(--color-profile-notice);
 }
+
+
+/* Authenticated UI component color and material mapping — light theme. */
+:root[data-theme="light"] {
+  --app-ui-surface: var(--semantic-surface);
+  --app-ui-surface-raised: var(--semantic-surface-raised);
+  --app-ui-surface-warm: var(--gradient-accent-surface);
+  --app-ui-text-primary: var(--semantic-text-primary);
+  --app-ui-text-secondary: var(--semantic-text-secondary);
+  --app-ui-text-tertiary: var(--semantic-text-tertiary);
+  --app-ui-border: var(--semantic-border);
+  --app-ui-divider: var(--semantic-divider);
+  --app-ui-accent: var(--semantic-accent);
+  --app-ui-accent-foreground: var(--semantic-accent-foreground);
+  --app-ui-success: var(--semantic-success);
+  --app-ui-warning: var(--semantic-warning);
+  --app-ui-danger: var(--semantic-danger);
+  --app-ui-focus: var(--semantic-focus-ring);
+
+  --app-ui-overlay: rgba(20, 24, 30, .30);
+  --app-ui-glass-surface: rgba(255, 255, 255, .82);
+  --app-ui-glass-border: rgba(20, 24, 30, .13);
+  --app-ui-glass-highlight: rgba(255, 255, 255, .76);
+  --app-ui-field-surface: rgba(20, 24, 30, .045);
+  --app-ui-hover-surface: rgba(20, 24, 30, .04);
+  --app-ui-pressed-surface: var(--semantic-accent-subtle);
+  --app-ui-skeleton-base: rgba(20, 24, 30, .065);
+  --app-ui-skeleton-highlight: rgba(20, 24, 30, .12);
+  --app-ui-success-surface: color-mix(in srgb, var(--semantic-success) 9%, var(--semantic-surface));
+  --app-ui-warning-surface: color-mix(in srgb, var(--semantic-warning) 9%, var(--semantic-surface));
+  --app-ui-danger-surface: color-mix(in srgb, var(--semantic-danger) 9%, var(--semantic-surface));
+  --app-ui-disabled-opacity: .48;
+
+  --app-ui-shadow-card: 0 10px 30px rgba(24, 30, 40, .07);
+  --app-ui-shadow-sheet: 0 24px 72px rgba(24, 30, 40, .18);
+  --app-ui-shadow-menu: 0 14px 40px rgba(24, 30, 40, .14);
+}
