@@ -30,6 +30,7 @@
   line-height: var(--app-ui-line-tight);
   letter-spacing: -.04em;
   overflow-wrap: anywhere;
+  transition: font-size var(--app-ui-motion-standard) var(--app-ui-ease-standard), letter-spacing var(--app-ui-motion-standard) var(--app-ui-ease-standard);
 }
 
 .app-ui-screen-heading--compact {
@@ -411,7 +412,7 @@
   border-radius: 50%;
   background: var(--app-ui-text-secondary);
   box-shadow: var(--app-ui-shadow-card);
-  transition: transform var(--app-ui-motion-standard) var(--app-ui-ease-enter), background-color var(--app-ui-motion-standard) var(--app-ui-ease-standard);
+  transition: left var(--app-ui-motion-standard) var(--app-ui-ease-enter), background-color var(--app-ui-motion-standard) var(--app-ui-ease-standard);
 }
 
 .app-ui-switch__input:checked + .app-ui-switch__track {
@@ -421,7 +422,7 @@
 
 .app-ui-switch__input:checked + .app-ui-switch__track .app-ui-switch__thumb {
   background: var(--app-ui-accent-foreground);
-  transform: translateX(20px);
+  left: 23px;
 }
 
 .app-ui-switch__input:focus-visible + .app-ui-switch__track {
@@ -856,7 +857,7 @@
 
   .app-ui-sheet,
   .app-ui-context-menu,
-  .app-ui-switch__thumb {
+  .app-ui-button:active:not(:disabled) {
     transform: none;
   }
 
