@@ -395,10 +395,10 @@
 .projects-content .projects-module-empty p{line-height:1.65}
 .projects-content .projects-coming-label{font-family:var(--font-mono)}
 .projects-content .projects-service-item{position:relative}
-.projects-content .projects-service-action-menu{position:absolute;z-index:4;top:8px;right:8px;left:auto;min-width:160px;max-width:min(220px,calc(100vw - 32px));padding:6px;border-radius:14px;background:var(--ws-surface);border-color:var(--ws-strong-line);box-shadow:var(--app-ui-shadow-menu,0 12px 36px rgba(0,0,0,.22))}
+.projects-content .projects-service-action-menu{position:absolute;z-index:4;top:8px;right:8px;left:auto;min-width:160px;max-width:min(220px,calc(100vw - 32px));padding:6px;border-radius:14px;background:var(--ws-surface);border-color:var(--ws-strong-line);box-shadow:var(--app-ui-shadow-menu)}
 .projects-content .projects-service-action-menu button{min-height:44px;padding:10px 12px;color:var(--ws-text)}
 .projects-content .projects-service-action-menu button:hover{background:var(--ws-control-hover)}
-.projects-content :is(.projects-primary,.projects-secondary,.projects-service-add,.projects-service-category-add){min-height:44px}
+.projects-content :is(.projects-primary,.projects-secondary,.projects-service-add,.projects-service-category-add){min-width:44px;min-height:44px}
 .projects-content :is(.projects-service-accordion-trigger,.projects-service-category-open,.projects-service-category-add):focus-visible{outline-offset:3px}
 @media(hover:hover) and (pointer:fine){
  .projects-content .ws-card.projects-registry-card:hover,.projects-content .projects-module-card:hover{border-color:var(--ws-accent-line)}

@@ -138,7 +138,7 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
   host.addEventListener("contextmenu",event=>{
     const row=event.target.closest("[data-service-row]");
     if(!row)return;
-    event.preventDefault();openActionMenu(row,event.clientX,event.clientY);
+    event.preventDefault();openActionMenu(row);
   },opts);
   host.addEventListener("click",async event=>{
     const menuAction=event.target.closest("[data-menu-action]");
