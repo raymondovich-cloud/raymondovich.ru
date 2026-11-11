@@ -129,7 +129,7 @@ export function renderProfileToolsScreen(root, user) {
     <section class="profile-subscreen profile-tools-screen app-ui-v3-frame" aria-labelledby="profile-tools-title">
       <header class="profile-subscreen-header">
         <h1 class="app-ui-v3-heading" id="profile-tools-title">Инструменты</h1>
-        <p class="profile-tools-intro">Каталог инструментов экосистемы Raymondovich. Доступ к использованию определяется ролью и подпиской.</p>
+        <p class="profile-tools-intro">Каталог инструментов и сервисов, используемых в экосистеме Raymondovich.</p>
       </header>
       <section class="profile-tools-group" aria-labelledby="profile-tools-development">
         <h2 id="profile-tools-development">Инструменты разработки</h2>
