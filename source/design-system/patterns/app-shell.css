@@ -70,3 +70,14 @@ body:has(.app-welcome) .site-header .header-inner{justify-content:flex-start;min
 body[data-page="authenticated-welcome"] .footer,
 body[data-page="authenticated-workspace"] .footer{display:none}
 
+
+
+/* Authenticated navigation — prototype v3 component contract. */
+.authenticated-bottom-nav.app-ui-v3-tabbar{position:fixed;inset-inline-start:50%;inset-inline-end:auto;inset-block-end:calc(var(--app-ui-v3-tabbar-inset-bottom) + var(--safe-bottom));width:min(var(--app-ui-v3-max-width),calc(100% - 2 * var(--app-ui-v3-tabbar-inset-inline) - var(--safe-left) - var(--safe-right)));height:var(--app-ui-v3-tabbar-height);min-height:var(--app-ui-v3-tabbar-height);padding:6px;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;border:1px solid var(--app-ui-v3-glass-line);border-radius:var(--app-ui-v3-tabbar-radius);background:var(--app-ui-v3-glass);box-shadow:inset 0 1px 0 var(--app-ui-v3-glass-edge),var(--app-ui-v3-shadow);-webkit-backdrop-filter:blur(var(--app-ui-v3-tabbar-blur)) saturate(1.5);backdrop-filter:blur(var(--app-ui-v3-tabbar-blur)) saturate(1.5);transform:translateX(-50%)}
+.authenticated-bottom-nav.app-ui-v3-tabbar::before,.authenticated-bottom-nav.app-ui-v3-tabbar::after{display:none}
+.authenticated-bottom-nav .app-ui-v3-tab{min-height:0;padding:0;border-radius:var(--app-ui-v3-tab-radius);font-size:11px;font-weight:500}
+.authenticated-bottom-nav .app-ui-v3-tab.is-active{border-color:var(--app-ui-v3-accent-line);background:var(--app-ui-v3-surface-accent-gradient);color:var(--app-ui-v3-accent);box-shadow:none}
+.authenticated-bottom-nav .app-ui-v3-tab.is-active svg{filter:drop-shadow(0 0 7px var(--app-ui-v3-accent-glow))}
+.authenticated-bottom-nav .app-ui-v3-tab:not(.is-active):active{background:var(--app-ui-v3-press);color:var(--app-ui-v3-text)}
+@media(max-width:600px){.authenticated-bottom-nav.app-ui-v3-tabbar{inset-block-end:calc(var(--app-ui-v3-tabbar-inset-bottom) + var(--safe-bottom));padding:6px}}
+@media(prefers-reduced-motion:reduce){.authenticated-bottom-nav.app-ui-v3-tabbar,.authenticated-bottom-nav .app-ui-v3-tab{transition:none}}

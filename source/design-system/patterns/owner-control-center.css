@@ -25,3 +25,23 @@
 .owner-console-row .profile-row-value{max-width:var(--app-ui-row-value-max-compact);padding-inline:var(--app-ui-profile-row-value-pill-padding-inline);font-size:var(--app-ui-profile-compact-value-font-size)}
 }
 @media(prefers-reduced-motion:reduce){.owner-console-group,.owner-console-group>summary,.owner-console-group-chevron{transition:none}}
+
+
+/* Owner Control Center — prototype v3 component contract. */
+.owner-console-group.app-ui-v3-group{border:1px solid var(--app-ui-v3-line);border-radius:var(--app-ui-v3-group-radius);background:var(--app-ui-v3-surface-gradient);box-shadow:none}
+.owner-console-group>summary.app-ui-v3-row{display:flex;width:100%;min-height:var(--app-ui-v3-row-height);height:var(--app-ui-v3-row-height);gap:14px;padding:0 16px 0 12px;border:0;background:transparent;color:var(--app-ui-v3-text);font:inherit}
+.owner-console-group>summary .app-ui-v3-tile{flex:0 0 var(--app-ui-v3-tile-size);width:var(--app-ui-v3-tile-size);height:var(--app-ui-v3-tile-size);border-radius:var(--app-ui-v3-tile-radius);background:var(--app-ui-v3-accent-tint);color:var(--app-ui-v3-accent)}
+.owner-console-group>summary .app-ui-v3-tile svg{width:var(--app-ui-v3-icon-size);height:var(--app-ui-v3-icon-size)}
+.owner-console-group>summary .app-ui-v3-row__title{flex:1;color:var(--app-ui-v3-text);font-size:16px;font-weight:500}
+.owner-console-group>summary .app-ui-v3-row__chevron{flex:0 0 var(--app-ui-v3-chevron-size);width:var(--app-ui-v3-chevron-size);height:var(--app-ui-v3-chevron-size)}
+.owner-console-group[open]{border-color:var(--app-ui-v3-accent-line)}
+.owner-console-group-list{border-top:1px solid var(--app-ui-v3-line);background:transparent}
+.owner-console-row.app-ui-v3-row{display:flex;height:var(--app-ui-v3-row-height);min-height:var(--app-ui-v3-row-height);gap:14px;padding:0 16px 0 12px;cursor:default}
+.owner-console-row.app-ui-v3-row+.owner-console-row.app-ui-v3-row{border-top:0}
+.owner-console-row.app-ui-v3-row+.owner-console-row.app-ui-v3-row::before{position:absolute;inset-block-start:0;inset-inline-start:var(--app-ui-v3-row-divider-inset);inset-inline-end:0;height:1px;background:var(--app-ui-v3-line);content:""}
+.owner-console-row .app-ui-v3-tile{flex:0 0 var(--app-ui-v3-tile-size);width:var(--app-ui-v3-tile-size);height:var(--app-ui-v3-tile-size);border-radius:var(--app-ui-v3-tile-radius);background:var(--app-ui-v3-accent-tint);color:var(--app-ui-v3-accent)}
+.owner-console-row .app-ui-v3-tile svg{width:var(--app-ui-v3-icon-size);height:var(--app-ui-v3-icon-size)}
+.owner-console-row .app-ui-v3-row__title{flex:1;color:var(--app-ui-v3-text);font-size:16px;font-weight:500}
+.owner-console-row .app-ui-v3-pill{min-height:24px;padding:2px 10px;border-color:var(--app-ui-v3-line);border-radius:999px;background:transparent;color:var(--app-ui-v3-muted);font-size:13px}
+@media(max-width:380px){.owner-console-group>summary.app-ui-v3-row,.owner-console-row.app-ui-v3-row{gap:10px;padding-inline:10px}.owner-console-group>summary .app-ui-v3-row__title,.owner-console-row .app-ui-v3-row__title{font-size:15px}.owner-console-row.app-ui-v3-row+.owner-console-row.app-ui-v3-row::before{inset-inline-start:58px}}
+@media(prefers-reduced-motion:reduce){.owner-console-group.app-ui-v3-group,.owner-console-group>summary.app-ui-v3-row{transition:none}}
