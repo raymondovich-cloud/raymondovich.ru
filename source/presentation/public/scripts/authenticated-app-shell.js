@@ -257,6 +257,12 @@ export function renderAuthenticatedApp(root, user) {
 
   document.body.dataset.page = "authenticated-workspace";
   renderRoute(view, user, route);
+  view.dataset.appRoute = route;
+  const isPushScreen = !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
+  view.classList.toggle("is-push-screen", isPushScreen);
+  view.classList.remove("app-ui-v3-screen-enter");
+  void view.offsetWidth;
+  view.classList.add("app-ui-v3-screen-enter");
   syncFullscreenState(shell);
   bindProfileInteractions(view, target => window.RaymondovichNavigation?.navigateRoute(target));
 }

@@ -260,3 +260,17 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
  .projects-content .ws-stat,.ideas-workspace .ws-stat{padding:14px}
  .projects-content .ws-stat strong,.ideas-workspace .ws-stat strong{font-size:30px}
 }
+
+/* Navigation depth and screen motion follow the prototype's tab/push distinction. */
+.authenticated-app-content.is-push-screen{padding-bottom:40px}
+.authenticated-app-shell:has(.authenticated-app-content.is-push-screen) .authenticated-bottom-nav{
+  transform:translate(-50%,140%);pointer-events:none
+}
+.authenticated-app-content.app-ui-v3-screen-enter:not(.is-push-screen){animation:rv3-tab-enter .18s cubic-bezier(.32,.72,0,1) both}
+.authenticated-app-content.app-ui-v3-screen-enter.is-push-screen{animation:rv3-push-enter .36s cubic-bezier(.32,.72,0,1) both}
+@keyframes rv3-tab-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes rv3-push-enter{from{opacity:.65;transform:translateX(24%)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+ .authenticated-app-content.app-ui-v3-screen-enter{animation:none}
+ .authenticated-app-shell:has(.authenticated-app-content.is-push-screen) .authenticated-bottom-nav{transition:none}
+}
