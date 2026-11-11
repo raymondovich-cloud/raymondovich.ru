@@ -1,12 +1,13 @@
-.app-welcome{display:grid;justify-items:center;gap:18px;width:min(100%,620px);margin:clamp(36px,9vh,100px) auto;padding:clamp(28px,6vw,56px) 22px;text-align:center;border:1px solid var(--component-app-shell-border);border-radius:var(--radius-lg);background:var(--gradient-owner-panel);box-shadow:var(--shadow-panel);color:var(--component-app-shell-text)}
-.app-welcome-eyebrow,.app-placeholder-eyebrow{margin:0;color:var(--component-app-shell-muted);font:600 10px/1.4 var(--font-mono);letter-spacing:.16em}
-.app-welcome-mark{display:grid;width:68px;height:68px;place-items:center;border:1px solid var(--component-app-shell-border);border-radius:22px;background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:28px;font-weight:800}
-.app-welcome h1{max-width:560px;margin:4px 0 0;font-size:clamp(28px,6vw,44px);line-height:1.08;letter-spacing:-.045em}
-.app-welcome h1 span{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;color:transparent}
-.app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--component-app-shell-muted);line-height:1.65}
-.app-welcome-role{padding:7px 12px;border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:999px;color:var(--component-app-shell-muted);font-size:12px}
-.app-welcome-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:8px;padding:0 22px;border:1px solid var(--semantic-accent);border-radius:999px;background:var(--semantic-accent);color:var(--component-app-shell-cta-text);font:700 14px/1 var(--font-body);cursor:pointer;transition:transform .18s ease,filter .18s ease}
-.app-welcome-continue:active{transform:scale(.98)}
+/* First authenticated entry — same semantic component language as Profile. */
+.app-welcome{display:grid;justify-items:center;gap:var(--app-ui-space-4);width:min(100%,620px);margin:clamp(var(--app-ui-space-9),9vh,var(--app-ui-size-100)) auto;padding:clamp(var(--app-ui-space-6),6vw,var(--app-ui-size-56)) var(--app-ui-space-5);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-sheet);background:var(--app-ui-surface-warm);box-shadow:var(--app-ui-shadow-card);color:var(--component-app-shell-text);text-align:center}
+.app-welcome-eyebrow,.app-placeholder-eyebrow{margin:0;color:var(--component-app-shell-muted);font:var(--app-ui-weight-semibold) var(--app-ui-type-caption)/var(--app-ui-line-detail) var(--app-ui-font-mono);letter-spacing:var(--app-ui-letter-spacing-label)}
+.app-welcome-mark{display:grid;width:var(--app-ui-size-68);height:var(--app-ui-size-68);place-items:center;border:var(--app-ui-border-width) solid var(--semantic-accent-border);border-radius:var(--app-ui-radius-card);background:var(--gradient-owner-control-active);color:var(--semantic-accent);font-size:var(--app-ui-type-display);font-weight:var(--app-ui-weight-bold)}
+.app-welcome h1{max-width:560px;margin:var(--app-ui-space-1) 0 0;color:var(--app-ui-text-primary);font-size:var(--app-ui-type-display);line-height:var(--app-ui-line-tight);letter-spacing:var(--app-ui-letter-spacing-tight);overflow-wrap:anywhere}
+.app-welcome h1 span{background:var(--semantic-accent-gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+.app-welcome>p:not(.app-welcome-eyebrow){max-width:440px;margin:0;color:var(--component-app-shell-muted);font-size:var(--app-ui-type-body);line-height:var(--app-ui-line-relaxed)}
+.app-welcome-role{padding:var(--app-ui-space-2) var(--app-ui-space-3);border:var(--app-ui-border-width) solid var(--component-app-shell-border);border-radius:var(--app-ui-radius-pill);color:var(--component-app-shell-muted);font-size:var(--app-ui-type-caption)}
+.app-welcome-continue{display:inline-flex;min-width:min(100%,220px);min-height:var(--app-ui-control-height);align-items:center;justify-content:center;gap:var(--app-ui-space-3);margin-top:var(--app-ui-space-2);padding:0 var(--app-ui-space-5);border:0;border-radius:var(--app-ui-radius-pill);background:var(--semantic-accent-gradient);color:var(--component-app-shell-cta-text);font:var(--app-ui-weight-bold) var(--app-ui-type-small)/1.2 var(--app-ui-font-family);cursor:pointer;transition:transform var(--app-ui-motion-fast) var(--app-ui-ease-standard),filter var(--app-ui-motion-standard) var(--app-ui-ease-standard)}
+.app-welcome-continue:active{transform:scale(var(--app-ui-scale-pressed))}
 .authenticated-app-shell{position:relative;width:min(100%,1100px);min-height:55vh;margin:0 auto;color:var(--component-app-shell-text)}
 .authenticated-app-content{min-width:0;padding:clamp(3px,.75vw,8px) clamp(10px,2vw,18px) calc(112px + var(--safe-bottom));outline:none}
 .authenticated-bottom-nav{isolation:isolate;overflow:visible}
@@ -28,7 +29,7 @@
 .app-placeholder-state p{max-width:400px;margin:0;color:var(--component-app-shell-muted);line-height:1.6}
 .authenticated-app-shell.has-fullscreen-form .authenticated-bottom-nav,html.pin-guard-pending .authenticated-bottom-nav,html.pin-guard-locked .authenticated-bottom-nav{display:none}
 .authenticated-app-shell.has-fullscreen-form .authenticated-app-content{padding-bottom:24px}
-@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:24px auto;border-radius:var(--radius-lg)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom));padding:var(--app-ui-tab-bar-padding-mobile)}.authenticated-bottom-nav .app-ui-tab{min-height:var(--app-ui-tab-item-height-mobile)}}
+@media(max-width:600px){.authenticated-app-content{padding-top:0;padding-inline:0}.app-welcome{margin:var(--app-ui-space-6) auto;border-radius:var(--app-ui-radius-sheet)}.authenticated-bottom-nav{inset-block-end:calc(var(--app-ui-tab-bar-mobile-inset) + var(--safe-bottom));padding:var(--app-ui-tab-bar-padding-mobile)}.authenticated-bottom-nav .app-ui-tab{min-height:var(--app-ui-tab-item-height-mobile)}}
 
 /* Keep public navigation out of the authenticated workspace; preserve the shared Back control. */
 body:has(.authenticated-app-shell) .sidebar,
