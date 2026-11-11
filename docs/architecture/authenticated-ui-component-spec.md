@@ -1,6 +1,6 @@
 # Спецификация UI-компонентов авторизованного пространства
 
-> Версия: 1.9  
+> Версия: 2.0  
 > Статус: Базовый компонентный слой реализован; полная спецификация остаётся проектной  
 > Дата: 2026-11-11  
 > Область: Welcome, Projects registry, Ideas и последующие экраны авторизованного пространства  
@@ -637,3 +637,21 @@
 - Проверены баланс CSS-блоков и отсутствие HEX/RGB literals.
 - Build/lint, тесты, браузерный рендеринг, computed styles, контраст, overflow 320px, iPhone Safari и Telegram Mini App не запускались. Визуальная приёмка Light/Dark в staging обязательна.
 - GitHub Contents API создаёт отдельный commit на каждый обновлённый файл; история не переписывается, force push не применяется.
+
+
+## Этап 6. Projects и проектные модули
+
+- Реестр проектов, обзор проекта и карточки Services / Accounting / Analytics / Marketing используют единый визуальный контракт на базе существующих `.ws-*`, `.projects-*` и semantic tokens.
+- Сохранены существующие фильтры, поиск, сводка, группы статусов, переходы, данные метрик и текущие состояния модулей. Empty, loading, error и planned/unconfigured не объединяются и не подменяются фиктивными данными.
+- Services сохраняет категории инфраструктуры и подключённых сервисов, формы ручного ввода, сводные расходы, даты оплаты и контекстные действия.
+- Контекстное меню Services позиционируется относительно строки ресурса средствами CSS; прямое назначение `element.style.left/top` удалено. Поведение редактирования и удаления не менялось.
+- Использованы существующие темы и токены. Новые зависимости, бизнес-правила, данные, маршруты, права, RLS и API не добавлялись.
+- Изменены: `source/design-system/patterns/projects.css`, `source/presentation/public/scripts/project-modules/services.js`, этот документ и `docs/changes/2026-11-11.md`.
+- Не изменялись `projects.js`, `accounting.js`, `analytics.js`, `marketing.js`, `workspace-ui.css/js`, application/infrastructure, Supabase, роли и Production.
+
+### Проверки и ограничения
+
+- Статически проверено удаление inline-позиционирования меню и сохранение вызовов `openActionMenu` для long-press/contextmenu.
+- Добавлены CSS состояния focus-visible, hover только для точных указателей, reduced-motion и мобильные правила для ширины от 320px.
+- Build/lint, автоматические тесты, браузерный рендеринг, computed styles, контраст, overflow на 320px, iPhone Safari, Telegram Mini App и функциональные сценарии Services не запускались. Визуальная и функциональная приёмка в staging обязательна.
+- Production не публиковался.

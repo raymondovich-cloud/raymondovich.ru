@@ -120,22 +120,19 @@ export async function renderProjectServicesScreen(host,project,user,category=nul
 
   let menuTarget=null,longPressTimer=null;
   const closeActionMenu=()=>{host.querySelector("[data-service-action-menu]")?.remove();menuTarget=null;};
-  const openActionMenu=(rowEl,x,y)=>{
+  const openActionMenu=(rowEl)=>{
     const type=rowEl.dataset.serviceRow,id=rowEl.dataset.rowId;
     if(!type||!id)return;
     closeActionMenu();menuTarget={type,id};
     const menu=document.createElement("div");menu.className="projects-service-action-menu";menu.dataset.serviceActionMenu="";
     menu.setAttribute("role","menu");
     menu.innerHTML='<button type="button" role="menuitem" data-menu-action="edit">Изменить</button><button type="button" role="menuitem" data-menu-action="delete">Удалить</button>';
-    host.append(menu);
-    const width=menu.offsetWidth,height=menu.offsetHeight;
-    menu.style.left=Math.max(8,Math.min(x,window.innerWidth-width-8))+"px";
-    menu.style.top=Math.max(8,Math.min(y,window.innerHeight-height-8))+"px";
+    rowEl.append(menu);
   };
   host.addEventListener("pointerdown",event=>{
     const row=event.target.closest("[data-service-row]");
     if(!row||event.target.closest("a"))return;
-    longPressTimer=setTimeout(()=>openActionMenu(row,event.clientX,event.clientY),520);
+    longPressTimer=setTimeout(()=>openActionMenu(row),520);
   },opts);
   ["pointerup","pointercancel","pointerleave","scroll"].forEach(type=>host.addEventListener(type,()=>clearTimeout(longPressTimer),opts));
   host.addEventListener("contextmenu",event=>{
