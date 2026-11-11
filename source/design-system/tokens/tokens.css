@@ -319,6 +319,7 @@
   --app-ui-tab-item-height: 60px;
   --app-ui-tab-bar-height: 78px;
   --app-ui-tab-bar-inset: 12px;
+  --app-ui-tab-bar-mobile-inset: 8px;
 
   --app-ui-motion-fast: 160ms;
   --app-ui-motion-standard: 220ms;
