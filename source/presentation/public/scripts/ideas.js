@@ -192,7 +192,7 @@ export async function renderIdeasWorkspace(root, user) {
     const converted = idea.status === "converted";
     detailHost.innerHTML = `
       ${workspaceScreenHead({title:idea.name})}
-      <article class="ideas-detail">
+      <article class="ideas-detail-content">
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
           <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
@@ -394,6 +394,8 @@ export async function renderIdeasWorkspace(root, user) {
       button.disabled=false;
     }
   }, listenerOptions);
+
+  document.addEventListener("raymondovich:ideas-registry-request", showRegistry, listenerOptions);
 
   document.addEventListener("raymondovich:navigation", (event) => {
     const state = event.detail;
