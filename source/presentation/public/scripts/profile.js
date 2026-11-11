@@ -20,14 +20,15 @@ const icons = {
   control: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5.5c0 4.5-3.2 7.7-8 9.5-4.8-1.8-8-5-8-9.5V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>'
 };
 
-function row({ icon, title, value = "", route, status = "" }) {
+function row({ icon, title, value = "", route, status = "", description = "" }) {
   const detail = value || status;
   return '<button class="profile-row app-ui-row app-ui-v3-row" type="button" data-profile-route="' + escape(route) + '">' +
     '<span class="profile-row-icon app-ui-row__icon app-ui-v3-tile is-' + icon + '">' + icons[icon] + '</span>' +
-    '<span class="profile-row-copy app-ui-v3-row__copy">' +
+    '<span class="profile-row-copy app-ui-row__copy app-ui-v3-row__copy">' +
       '<span class="profile-row-title app-ui-row__title app-ui-v3-row__title">' + escape(title) + '</span>' +
-      (detail ? '<span class="profile-row-value app-ui-row__value app-ui-v3-row__value">' + escape(detail) + '</span>' : '') +
+      (description ? '<span class="profile-row-description">' + escape(description) + '</span>' : '') +
     '</span>' +
+    (detail ? '<span class="profile-row-value app-ui-row__value app-ui-v3-row__value">' + escape(detail) + '</span>' : '') +
     '<span class="profile-row-chevron app-ui-row__chevron app-ui-v3-row__chevron" aria-hidden="true">›</span>' +
   '</button>';
 }
@@ -80,14 +81,14 @@ export function renderProfileScreen(root, user) {
         <span class="profile-role">${escape(roleLabel(user))}</span>
       </header>
       <div class="profile-groups" data-profile-groups>
-        ${admin ? `<section class="profile-group is-accent app-ui-group app-ui-v3-group" data-profile-group><div class="profile-group-list app-ui-list">${row({icon:"control",title:"Control Center",route:"#authorization/control-center"})}</div></section>` : ""}
+        ${admin ? `<section class="profile-group is-accent app-ui-group app-ui-v3-group" data-profile-group><div class="profile-group-list app-ui-list">${row({icon:"control",title:"Control Center",description:"Управление экосистемой",route:"#authorization/control-center"})}</div></section>` : ""}
         <section class="profile-section" aria-label="Разработка">
           <h2 class="profile-group-heading app-ui-v3-group-label">Разработка</h2>
           <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group>
             <div class="profile-group-list app-ui-list">
-              ${row({icon:"projects",title:"Проекты",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
-              ${row({icon:"ideas",title:"Идеи",route:"#authorization/ideas"})}
-              ${row({icon:"tools",title:"Инструменты",value:"Каталог платформы",route:"#authorization/profile-tools"})}
+              ${row({icon:"projects",title:"Проекты",description:"Реестр проектов",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
+              ${row({icon:"ideas",title:"Идеи",description:"Задумки и предложения",route:"#authorization/ideas"})}
+              ${row({icon:"tools",title:"Инструменты",description:"Вся экосистема",route:"#authorization/profile-tools"})}
             </div>
           </div>
         </section>

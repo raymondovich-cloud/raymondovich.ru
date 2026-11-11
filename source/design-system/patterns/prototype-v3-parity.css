@@ -321,3 +321,9 @@ body[data-page="authenticated-workspace"] .auth-layout{width:100%;max-width:none
 @media(prefers-reduced-motion:reduce){
  .authenticated-top-bar,.authenticated-top-bar-title{transition:none}
 }
+
+.profile-toolbar.app-ui-screen-header{margin:0}
+.profile-row-copy{display:grid;min-width:0;gap:3px}
+.profile-row-description{display:block;min-width:0;overflow:hidden;color:var(--rv3-muted);font-size:13px;font-weight:400;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.profile-row-value.app-ui-v3-row__value{justify-self:end;max-width:100%;padding:4px 9px;border:1px solid var(--rv3-accent-line);border-radius:99px;background:var(--rv3-accent-tint);color:var(--rv3-accent);font-size:12px;line-height:1.2}
+@media(max-width:360px){.profile-row-description{font-size:12px}.profile-row-value.app-ui-v3-row__value{padding:3px 7px;font-size:11px}}
