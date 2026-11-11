@@ -131,6 +131,34 @@ function activeTabForRoute(route) {
   return "profile";
 }
 
+function isNestedNavigationState(state) {
+  const route = state?.route || "";
+  const screen = state?.screen || "";
+  if (route === TAB_ROUTES.projects) return Boolean(screen && !["route", "projects-registry"].includes(screen));
+  if (route === TAB_ROUTES.ideas) return Boolean(screen && !["route", "ideas-registry"].includes(screen));
+  return !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
+}
+
+function syncNavigationChrome(root, state) {
+  const shell = root.querySelector(".authenticated-app-shell");
+  const view = shell?.querySelector("[data-app-view]");
+  if (!shell || !view) return;
+
+  const nested = isNestedNavigationState(state);
+  shell.classList.toggle("is-push-screen", nested);
+  view.classList.toggle("is-push-screen", nested);
+  shell.querySelector("[data-app-back]")?.toggleAttribute("hidden", !nested);
+  view.dataset.appNavigationScreen = state?.screen || "route";
+
+  const updateTitle = () => {
+    const title = view.querySelector("h1")?.textContent?.trim() || "Raymondovich";
+    const barTitle = shell.querySelector("[data-app-bar-title]");
+    if (barTitle) barTitle.textContent = title;
+  };
+  if (typeof requestAnimationFrame === "function") requestAnimationFrame(updateTitle);
+  else updateTitle();
+}
+
 function renderTools(view, user) {
   renderProfileToolsScreen(view, user);
 }
@@ -213,6 +241,12 @@ function bindShell(root, user) {
   bindAuthenticatedGlobalSearch(root, () => currentShellUsers.get(root) || user);
   if (root.dataset.appShellBound === "true") return;
   root.dataset.appShellBound = "true";
+  if (root.dataset.appNavigationChromeBound !== "true") {
+    document.addEventListener("raymondovich:navigation", event => {
+      syncNavigationChrome(root, event.detail);
+    });
+    root.dataset.appNavigationChromeBound = "true";
+  }
   root.addEventListener("click", event => {
     if (event.target.closest("[data-app-back]")) {
       window.RaymondovichNavigation?.back();
@@ -311,12 +345,7 @@ export function renderAuthenticatedApp(root, user) {
   renderRoute(view, user, route);
   view.dataset.appRoute = route;
   view.dataset.appUserKey = nextUserKey;
-  const isPushScreen = !Object.values(TAB_ROUTES).includes(route) && route !== "#authorization";
-  shell.classList.toggle("is-push-screen", isPushScreen);
-  view.classList.toggle("is-push-screen", isPushScreen);
-  shell.querySelector("[data-app-back]")?.toggleAttribute("hidden", !isPushScreen);
-  const barTitle = shell.querySelector("[data-app-bar-title]");
-  if (barTitle) barTitle.textContent = view.querySelector("h1")?.textContent?.trim() || "Raymondovich";
+  syncNavigationChrome(root, state || { route });
   view.classList.remove("app-ui-v3-screen-enter");
   void view.offsetWidth;
   view.classList.add("app-ui-v3-screen-enter");
