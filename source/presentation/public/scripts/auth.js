@@ -286,7 +286,8 @@ document.addEventListener("raymondovich:navigation", event => {
   const expectedScreen = route === "#authorization" || route === "#authorization/profile"
     ? "profile"
     : route === "#authorization/profile-settings" ? "profile-settings"
-      : route === "#authorization/projects" ? "projects"
+      : route === "#authorization/profile-secrets" ? "profile-secrets"
+        : route === "#authorization/projects" ? "projects"
         : route === "#authorization/ideas" ? "ideas"
           : route === "#authorization/tools" ? "tools"
             : route === "#authorization/control-center" ? "control-center"
@@ -297,7 +298,9 @@ document.addEventListener("raymondovich:navigation", event => {
 
   // Existing module controllers restore nested screens themselves while their workspace remains mounted.
   // Rebuild the shell when a route transition or browser Back returns to a workspace that is no longer mounted.
-  if (state.screen === "route" || activeView?.dataset.appScreen !== expectedScreen) {
+  // popstate and hashchange may both report the same browser-back navigation.
+  // The authenticated shell already rendered this route on the first event.
+  if (activeView?.dataset.appRoute !== route || activeView?.dataset.appScreen !== expectedScreen) {
     renderSignedIn(main, currentSession.user);
   }
 });
