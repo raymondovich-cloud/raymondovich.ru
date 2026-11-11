@@ -99,7 +99,7 @@
 
 
 /* Detail view: content belongs to the shared workspace frame, not a nested card. */
-.ideas-workspace .ideas-detail{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.ideas-workspace .ideas-detail-content{min-width:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 .ideas-workspace .ideas-detail-description{display:block;width:100%;max-width:none;height:auto;max-height:none;margin:0 0 24px;overflow:visible;color:var(--color-ideas-detail-description);font-size:15px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;text-overflow:clip;-webkit-line-clamp:unset}
 .ideas-workspace .idea-registry-description{display:-webkit-box;overflow:hidden;white-space:normal;text-overflow:clip;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow-wrap:anywhere}
 @media(max-width:640px){.ideas-workspace .ideas-detail-description{margin-bottom:20px;font-size:15px;line-height:1.65}}
