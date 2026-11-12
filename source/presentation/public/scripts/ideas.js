@@ -196,7 +196,8 @@ export async function renderIdeasWorkspace(root, user) {
       <article class="ideas-detail-content">
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
-          <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">\n            <button type="button" class="ideas-icon-action is-danger" data-idea-delete aria-label="Переместить идею в корзину" title="Переместить в корзину"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg></button>
+          <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
+            <button type="button" class="ideas-icon-action is-danger" data-idea-delete aria-label="Переместить идею в корзину" title="Переместить в корзину"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg></button>
             <button type="button" class="ideas-icon-action" data-idea-edit="${escape(idea.id)}" aria-label="Редактировать идею" title="Редактировать идею">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
             </button>
