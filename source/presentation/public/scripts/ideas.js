@@ -344,7 +344,7 @@ export async function renderIdeasWorkspace(root, user) {
       const nextStatus=archive ? "archived" : "new";
       const result=await supabase.from("ideas").update({
         status:nextStatus, archived_at:archive ? new Date().toISOString() : null, updated_at:new Date().toISOString()
-      }).eq("id",idea.id).select("*").single();
+      }).eq("id",idea.id).is("deleted_at",null).select("*").single();
       if (result.error) {
         window.alert("Не удалось изменить статус идеи: "+result.error.message);
         return;
@@ -384,7 +384,7 @@ export async function renderIdeasWorkspace(root, user) {
     button.disabled=true;
     try {
       const result=id
-        ? await supabase.from("ideas").update(payload).eq("id",id).select("*").single()
+        ? await supabase.from("ideas").update(payload).eq("id",id).is("deleted_at",null).select("*").single()
         : await supabase.from("ideas").insert({...payload,owner_id:user.id}).select("*").single();
       if (result.error) throw result.error;
       const saved=result.data;
