@@ -1,7 +1,7 @@
 import { supabase } from "./client.js";
 
 export async function countIdeasSummary(){
-  const activeIdeas=()=>supabase.from("ideas").select("id",{count:"exact",head:true}).neq("status","archived").is("archived_at",null);
+  const activeIdeas=()=>supabase.from("ideas").select("id",{count:"exact",head:true}).neq("status","archived").is("archived_at",null).is("deleted_at",null);
   const [total,newIdeas,highPriority]=await Promise.all([
     activeIdeas(),
     activeIdeas().eq("status","new"),
