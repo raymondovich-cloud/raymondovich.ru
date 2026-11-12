@@ -1,4 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
+import { moveIdeaToTrashRecord } from "/source/application/trash/trash-registry.js";
 import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const STATUS = {
@@ -79,7 +80,7 @@ export async function renderIdeasWorkspace(root, user) {
       list.innerHTML = '<p class="ideas-loading">Загрузка идей…</p>';
     }
     const [ideaResult, categoryResult] = await Promise.all([
-      supabase.from("ideas").select("*").order("updated_at", { ascending: false }),
+      supabase.from("ideas").select("*").is("deleted_at",null).order("updated_at", { ascending: false }),
       supabase.from("idea_categories").select("id,name").eq("is_archived", false).order("sort_order").order("name")
     ]);
     if (ideaResult.error) {
@@ -101,7 +102,7 @@ export async function renderIdeasWorkspace(root, user) {
     const status = root.querySelector("[data-filter-status]").value;
     const priority = root.querySelector("[data-filter-priority]").value;
     const category = root.querySelector("[data-filter-category]").value;
-    const activeIdeas = ideas.filter(idea => !isArchived(idea));
+    const activeIdeas = ideas.filter(idea => !idea.deleted_at && !isArchived(idea));
     const filtered = activeIdeas.filter(idea =>
       (!query || [idea.name,idea.description,idea.goal,idea.concept,idea.additional_info].some(v=>String(v||"").toLowerCase().includes(query))) &&
       (!status || idea.status === status) &&
@@ -195,7 +196,7 @@ export async function renderIdeasWorkspace(root, user) {
       <article class="ideas-detail-content">
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
-          <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
+          <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">\n            <button type="button" class="ideas-icon-action is-danger" data-idea-delete aria-label="Переместить идею в корзину" title="Переместить в корзину"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg></button>
             <button type="button" class="ideas-icon-action" data-idea-edit="${escape(idea.id)}" aria-label="Редактировать идею" title="Редактировать идею">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
             </button>
@@ -317,6 +318,22 @@ export async function renderIdeasWorkspace(root, user) {
         errorNode.hidden=false;
         button.disabled=false;
       }
+      return;
+    }
+    const deleteButton=event.target.closest("[data-idea-delete]");
+    if(deleteButton) {
+      const idea=ideas.find(item=>item.id===currentIdeaId);
+      if(!idea || !window.confirm(`Переместить идею «${idea.name}» в корзину? Архивный статус и история идеи сохранятся.`))return;
+      deleteButton.disabled=true;
+      const result=await moveIdeaToTrashRecord(idea,user.id);
+      if(result.error) {
+        window.alert(result.error.message||"Не удалось переместить идею в корзину.");
+        deleteButton.disabled=false;
+        return;
+      }
+      ideasWorkspaceCache.delete(user.id);
+      await load();
+      window.RaymondovichNavigation?.navigateScreen("ideas-registry",{}, {replace:true});
       return;
     }
     const archive=event.target.closest("[data-idea-archive]");
