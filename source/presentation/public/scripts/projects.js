@@ -245,7 +245,7 @@ export async function renderProjectsWorkspace(root, user) {
     const projectId = state.data?.projectId;
     const project = projects.find(item=>item.id===projectId);
     if (screen === "project-overview") {
-      loadProjects().then(loaded=>{
+      loadProjects().then(async loaded=>{
         const current=window.RaymondovichNavigation?.getState();
         if(loaded && !controller.signal.aborted && current?.route==="#authorization/projects" && current?.screen==="project-overview" && current?.data?.projectId===projectId) {
           await renderOverview(projects.find(item=>item.id===projectId));
