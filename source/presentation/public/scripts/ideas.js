@@ -156,8 +156,7 @@ export async function renderIdeasWorkspace(root, user) {
     };
 
     const focused = highPriority;
-    const focusedIds = new Set(focused.map(idea => idea.id));
-    const remaining = filtered.filter(idea => !focusedIds.has(idea.id));
+    const remaining = filtered;
     const groups = new Map();
     remaining.forEach(idea => {
       const label = categories.find(item => item.id === idea.category_id)?.name || "Без категории";
