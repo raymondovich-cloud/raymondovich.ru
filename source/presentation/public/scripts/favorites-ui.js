@@ -20,6 +20,7 @@ export function favoriteButtonMarkup(type, id, active = false) {
 
 export async function favoriteButtonFor(type, id) {
   const result = await isFavorite(type === "project" ? { projectId:id } : { ideaId:id });
+  if (result.error) throw result.error;
   return favoriteButtonMarkup(type,id,Boolean(result.data));
 }
 
