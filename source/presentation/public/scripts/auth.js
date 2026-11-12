@@ -1,6 +1,5 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
 import { getAuthRedirectUrl } from "/source/platform/bridge.js";
-import { renderAuthenticatedApp } from "./authenticated-app-shell.js";
 
 const AUTH_REDIRECT_URL = getAuthRedirectUrl();
 const main = document.querySelector("#main");
@@ -110,10 +109,31 @@ function renderSignedOut(root) {
   showPanel(shell, recoveryMode ? "recovery" : "login");
 }
 
-function renderSignedIn(root, user) {
+let authenticatedShellModulePromise = null;
+
+async function renderSignedIn(root, user) {
   const shell = root.matches?.("[data-auth-shell]") ? root : root.querySelector("[data-auth-shell]");
-  if (!shell) return;
-  renderAuthenticatedApp(shell, user);
+  if (!shell || !user) return;
+
+  try {
+    authenticatedShellModulePromise ||= import("./authenticated-app-shell.js");
+    const { renderAuthenticatedApp } = await authenticatedShellModulePromise;
+    renderAuthenticatedApp(shell, user);
+  } catch (error) {
+    authenticatedShellModulePromise = null;
+    console.error("Authenticated workspace failed to load:", error);
+    shell.innerHTML = `
+      <div class="auth-heading">
+        <p class="overline">RAYMONDOVICH / ACCOUNT</p>
+        <h2>Вход выполнен</h2>
+        <p role="alert">Аккаунт подтверждён, но рабочее пространство пока не загрузилось. Повторите загрузку раздела.</p>
+      </div>
+      <div class="auth-card">
+        <button class="button primary" type="button" data-workspace-retry>Повторить загрузку</button>
+        <button class="auth-text-button" type="button" data-auth-signout>Выйти из аккаунта</button>
+      </div>`;
+    shell.querySelector("[data-workspace-retry]")?.addEventListener("click", () => renderSignedIn(root, user));
+  }
 }
 
 function escapeHtml(value) {
