@@ -87,8 +87,7 @@ export async function renderProjectsWorkspace(root, user) {
       (!projectFilters.priority || (project.priority || "normal") === projectFilters.priority) &&
       (!projectFilters.origin || (projectFilters.origin === "idea" ? Boolean(project.source_idea_id) : !project.source_idea_id)));
     const focused = visible.filter(project => favoriteProjectIds.has(project.id));
-    const focusedIds = new Set(focused.map(project => project.id));
-    const remaining = visible.filter(project => !focusedIds.has(project.id));
+    const remaining = visible;
     const groups = new Map();
     remaining.forEach(project => { const status = project.status || "unknown"; if (!groups.has(status)) groups.set(status,[]); groups.get(status).push(project); });
     const highPriorityCount = allVisibleProjects.filter(project => ["high","critical"].includes(project.priority)).length;
