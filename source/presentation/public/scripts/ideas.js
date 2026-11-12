@@ -142,17 +142,17 @@ export async function renderIdeasWorkspace(root, user) {
       const statusName = STATUS[idea.status] || idea.status || "Новая";
       if (!focused) {
         const description = idea.description || idea.goal || statusName;
-        return `<button class="idea-registry-row" type="button" data-idea-open="${escape(idea.id)}">
+        return `<div class="ideas-favorite-card"><button class="idea-registry-row" type="button" data-idea-open="${escape(idea.id)}">
           <span class="idea-registry-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></span>
           <span class="idea-registry-copy"><span class="idea-registry-name">${escape(idea.name)}</span><small class="idea-registry-description">${escape(description)}</small></span>
           <span class="idea-registry-priority">${escape(PRIORITY[idea.priority] || idea.priority || "Обычный")}</span>
-        </button>`;
+        </button>${favoriteButtonMarkup("idea",idea.id,favoriteIdeaIds.has(idea.id))}</div>`;
       }
-      return `<button class="ws-card idea-card is-focused idea-card-focused" type="button" data-idea-open="${escape(idea.id)}">
+      return `<div class="ideas-favorite-card"><button class="ws-card idea-card is-focused idea-card-focused" type="button" data-idea-open="${escape(idea.id)}">
         <span class="idea-card-top"><span class="idea-category">${escape(categoryName)} · ${escape(statusName)}</span><span class="idea-card-arrow" aria-hidden="true">↗</span></span>
         <span class="idea-card-title">${escape(idea.name)}</span>
         <span class="idea-card-description">${escape(idea.description || idea.goal || "Описание пока не добавлено.")}</span>
-      </button>`;
+      </button>${favoriteButtonMarkup("idea",idea.id,favoriteIdeaIds.has(idea.id))}</div>`;
     };
 
     const focused = highPriority.slice(0, 2);
