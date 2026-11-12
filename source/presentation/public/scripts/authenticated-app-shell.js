@@ -1,6 +1,7 @@
 import { renderOwnerControlCenter } from "./owner-control-center.js";
 import { bindAuthenticatedGlobalSearch } from "./authenticated-global-search.js";
 import { renderIdeasWorkspace } from "./ideas.js";
+import { renderTrashWorkspace } from "./trash.js";
 import { renderProjectsWorkspace } from "./projects.js";
 import {
   renderProfileScreen,
@@ -215,6 +216,14 @@ function renderRoute(view, user, route) {
     }
     view.dataset.appScreen = "projects";
     renderProjectsWorkspace(view, user);
+    return;
+  }
+  if (route === "#authorization/trash") {
+    if (!admin) {
+      renderProfileEmptyScreen(view, "Корзина", "Этот раздел доступен только владельцу.");
+      return;
+    }
+    renderTrashWorkspace(view, user);
     return;
   }
   if (route === "#authorization/ideas") {
