@@ -106,12 +106,14 @@ export function renderProfileScreen(root, user) {
             <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon is-success" aria-hidden="true">${icons.chart}</span><span>Здесь появятся проекты, которые уже работают и приносят доход. Пока таких нет.</span></div>
           </div>
         </section>
-        <section class="profile-section" aria-label="Избранное">
+        ${admin ? `<section class="profile-section" aria-label="Избранное">
           <h2 class="profile-group-heading app-ui-v3-group-label">Избранное</h2>
           <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group aria-label="Избранное">
-            <div class="profile-empty app-ui-v3-empty"><span class="profile-empty-icon" aria-hidden="true">${icons.favorites}</span><span>Здесь появятся избранные проекты и инструменты. Пока ничего не добавлено.</span></div>
+            <div class="profile-group-list app-ui-list">
+              ${row({icon:"favorites",title:"Избранное",description:"Сохранённые проекты и идеи",route:"#authorization/favorites"})}
+            </div>
           </div>
-        </section>
+        </section>` : ""}
         <section class="profile-section" aria-label="Аккаунт">
           <h2 class="profile-group-heading app-ui-v3-group-label">Аккаунт</h2>
           <div class="profile-group app-ui-group app-ui-v3-group" data-profile-group>

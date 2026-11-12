@@ -6,6 +6,8 @@ import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
 import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
 import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 import { formatMoney } from "./shared/format.js";
+import { getFavorites } from "/source/application/favorites/favorites.js";
+import { favoriteButtonFor, favoriteButtonMarkup, bindFavoriteToggle } from "./favorites-ui.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -45,6 +47,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   const host = root.querySelector("[data-projects-content]");
   let projects = [];
+  let favoriteProjectIds = new Set();
   let moduleSummaries = {};
   let currentProjectId = null;
   let loadSequence = 0;
@@ -61,13 +64,14 @@ export async function renderProjectsWorkspace(root, user) {
   async function loadProjects() {
     const sequence=++loadSequence;
     if (!projectsWorkspaceCache.has(user.id)) host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
-    const result = await loadProjectsWorkspace();
+    const [result, favoritesResult] = await Promise.all([loadProjectsWorkspace(), getFavorites()]);
     if(sequence!==loadSequence||controller.signal.aborted)return false;
-    if (result.error) {
+    if (result.error || favoritesResult.error) {
       host.innerHTML = '<div class="projects-state projects-error"><strong>Не удалось загрузить проекты</strong><p>Проверьте подключение и права доступа.</p></div>';
       return false;
     }
     projects = result.projects;
+    favoriteProjectIds = new Set((favoritesResult.data || []).filter(item => item.type === "project").map(item => item.id));
     moduleSummaries = result.moduleSummaries || {};
     projectsWorkspaceCache.set(user.id, { projects, moduleSummaries, updatedAt: Date.now() });
     return true;
@@ -82,9 +86,8 @@ export async function renderProjectsWorkspace(root, user) {
       (!projectFilters.status || project.status === projectFilters.status) &&
       (!projectFilters.priority || (project.priority || "normal") === projectFilters.priority) &&
       (!projectFilters.origin || (projectFilters.origin === "idea" ? Boolean(project.source_idea_id) : !project.source_idea_id)));
-    const focused = visible.filter(project => project.status === "active" && ["high","critical"].includes(project.priority)).slice(0,2);
-    const focusedIds = new Set(focused.map(project => project.id));
-    const remaining = visible.filter(project => !focusedIds.has(project.id));
+    const focused = visible.filter(project => favoriteProjectIds.has(project.id));
+    const remaining = visible;
     const groups = new Map();
     remaining.forEach(project => { const status = project.status || "unknown"; if (!groups.has(status)) groups.set(status,[]); groups.get(status).push(project); });
     const highPriorityCount = allVisibleProjects.filter(project => ["high","critical"].includes(project.priority)).length;
@@ -105,8 +108,8 @@ export async function renderProjectsWorkspace(root, user) {
           <article class="ws-summary"><div class="ws-summary-head"><span>По статусам</span><span>${completedCount} завершено</span></div><div class="ws-progress"><span class="ws-progress-${progressStep}"></span></div><div class="ws-summary-foot">${escape(statusSummary || "Проектов пока нет")}</div></article>
         </section>
         <div class="projects-registry-list" data-project-list>
-          ${focused.length ? `<section class="ws-focus"><h2 class="ws-section-title">В ФОКУСЕ</h2><div class="ws-card-list">${focused.map(project=>`<button class="ws-card is-focused projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span>${escape(priorityLabel(project.priority))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>`).join("")}</div></section>` : ""}
-          ${remaining.length ? `<section class="ws-others"><h2 class="ws-section-title is-muted">ОСТАЛЬНЫЕ</h2><div class="ws-groups">${[...groups.entries()].map(([status,items])=>`<details class="ws-group" ${groups.size===1?"open":""}><summary><span>${escape(statusLabel(status))} · ${items.length}</span><span aria-hidden="true">⌄</span></summary><div class="ws-group-content">${items.map(project=>`<button class="ws-card is-compact projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>`).join("")}</div></details>`).join("")}</div></section>` : ""}
+          ${focused.length ? `<section class="ws-focus"><h2 class="ws-section-title">В ФОКУСЕ</h2><div class="ws-card-list">${focused.map(project=>`<div class="projects-favorite-card"><button class="ws-card is-focused projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span>${escape(priorityLabel(project.priority))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>${favoriteButtonMarkup("project",project.id,true)}</div>`).join("")}</div></section>` : ""}
+          ${remaining.length ? `<section class="ws-others"><h2 class="ws-section-title is-muted">ОСТАЛЬНЫЕ</h2><div class="ws-groups">${[...groups.entries()].map(([status,items])=>`<details class="ws-group" ${groups.size===1?"open":""}><summary><span>${escape(statusLabel(status))} · ${items.length}</span><span aria-hidden="true">⌄</span></summary><div class="ws-group-content">${items.map(project=>`<div class="projects-favorite-card"><button class="ws-card is-compact projects-registry-card" type="button" data-project-open="${escape(project.id)}"><span class="projects-registry-main"><span class="projects-registry-name">${escape(project.name)}</span><span class="projects-registry-description">${escape(project.description || "Описание пока не добавлено.")}</span></span><span class="projects-registry-meta"><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span><span class="projects-card-arrow" aria-hidden="true">↗</span></span></button>${favoriteButtonMarkup("project",project.id,favoriteProjectIds.has(project.id))}</div>`).join("")}</div></details>`).join("")}</div></section>` : ""}
           ${!visible.length ? `<div class="ws-empty"><strong>${allVisibleProjects.length?"Ничего не найдено":"Проектов пока нет"}</strong><p>${allVisibleProjects.length?"Измените поисковый запрос или фильтры.":"Создайте первый проект или преобразуйте существующую идею в проект."}</p></div>` : ""}
         </div>
       </section>`;
@@ -133,8 +136,9 @@ export async function renderProjectsWorkspace(root, user) {
     return moduleSummaries[projectId]?.[key]?.label || "Нет данных";
   }
 
-  function renderOverview(project) {
+  async function renderOverview(project) {
     if (!project) return renderRegistry();
+    const favoriteMarkup = await favoriteButtonFor("project", project.id);
     currentProjectId = project.id;
     const projectSummary=moduleSummaries[project.id]||{};
     const servicesCount=projectSummary.services?.count||0;
@@ -154,7 +158,7 @@ export async function renderProjectsWorkspace(root, user) {
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
           <div class="projects-project-hero">
-            <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span></div>
+            <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span>${favoriteMarkup}</div>
             <h1>${escape(project.name)}</h1>
             <div class="projects-project-metrics">
               <div><span>Польз.</span><strong>${renderMetric(headline.users)}</strong></div>
@@ -244,7 +248,7 @@ export async function renderProjectsWorkspace(root, user) {
       loadProjects().then(loaded=>{
         const current=window.RaymondovichNavigation?.getState();
         if(loaded && !controller.signal.aborted && current?.route==="#authorization/projects" && current?.screen==="project-overview" && current?.data?.projectId===projectId) {
-          renderOverview(projects.find(item=>item.id===projectId));
+          await renderOverview(projects.find(item=>item.id===projectId));
         }
       });
       return;
@@ -255,6 +259,15 @@ export async function renderProjectsWorkspace(root, user) {
     else if (screen.startsWith("project-") && MODULES[screen.replace("project-","")]) renderModule(project,screen.replace("project-",""));
     else renderRegistry();
   }
+
+  bindFavoriteToggle(root, ({ type, id, isFavorite }) => {
+    if (type !== "project") return;
+    if (isFavorite) favoriteProjectIds.add(id); else favoriteProjectIds.delete(id);
+    projectsWorkspaceCache.delete(user.id);
+    const state = window.RaymondovichNavigation?.getState();
+    if (state?.screen === "project-overview") renderOverview(projects.find(item => item.id === id));
+    else renderRegistry();
+  });
 
   root.addEventListener("click", async event => {
     const navigation = window.RaymondovichNavigation;
