@@ -67,11 +67,12 @@ export async function renderTrashWorkspace(root,user) {
       if(!item)return;
       restore.disabled=true;
       const result=await restoreTrashItem(item,user.id);
-      if(result.error) {
+      if(result.error && !result.data) {
         window.alert(result.error.message||"Не удалось восстановить объект.");
         restore.disabled=false;
         return;
       }
+      if(result.error && result.data) window.alert("Объект восстановлен, но запись в истории не сохранилась: "+result.error.message);
       await refresh();
       return;
     }
