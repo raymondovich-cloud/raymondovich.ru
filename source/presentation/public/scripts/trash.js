@@ -93,11 +93,12 @@ export async function renderTrashWorkspace(root,user) {
     }
   },{signal:controller.signal});
 
-  await refresh();
   document.addEventListener("raymondovich:navigation",event=>{
     if(event.detail?.route!=="#authorization/trash") {
       controller.abort();
       if(activeTrashController===controller)activeTrashController=null;
     }
   },{signal:controller.signal});
+
+  await refresh();
 }
