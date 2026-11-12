@@ -11,6 +11,9 @@ const messages = {
   invalid_credentials: "Неверная почта или пароль.",
   email_not_confirmed: "Сначала подтвердите электронную почту по ссылке из письма.",
   user_already_exists: "Аккаунт с такой почтой уже существует. Попробуйте войти.",
+  email_address_invalid: "Проверьте правильность адреса электронной почты.",
+  email_provider_disabled: "Регистрация по электронной почте временно отключена.",
+  signup_disabled: "Регистрация новых аккаунтов временно отключена.",
   weak_password: "Пароль слишком простой. Используйте более надёжный пароль.",
   rate_limit: "Слишком много попыток. Подождите и попробуйте позже."
 };
@@ -26,12 +29,23 @@ function syncHeaderAccount(session) {
 }
 
 function errorText(error) {
+  const code = String(error?.code || "").toLowerCase();
   const message = String(error?.message || "").toLowerCase();
-  const match = Object.entries(messages).find(([key]) => message.includes(key));
+  const match = Object.entries(messages).find(([key]) => code.includes(key) || message.includes(key));
   if (match) return match[1];
   if (message.includes("invalid login credentials")) return messages.invalid_credentials;
   if (message.includes("email not confirmed")) return messages.email_not_confirmed;
+  if (message.includes("already registered") || message.includes("email address already exists")) {
+    return messages.user_already_exists;
+  }
+  if (message.includes("invalid email") || message.includes("email address is invalid")) {
+    return messages.email_address_invalid;
+  }
+  if (message.includes("too many requests") || message.includes("rate limit")) return messages.rate_limit;
   if (message.includes("password")) return "Не удалось обработать пароль. Проверьте требования и попробуйте снова.";
+  if (error?.name === "AuthRetryableFetchError" || message.includes("fetch")) {
+    return "Не удалось связаться с сервером авторизации. Проверьте интернет-соединение и повторите попытку.";
+  }
   return "Не удалось выполнить действие. Проверьте данные и повторите попытку.";
 }
 
@@ -284,14 +298,20 @@ async function renderAuth() {
   else renderSignedOut(root);
 
   const { data, error } = await supabase.auth.getSession();
-  if (!error) {
-    currentSession = data.session;
-    if (data.session?.user) {
-      await ensureProfile(data.session.user);
-      renderSignedIn(root, data.session.user);
-    } else {
-      renderSignedOut(root);
-    }
+  if (error) {
+    currentSession = null;
+    renderSignedOut(root);
+    setNotice(shell, "Не удалось проверить сессию аккаунта. Проверьте соединение и повторите попытку.", "error");
+    console.error("Supabase session check failed:", error);
+    return;
+  }
+
+  currentSession = data.session;
+  if (data.session?.user) {
+    await ensureProfile(data.session.user);
+    renderSignedIn(root, data.session.user);
+  } else {
+    renderSignedOut(root);
   }
 }
 
