@@ -15,3 +15,13 @@
 .profile-favorite-type{color:var(--color-accent);font:10px var(--font-mono);letter-spacing:.1em}
 .profile-favorites-state{padding:24px;color:var(--color-owner-muted);text-align:center}
 .profile-favorites-state.is-error{color:var(--color-ideas-danger)}
+
+.projects-favorite-card,.ideas-favorite-card{display:flex;align-items:center;gap:8px;min-width:0;width:100%}
+.projects-favorite-card>.projects-registry-card,.ideas-favorite-card>.idea-registry-row,.ideas-favorite-card>.idea-card{flex:1 1 auto;min-width:0}
+.projects-favorite-card>.favorite-toggle,.ideas-favorite-card>.favorite-toggle{flex:0 0 40px}
+.ideas-favorite-card>.idea-registry-row{width:auto}
+.ideas-favorite-card>.idea-card{width:auto}
+@media(max-width:700px){
+ .projects-favorite-card,.ideas-favorite-card{gap:6px}
+ .projects-favorite-card>.favorite-toggle,.ideas-favorite-card>.favorite-toggle{flex-basis:36px;width:36px;height:36px}
+}
