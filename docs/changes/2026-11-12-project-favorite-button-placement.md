@@ -13,6 +13,7 @@
 ## Затронутые файлы
 - `source/presentation/public/scripts/projects.js`
 - `source/design-system/patterns/favorites.css`
+- `index.html` — обновлена версия URL таблицы стилей для сброса клиентского кеша.
 
 ## Проверки
 - Проверить синтаксис изменённого JavaScript.
