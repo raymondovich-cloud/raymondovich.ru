@@ -155,7 +155,7 @@ export async function renderIdeasWorkspace(root, user) {
       </button>${favoriteButtonMarkup("idea",idea.id,favoriteIdeaIds.has(idea.id))}</div>`;
     };
 
-    const focused = highPriority.slice(0, 2);
+    const focused = highPriority;
     const focusedIds = new Set(focused.map(idea => idea.id));
     const remaining = filtered.filter(idea => !focusedIds.has(idea.id));
     const groups = new Map();
