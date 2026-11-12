@@ -12,7 +12,8 @@ export function workspaceToolbar({
   filterToggleAttr,
   filterPanelId,
   createAttr,
-  createLabel
+  createLabel,
+  extraAction = ""
 }) {
   const safe = escapeHtml;
   return `<div class="ws-toolbar">
@@ -24,6 +25,7 @@ export function workspaceToolbar({
       <button class="ws-icon-button is-accent" type="button" ${createAttr} aria-label="${safe(createLabel)}" title="${safe(createLabel)}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
       </button>
+      ${extraAction}
     </div>
   </div>`;
 }
