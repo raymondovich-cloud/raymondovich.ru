@@ -25,3 +25,22 @@
  .projects-favorite-card,.ideas-favorite-card{gap:6px}
  .projects-favorite-card>.favorite-toggle,.ideas-favorite-card>.favorite-toggle{flex-basis:36px;width:36px;height:36px}
 }
+
+/* Keep favorite controls visible above workspace card and theme layers. */
+.projects-content .projects-favorite-card,
+.ideas-workspace .ideas-favorite-card{display:flex;align-items:center;gap:8px;min-width:0;width:100%}
+.projects-content .projects-favorite-card>.favorite-toggle,
+.ideas-workspace .ideas-favorite-card>.favorite-toggle{
+  display:inline-grid!important;visibility:visible!important;opacity:1!important;
+  position:relative;z-index:2;flex:0 0 40px;width:40px;height:40px;
+  min-width:40px;min-height:40px;pointer-events:auto;
+}
+.projects-content .projects-favorite-card>.projects-registry-card,
+.ideas-workspace .ideas-favorite-card>.idea-registry-row,
+.ideas-workspace .ideas-favorite-card>.idea-card{flex:1 1 auto;min-width:0}
+@media(max-width:700px){
+  .projects-content .projects-favorite-card>.favorite-toggle,
+  .ideas-workspace .ideas-favorite-card>.favorite-toggle{
+    flex-basis:40px;width:40px;height:40px;min-width:40px;min-height:40px
+  }
+}
