@@ -110,29 +110,64 @@ function renderSignedOut(root) {
 }
 
 let authenticatedShellModulePromise = null;
+let authenticatedShellImportAttempt = 0;
+let authenticatedWorkspaceLoadSequence = 0;
 
-async function renderSignedIn(root, user) {
+async function renderSignedIn(root, user, { retry = false } = {}) {
   const shell = root.matches?.("[data-auth-shell]") ? root : root.querySelector("[data-auth-shell]");
   if (!shell || !user) return;
 
+  const sequence = ++authenticatedWorkspaceLoadSequence;
+  const retryButton = shell.querySelector("[data-workspace-retry]");
+  if (retryButton) {
+    retryButton.disabled = true;
+    retryButton.textContent = "Загружаем рабочее пространство…";
+  } else {
+    shell.innerHTML = `
+      <div class="auth-heading">
+        <p class="overline">RAYMONDOVICH / ACCOUNT</p>
+        <h2>Вход выполнен</h2>
+        <p role="status" aria-live="polite">Подготавливаем личное рабочее пространство…</p>
+      </div>`;
+  }
+
   try {
-    authenticatedShellModulePromise ||= import("./authenticated-app-shell.js");
+    // A rejected ESM module evaluation is cached by the browser for the same URL.
+    // A unique query string gives an explicit retry a fresh module entry point.
+    if (retry || !authenticatedShellModulePromise) {
+      const attempt = ++authenticatedShellImportAttempt;
+      authenticatedShellModulePromise = import(`./authenticated-app-shell.js?workspace-attempt=${attempt}`);
+    }
     const { renderAuthenticatedApp } = await authenticatedShellModulePromise;
+    if (sequence !== authenticatedWorkspaceLoadSequence) return;
     renderAuthenticatedApp(shell, user);
   } catch (error) {
+    if (sequence !== authenticatedWorkspaceLoadSequence) return;
     authenticatedShellModulePromise = null;
+    const diagnostic = [
+      error?.name || "Error",
+      error?.message || String(error || "Unknown error")
+    ].join(": ");
     console.error("Authenticated workspace failed to load:", error);
     shell.innerHTML = `
       <div class="auth-heading">
         <p class="overline">RAYMONDOVICH / ACCOUNT</p>
         <h2>Вход выполнен</h2>
-        <p role="alert">Аккаунт подтверждён, но рабочее пространство пока не загрузилось. Повторите загрузку раздела.</p>
+        <p role="alert">Аккаунт подтверждён, но рабочее пространство не загрузилось. Техническая причина показана ниже — она поможет определить точный сбой.</p>
       </div>
       <div class="auth-card">
+        <details class="auth-workspace-diagnostic">
+          <summary>Подробности ошибки</summary>
+          <pre data-workspace-error></pre>
+        </details>
         <button class="button primary" type="button" data-workspace-retry>Повторить загрузку</button>
         <button class="auth-text-button" type="button" data-auth-signout>Выйти из аккаунта</button>
       </div>`;
-    shell.querySelector("[data-workspace-retry]")?.addEventListener("click", () => renderSignedIn(root, user));
+    const errorDetails = shell.querySelector("[data-workspace-error]");
+    if (errorDetails) errorDetails.textContent = diagnostic;
+    shell.querySelector("[data-workspace-retry]")?.addEventListener("click", () => {
+      renderSignedIn(root, user, { retry: true });
+    }, { once: true });
   }
 }
 
