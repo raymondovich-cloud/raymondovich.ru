@@ -192,7 +192,6 @@ export async function renderProjectsWorkspace(root, user) {
     host.innerHTML=`
       <section class="ws-page projects-trash" data-project-trash-page>
         ${workspaceScreenHead({title:"Корзина",subtitle:"Удалённые проекты хранятся здесь до восстановления или окончательного удаления."})}
-        <div class="projects-trash-actions"><button type="button" class="projects-secondary" data-project-back-registry>← К проектам</button></div>
         ${items.length?`<div class="projects-trash-list">${items.map(project=>`
           <article class="projects-trash-item">
             <div class="projects-trash-copy"><strong>${escape(project.name)}</strong><span>Перемещён: ${escape(project.deleted_at?new Date(project.deleted_at).toLocaleString("ru-RU"):"дата неизвестна")}</span></div>
@@ -262,10 +261,6 @@ export async function renderProjectsWorkspace(root, user) {
     const navigation = window.RaymondovichNavigation;
     if (event.target.closest("[data-project-trash-open]")) {
       navigation?.navigateScreen("projects-trash",{});
-      return;
-    }
-    if (event.target.closest("[data-project-back-registry]")) {
-      navigation?.navigateScreen("projects-registry",{});
       return;
     }
     const moveToTrash=event.target.closest("[data-project-move-to-trash]");
