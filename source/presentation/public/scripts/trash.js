@@ -66,7 +66,7 @@ export async function renderTrashWorkspace(root,user) {
       const item=items.find(entry=>entry.id===restore.dataset.trashRestore&&entry.type===restore.dataset.trashType);
       if(!item)return;
       restore.disabled=true;
-      const result=await restoreTrashItem(item);
+      const result=await restoreTrashItem(item,user.id);
       if(result.error) {
         window.alert(result.error.message||"Не удалось восстановить объект.");
         restore.disabled=false;
