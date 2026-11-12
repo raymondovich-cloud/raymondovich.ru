@@ -3,6 +3,7 @@ import { bindAuthenticatedGlobalSearch } from "./authenticated-global-search.js"
 import { renderIdeasWorkspace } from "./ideas.js";
 import { renderTrashWorkspace } from "./trash.js";
 import { renderProjectsWorkspace } from "./projects.js";
+import { renderFavoritesScreen } from "./favorites-ui.js";
 import {
   renderProfileScreen,
   renderProfileToolsScreen,
@@ -185,7 +186,11 @@ function renderRoute(view, user, route) {
     return;
   }
   if (route === "#authorization/favorites") {
-    renderProfileEmptyScreen(view, "Избранное", "Избранные проекты и инструменты пока не добавлены.");
+    if (!admin) {
+      renderProfileEmptyScreen(view, "Избранное", "Избранное пока доступно только владельцу в текущей версии.");
+      return;
+    }
+    renderFavoritesScreen(view);
     return;
   }
   if (route === "#authorization/reports") {
