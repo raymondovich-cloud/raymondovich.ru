@@ -19,10 +19,30 @@
 - `docs/product/ideas-module-specification.md` — добавлены правила избранного идей, версия 1.2.
 - `docs/architecture/authenticated-app-shell-profile.md` — определён единый источник для «В фокусе» и «Профиль → Избранное», версия 1.7.
 
+## Реализация — этап 1
+
+- В основной Supabase-среде `raymondovich` создана таблица `public.user_favorites`.
+- Добавлены FK с `ON DELETE CASCADE` к `auth.users`, `projects` и `ideas`.
+- Добавлено ограничение: ровно один из `project_id` и `idea_id` должен быть заполнен.
+- Добавлены уникальные индексы по пользователю и объекту, а также индексы FK и пользовательской выборки.
+- Включён RLS. Созданы отдельные политики SELECT, INSERT и DELETE.
+- INSERT ограничен ролью `admin`, текущим пользователем и активным объектом-владельцем.
+- У `authenticated` оставлены только SELECT, INSERT и DELETE; UPDATE/TRUNCATE запрещены. Доступ `anon` отозван.
+- Реализованы Infrastructure repository и Application contract:
+  - `source/infrastructure/supabase/favorites-repository.js`;
+  - `source/application/favorites/favorites.js`.
+- SQL migrations синхронизированы с серверной историей:
+  - `20261112180702_create_user_favorites.sql`;
+  - `20261112180812_restrict_user_favorites_grants.sql`;
+  - `20261112180837_optimize_user_favorites_indexes_and_policy.sql`.
+
 ## Проверки и ограничения
 
-- Проведён read-only аудит репозитория и существующих спецификаций.
-- Создана отдельная feature-ветка от актуального `main`.
-- Код, SQL migration и Supabase не изменялись.
-- Browser, E2E и RLS проверки не запускались.
-- Следующий этап: реализовать SQL migration и Application Layer в staging-ветке, затем UI вертикали.
+- Проверено наличие таблицы, включённый RLS, три FK с каскадным удалением и три пользовательские политики.
+- Проверены права: authenticated — SELECT/INSERT/DELETE; без UPDATE/TRUNCATE. anon не имеет SELECT/INSERT.
+- Security Advisor не обнаружил новых предупреждений, относящихся к `user_favorites`.
+- Performance Advisor больше не показывает для `user_favorites` предупреждения о неиндексированных FK или RLS initplan. Неиспользуемость индексов пока ожидаема: таблица ещё пустая.
+- Таблица создана в основной базе, строк избранного пока 0.
+- UI ещё не подключён: звёздочки, «В фокусе» и профильный список остаются следующим этапом.
+- Browser/E2E и проверка реального пользовательского JWT не запускались.
+- Работа с кодом ведётся в feature-ветке; `main` и публикация сайта не изменялись.
