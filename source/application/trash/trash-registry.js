@@ -48,15 +48,13 @@ export async function moveIdeaToTrashRecord(idea,userId) {
   return moved;
 }
 
-export async function restoreTrashItem(item) {
+export async function restoreTrashItem(item,userId) {
   if(item.type==="project") return restoreProjectFromTrash(item.id);
   const result=await restoreIdeaFromTrash(item.id);
   if(result.error) return result;
-  const {data:userResult}=await supabase.auth.getUser();
-  const user=userResult?.user;
-  if(!user) return {data:null,error:new Error("Не удалось подтвердить пользователя.")};
+  if(!userId) return {data:result.data,error:new Error("Объект восстановлен, но не удалось определить владельца для записи истории.")};
   const activity=await supabase.from("idea_activity").insert({
-    idea_id:item.id,owner_id:user.id,actor_id:user.id,event_type:"restored_from_trash",
+    idea_id:item.id,owner_id:userId,actor_id:userId,event_type:"restored_from_trash",
     details:{restored_status:result.data.status,archived_at:result.data.archived_at || null}
   });
   if(activity.error) return {data:result.data,error:activity.error};
