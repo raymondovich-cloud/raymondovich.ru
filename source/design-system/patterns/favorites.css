@@ -109,3 +109,37 @@
   }
   .ideas-workspace .ideas-favorite-card.is-compact>.favorite-toggle{transform:none;top:50%}
 }
+
+
+/* Compact project rows — separate the favorite star (top-right) from the open arrow (bottom-right). */
+.projects-content .projects-favorite-card.is-compact>.projects-registry-card{
+  position:relative;
+  padding-right:70px;
+  padding-bottom:42px;
+}
+.projects-content .projects-favorite-card.is-compact>.projects-registry-card .projects-card-arrow{
+  position:absolute;
+  right:16px;
+  bottom:12px;
+  margin:0;
+}
+.projects-content .projects-favorite-card.is-compact>.favorite-toggle{
+  top:8px;
+  right:9px;
+  transform:none;
+}
+@media(max-width:700px){
+  .projects-content .projects-favorite-card.is-compact>.projects-registry-card{
+    padding-right:65px;
+    padding-bottom:40px;
+  }
+  .projects-content .projects-favorite-card.is-compact>.projects-registry-card .projects-card-arrow{
+    right:13px;
+    bottom:10px;
+  }
+  .projects-content .projects-favorite-card.is-compact>.favorite-toggle{
+    top:8px;
+    right:9px;
+    transform:none;
+  }
+}
