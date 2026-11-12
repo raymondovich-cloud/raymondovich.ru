@@ -1,5 +1,7 @@
 import { supabase } from "/source/infrastructure/supabase/client.js";
 import { moveIdeaToTrashRecord } from "/source/application/trash/trash-registry.js";
+import { getFavorites } from "/source/application/favorites/favorites.js";
+import { favoriteButtonMarkup, bindFavoriteToggle } from "./favorites-ui.js";
 import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceSectionTitle, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 
 const STATUS = {
@@ -55,6 +57,7 @@ export async function renderIdeasWorkspace(root, user) {
   const workspace = root.querySelector(".owner-console-workspace");
   const formHost = root.querySelector("[data-ideas-form]");
   let ideas = [];
+  let favoriteIdeaIds = new Set();
   let categories = [];
   let currentIdeaId = null;
   const cachedWorkspace = ideasWorkspaceCache.get(user.id);
@@ -79,15 +82,17 @@ export async function renderIdeasWorkspace(root, user) {
     if (!ideasWorkspaceCache.has(user.id)) {
       list.innerHTML = '<p class="ideas-loading">Загрузка идей…</p>';
     }
-    const [ideaResult, categoryResult] = await Promise.all([
+    const [ideaResult, categoryResult, favoritesResult] = await Promise.all([
       supabase.from("ideas").select("*").is("deleted_at",null).order("updated_at", { ascending: false }),
-      supabase.from("idea_categories").select("id,name").eq("is_archived", false).order("sort_order").order("name")
+      supabase.from("idea_categories").select("id,name").eq("is_archived", false).order("sort_order").order("name"),
+      getFavorites()
     ]);
-    if (ideaResult.error) {
+    if (ideaResult.error || favoritesResult.error) {
       list.innerHTML = '<p class="ideas-error">Не удалось загрузить идеи. Проверьте подключение и права доступа.</p>';
       return;
     }
     ideas = ideaResult.data || [];
+    favoriteIdeaIds = new Set((favoritesResult.data || []).filter(item => item.type === "idea").map(item => item.id));
     categories = categoryResult.error ? (cachedWorkspace?.categories || []) : (categoryResult.data || []);
     ideasWorkspaceCache.set(user.id, { ideas, categories, updatedAt: Date.now() });
     const categoryFilter = root.querySelector("[data-filter-category]");
@@ -109,7 +114,7 @@ export async function renderIdeasWorkspace(root, user) {
       (!priority || idea.priority === priority) &&
       (!category || idea.category_id === category)
     );
-    const highPriority = filtered.filter(idea => ["high","critical"].includes(idea.priority));
+    const highPriority = filtered.filter(idea => favoriteIdeaIds.has(idea.id));
     const newCount = activeIdeas.filter(idea => idea.status === "new").length;
     root.querySelector("[data-total-count]").textContent = activeIdeas.length;
     root.querySelector("[data-high-count]").textContent = activeIdeas.filter(idea => ["high","critical"].includes(idea.priority)).length;
@@ -197,6 +202,7 @@ export async function renderIdeasWorkspace(root, user) {
         <header class="ideas-detail-top">
           <div class="ideas-detail-meta"><span class="idea-priority priority-${escape(idea.priority)}">${escape(PRIORITY[idea.priority] || idea.priority)}</span><span>${escape(STATUS[idea.status] || idea.status)}</span></div>
           <div class="ideas-detail-toolbar" data-idea-actions aria-label="Действия с идеей">
+            ${favoriteButtonMarkup("idea",idea.id,favoriteIdeaIds.has(idea.id))}
             <button type="button" class="ideas-icon-action is-danger" data-idea-delete aria-label="Переместить идею в корзину" title="Переместить в корзину"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg></button>
             <button type="button" class="ideas-icon-action" data-idea-edit="${escape(idea.id)}" aria-label="Редактировать идею" title="Редактировать идею">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
@@ -265,6 +271,14 @@ export async function renderIdeasWorkspace(root, user) {
       </form>`;
     window.scrollTo({top:0,behavior:"smooth"});
   }
+
+  bindFavoriteToggle(root, ({ type, id, isFavorite }) => {
+    if (type !== "idea") return;
+    if (isFavorite) favoriteIdeaIds.add(id); else favoriteIdeaIds.delete(id);
+    ideasWorkspaceCache.delete(user.id);
+    if (currentIdeaId === id) showDetail(ideas.find(item => item.id === id));
+    else renderList();
+  });
 
   root.addEventListener("click", async event => {
     const navigation = window.RaymondovichNavigation;
