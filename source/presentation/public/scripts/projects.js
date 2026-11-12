@@ -6,6 +6,8 @@ import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
 import { renderProjectMarketingScreen } from "./project-modules/marketing.js";
 import { escapeHtml as escape, workspaceToolbar, workspaceFilters, workspaceStatGrid, workspaceScreenHead, workspacePageTitle } from "./shared/workspace-ui.js";
 import { formatMoney } from "./shared/format.js";
+import { getFavorites } from "/source/application/favorites/favorites.js";
+import { favoriteButtonFor, bindFavoriteToggle } from "./favorites-ui.js";
 
 const PROJECT_STATUS = {
   active: "В работе",
@@ -45,6 +47,7 @@ export async function renderProjectsWorkspace(root, user) {
 
   const host = root.querySelector("[data-projects-content]");
   let projects = [];
+  let favoriteProjectIds = new Set();
   let moduleSummaries = {};
   let currentProjectId = null;
   let loadSequence = 0;
@@ -61,13 +64,14 @@ export async function renderProjectsWorkspace(root, user) {
   async function loadProjects() {
     const sequence=++loadSequence;
     if (!projectsWorkspaceCache.has(user.id)) host.innerHTML = '<div class="projects-loading">Загрузка проектов…</div>';
-    const result = await loadProjectsWorkspace();
+    const [result, favoritesResult] = await Promise.all([loadProjectsWorkspace(), getFavorites()]);
     if(sequence!==loadSequence||controller.signal.aborted)return false;
-    if (result.error) {
+    if (result.error || favoritesResult.error) {
       host.innerHTML = '<div class="projects-state projects-error"><strong>Не удалось загрузить проекты</strong><p>Проверьте подключение и права доступа.</p></div>';
       return false;
     }
     projects = result.projects;
+    favoriteProjectIds = new Set((favoritesResult.data || []).filter(item => item.type === "project").map(item => item.id));
     moduleSummaries = result.moduleSummaries || {};
     projectsWorkspaceCache.set(user.id, { projects, moduleSummaries, updatedAt: Date.now() });
     return true;
@@ -82,7 +86,7 @@ export async function renderProjectsWorkspace(root, user) {
       (!projectFilters.status || project.status === projectFilters.status) &&
       (!projectFilters.priority || (project.priority || "normal") === projectFilters.priority) &&
       (!projectFilters.origin || (projectFilters.origin === "idea" ? Boolean(project.source_idea_id) : !project.source_idea_id)));
-    const focused = visible.filter(project => project.status === "active" && ["high","critical"].includes(project.priority)).slice(0,2);
+    const focused = visible.filter(project => favoriteProjectIds.has(project.id));
     const focusedIds = new Set(focused.map(project => project.id));
     const remaining = visible.filter(project => !focusedIds.has(project.id));
     const groups = new Map();
@@ -133,8 +137,9 @@ export async function renderProjectsWorkspace(root, user) {
     return moduleSummaries[projectId]?.[key]?.label || "Нет данных";
   }
 
-  function renderOverview(project) {
+  async function renderOverview(project) {
     if (!project) return renderRegistry();
+    const favoriteMarkup = await favoriteButtonFor("project", project.id);
     currentProjectId = project.id;
     const projectSummary=moduleSummaries[project.id]||{};
     const servicesCount=projectSummary.services?.count||0;
@@ -154,7 +159,7 @@ export async function renderProjectsWorkspace(root, user) {
       <div class="projects-overview-screen">
         <header class="projects-overview-header">
           <div class="projects-project-hero">
-            <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span></div>
+            <div class="projects-project-topline"><span class="projects-eyebrow">ПРОЕКТ · ${project.source_idea_id?"ИЗ ИДЕИ":"СОЗДАН НАПРЯМУЮ"}</span><span class="projects-status status-${escape(project.status)}">${escape(statusLabel(project.status))}</span>${favoriteMarkup}</div>
             <h1>${escape(project.name)}</h1>
             <div class="projects-project-metrics">
               <div><span>Польз.</span><strong>${renderMetric(headline.users)}</strong></div>
@@ -244,7 +249,7 @@ export async function renderProjectsWorkspace(root, user) {
       loadProjects().then(loaded=>{
         const current=window.RaymondovichNavigation?.getState();
         if(loaded && !controller.signal.aborted && current?.route==="#authorization/projects" && current?.screen==="project-overview" && current?.data?.projectId===projectId) {
-          renderOverview(projects.find(item=>item.id===projectId));
+          await renderOverview(projects.find(item=>item.id===projectId));
         }
       });
       return;
@@ -255,6 +260,15 @@ export async function renderProjectsWorkspace(root, user) {
     else if (screen.startsWith("project-") && MODULES[screen.replace("project-","")]) renderModule(project,screen.replace("project-",""));
     else renderRegistry();
   }
+
+  bindFavoriteToggle(root, ({ type, id, isFavorite }) => {
+    if (type !== "project") return;
+    if (isFavorite) favoriteProjectIds.add(id); else favoriteProjectIds.delete(id);
+    projectsWorkspaceCache.delete(user.id);
+    const state = window.RaymondovichNavigation?.getState();
+    if (state?.screen === "project-overview") renderOverview(projects.find(item => item.id === id));
+    else renderRegistry();
+  });
 
   root.addEventListener("click", async event => {
     const navigation = window.RaymondovichNavigation;
