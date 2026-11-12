@@ -426,3 +426,24 @@
  .projects-content .projects-module-card,.projects-content .ws-card.projects-registry-card,.projects-content .projects-service-chevron{transition:none}
  .projects-content .projects-module-card:hover,.projects-content .ws-card.projects-registry-card:hover{transform:none}
 }
+
+
+/* Projects trash: reversible removal and explicit permanent deletion. */
+.projects-registry-actions,.projects-overview-actions,.projects-trash-actions{display:flex;justify-content:flex-end;gap:10px;margin:0 0 18px}
+.projects-overview-actions{justify-content:flex-start;margin:20px 0 0}
+.projects-trash-list{display:grid;gap:11px;margin-top:18px}
+.projects-trash-item{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0;padding:17px 18px;border:1px solid var(--ws-card-line);border-radius:18px;background:var(--ws-card-compact)}
+.projects-trash-copy{display:grid;gap:6px;min-width:0}
+.projects-trash-copy strong{color:var(--ws-card-text);font-size:16px;font-weight:500;overflow-wrap:anywhere}
+.projects-trash-copy span{color:var(--ws-card-muted);font-size:12px;line-height:1.45}
+.projects-trash-item-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.projects-trash-item-actions button{min-height:44px}
+.projects-danger{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid var(--ws-danger);border-radius:13px;background:transparent;color:var(--ws-danger);font:500 13px/1.2 var(--font-body);cursor:pointer}
+.projects-danger:disabled,.projects-trash-item-actions button:disabled{opacity:.5;cursor:wait}
+@media(max-width:600px){
+ .projects-trash-item{align-items:stretch;flex-direction:column;padding:15px}
+ .projects-trash-item-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .projects-trash-item-actions button{width:100%;padding:10px 8px;font-size:12px}
+ .projects-registry-actions{justify-content:stretch}
+ .projects-registry-actions button{width:100%}
+}

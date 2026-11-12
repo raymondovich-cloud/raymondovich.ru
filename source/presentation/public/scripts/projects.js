@@ -1,5 +1,5 @@
 import { loadProjectsWorkspace } from "/source/application/projects/project-overview-coordinator.js";
-import { createProjectRecord } from "/source/application/projects/project-registry.js";
+import { createProjectRecord, loadProjectsTrash, moveProjectToTrashRecord, restoreProjectFromTrashRecord, permanentlyDeleteProjectRecord } from "/source/application/projects/project-registry.js";
 import { renderProjectServicesScreen } from "./project-modules/services.js";
 import { renderProjectAccountingScreen } from "./project-modules/accounting.js";
 import { renderProjectAnalyticsScreen } from "./project-modules/analytics.js";
@@ -95,6 +95,7 @@ export async function renderProjectsWorkspace(root, user) {
       <section class="ws-page projects-registry" data-project-registry>
         ${workspacePageTitle("Проекты")}
         ${workspaceToolbar({searchAttr:"data-project-search",searchLabel:"Поиск проектов",searchPlaceholder:"Поиск проектов",searchValue:query,filterToggleAttr:"data-project-filter-toggle",filterPanelId:"projects-filter-panel",createAttr:"data-project-create",createLabel:"Добавить новый проект"})}
+        <div class="projects-registry-actions"><button type="button" class="projects-secondary" data-project-trash-open>Корзина</button></div>
         ${workspaceFilters({id:"projects-filter-panel",attributes:"data-project-filters",fields:[
           {label:"Статус",control:`<select aria-label="Фильтр по статусу" data-project-filter-status><option value="">Все статусы</option>${Object.entries(PROJECT_STATUS).filter(([key])=>key!=="archived").map(([key,label])=>`<option value="${key}" ${projectFilters.status===key?"selected":""}>${escape(label)}</option>`).join("")}</select>`},
           {label:"Приоритет",control:`<select aria-label="Фильтр по приоритету" data-project-filter-priority><option value="">Все приоритеты</option>${Object.entries(PROJECT_PRIORITY).map(([key,label])=>`<option value="${key}" ${projectFilters.priority===key?"selected":""}>${escape(label)}</option>`).join("")}</select>`},
@@ -174,7 +175,33 @@ export async function renderProjectsWorkspace(root, user) {
               <span class="projects-module-arrow" aria-hidden="true">↗</span>
             </button>`).join("")}
         </div>
+        <div class="projects-overview-actions"><button type="button" class="projects-secondary" data-project-move-to-trash="${escape(project.id)}">Переместить в корзину</button></div>
       </div>`;
+  }
+
+  async function renderTrash() {
+    const sequence=++loadSequence;
+    host.innerHTML='<div class="projects-loading">Загрузка корзины…</div>';
+    const result=await loadProjectsTrash();
+    if(sequence!==loadSequence||controller.signal.aborted)return;
+    if(result.error){
+      host.innerHTML='<section class="projects-state projects-error"><strong>Не удалось загрузить корзину</strong><p>Проверьте подключение и права доступа.</p></section>';
+      return;
+    }
+    const items=result.projects||[];
+    host.innerHTML=`
+      <section class="ws-page projects-trash" data-project-trash-page>
+        ${workspaceScreenHead({title:"Корзина",subtitle:"Удалённые проекты хранятся здесь до восстановления или окончательного удаления."})}
+        <div class="projects-trash-actions"><button type="button" class="projects-secondary" data-project-back-registry>← К проектам</button></div>
+        ${items.length?`<div class="projects-trash-list">${items.map(project=>`
+          <article class="projects-trash-item">
+            <div class="projects-trash-copy"><strong>${escape(project.name)}</strong><span>Перемещён: ${escape(project.deleted_at?new Date(project.deleted_at).toLocaleString("ru-RU"):"дата неизвестна")}</span></div>
+            <div class="projects-trash-item-actions">
+              <button type="button" class="projects-secondary" data-project-restore="${escape(project.id)}">Восстановить</button>
+              <button type="button" class="projects-danger" data-project-delete-forever="${escape(project.id)}">Удалить навсегда</button>
+            </div>
+          </article>`).join("")}</div>`:`<div class="ws-empty"><strong>Корзина пуста</strong><p>Проекты, перемещённые в корзину, появятся здесь.</p></div>`}
+      </section>`;
   }
 
   async function renderModule(project, key) {
@@ -211,6 +238,10 @@ export async function renderProjectsWorkspace(root, user) {
     const screen = state.screen || "projects-registry";
     const projectId = state.data?.projectId;
     const project = projects.find(item=>item.id===projectId);
+    if (screen === "projects-trash") {
+      renderTrash();
+      return;
+    }
     if (screen === "project-overview") {
       loadProjects().then(loaded=>{
         const current=window.RaymondovichNavigation?.getState();
@@ -229,6 +260,49 @@ export async function renderProjectsWorkspace(root, user) {
 
   root.addEventListener("click", async event => {
     const navigation = window.RaymondovichNavigation;
+    if (event.target.closest("[data-project-trash-open]")) {
+      navigation?.navigateScreen("projects-trash",{});
+      return;
+    }
+    if (event.target.closest("[data-project-back-registry]")) {
+      navigation?.navigateScreen("projects-registry",{});
+      return;
+    }
+    const moveToTrash=event.target.closest("[data-project-move-to-trash]");
+    if(moveToTrash){
+      const project=projects.find(item=>item.id===moveToTrash.dataset.projectMoveToTrash);
+      if(!project||!window.confirm(`Переместить проект «${project.name}» в корзину? Его данные сохранятся, проект можно будет восстановить.`))return;
+      moveToTrash.disabled=true;
+      const result=await moveProjectToTrashRecord(project.id);
+      if(result.error){window.alert(result.error.message||"Не удалось переместить проект в корзину.");moveToTrash.disabled=false;return;}
+      projects=projects.filter(item=>item.id!==project.id);
+      projectsWorkspaceCache.delete(user.id);
+      await loadProjects();
+      navigation?.navigateScreen("projects-registry",{}, {replace:true});
+      return;
+    }
+    const restore=event.target.closest("[data-project-restore]");
+    if(restore){
+      restore.disabled=true;
+      const result=await restoreProjectFromTrashRecord(restore.dataset.projectRestore);
+      if(result.error){window.alert(result.error.message||"Не удалось восстановить проект.");restore.disabled=false;return;}
+      projectsWorkspaceCache.delete(user.id);
+      await loadProjects();
+      renderTrash();
+      return;
+    }
+    const deleteForever=event.target.closest("[data-project-delete-forever]");
+    if(deleteForever){
+      const projectId=deleteForever.dataset.projectDeleteForever;
+      const projectName=deleteForever.closest(".projects-trash-item")?.querySelector(".projects-trash-copy strong")?.textContent||"этот проект";
+      if(!window.confirm(`Удалить проект «${projectName}» навсегда? Все данные, принадлежащие проекту, будут удалены. Исходная идея и общие каталоги сервисов сохранятся. Это действие нельзя отменить.`))return;
+      deleteForever.disabled=true;
+      const result=await permanentlyDeleteProjectRecord(projectId);
+      if(result.error){window.alert(result.error.message||"Не удалось удалить проект.");deleteForever.disabled=false;return;}
+      projectsWorkspaceCache.delete(user.id);
+      renderTrash();
+      return;
+    }
     if (event.target.closest("[data-project-create]")) {
       navigation?.navigateScreen("project-create",{});
       return;

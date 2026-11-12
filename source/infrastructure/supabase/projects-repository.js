@@ -1,7 +1,19 @@
 import { supabase } from "./client.js";
 
 export async function listProjects(){
-  return supabase.from("projects").select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at").order("updated_at",{ascending:false});
+  return supabase.from("projects").select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at,deleted_at").is("deleted_at",null).order("updated_at",{ascending:false});
+}
+export async function listTrashedProjects(){
+  return supabase.from("projects").select("id,owner_id,name,description,goal,status,priority,source_idea_id,created_at,updated_at,deleted_at").not("deleted_at","is",null).order("deleted_at",{ascending:false});
+}
+export async function moveProjectToTrash(id){
+  return supabase.from("projects").update({deleted_at:new Date().toISOString()}).eq("id",id).is("deleted_at",null).select("id,deleted_at").single();
+}
+export async function restoreProjectFromTrash(id){
+  return supabase.from("projects").update({deleted_at:null}).eq("id",id).not("deleted_at","is",null).select("id").single();
+}
+export async function permanentlyDeleteTrashedProject(id){
+  return supabase.from("projects").delete().eq("id",id).not("deleted_at","is",null).select("id").single();
 }
 export async function listProjectServiceSummaryRelations(){
   return supabase.from("project_tool_relations").select("project_id,status,monthly_cost,currency");
@@ -11,8 +23,8 @@ export async function listProjectResourceSummaryRelations(){
 }
 export async function countProjectsSummary(){
   const [total,active]=await Promise.all([
-    supabase.from("projects").select("id",{count:"exact",head:true}).neq("status","archived"),
-    supabase.from("projects").select("id",{count:"exact",head:true}).eq("status","active")
+    supabase.from("projects").select("id",{count:"exact",head:true}).neq("status","archived").is("deleted_at",null),
+    supabase.from("projects").select("id",{count:"exact",head:true}).eq("status","active").is("deleted_at",null)
   ]);
   return {total:total.count||0,activeCount:active.count||0,error:total.error||active.error||null};
 }

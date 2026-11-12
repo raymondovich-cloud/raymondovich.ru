@@ -2,9 +2,9 @@
 
 > **Проект:** Raymondovich.ru  
 > **Документ:** Архитектурные границы Projects  
-> **Версия:** 1.2  
+> **Версия:** 1.4  
 > **Статус:** Согласовано для реализации первой вертикали  
-> **Дата:** 2026-11-10
+> **Дата:** 2026-11-12
 
 ## 1. Общая схема
 
@@ -108,10 +108,41 @@ Accounting не читает Services. Координатор не объеди�
 
 Presentation вызывает координатор и получает DTO; прямые обращения к Supabase из `owner-control-center.js` запрещены.
 
+## 9. Жизненный цикл проекта: корзина
+
+### 9.1 Модель данных
+
+- `public.projects.deleted_at timestamptz NULL` — единственный признак soft delete.
+- `NULL` означает активный проект; ненулевое значение — проект в корзине.
+- Индекс `(owner_id, deleted_at DESC)` применяется к строкам корзины.
+- Обычный Projects repository всегда фильтрует `deleted_at IS NULL`; отдельный метод получает строки корзины через `deleted_at IS NOT NULL`.
+
+### 9.2 Слои приложения
+
+- Infrastructure repository предоставляет `listTrashedProjects`, `moveProjectToTrash`, `restoreProjectFromTrash` и `permanentlyDeleteTrashedProject`.
+- Application registry валидирует идентификатор и предоставляет отдельные use-case функции загрузки, перемещения, восстановления и окончательного удаления.
+- Presentation отвечает только за навигацию, отображение и подтверждения; прямые обращения к Supabase запрещены.
+- Design System оформляет состояния корзины, кнопки и опасное действие в `source/design-system/patterns/projects.css`.
+
+### 9.3 RLS и целостность
+
+- Существующая общая policy `admin manages projects` разделяется на SELECT, INSERT, UPDATE и DELETE policies с сохранением проверок `app_metadata.role = 'admin'` и `auth.uid() = owner_id`.
+- DELETE policy дополнительно требует `deleted_at IS NOT NULL`. Это не позволяет обойти корзину прямым DELETE активного проекта через Data API.
+- UPDATE policy сохраняет `USING` и `WITH CHECK`; она позволяет владельцу менять `deleted_at` и восстанавливать проект.
+- Удаление проекта опирается на проверенные FK: project history, milestones, tool relations и resource relations удаляются каскадно; tasks удаляются через каскад milestone.
+- Shared catalog (`ecosystem_tools`, `tool_resources`) не является дочерним набором проекта и не удаляется из-за удаления project relations.
+- `projects.source_idea_id` имеет `ON DELETE SET NULL` со стороны идеи; удаление проекта не удаляет идею.
+- Корзина не имеет автоматической очистки. Permanent delete запускается только из корзины после отдельного подтверждения.
+
+### 9.4 Среды
+
+Миграция `20261112154645_projects_trash` применена к основной базе `yajybgdorhxebbigwjgi` после явного согласования владельца. Колонка, индекс и четыре раздельные RLS policies проверены. Поведенческий SQL-тест выполнен с `SET LOCAL ROLE authenticated` и тестовыми JWT claims: проверены чтение владельцем-admin, запрет DELETE активного проекта, soft delete, restore, запрет чтения/изменения/удаления не-владельцем и разрешение DELETE проекта из корзины. Тестовая строка выполнялась внутри транзакции с `ROLLBACK`; контрольное состояние БД — 3 активных проекта, 0 в корзине, тестовых строк нет. Реальная пользовательская Auth-сессия не использовалась. Browser/E2E не выполнены: Cloudflare Pages Preview пропускает `feature/projects-trash` по `branch_config`; custom allowlist содержит только две другие ветки. Изменения приложения остаются в feature branch; merge в `main` не выполнялся.
+
 ## История версий
 
 | Версия | Дата | Статус | Изменение |
 |---|---|---|---|
+| 1.4 | 2026-11-12 | Реализация в работе | Зафиксировано применение миграции корзины к основной БД и текущий статус проверок. |
 | 1.2 | 2026-11-10 | Согласовано для реализации | Уточнён приоритет Accounting и условие fallback Services только при `not_configured`; ошибки Accounting не маскируются. |
 | 1.1 | 2026-11-10 | Согласовано для реализации | Зафиксированы единое правило connected, DTO Services summary, headline Overview и посредник Owner Hub. |
 | 1.0 | 2026-11-09 | Согласовано | Утверждены владение данными, контракты и посредник, безопасность и границы первой вертикали. |
