@@ -176,6 +176,34 @@ export async function renderProjectsWorkspace(root, user) {
         </div>
         <div class="projects-overview-actions"><button type="button" class="projects-secondary" data-project-move-to-trash="${escape(project.id)}">Переместить в корзину</button></div>
       </div>`;
+    const moveToTrashButton = host.querySelector("[data-project-move-to-trash]");
+    moveToTrashButton?.addEventListener("click", async () => {
+      const projectId = moveToTrashButton.dataset.projectMoveToTrash;
+      if (!projectId || projectId !== project.id) {
+        window.alert("Не удалось определить проект. Обновите страницу и попробуйте снова.");
+        return;
+      }
+      if (!window.confirm(`Переместить проект «${project.name}» в корзину? Его можно будет восстановить позже.`)) return;
+
+      moveToTrashButton.disabled = true;
+      try {
+        const result = await moveProjectToTrashRecord(projectId);
+        if (result.error) throw result.error;
+
+        projectsWorkspaceCache.delete(user.id);
+        const loaded = await loadProjects();
+        if (!loaded) {
+          window.alert("Проект перемещён в корзину, но список проектов не удалось обновить. Перезагрузите раздел.");
+          return;
+        }
+        const navigation = window.RaymondovichNavigation;
+        navigation?.navigateScreen("projects-registry", {}, { replace: true });
+        if (!navigation) renderRegistry();
+      } catch (error) {
+        window.alert(error?.message || "Не удалось переместить проект в корзину.");
+        moveToTrashButton.disabled = false;
+      }
+    }, { signal: controller.signal });
   }
 
   async function renderModule(project, key) {
@@ -244,35 +272,6 @@ export async function renderProjectsWorkspace(root, user) {
     const open = event.target.closest("[data-project-open]");
     if (open) {
       navigation?.navigateScreen("project-overview",{projectId:open.dataset.projectOpen});
-      return;
-    }
-    const moveToTrash = event.target.closest("[data-project-move-to-trash]");
-    if (moveToTrash) {
-      const projectId = moveToTrash.dataset.projectMoveToTrash;
-      const project = projects.find(item => item.id === projectId);
-      if (!project) {
-        window.alert("Не удалось определить проект. Обновите страницу и попробуйте снова.");
-        return;
-      }
-      if (!window.confirm(`Переместить проект «${project.name}» в корзину? Его можно будет восстановить позже.`)) return;
-
-      moveToTrash.disabled = true;
-      try {
-        const result = await moveProjectToTrashRecord(projectId);
-        if (result.error) throw result.error;
-
-        projectsWorkspaceCache.delete(user.id);
-        const loaded = await loadProjects();
-        if (!loaded) {
-          window.alert("Проект перемещён в корзину, но список проектов не удалось обновить. Перезагрузите раздел.");
-          return;
-        }
-        navigation?.navigateScreen("projects-registry", {}, { replace: true });
-        if (!navigation) renderRegistry();
-      } catch (error) {
-        window.alert(error?.message || "Не удалось переместить проект в корзину.");
-        moveToTrash.disabled = false;
-      }
       return;
     }
     const moduleButton = event.target.closest("[data-project-module]");
