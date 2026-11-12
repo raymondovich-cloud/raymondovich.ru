@@ -94,6 +94,7 @@ export function renderProfileScreen(root, user) {
             <div class="profile-group-list app-ui-list">
               ${row({icon:"projects",title:"Проекты",description:"Реестр проектов",value:cachedProjectCount === undefined ? "…" : String(cachedProjectCount),route:"#authorization/projects"})}
               ${row({icon:"ideas",title:"Идеи",description:"Задумки и предложения",route:"#authorization/ideas"})}
+              ${row({icon:"tools",title:"Корзина",description:"Удалённые проекты и идеи",route:"#authorization/trash"})}
               ${row({icon:"reports",title:"Отчёты",value:"Нет данных",route:"#authorization/reports"})}
               ${row({icon:"tools",title:"Инструменты",description:"Вся экосистема",route:"#authorization/profile-tools"})}
             </div>
