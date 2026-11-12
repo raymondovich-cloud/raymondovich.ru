@@ -31,11 +31,12 @@ Read-only проверка Supabase проекта `yajybgdorhxebbigwjgi` под
 - Миграция `20261112154645_projects_trash` применена к основной БД `yajybgdorhxebbigwjgi` после согласия владельца.
 - Проверены наличие `deleted_at`, частичного индекса и четырёх policies SELECT/INSERT/UPDATE/DELETE.
 - Migration history подтверждает запись версии `20261112154645`.
-- Полноценные browser/E2E и SQL RLS tests пока не выполнены.
+- Поведенческий SQL RLS-тест выполнен в транзакции с `SET LOCAL ROLE authenticated` и тестовыми JWT claims: owner/admin может читать свой проект, перемещать в корзину и восстанавливать; DELETE активного проекта блокируется; не-владелец не может читать/обновлять/удалять строку; окончательное удаление проекта из корзины разрешено.
+- Тестовая запись создавалась и удалялась внутри `ROLLBACK`; контрольный запрос после теста подтвердил `3 active / 0 trashed / 3 total`, тестовых строк нет. Реальный вход через пользовательскую Auth-сессию не проверялся.
 - В доступной среде отсутствует Supabase CLI, поэтому миграционный файл создан через GitHub repository API с timestamp-именем в принятом формате; команда `supabase migration new` не запускалась.
-- Browser/E2E проверки и реальное тестирование пользовательских сценариев с Auth-сессией пока не выполнены.
-- Supabase Advisors после миграции показывают несколько существовавших ранее предупреждений безопасности/производительности; новые project policies также отмечены performance advisor как потенциально неоптимальные auth initplan.
-- Merge в `main` и Cloudflare Production deploy не выполнялись.
+- Browser/E2E и мобильное визуальное тестирование не выполнены: Cloudflare Pages Preview пропускает `feature/projects-trash` с `skip_reason = branch_config`. Сейчас `preview_deployment_setting = custom`, а allowlist содержит только `ui/design-system-stage-2-final` и `ui/prototype-v3-full-parity`. Настройки Cloudflare не менялись.
+- Повторная проверка Supabase Advisors: новых security findings для `projects` нет. Сохраняются общие предупреждения проекта (включая `pg_net` в `public`, отключённую leaked-password protection и таблицы с RLS без policies). Performance Advisor показывает `auth_rls_initplan` для 17 policies, включая Projects; выражения Projects уже используют `(select auth.jwt())` и `(select auth.uid())`, поэтому автоматически переписывать политики без подтверждённой причины не стали.
+- GitHub Actions workflow runs для текущего SHA отсутствуют. Cloudflare Preview deployment для текущего SHA создан как skipped из-за branch allowlist. Merge в `main` и Cloudflare Production deploy не выполнялись.
 
 ## Следующий безопасный этап
 
