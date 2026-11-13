@@ -411,6 +411,7 @@ if (error || !data.user) {
 
   buttons.forEach((button) => button.addEventListener("click", () => {
     routeTrail = [];
+    currentRenderedRoute = button.dataset.section;
     navigate(button.dataset.section);
   }));
   window.addEventListener("hashchange", renderRoute);
