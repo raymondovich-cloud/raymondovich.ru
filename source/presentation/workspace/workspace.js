@@ -157,6 +157,38 @@ if (error || !data.user) {
     developmentSection.append(developmentHeading, developmentGroup);
     content.append(developmentSection);
 
+    const createProfilePlaceholderSection = (id, headingText, descriptionText) => {
+      const section = document.createElement("section");
+      section.className = "ds-workspace__profile-section";
+      section.setAttribute("aria-labelledby", id);
+
+      const heading = document.createElement("h2");
+      heading.className = "ds-workspace__settings-heading";
+      heading.id = id;
+      heading.textContent = headingText;
+
+      const frame = document.createElement("div");
+      frame.className = "ds-workspace__settings-group";
+      const description = document.createElement("p");
+      description.className = "ds-workspace__settings-description";
+      description.textContent = descriptionText;
+      frame.append(description);
+
+      section.append(heading, frame);
+      content.append(section);
+    };
+
+    createProfilePlaceholderSection(
+      "profile-active-projects-title",
+      "Действующие проекты",
+      "Здесь будут отображаться ваши действующие проекты.",
+    );
+    createProfilePlaceholderSection(
+      "profile-favorites-title",
+      "Избранное",
+      "Здесь будут собраны избранные инструменты, идеи и проекты.",
+    );
+
     const settingsButton = makeButton(
       "",
       "ds-button ds-button--secondary ds-workspace__action",
