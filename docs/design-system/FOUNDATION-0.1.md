@@ -54,7 +54,7 @@ No CSS-in-JS. No runtime styling dependency. No new JavaScript package.
 - Do not use color alone to communicate success, error, selection or disabled state.
 - Text, controls and focus indicators must remain distinguishable in both themes.
 
-Initial orange semantic values are provisional design tokens and require visual review against real content before being frozen.
+The visual direction and current orange semantic values are approved by the owner as the Raymondovich Design System 1.0 baseline. Changes to brand palette, semantic color mapping, typography, spacing, geometry, materials or motion require an explicit owner decision and a documented versioned change. Technical corrections that do not alter the approved visual result may proceed without changing the baseline.
 
 ## 5. Materials and depth
 
