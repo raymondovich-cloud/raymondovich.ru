@@ -145,6 +145,29 @@ if (error || !data.user) {
     settingsDescription.textContent = "Оформление, данные, конфиденциальность";
     settingsButton.append(settingsLabel, settingsDescription);
     content.append(settingsButton);
+
+    const controlCenterGroup = document.createElement("section");
+    controlCenterGroup.className = "ds-workspace__settings-group";
+    controlCenterGroup.setAttribute("aria-label", "Control Center");
+    controlCenterGroup.append(
+      createSettingRow("Control Center", "Раздел в разработке", () => {}, "Скоро"),
+    );
+    content.append(controlCenterGroup);
+
+    const developmentGroup = document.createElement("section");
+    developmentGroup.className = "ds-workspace__settings-group";
+    developmentGroup.setAttribute("aria-labelledby", "profile-development-title");
+    const developmentHeading = document.createElement("h2");
+    developmentHeading.className = "ds-workspace__settings-heading";
+    developmentHeading.id = "profile-development-title";
+    developmentHeading.textContent = "Разработка";
+    developmentGroup.append(
+      developmentHeading,
+      createSettingRow("Проекты", "Раздел в разработке", () => {}, "Скоро"),
+      createSettingRow("Идеи", "Раздел в разработке", () => {}, "Скоро"),
+      createSettingRow("Инструменты", "Раздел в разработке", () => {}, "Скоро"),
+    );
+    content.append(developmentGroup);
   }
 
   async function loadProfile() {
