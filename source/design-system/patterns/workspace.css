@@ -162,7 +162,9 @@
 .ds-workspace__action {
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--ds-space-3);
+  text-align: left;
 }
 .ds-workspace__back {
   justify-self: start;
@@ -229,6 +231,7 @@
 }
 .ds-workspace__setting-copy {
   display: grid;
+  flex: 1 1 auto;
   min-width: 0;
   justify-items: start;
   gap: 0.25rem;
@@ -254,6 +257,7 @@
   overflow-wrap: anywhere;
 }
 .ds-workspace__setting-row {
+  justify-content: flex-start;
   padding: var(--ds-space-3) 0;
   border: 0;
   border-top: 1px solid var(--ds-border-default);
@@ -270,6 +274,7 @@
 .ds-workspace__setting-hint { flex: none; }
 .ds-workspace__setting-chevron {
   flex: none;
+  margin-left: auto;
   color: var(--ds-text-tertiary);
   font-size: 1.6rem;
   line-height: 1;
