@@ -112,7 +112,7 @@ if (error || !data.user) {
       const profile = result.profile;
       const name = (profile.full_name || "").trim();
       const initials = name
-        .split(/\\s+/)
+        .split(/\s+/)
         .filter(Boolean)
         .slice(0, 2)
         .map((part) => Array.from(part)[0]?.toLocaleUpperCase("ru-RU") || "")
