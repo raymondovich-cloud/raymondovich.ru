@@ -1,0 +1,136 @@
+/* Raymondovich Design System — foundations v0.1 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--ds-bg-canvas);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-md);
+  line-height: var(--ds-leading-normal);
+  letter-spacing: var(--ds-tracking-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+::selection {
+  background: var(--ds-accent-soft);
+  color: var(--ds-text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ds-focus-ring);
+  outline-offset: 3px;
+}
+
+.ds-display {
+  margin: 0;
+  font-size: var(--ds-text-display);
+  font-weight: 680;
+  line-height: var(--ds-leading-tight);
+  letter-spacing: var(--ds-tracking-tight);
+}
+
+.ds-heading-1,
+.ds-heading-2,
+.ds-heading-3,
+.ds-heading-4 {
+  margin: 0;
+  font-weight: 650;
+  line-height: var(--ds-leading-tight);
+  letter-spacing: var(--ds-tracking-tight);
+}
+
+.ds-heading-1 { font-size: clamp(1.875rem, 4vw, 2.5rem); }
+.ds-heading-2 { font-size: var(--ds-text-2xl); }
+.ds-heading-3 { font-size: var(--ds-text-xl); }
+.ds-heading-4 { font-size: var(--ds-text-lg); }
+
+.ds-body {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-text-md);
+  line-height: var(--ds-leading-relaxed);
+}
+
+.ds-caption {
+  margin: 0;
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-text-sm);
+  line-height: var(--ds-leading-normal);
+}
+
+.ds-overline {
+  margin: 0;
+  color: var(--ds-text-accent);
+  font-family: var(--ds-font-mono);
+  font-size: var(--ds-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.ds-container {
+  width: min(100% - 2rem, var(--ds-content-max));
+  margin-inline: auto;
+}
+
+.ds-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4);
+}
+
+.ds-muted { color: var(--ds-text-secondary); }
+.ds-accent { color: var(--ds-text-accent); }
+
+@supports (padding: max(0px)) {
+  .ds-safe-area {
+    padding-top: max(var(--ds-space-4), env(safe-area-inset-top));
+    padding-right: max(var(--ds-space-4), env(safe-area-inset-right));
+    padding-bottom: max(var(--ds-space-4), env(safe-area-inset-bottom));
+    padding-left: max(var(--ds-space-4), env(safe-area-inset-left));
+  }
+}
