@@ -151,7 +151,7 @@ if (error || !data.user) {
     const cancel = makeButton("Отмена", "ds-button ds-button--secondary", () => dialog.close());
     const submit = document.createElement("button");
     submit.type = "submit";
-    submit.className = "ds-button ds-button--primary";
+    submit.className = "ds-button";
     submit.textContent = "Сохранить";
     actions.append(cancel, submit);
     form.append(status, actions);
@@ -286,7 +286,7 @@ if (error || !data.user) {
           profile.full_name = updated.profile.full_name;
           await showSettings();
         })),
-        createSettingRow("Дата рождения", profile.birth_date, () => createEditorDialog("birth_date", profile.birth_date, async (values) => {
+        createSettingRow("Дата рождения", new Date(profile.birth_date + "T00:00:00").toLocaleDateString("ru-RU"), () => createEditorDialog("birth_date", profile.birth_date, async (values) => {
           const updated = await profileSettings.updateDetails({ birth_date: values.birth_date });
           if (!updated?.profile) throw new Error("Не удалось сохранить дату рождения.");
           profile.birth_date = updated.profile.birth_date;
