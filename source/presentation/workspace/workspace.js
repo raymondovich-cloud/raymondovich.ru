@@ -242,27 +242,22 @@ if (error || !data.user) {
     themeLabel.className = "ds-workspace__setting-label";
     themeLabel.textContent = "Тёмная тема";
     themeCopy.append(themeLabel);
-    const switchLabel = document.createElement("label");
-    switchLabel.className = "ds-switch";
-    switchLabel.setAttribute("aria-label", "Тёмная тема");
-    const themeSwitch = document.createElement("input");
-    themeSwitch.type = "checkbox";
-    themeSwitch.role = "switch";
-    themeSwitch.checked = root.dataset.theme !== "light";
+    const themeSwitch = document.createElement("button");
+    themeSwitch.type = "button";
+    themeSwitch.className = "ds-switch";
+    themeSwitch.setAttribute("role", "switch");
     themeSwitch.setAttribute("aria-label", "Тёмная тема");
-    const switchTrack = document.createElement("span");
-    switchTrack.className = "ds-switch__track";
-    switchTrack.setAttribute("aria-hidden", "true");
-    switchLabel.append(themeSwitch, switchTrack);
-    themeSwitch.addEventListener("change", () => {
-      const nextTheme = themeSwitch.checked ? "dark" : "light";
+    themeSwitch.setAttribute("aria-checked", String(root.dataset.theme !== "light"));
+    themeSwitch.addEventListener("click", () => {
+      const nextTheme = themeSwitch.getAttribute("aria-checked") !== "true" ? "dark" : "light";
       applyTheme(nextTheme);
-      const nextLabel = nextTheme === "dark" ? "Тёмная тема" : "Светлая тема";
+      const isDark = nextTheme === "dark";
+      const nextLabel = isDark ? "Тёмная тема" : "Светлая тема";
       themeLabel.textContent = nextLabel;
-      switchLabel.setAttribute("aria-label", nextLabel);
       themeSwitch.setAttribute("aria-label", nextLabel);
+      themeSwitch.setAttribute("aria-checked", String(isDark));
     });
-    themeRow.append(themeCopy, switchLabel);
+    themeRow.append(themeCopy, themeSwitch);
     appearance.append(appearanceHeading, themeRow);
 
     const userGroup = document.createElement("section");
