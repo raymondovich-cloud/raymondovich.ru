@@ -241,10 +241,7 @@ if (error || !data.user) {
     const themeLabel = document.createElement("span");
     themeLabel.className = "ds-workspace__setting-label";
     themeLabel.textContent = "Тёмная тема";
-    const themeDescription = document.createElement("span");
-    themeDescription.className = "ds-workspace__setting-value";
-    themeDescription.textContent = "Переключение светлого и тёмного оформления";
-    themeCopy.append(themeLabel, themeDescription);
+    themeCopy.append(themeLabel);
     const switchLabel = document.createElement("label");
     switchLabel.className = "ds-switch";
     switchLabel.setAttribute("aria-label", "Тёмная тема");
@@ -257,7 +254,14 @@ if (error || !data.user) {
     switchTrack.className = "ds-switch__track";
     switchTrack.setAttribute("aria-hidden", "true");
     switchLabel.append(themeSwitch, switchTrack);
-    themeSwitch.addEventListener("change", () => applyTheme(themeSwitch.checked ? "dark" : "light"));
+    themeSwitch.addEventListener("change", () => {
+      const nextTheme = themeSwitch.checked ? "dark" : "light";
+      applyTheme(nextTheme);
+      const nextLabel = nextTheme === "dark" ? "Тёмная тема" : "Светлая тема";
+      themeLabel.textContent = nextLabel;
+      switchLabel.setAttribute("aria-label", nextLabel);
+      themeSwitch.setAttribute("aria-label", nextLabel);
+    });
     themeRow.append(themeCopy, switchLabel);
     appearance.append(appearanceHeading, themeRow);
 
