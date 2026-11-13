@@ -136,7 +136,7 @@ if (error || !data.user) {
     controlCenterGroup.className = "ds-workspace__settings-group";
     controlCenterGroup.setAttribute("aria-label", "Control Center");
     controlCenterGroup.append(
-      createSettingRow("Control Center", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Control Center", "Раздел в разработке", () => {}, "Скоро"),
     );
     content.append(controlCenterGroup);
 
@@ -149,9 +149,9 @@ if (error || !data.user) {
     developmentHeading.textContent = "Разработка";
     developmentGroup.append(
       developmentHeading,
-      createSettingRow("Проекты", "Раздел в разработке", () => {}, "Скоро"),
-      createSettingRow("Идеи", "Раздел в разработке", () => {}, "Скоро"),
-      createSettingRow("Инструменты", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Проекты", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Идеи", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Инструменты", "Раздел в разработке", () => {}, "Скоро"),
     );
     content.append(developmentGroup);
 
@@ -268,6 +268,12 @@ if (error || !data.user) {
     dialog.addEventListener("close", () => dialog.remove(), { once: true });
     dialog.showModal();
     fields[0]?.focus();
+  }
+
+  function createCompactSettingRow(label, value, onClick, hint = "") {
+    const row = createSettingRow(label, value, onClick, hint);
+    row.classList.add("ds-workspace__setting-row--compact");
+    return row;
   }
 
   function createSettingRow(label, value, onClick, hint = "") {
