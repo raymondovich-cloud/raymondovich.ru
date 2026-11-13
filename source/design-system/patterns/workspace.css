@@ -121,7 +121,13 @@
   .ds-workspace-nav { background: var(--ds-bg-elevated); }
 }
 
+.ds-workspace__content {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+}
 .ds-workspace__action {
+  display: flex;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
