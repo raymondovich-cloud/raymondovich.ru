@@ -193,6 +193,12 @@
   width: min(100%, 32rem);
 }
 
+.ds-workspace__profile-section {
+  display: grid;
+  gap: var(--ds-space-3);
+  width: min(100%, 32rem);
+}
+
 .ds-workspace__settings-group > .ds-workspace__setting-row:first-child {
   border-top: 0;
 }
