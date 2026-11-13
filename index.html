@@ -1,11 +1,29 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Сайт в разработке</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#08090b">
+  <meta name="description" content="Raymondovich — сайт в разработке.">
+  <title>Raymondovich</title>
+  <link rel="stylesheet" href="source/design-system/tokens/tokens.css">
+  <link rel="stylesheet" href="source/design-system/themes/themes.css">
+  <link rel="stylesheet" href="source/design-system/foundations/foundations.css">
+  <link rel="stylesheet" href="source/design-system/foundations/motion.css">
+  <link rel="stylesheet" href="source/design-system/components/components.css">
+  <link rel="stylesheet" href="source/presentation/public/public.css">
 </head>
-<body>
-  Сайт в разработке
+<body class="public-page">
+  <header class="public-header">
+    <div class="public-header__bar ds-glass">
+      <a class="public-brand" href="/" aria-label="Raymondovich — главная">raymondovich<span>.</span></a>
+      <button class="ds-button ds-button--secondary" type="button">Авторизация</button>
+    </div>
+  </header>
+
+  <main class="public-main">
+    <h1 class="public-main__message">Сайт <span>в разработке</span></h1>
+  </main>
 </body>
 </html>
