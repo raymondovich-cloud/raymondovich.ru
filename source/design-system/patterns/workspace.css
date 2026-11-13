@@ -253,7 +253,10 @@
 .ds-workspace__setting-value,
 .ds-workspace__setting-hint {
   color: var(--ds-text-secondary);
+  font-family: var(--ds-font-sans);
   font-size: var(--ds-text-sm);
+  font-weight: 400;
+  line-height: var(--ds-leading-normal);
   overflow-wrap: anywhere;
 }
 .ds-workspace__setting-row {
