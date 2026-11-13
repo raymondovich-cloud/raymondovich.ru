@@ -218,11 +218,6 @@
     box-shadow var(--ds-motion-standard) var(--ds-ease-standard);
 }
 
-@media (hover: none) {
-  .ds-button:hover,
-  .ds-button--secondary:hover,
-  .ds-button--ghost:hover { background: revert; }
-}
 
 @media (prefers-reduced-transparency: reduce) {
   .ds-glass,
