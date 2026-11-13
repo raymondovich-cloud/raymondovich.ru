@@ -88,6 +88,14 @@
     border-color var(--ds-motion-standard) var(--ds-ease-standard),
     transform var(--ds-motion-fast) var(--ds-ease-spring);
 }
+.ds-workspace-nav__item > span {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.05;
+}
 .ds-workspace-nav__item svg {
   width: 1.35rem;
   height: 1.35rem;
