@@ -2,6 +2,13 @@ import { supabase } from "../../infrastructure/supabase/client.js";
 
 const THEME_KEY = "raymondovich-theme";
 const root = document.documentElement;
+const ROUTES = {
+  projects: "Проекты",
+  ideas: "Идеи",
+  team: "Команда",
+  tools: "Инструменты",
+  profile: "Профиль",
+};
 
 function readTheme() {
   try {
@@ -19,6 +26,26 @@ function applyTheme(theme) {
     window.localStorage.setItem(THEME_KEY, nextTheme);
   } catch {
     // The current page still changes theme if storage is unavailable.
+  }
+}
+
+function readRoute() {
+  const route = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
+  if (route === "profile/settings") return route;
+  return Object.hasOwn(ROUTES, route) ? route : "projects";
+}
+
+function navigate(route, { replace = false } = {}) {
+  const hash = `#${route}`;
+  if (window.location.hash === hash) {
+    renderRoute();
+    return;
+  }
+  if (replace) {
+    window.history.replaceState(null, "", hash);
+    renderRoute();
+  } else {
+    window.location.hash = route;
   }
 }
 
@@ -54,7 +81,7 @@ if (error || !data.user) {
     const settingsButton = makeButton(
       "Настройки",
       "ds-button ds-button--secondary ds-workspace__action",
-      () => activate("settings"),
+      () => navigate("profile/settings"),
     );
     content.append(settingsButton);
   }
@@ -65,7 +92,7 @@ if (error || !data.user) {
     const backButton = makeButton(
       "← Профиль",
       "ds-button ds-button--secondary ds-workspace__back",
-      () => activate("profile"),
+      () => navigate("profile"),
     );
 
     const group = document.createElement("section");
@@ -113,40 +140,36 @@ if (error || !data.user) {
     content.append(backButton, group);
   }
 
-  function activate(section) {
-    if (section === "settings") {
-      title.textContent = "Настройки";
-      showSettings();
-      buttons.forEach((button) => {
-        button.toggleAttribute("aria-current", button.dataset.section === "profile");
-        if (button.dataset.section === "profile") button.setAttribute("aria-current", "page");
-        else button.removeAttribute("aria-current");
-      });
-      return;
-    }
+  function renderRoute() {
+    const route = readRoute();
+    const section = route === "profile/settings" ? "profile" : route;
 
-    const labels = {
-      projects: "Проекты",
-      ideas: "Идеи",
-      team: "Команда",
-      tools: "Инструменты",
-      profile: "Профиль",
-    };
-    if (!labels[section]) return;
+    title.textContent = route === "profile/settings" ? "Настройки" : ROUTES[section];
 
-    title.textContent = labels[section];
-    if (section === "profile") showProfile();
+    if (route === "profile/settings") showSettings();
+    else if (section === "profile") showProfile();
     else showMessage("Раздел пока в разработке.");
 
     buttons.forEach((button) => {
       if (button.dataset.section === section) button.setAttribute("aria-current", "page");
       else button.removeAttribute("aria-current");
     });
+
+    document.title = `${title.textContent} — Raymondovich`;
   }
 
   buttons.forEach((button) => {
-    button.addEventListener("click", () => activate(button.dataset.section));
+    button.addEventListener("click", () => navigate(button.dataset.section));
   });
+
+  window.addEventListener("hashchange", renderRoute);
+
+  // Keep one HTML application shell; the hash identifies the active workspace view.
+  if (!window.location.hash || !ROUTES[window.location.hash.slice(1)] && window.location.hash !== "#profile/settings") {
+    navigate("projects", { replace: true });
+  } else {
+    renderRoute();
+  }
 
   document.querySelector("#sign-out").addEventListener("click", async () => {
     const button = document.querySelector("#sign-out");
