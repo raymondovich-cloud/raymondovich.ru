@@ -308,21 +308,22 @@ if (error || !data.user) {
       sparkles: ["m8 3 1.4 4.6L14 9l-4.6 1.4L8 15l-1.4-4.6L2 9l4.6-1.4L8 3Z", "m18 13 .9 2.6 2.6.9-2.6.9L18 20l-.9-2.6-2.6-.9 2.6-.9L18 13Z"],
       settings: ["M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z", "M19.4 13.5a7.8 7.8 0 0 0 0-3l1.5-1.2-1.8-3.1-1.8.7a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8l-.3 2.4a7.8 7.8 0 0 0-2.6 1.5l-1.8-.7-1.8 3.1 1.5 1.2a7.8 7.8 0 0 0 0 3l-1.5 1.2 1.8 3.1 1.8-.7a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l1.8.7 1.8-3.1-1.5-1.2Z"],
     };
+    const tile = document.createElement("span");
+    tile.className = name === "sparkles"
+      ? "ds-icon-tile ds-icon-tile--success"
+      : "ds-icon-tile ds-icon-tile--accent";
+    tile.setAttribute("aria-hidden", "true");
+
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.classList.add("ds-workspace__profile-icon");
+    svg.classList.add("ds-icon-tile__icon");
     svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("stroke", "currentColor");
-    svg.setAttribute("stroke-width", "1.6");
-    svg.setAttribute("stroke-linecap", "round");
-    svg.setAttribute("stroke-linejoin", "round");
-    svg.setAttribute("aria-hidden", "true");
     for (const drawing of drawings[name] || []) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", drawing);
       svg.append(path);
     }
-    return svg;
+    tile.append(svg);
+    return tile;
   }
 
   function createCompactSettingRow(label, value, onClick, iconName, hint = "") {
