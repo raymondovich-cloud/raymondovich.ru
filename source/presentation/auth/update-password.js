@@ -1,4 +1,5 @@
 import { supabase } from "../../infrastructure/supabase/client.js";
+
 const form = document.querySelector("#password-form");
 const status = document.querySelector("#password-status");
 const { data } = await supabase.auth.getSession();
@@ -17,6 +18,6 @@ form.addEventListener("submit", async (event) => {
   status.hidden = false;
   status.dataset.kind = error ? "error" : "success";
   status.textContent = error ? error.message : "Пароль обновлён. Перенаправляем на страницу аккаунта…";
-  if (!error) setTimeout(() => window.location.replace("/app.html"), 700);
+  if (!error) setTimeout(() => window.location.replace("/#projects"), 700);
   else button.disabled = false;
 });
