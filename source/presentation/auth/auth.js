@@ -104,13 +104,13 @@ registerForm.addEventListener("submit", async (event) => {
       email,
       password,
       options: {
-        emailRedirectTo: new URL("/auth-callback.html", window.location.origin).href,
+        emailRedirectTo: new URL("/?auth=callback", window.location.origin).href,
         data: { full_name: fullName, birth_date: birthDate, username },
       },
     });
     if (error) throw error;
     if (data.session) {
-      window.location.replace("/app.html");
+      window.location.replace("/#projects");
       return;
     }
     showStatus("Аккаунт создан. Проверьте почту и подтвердите Email, чтобы войти.", "success");
@@ -133,7 +133,7 @@ document.querySelector("#forgot-password").addEventListener("click", async () =>
     return;
   }
   const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
-    redirectTo: new URL("/update-password.html", window.location.origin).href,
+    redirectTo: new URL("/?auth=recovery", window.location.origin).href,
   });
   if (error) showStatus(error.message, "error");
   else showStatus("Если аккаунт с таким Email существует, письмо для восстановления отправлено.", "success");
