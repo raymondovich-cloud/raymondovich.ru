@@ -27,7 +27,7 @@ function applyTheme(theme) {
 }
 
 function readRoute() {
-  const route = window.location.hash.slice(1).replace(/^\\/+|\\/+$/g, "");
+  const route = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
   return resolveWorkspaceRoute(route)?.route ?? getDefaultWorkspaceRoute();
 }
 
@@ -200,6 +200,7 @@ if (error || !data.user) {
     copy.append(name, detail);
     row.append(copy);
     if (hint) {
+      row.disabled = true;
       const meta = document.createElement("span");
       meta.className = "ds-workspace__setting-hint";
       meta.textContent = hint;
@@ -334,7 +335,7 @@ if (error || !data.user) {
   buttons.forEach((button) => button.addEventListener("click", () => navigate(button.dataset.section)));
   window.addEventListener("hashchange", renderRoute);
 
-  const initialRoute = window.location.hash.slice(1).replace(/^\\/+|\\/+$/g, "");
+  const initialRoute = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
   if (!resolveWorkspaceRoute(initialRoute)) navigate(getDefaultWorkspaceRoute(), { replace: true });
   else renderRoute();
 
