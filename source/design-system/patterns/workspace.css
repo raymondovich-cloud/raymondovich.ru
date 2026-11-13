@@ -228,6 +228,9 @@
   font-size: var(--ds-text-sm);
   overflow-wrap: anywhere;
 }
+.ds-workspace__setting-row--compact {
+  padding-block: var(--ds-space-2);
+}
 .ds-workspace__setting-row {
   padding: var(--ds-space-3) 0;
   border: 0;
