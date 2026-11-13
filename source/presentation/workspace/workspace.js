@@ -75,8 +75,59 @@ if (error || !data.user) {
     content.append(paragraph);
   }
 
-  function showProfile() {
+  async function showProfile() {
     content.replaceChildren();
+
+    const profileCard = document.createElement("section");
+    profileCard.className = "ds-workspace__profile-card";
+    profileCard.setAttribute("aria-label", "Профиль пользователя");
+
+    const avatar = document.createElement("div");
+    avatar.className = "ds-workspace__profile-avatar";
+    avatar.setAttribute("aria-hidden", "true");
+    avatar.textContent = "…";
+
+    const identity = document.createElement("div");
+    identity.className = "ds-workspace__profile-identity";
+    const fullName = document.createElement("h2");
+    fullName.className = "ds-workspace__profile-name";
+    fullName.textContent = "Загружаем профиль…";
+    const username = document.createElement("p");
+    username.className = "ds-workspace__profile-username";
+    identity.append(fullName, username);
+
+    const role = document.createElement("span");
+    role.className = "ds-badge ds-workspace__profile-role";
+    const roleValue = data.user.app_metadata?.role;
+    const roleLabels = { admin: "Администратор", user: "Пользователь" };
+    role.textContent = roleLabels[roleValue] || "Роль не назначена";
+    if (roleValue === "admin") role.classList.add("ds-badge--accent");
+
+    profileCard.append(avatar, identity, role);
+    content.append(profileCard);
+
+    try {
+      const result = await loadProfile();
+      if (!content.contains(profileCard)) return;
+      const profile = result.profile;
+      const name = (profile.full_name || "").trim();
+      const initials = name
+        .split(/\\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => Array.from(part)[0]?.toLocaleUpperCase("ru-RU") || "")
+        .join("");
+      avatar.textContent = initials || "—";
+      avatar.setAttribute("aria-label", name ? `Аватар: ${name}` : "Аватар пользователя");
+      fullName.textContent = name || "Имя не указано";
+      username.textContent = profile.username ? `@${profile.username}` : "Логин не указан";
+    } catch {
+      if (!content.contains(profileCard)) return;
+      avatar.textContent = "—";
+      fullName.textContent = "Не удалось загрузить профиль";
+      username.textContent = "Попробуйте открыть раздел позже";
+    }
+
     content.append(makeButton(
       "Настройки",
       "ds-button ds-button--secondary ds-workspace__action",
