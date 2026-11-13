@@ -170,21 +170,22 @@ if (error || !data.user) {
     content.append(settingsButton);
 
     const syncCompactRowHeight = () => {
-      if (!content.contains(profileCard)) return;
-      const cardHeight = profileCard.getBoundingClientRect().height;
-      if (!cardHeight) return;
-      content.style.setProperty("--profile-compact-row-height", (cardHeight * 0.6) + "px");
+      if (!content.contains(profileCard) || !content.contains(settingsButton)) return;
+      const settingsRowHeight = settingsButton.getBoundingClientRect().height;
+      if (!settingsRowHeight) return;
+      content.style.setProperty("--profile-compact-row-height", settingsRowHeight + "px");
     };
     syncCompactRowHeight();
     if (typeof ResizeObserver !== "undefined") {
-      const profileCardObserver = new ResizeObserver(() => {
-        if (!content.contains(profileCard)) {
-          profileCardObserver.disconnect();
+      const profileLayoutObserver = new ResizeObserver(() => {
+        if (!content.contains(profileCard) || !content.contains(settingsButton)) {
+          profileLayoutObserver.disconnect();
           return;
         }
         syncCompactRowHeight();
       });
-      profileCardObserver.observe(profileCard);
+      profileLayoutObserver.observe(profileCard);
+      profileLayoutObserver.observe(settingsButton);
     }
   }
 
