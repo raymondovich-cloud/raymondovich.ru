@@ -1,0 +1,88 @@
+/* Raymondovich Design System — motion primitives v0.2
+ * Reusable, presentation-only motion. State changes remain owned by the caller.
+ */
+
+.ds-motion-enter {
+  animation: ds-motion-enter var(--ds-motion-emphasis) var(--ds-ease-spring) both;
+}
+
+.ds-motion-enter--subtle {
+  animation-name: ds-motion-enter-subtle;
+  animation-duration: var(--ds-motion-standard);
+}
+
+.ds-motion-press {
+  transform-origin: center;
+  transition: transform var(--ds-motion-fast) var(--ds-ease-spring);
+}
+
+.ds-motion-press:active {
+  transform: scale(0.975);
+}
+
+.ds-motion-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows var(--ds-motion-emphasis) var(--ds-ease-spring),
+    opacity var(--ds-motion-standard) var(--ds-ease-standard);
+}
+
+.ds-motion-expand[ data-open="true" ] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.ds-motion-expand__inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ds-motion-fade {
+  transition: opacity var(--ds-motion-standard) var(--ds-ease-standard);
+}
+
+.ds-motion-fade[ data-hidden="true" ] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes ds-motion-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ds-motion-enter-subtle {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-motion-enter,
+  .ds-motion-enter--subtle {
+    animation: none;
+  }
+
+  .ds-motion-press,
+  .ds-motion-expand,
+  .ds-motion-fade {
+    transition: none;
+  }
+
+  .ds-motion-press:active {
+    transform: none;
+  }
+}
