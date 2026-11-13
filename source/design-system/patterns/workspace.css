@@ -229,7 +229,9 @@
   overflow-wrap: anywhere;
 }
 .ds-workspace__setting-row--compact {
-  padding-block: var(--ds-space-2);
+  height: var(--profile-compact-row-height);
+  min-height: 0;
+  padding-block: 0;
 }
 .ds-workspace__setting-row {
   padding: var(--ds-space-3) 0;
