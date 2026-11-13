@@ -257,3 +257,70 @@
 .ds-workspace__setting-row:disabled .ds-workspace__setting-hint {
   color: var(--ds-text-tertiary);
 }
+
+
+/* Profile overview — layout only; visual primitives come from Design System. */
+.ds-workspace__profile-card {
+  display: grid;
+  width: min(100%, 32rem);
+  min-width: 0;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--ds-space-3);
+  padding: var(--ds-space-5);
+  border: 1px solid var(--ds-border-default);
+  border-radius: var(--ds-radius-xl);
+  background: var(--ds-surface-1);
+  box-sizing: border-box;
+}
+.ds-workspace__profile-avatar {
+  display: grid;
+  width: 4.5rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--ds-border-accent);
+  border-radius: var(--ds-radius-pill);
+  background: linear-gradient(145deg, var(--ds-accent-soft), var(--ds-surface-2));
+  color: var(--ds-text-accent);
+  font-size: var(--ds-text-xl);
+  font-weight: 700;
+  letter-spacing: var(--ds-tracking-tight);
+}
+.ds-workspace__profile-identity {
+  display: grid;
+  min-width: 0;
+  gap: var(--ds-space-1);
+  align-content: center;
+  padding-top: var(--ds-space-1);
+}
+.ds-workspace__profile-name {
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-text-md);
+  font-weight: 650;
+  line-height: var(--ds-leading-tight);
+}
+.ds-workspace__profile-username {
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-text-sm);
+}
+.ds-workspace__profile-role {
+  justify-self: end;
+  align-self: start;
+}
+@media (max-width: 480px) {
+  .ds-workspace__profile-card {
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    gap: var(--ds-space-3);
+    padding: var(--ds-space-4);
+  }
+  .ds-workspace__profile-avatar { width: 3.75rem; }
+  .ds-workspace__profile-role {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: calc(-1 * var(--ds-space-2));
+  }
+}
