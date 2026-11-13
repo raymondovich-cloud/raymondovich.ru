@@ -1,6 +1,6 @@
 # Raymondovich Design System — Foundation 0.1
 
-**Status:** implementation draft, isolated on `design-system/foundation-v0.1`  
+**Status:** implemented in `main`  
 **Date:** 2026-11-13  
 **Scope:** web foundation; no product screens or business workflows changed.
 
