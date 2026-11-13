@@ -29,7 +29,7 @@
     opacity var(--ds-motion-standard) var(--ds-ease-standard);
 }
 
-.ds-motion-expand[ data-open="true" ] {
+.ds-motion-expand[data-open="true"] {
   grid-template-rows: 1fr;
   opacity: 1;
 }
@@ -43,7 +43,7 @@
   transition: opacity var(--ds-motion-standard) var(--ds-ease-standard);
 }
 
-.ds-motion-fade[ data-hidden="true" ] {
+.ds-motion-fade[data-hidden="true"] {
   opacity: 0;
   pointer-events: none;
 }
