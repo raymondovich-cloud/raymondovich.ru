@@ -1,4 +1,5 @@
-const ROUTES = new Set(["projects", "ideas", "team", "tools", "profile", "profile/settings"]);
+import { resolveWorkspaceRoute } from "../../application/workspace/resolve-workspace-route.js";
+
 const publicHome = document.querySelector("#public-home");
 const workspaceRoot = document.querySelector("#workspace-root");
 let workspaceStarted = false;
@@ -9,7 +10,7 @@ function currentRoute() {
 
 async function renderEntry() {
   const route = currentRoute();
-  const isWorkspaceRoute = ROUTES.has(route);
+  const isWorkspaceRoute = Boolean(resolveWorkspaceRoute(route));
 
   if (!isWorkspaceRoute) {
     if (route) window.history.replaceState(null, "", window.location.pathname + window.location.search);
