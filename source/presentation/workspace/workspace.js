@@ -1,8 +1,9 @@
 import { supabase } from "../../infrastructure/supabase/client.js";
+import { getDefaultWorkspaceRoute, resolveWorkspaceRoute } from "../../application/workspace/resolve-workspace-route.js";
 
 const THEME_KEY = "raymondovich-theme";
 const root = document.documentElement;
-const ROUTES = {
+const SECTION_TITLES = {
   projects: "Проекты",
   ideas: "Идеи",
   team: "Команда",
@@ -31,8 +32,7 @@ function applyTheme(theme) {
 
 function readRoute() {
   const route = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
-  if (route === "profile/settings") return route;
-  return Object.hasOwn(ROUTES, route) ? route : "projects";
+  return resolveWorkspaceRoute(route)?.route ?? getDefaultWorkspaceRoute();
 }
 
 function navigate(route, { replace = false } = {}) {
@@ -142,11 +142,12 @@ if (error || !data.user) {
 
   function renderRoute() {
     const route = readRoute();
-    const section = route === "profile/settings" ? "profile" : route;
+    const resolved = resolveWorkspaceRoute(route);
+    const section = resolved?.sectionId ?? "projects";
 
-    title.textContent = route === "profile/settings" ? "Настройки" : ROUTES[section];
+    title.textContent = resolved?.subroute === "settings" ? "Настройки" : SECTION_TITLES[section];
 
-    if (route === "profile/settings") showSettings();
+    if (resolved?.subroute === "settings") showSettings();
     else if (section === "profile") showProfile();
     else showMessage("Раздел пока в разработке.");
 
@@ -165,8 +166,9 @@ if (error || !data.user) {
   window.addEventListener("hashchange", renderRoute);
 
   // Keep one HTML application shell; the hash identifies the active workspace view.
-  if (!window.location.hash || !ROUTES[window.location.hash.slice(1)] && window.location.hash !== "#profile/settings") {
-    navigate("projects", { replace: true });
+  const initialRoute = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
+  if (!resolveWorkspaceRoute(initialRoute)) {
+    navigate(getDefaultWorkspaceRoute(), { replace: true });
   } else {
     renderRoute();
   }
