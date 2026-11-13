@@ -296,3 +296,11 @@
   justify-content: flex-end;
   gap: var(--ds-space-2);
 }
+
+.ds-workspace__setting-row:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.ds-workspace__setting-row:disabled .ds-workspace__setting-hint {
+  color: var(--ds-text-tertiary);
+}
