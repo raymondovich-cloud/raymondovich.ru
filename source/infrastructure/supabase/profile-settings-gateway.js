@@ -4,17 +4,25 @@ async function invokeProfile(method, body) {
   const options = { method };
   if (body) options.body = body;
   const { data, error } = await supabase.functions.invoke("profile-update", options);
-  if (error) throw new Error(data?.error || error.message || "Не удалось выполнить запрос к профилю.");
+  if (error) {
+    let message = data?.error;
+    if (!message && error.context && typeof error.context.json === "function") {
+      try {
+        const payload = await error.context.json();
+        message = payload?.error;
+      } catch {
+        // Use the SDK error message when the response body is unavailable.
+      }
+    }
+    throw new Error(message || error.message || "Не удалось выполнить запрос к профилю.");
+  }
   if (data?.error) throw new Error(data.error);
   return data;
 }
 
 async function reauthenticate(email, currentPassword) {
   if (!email) throw new Error("У аккаунта не найден Email для повторной проверки.");
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password: currentPassword,
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password: currentPassword });
   if (error) throw new Error("Текущий пароль указан неверно.");
 }
 
