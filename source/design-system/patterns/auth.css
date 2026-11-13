@@ -1,4 +1,26 @@
-.ds-auth-page { overflow-x: hidden; }
+.ds-public-home.ds-auth-page {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ds-auth-page .ds-auth-main,
+.ds-auth-page .ds-auth-card,
+.ds-auth-page .ds-auth-form,
+.ds-auth-page .ds-field {
+  min-width: 0;
+}
+.ds-auth-page .ds-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.ds-auth-page input[type="date"] {
+  min-width: 0;
+  max-width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
 .ds-auth-main {
   display: grid;
   width: min(100% - 2rem, 31rem);
