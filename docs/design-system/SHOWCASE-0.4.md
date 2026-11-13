@@ -49,4 +49,4 @@ No project data is submitted or persisted. No Supabase or external service is ca
 
 - No production routes or product modules are changed.
 - No user settings, data or authentication are involved.
-- No design token values are frozen solely on the basis of this showcase.
+- The owner has approved the visual direction represented by this showcase as the Raymondovich Design System 1.0 baseline. The showcase is the reference surface for the approved visual language; product implementations must consume the shared design-system files rather than copy showcase-specific styles.
