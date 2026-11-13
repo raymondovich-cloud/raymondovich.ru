@@ -136,7 +136,7 @@ if (error || !data.user) {
     controlCenterGroup.className = "ds-workspace__settings-group";
     controlCenterGroup.setAttribute("aria-label", "Control Center");
     controlCenterGroup.append(
-      createCompactSettingRow("Control Center", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Control Center", "Управление экосистемой", () => {}),
     );
     content.append(controlCenterGroup);
 
@@ -149,9 +149,9 @@ if (error || !data.user) {
     developmentHeading.textContent = "Разработка";
     developmentGroup.append(
       developmentHeading,
-      createCompactSettingRow("Проекты", "Раздел в разработке", () => {}, "Скоро"),
-      createCompactSettingRow("Идеи", "Раздел в разработке", () => {}, "Скоро"),
-      createCompactSettingRow("Инструменты", "Раздел в разработке", () => {}, "Скоро"),
+      createCompactSettingRow("Проекты", "Ваши проекты", () => {}),
+      createCompactSettingRow("Идеи", "Задумки и предложения", () => {}),
+      createCompactSettingRow("Инструменты", "Вся экосистема", () => {}),
     );
     content.append(developmentGroup);
 
