@@ -144,7 +144,7 @@ if (error || !data.user) {
     developmentSection.className = "ds-workspace__profile-development";
     developmentSection.setAttribute("aria-labelledby", "profile-development-title");
     const developmentHeading = document.createElement("h2");
-    developmentHeading.className = "ds-workspace__settings-heading";
+    developmentHeading.className = "ds-workspace__settings-heading ds-workspace__settings-heading--profile";
     developmentHeading.id = "profile-development-title";
     developmentHeading.textContent = "Разработка";
     const developmentGroup = document.createElement("div");
@@ -163,7 +163,7 @@ if (error || !data.user) {
       section.setAttribute("aria-labelledby", id);
 
       const heading = document.createElement("h2");
-      heading.className = "ds-workspace__settings-heading";
+      heading.className = "ds-workspace__settings-heading ds-workspace__settings-heading--profile";
       heading.id = id;
       heading.textContent = headingText;
 
