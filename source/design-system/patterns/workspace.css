@@ -122,8 +122,10 @@
 }
 
 .ds-workspace__action {
-  min-width: min(100%, 14rem);
-  justify-self: start;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  justify-self: stretch;
 }
 .ds-workspace__back {
   justify-self: start;
