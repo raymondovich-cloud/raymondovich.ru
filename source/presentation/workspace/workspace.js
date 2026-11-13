@@ -403,10 +403,17 @@ if (error || !data.user) {
     const current = resolveWorkspaceRoute(readRoute());
     if (!current?.subroute) return;
     const parentRoute = current.route.split("/").slice(0, -1).join("/") || current.baseRoute;
-    const target = routeTrail.pop() || parentRoute;
+    // Profile settings must always return to the Profile root, independent of stale route history.
+    const target = current.subroute === "settings"
+      ? current.baseRoute
+      : routeTrail.pop() || parentRoute;
+    routeTrail = [];
     suppressRouteTrail = true;
-    navigate(target, { replace: true });
-    suppressRouteTrail = false;
+    try {
+      navigate(target, { replace: true });
+    } finally {
+      suppressRouteTrail = false;
+    }
   });
 
   buttons.forEach((button) => button.addEventListener("click", () => {
