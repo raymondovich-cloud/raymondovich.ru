@@ -100,6 +100,72 @@
       </section>
     </div>
 
+    <div class="preview-grid">
+      <section class="ds-card preview-card">
+        <p class="preview-label">Forms / States</p>
+        <label class="ds-field">Категория
+          <select class="ds-select">
+            <option>Веб-приложение</option>
+            <option>Мобильное приложение</option>
+            <option>AI-сервис</option>
+          </select>
+        </label>
+        <label class="ds-field">Описание
+          <textarea class="ds-textarea" placeholder="Кратко опишите проект"></textarea>
+        </label>
+        <label class="ds-check"><input type="checkbox" checked> Принимать уведомления</label>
+        <label class="ds-radio"><input type="radio" name="plan" checked> Стандартный план</label>
+        <label class="ds-radio"><input type="radio" name="plan"> Расширенный план</label>
+      </section>
+
+      <section class="ds-card preview-card">
+        <p class="preview-label">Feedback / Navigation</p>
+        <div class="preview-row">
+          <span class="ds-badge ds-badge--accent">В работе</span>
+          <span class="ds-badge ds-badge--success">Готово</span>
+          <span class="ds-badge ds-badge--warning">Ожидание</span>
+          <span class="ds-badge ds-badge--danger">Ошибка</span>
+        </div>
+        <div class="ds-alert ds-alert--success" role="status">Изменения успешно сохранены.</div>
+        <div class="ds-alert ds-alert--warning" role="status">Проверьте данные перед публикацией.</div>
+        <div class="preview-row">
+          <details class="ds-menu">
+            <summary class="ds-button ds-button--secondary ds-menu__trigger">Действия <span aria-hidden="true">⌄</span></summary>
+            <div class="ds-menu__panel">
+              <button class="ds-menu__item" type="button">Открыть проект</button>
+              <button class="ds-menu__item" type="button">Дублировать</button>
+              <div class="ds-menu__divider"></div>
+              <button class="ds-menu__item" type="button" aria-disabled="true">Удалить</button>
+            </div>
+          </details>
+          <button class="ds-button" id="open-dialog" type="button">Открыть модальное окно</button>
+        </div>
+      </section>
+    </div>
+
+    <dialog class="ds-dialog" id="preview-dialog" aria-labelledby="dialog-title">
+      <header class="ds-dialog__header">
+        <div class="ds-stack">
+          <p class="ds-overline">Confirmation</p>
+          <h2 class="ds-heading-2" id="dialog-title">Опубликовать проект?</h2>
+        </div>
+        <form method="dialog">
+          <button class="ds-icon-button" type="submit" aria-label="Закрыть">×</button>
+        </form>
+      </header>
+      <div class="ds-dialog__body">
+        После публикации проект станет доступен участникам с соответствующими правами.
+      </div>
+      <footer class="ds-dialog__footer">
+        <form method="dialog">
+          <button class="ds-button ds-button--secondary" type="submit">Отмена</button>
+        </form>
+        <form method="dialog">
+          <button class="ds-button" type="submit">Подтвердить</button>
+        </form>
+      </footer>
+    </dialog>
+
     <nav class="ds-nav preview-nav" aria-label="Предпросмотр навигации">
       <button class="ds-nav__item" type="button" aria-current="page">Обзор</button>
       <button class="ds-nav__item" type="button">Проекты</button>
@@ -132,6 +198,11 @@
       item.addEventListener('click', () => {
         item.setAttribute('aria-checked', String(item.getAttribute('aria-checked') !== 'true'));
       });
+    });
+    const dialog = document.querySelector('#preview-dialog');
+    document.querySelector('#open-dialog').addEventListener('click', () => dialog.showModal());
+    document.querySelectorAll('.ds-menu__panel .ds-menu__item:not([aria-disabled="true"])').forEach((item) => {
+      item.addEventListener('click', () => item.closest('.ds-menu').removeAttribute('open'));
     });
     syncTheme();
   </script>
