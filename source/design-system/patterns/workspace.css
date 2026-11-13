@@ -125,6 +125,8 @@
   display: grid;
   width: 100%;
   min-width: 0;
+  justify-self: stretch;
+  box-sizing: border-box;
 }
 .ds-workspace__action {
   display: flex;
