@@ -187,6 +187,11 @@
   font-weight: 650;
 }
 
+.ds-workspace__settings-heading--profile {
+  font-size: var(--ds-text-md);
+  font-weight: 580;
+}
+
 .ds-workspace__profile-development {
   display: grid;
   gap: var(--ds-space-3);
