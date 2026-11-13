@@ -132,20 +132,6 @@ if (error || !data.user) {
       username.textContent = "Попробуйте открыть раздел позже";
     }
 
-    const settingsButton = makeButton(
-      "",
-      "ds-button ds-button--secondary ds-workspace__action",
-      () => navigate("profile/settings"),
-    );
-    const settingsLabel = document.createElement("span");
-    settingsLabel.className = "ds-workspace__setting-label";
-    settingsLabel.textContent = "Настройки";
-    const settingsDescription = document.createElement("span");
-    settingsDescription.className = "ds-workspace__setting-value";
-    settingsDescription.textContent = "Оформление, данные, конфиденциальность";
-    settingsButton.append(settingsLabel, settingsDescription);
-    content.append(settingsButton);
-
     const controlCenterGroup = document.createElement("section");
     controlCenterGroup.className = "ds-workspace__settings-group";
     controlCenterGroup.setAttribute("aria-label", "Control Center");
@@ -168,6 +154,20 @@ if (error || !data.user) {
       createSettingRow("Инструменты", "Раздел в разработке", () => {}, "Скоро"),
     );
     content.append(developmentGroup);
+
+    const settingsButton = makeButton(
+      "",
+      "ds-button ds-button--secondary ds-workspace__action",
+      () => navigate("profile/settings"),
+    );
+    const settingsLabel = document.createElement("span");
+    settingsLabel.className = "ds-workspace__setting-label";
+    settingsLabel.textContent = "Настройки";
+    const settingsDescription = document.createElement("span");
+    settingsDescription.className = "ds-workspace__setting-value";
+    settingsDescription.textContent = "Оформление, данные, конфиденциальность";
+    settingsButton.append(settingsLabel, settingsDescription);
+    content.append(settingsButton);
   }
 
   async function loadProfile() {
