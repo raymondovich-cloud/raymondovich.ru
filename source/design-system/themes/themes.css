@@ -1,0 +1,105 @@
+/* Raymondovich Design System — semantic theme mapping v0.1
+ * Set data-theme="light" or data-theme="dark" on <html>.
+ * Both themes are first-class themes; neither is a reduced variant.
+ */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --ds-bg-canvas: #ffffff;
+  --ds-bg-subtle: #f5f5f6;
+  --ds-bg-elevated: #ffffff;
+  --ds-bg-inverse: #111216;
+  --ds-bg-accent: #f47716;
+
+  --ds-text-primary: #15161a;
+  --ds-text-secondary: #626671;
+  --ds-text-tertiary: #858a94;
+  --ds-text-inverse: #ffffff;
+  --ds-text-accent: #c6530d;
+
+  --ds-border-subtle: rgba(21, 22, 26, 0.08);
+  --ds-border-default: rgba(21, 22, 26, 0.13);
+  --ds-border-strong: rgba(21, 22, 26, 0.22);
+  --ds-border-accent: rgba(220, 95, 12, 0.34);
+
+  --ds-accent: #e96b13;
+  --ds-accent-hover: #d95c0d;
+  --ds-accent-pressed: #b9470b;
+  --ds-accent-soft: rgba(244, 119, 22, 0.10);
+  --ds-accent-glow: rgba(244, 119, 22, 0.18);
+  --ds-on-accent: #ffffff;
+
+  --ds-surface-1: #ffffff;
+  --ds-surface-2: #f7f7f8;
+  --ds-surface-3: #eeeeef;
+  --ds-surface-glass: rgba(255, 255, 255, 0.76);
+  --ds-glass-border: rgba(21, 22, 26, 0.10);
+  --ds-glass-highlight: rgba(255, 255, 255, 0.88);
+
+  --ds-state-success: #218653;
+  --ds-state-success-soft: rgba(33, 134, 83, 0.10);
+  --ds-state-danger: #b83d32;
+  --ds-state-danger-soft: rgba(184, 61, 50, 0.10);
+  --ds-state-warning: #9a6410;
+  --ds-state-warning-soft: rgba(183, 121, 22, 0.12);
+  --ds-state-info: #2867b7;
+  --ds-state-info-soft: rgba(57, 120, 213, 0.10);
+
+  --ds-overlay: rgba(10, 12, 16, 0.38);
+  --ds-shadow-color: rgba(20, 24, 32, 0.12);
+  --ds-focus-ring: #c6530d;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ds-bg-canvas: #08090b;
+  --ds-bg-subtle: #111318;
+  --ds-bg-elevated: #191b20;
+  --ds-bg-inverse: #ffffff;
+  --ds-bg-accent: #ff884b;
+
+  --ds-text-primary: #f5f5f7;
+  --ds-text-secondary: #a2a6af;
+  --ds-text-tertiary: #777d88;
+  --ds-text-inverse: #111216;
+  --ds-text-accent: #ff9a62;
+
+  --ds-border-subtle: rgba(255, 255, 255, 0.075);
+  --ds-border-default: rgba(255, 255, 255, 0.12);
+  --ds-border-strong: rgba(255, 255, 255, 0.20);
+  --ds-border-accent: rgba(255, 136, 75, 0.38);
+
+  --ds-accent: #ff884b;
+  --ds-accent-hover: #ff9a62;
+  --ds-accent-pressed: #e96b2d;
+  --ds-accent-soft: rgba(255, 136, 75, 0.13);
+  --ds-accent-glow: rgba(255, 136, 75, 0.22);
+  --ds-on-accent: #1a100b;
+
+  --ds-surface-1: #111318;
+  --ds-surface-2: #191b20;
+  --ds-surface-3: #22252c;
+  --ds-surface-glass: rgba(25, 27, 32, 0.72);
+  --ds-glass-border: rgba(255, 255, 255, 0.13);
+  --ds-glass-highlight: rgba(255, 255, 255, 0.10);
+
+  --ds-state-success: #70d49b;
+  --ds-state-success-soft: rgba(112, 212, 155, 0.12);
+  --ds-state-danger: #ff9287;
+  --ds-state-danger-soft: rgba(255, 146, 135, 0.12);
+  --ds-state-warning: #f0c16b;
+  --ds-state-warning-soft: rgba(240, 193, 107, 0.12);
+  --ds-state-info: #8db7ff;
+  --ds-state-info-soft: rgba(141, 183, 255, 0.12);
+
+  --ds-overlay: rgba(0, 0, 0, 0.58);
+  --ds-shadow-color: rgba(0, 0, 0, 0.42);
+  --ds-focus-ring: #ff9a62;
+}
+
+html {
+  background: var(--ds-bg-canvas);
+  color: var(--ds-text-primary);
+}
