@@ -230,7 +230,9 @@
 .ds-workspace__setting-copy {
   display: grid;
   min-width: 0;
+  justify-items: start;
   gap: 0.25rem;
+  text-align: left;
 }
 
 .ds-workspace__profile-icon {
