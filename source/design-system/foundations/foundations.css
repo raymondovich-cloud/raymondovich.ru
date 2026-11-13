@@ -6,6 +6,8 @@
 }
 
 html {
+  /* Disable iOS Safari double-tap page zoom globally; pinch zoom remains available. */
+  touch-action: manipulation;
   min-width: 320px;
   min-height: 100%;
   scroll-behavior: smooth;
