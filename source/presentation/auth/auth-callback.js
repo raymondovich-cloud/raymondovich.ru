@@ -6,5 +6,13 @@ if (error || !data.session) {
   target.textContent = "Ссылка недействительна или устарела. Вернитесь на страницу входа и запросите новое письмо.";
 } else {
   target.textContent = "Email подтверждён. Перенаправляем в аккаунт…";
-  window.setTimeout(() => window.location.replace((() => { try { const target = window.sessionStorage.getItem("raymondovich-auth-return"); if (target && /^\/#(?:projects|ideas|team|tools|profile(?:\/settings)?)$/.test(target)) { window.sessionStorage.removeItem("raymondovich-auth-return"); return target; } } catch {} return "/#projects"; })()), 700);
+  window.setTimeout(() => {
+    try {
+      const requested = window.sessionStorage.getItem("raymondovich-auth-return");
+      window.sessionStorage.removeItem("raymondovich-auth-return");
+      window.location.replace(requested && /^\/#(?:projects|ideas|team|tools|profile(?:\/settings)?)$/.test(requested) ? requested : "/#projects");
+    } catch {
+      window.location.replace("/#projects");
+    }
+  }, 700);
 }
