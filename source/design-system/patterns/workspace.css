@@ -20,6 +20,27 @@
   margin-inline: auto;
   padding-top: max(var(--ds-space-3), env(safe-area-inset-top));
 }
+.ds-workspace__brand-group {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--ds-space-3);
+}
+.ds-workspace__global-back {
+  flex: none;
+}
+.ds-workspace__global-back[hidden] {
+  display: none;
+}
+.ds-workspace__global-back svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .ds-workspace__logout {
   min-height: var(--ds-control-height-sm);
   padding-inline: var(--ds-space-4);
