@@ -140,20 +140,22 @@ if (error || !data.user) {
     );
     content.append(controlCenterGroup);
 
-    const developmentGroup = document.createElement("section");
-    developmentGroup.className = "ds-workspace__settings-group";
-    developmentGroup.setAttribute("aria-labelledby", "profile-development-title");
+    const developmentSection = document.createElement("section");
+    developmentSection.className = "ds-workspace__profile-development";
+    developmentSection.setAttribute("aria-labelledby", "profile-development-title");
     const developmentHeading = document.createElement("h2");
     developmentHeading.className = "ds-workspace__settings-heading";
     developmentHeading.id = "profile-development-title";
     developmentHeading.textContent = "Разработка";
+    const developmentGroup = document.createElement("div");
+    developmentGroup.className = "ds-workspace__settings-group";
     developmentGroup.append(
-      developmentHeading,
       createCompactSettingRow("Проекты", "Ваши проекты", () => {}),
       createCompactSettingRow("Идеи", "Задумки и предложения", () => {}),
       createCompactSettingRow("Инструменты", "Вся экосистема", () => {}),
     );
-    content.append(developmentGroup);
+    developmentSection.append(developmentHeading, developmentGroup);
+    content.append(developmentSection);
 
     const settingsButton = makeButton(
       "",
