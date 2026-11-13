@@ -472,3 +472,37 @@
   .ds-dialog__body,
   .ds-dialog__footer { padding: var(--ds-space-4); }
 }
+
+
+/* Icon tiles — compact visual containers for standalone interface icons. */
+.ds-icon-tile {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--ds-icon-tile-border);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-icon-tile-background);
+  color: var(--ds-icon-tile-color);
+}
+.ds-icon-tile--accent {
+  --ds-icon-tile-border: var(--ds-border-accent);
+  --ds-icon-tile-background: var(--ds-accent-soft);
+  --ds-icon-tile-color: var(--ds-accent);
+}
+.ds-icon-tile--success {
+  --ds-icon-tile-border: color-mix(in srgb, var(--ds-state-success) 34%, transparent);
+  --ds-icon-tile-background: var(--ds-state-success-soft);
+  --ds-icon-tile-color: var(--ds-state-success);
+}
+.ds-icon-tile__icon {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
