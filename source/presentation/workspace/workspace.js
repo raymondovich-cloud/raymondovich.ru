@@ -6,6 +6,9 @@ import { profileSettingsGateway } from "../../infrastructure/supabase/profile-se
 const THEME_KEY = "raymondovich-theme";
 const root = document.documentElement;
 const profileSettings = createProfileSettingsUseCases(profileSettingsGateway);
+let routeTrail = [];
+let currentRenderedRoute = null;
+let suppressRouteTrail = false;
 const SECTION_TITLES = {
   projects: "Проекты",
   ideas: "Идеи",
@@ -57,6 +60,7 @@ if (error || !data.user) {
   const buttons = [...document.querySelectorAll("[data-section]")];
   const title = document.querySelector("#workspace-title");
   const content = document.querySelector("#workspace-placeholder");
+  const globalBack = document.querySelector("#workspace-back");
 
   function makeButton(label, className, onClick) {
     const button = document.createElement("button");
@@ -279,11 +283,6 @@ if (error || !data.user) {
 
   async function showSettings() {
     content.replaceChildren();
-    const backButton = makeButton(
-      "← Профиль",
-      "ds-button ds-button--secondary ds-workspace__back",
-      () => navigate("profile"),
-    );
 
     const appearance = document.createElement("section");
     appearance.className = "ds-workspace__settings-group";
@@ -330,7 +329,7 @@ if (error || !data.user) {
     loading.className = "ds-workspace__settings-description";
     loading.textContent = "Загружаем данные профиля…";
     userGroup.append(userHeading, loading);
-    content.append(backButton, appearance, userGroup);
+    content.append(appearance, userGroup);
 
     try {
       const result = await loadProfile();
@@ -379,6 +378,14 @@ if (error || !data.user) {
     const route = readRoute();
     const resolved = resolveWorkspaceRoute(route);
     const section = resolved?.sectionId ?? "projects";
+    if (route !== currentRenderedRoute) {
+      if (!suppressRouteTrail && currentRenderedRoute) {
+        if (routeTrail.at(-1) === route) routeTrail.pop();
+        else routeTrail.push(currentRenderedRoute);
+      }
+      currentRenderedRoute = route;
+    }
+    globalBack.hidden = !resolved?.subroute;
     title.textContent = resolved?.subroute === "settings" ? "Настройки" : SECTION_TITLES[section];
 
     if (resolved?.subroute === "settings") showSettings();
@@ -391,6 +398,16 @@ if (error || !data.user) {
     });
     document.title = `${title.textContent} — Raymondovich`;
   }
+
+  globalBack.addEventListener("click", () => {
+    const current = resolveWorkspaceRoute(readRoute());
+    if (!current?.subroute) return;
+    const parentRoute = current.route.split("/").slice(0, -1).join("/") || current.baseRoute;
+    const target = routeTrail.pop() || parentRoute;
+    suppressRouteTrail = true;
+    navigate(target, { replace: true });
+    suppressRouteTrail = false;
+  });
 
   buttons.forEach((button) => button.addEventListener("click", () => navigate(button.dataset.section)));
   window.addEventListener("hashchange", renderRoute);
