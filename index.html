@@ -28,11 +28,12 @@
     </main>
   </div>
 
-  <main id="auth-root" class="ds-auth-main" hidden>
+  <div id="auth-root" hidden>
     <header class="ds-public-home__header">
       <a class="ds-public-home__brand" href="/" aria-label="Raymondovich — главная">raymondovich</a>
       <a class="ds-button ds-button--secondary" href="/">На главную</a>
     </header>
+    <main class="ds-auth-main">
     <section id="auth-panel" class="ds-auth-card ds-card ds-motion-enter" aria-labelledby="auth-title">
       <div class="ds-auth-heading">
         <span class="ds-badge ds-badge--accent">RAYMONDOVICH ACCOUNT</span>
@@ -91,7 +92,8 @@
       </form>
       <div id="password-status" class="ds-alert" role="status" aria-live="polite" hidden></div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <div id="workspace-root" hidden>
     <header class="ds-workspace__header">
