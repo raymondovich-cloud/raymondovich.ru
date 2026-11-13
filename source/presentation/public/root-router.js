@@ -57,7 +57,7 @@ async function renderEntry() {
   document.body.className = "ds-workspace";
   if (!workspaceStarted) {
     workspaceStarted = true;
-    await import("../workspace/workspace.js");
+    await import("../workspace/workspace.js?v=20261113-2");
   }
 }
 
