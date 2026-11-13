@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Raymondovich — Design System Preview 0.1</title>
+  <link rel="stylesheet" href="../../source/design-system/tokens/tokens.css">
+  <link rel="stylesheet" href="../../source/design-system/themes/themes.css">
+  <link rel="stylesheet" href="../../source/design-system/foundations/foundations.css">
+  <link rel="stylesheet" href="../../source/design-system/components/components.css">
+  <style>
+    body { min-height: 100vh; }
+    .preview { width: min(100% - 32px, 1040px); margin: 0 auto; padding: 40px 0 72px; }
+    .preview-header { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:36px; }
+    .preview-brand { display:grid; gap:4px; }
+    .preview-brand strong { font-size:13px; letter-spacing:.16em; }
+    .preview-brand span { color:var(--ds-text-tertiary); font:11px var(--ds-font-mono); letter-spacing:.12em; }
+    .preview-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:24px; }
+    .preview-card { display:grid; gap:16px; }
+    .preview-glass { padding:16px; }
+    .preview-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+    .preview-label { color:var(--ds-text-tertiary); font:600 11px var(--ds-font-mono); letter-spacing:.12em; text-transform:uppercase; }
+    .preview-swatch { display:flex; align-items:center; gap:10px; min-width:0; }
+    .preview-swatch i { width:28px; height:28px; border-radius:9px; border:1px solid var(--ds-border-default); background:var(--ds-accent); }
+    .preview-swatch span { color:var(--ds-text-secondary); font-size:13px; }
+    .preview-input { display:grid; gap:8px; }
+    .preview-nav { position:sticky; bottom:16px; width:max-content; max-width:100%; margin:28px auto 0; }
+    .preview-note { margin-top:32px; padding:16px; border:1px solid var(--ds-border-subtle); border-radius:var(--ds-radius-lg); color:var(--ds-text-secondary); font-size:13px; }
+    @media(max-width:680px) {
+      .preview { padding-top:24px; }
+      .preview-header { align-items:flex-start; }
+      .preview-grid { grid-template-columns:1fr; }
+      .preview-nav { width:100%; justify-content:space-around; }
+      .preview-nav .ds-nav__item { flex:1; padding-inline:8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview">
+    <header class="preview-header">
+      <div class="preview-brand">
+        <strong>RAYMONDOVICH</strong>
+        <span>DESIGN SYSTEM / FOUNDATION 0.1</span>
+      </div>
+      <button class="ds-button ds-button--secondary" id="theme-toggle" type="button" aria-label="Переключить тему">
+        <span id="theme-label">Light theme</span>
+      </button>
+    </header>
+
+    <section class="ds-stack">
+      <p class="ds-overline">Visual language / 001</p>
+      <h1 class="ds-display">Clarity in every layer.</h1>
+      <p class="ds-body">Единая визуальная система Raymondovich: две полноценные темы, выразительная типографика, тактильные элементы управления и спокойная анимация.</p>
+      <div class="preview-row">
+        <button class="ds-button ds-button--large" type="button">Основное действие <span aria-hidden="true">↗</span></button>
+        <button class="ds-button ds-button--secondary" type="button">Подробнее</button>
+        <button class="ds-button ds-button--ghost" type="button">Отмена</button>
+      </div>
+    </section>
+
+    <div class="preview-grid">
+      <section class="ds-card preview-card">
+        <p class="preview-label">Surfaces / Glass</p>
+        <div class="ds-card ds-card--accent">
+          <p class="ds-overline">Active workspace</p>
+          <h2 class="ds-heading-2">Project overview</h2>
+          <p class="ds-body">Контентная поверхность остаётся читаемой; акцент используется только для активного состояния.</p>
+        </div>
+        <div class="ds-glass preview-glass">
+          <p class="ds-heading-3">Floating material</p>
+          <p class="ds-caption">Liquid Glass применяется к навигации и плавающим элементам, не ко всем карточкам.</p>
+        </div>
+        <div class="preview-row">
+          <div class="preview-swatch"><i></i><span>Brand orange / semantic accent</span></div>
+        </div>
+      </section>
+
+      <section class="ds-card preview-card">
+        <p class="preview-label">Controls / Inputs</p>
+        <label class="preview-input ds-field">Название проекта
+          <input class="ds-input" type="text" placeholder="Введите название">
+        </label>
+        <div class="preview-row">
+          <button class="ds-button" type="button">Сохранить</button>
+          <button class="ds-button ds-button--secondary" type="button">Черновик</button>
+        </div>
+        <div class="preview-row">
+          <div class="ds-segmented" role="group" aria-label="Период">
+            <button class="ds-segmented__item" type="button" aria-pressed="true">Неделя</button>
+            <button class="ds-segmented__item" type="button" aria-pressed="false">Месяц</button>
+            <button class="ds-segmented__item" type="button" aria-pressed="false">Год</button>
+          </div>
+        </div>
+        <div class="preview-row">
+          <span class="ds-body">Уведомления</span>
+          <button class="ds-switch" type="button" role="switch" aria-checked="true" aria-label="Уведомления"></button>
+        </div>
+      </section>
+    </div>
+
+    <nav class="ds-nav preview-nav" aria-label="Предпросмотр навигации">
+      <button class="ds-nav__item" type="button" aria-current="page">Обзор</button>
+      <button class="ds-nav__item" type="button">Проекты</button>
+      <button class="ds-nav__item" type="button">Профиль</button>
+    </nav>
+
+    <p class="preview-note">Изолированный стенд. Переключение темы работает только в пределах этой страницы и не меняет настройки продукта.</p>
+  </main>
+  <script>
+    const root = document.documentElement;
+    const toggle = document.querySelector('#theme-toggle');
+    const label = document.querySelector('#theme-label');
+    function syncTheme() {
+      const dark = root.dataset.theme === 'dark';
+      label.textContent = dark ? 'Switch to light' : 'Switch to dark';
+      toggle.setAttribute('aria-label', dark ? 'Переключить на светлую тему' : 'Переключить на тёмную тему');
+    }
+    toggle.addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      syncTheme();
+    });
+    document.querySelectorAll('.ds-segmented__item').forEach((item) => {
+      item.addEventListener('click', () => {
+        item.parentElement.querySelectorAll('.ds-segmented__item').forEach((peer) => {
+          peer.setAttribute('aria-pressed', String(peer === item));
+        });
+      });
+    });
+    document.querySelectorAll('.ds-switch').forEach((item) => {
+      item.addEventListener('click', () => {
+        item.setAttribute('aria-checked', String(item.getAttribute('aria-checked') !== 'true'));
+      });
+    });
+    syncTheme();
+  </script>
+</body>
+</html>
