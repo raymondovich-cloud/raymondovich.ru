@@ -261,6 +261,7 @@
 
 /* Profile overview — layout only; visual primitives come from Design System. */
 .ds-workspace__profile-card {
+  margin-bottom: var(--ds-space-6);
   display: grid;
   width: min(100%, 32rem);
   min-width: 0;
