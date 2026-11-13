@@ -47,8 +47,7 @@ Deno.serve(async (req: Request) => {
     });
 
     if (req.method === "GET") {
-      const { data: profile, error } = await admin.schema("private").from("user_profiles")
-        .select("full_name, birth_date, username").eq("user_id", user.id).single();
+      const { data: profile, error } = await admin.rpc("profile_settings_get", { p_user_id: user.id });
       if (error || !profile) {
         console.error("Profile read failed:", error?.message ?? "Profile not found");
         return json({ error: "Не удалось загрузить данные профиля." }, 500, origin);
@@ -67,29 +66,31 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Можно изменить только ФИО и дату рождения." }, 400, origin);
     }
 
-    const updates: Record<string, string> = {};
+    const args: Record<string, string | null> = {
+      p_user_id: user.id,
+      p_full_name: null,
+      p_birth_date: null,
+    };
     if (Object.hasOwn(input, "full_name")) {
-      const value = typeof input.full_name === "string" ? input.full_name.trim().replace(/\\s+/g, " ") : "";
+      const value = typeof input.full_name === "string" ? input.full_name.trim().replace(/\s+/g, " ") : "";
       if (value.length < 3 || value.length > 160) {
         return json({ error: "ФИО должно содержать от 3 до 160 символов." }, 400, origin);
       }
-      updates.full_name = value;
+      args.p_full_name = value;
     }
     if (Object.hasOwn(input, "birth_date")) {
       const value = typeof input.birth_date === "string" ? input.birth_date : "";
-      if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
         return json({ error: "Укажите корректную дату рождения." }, 400, origin);
       }
       const parsed = new Date(value + "T00:00:00.000Z");
       if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value || parsed.getTime() > Date.now()) {
         return json({ error: "Дата рождения указана некорректно." }, 400, origin);
       }
-      updates.birth_date = value;
+      args.p_birth_date = value;
     }
 
-    const { data: profile, error } = await admin.schema("private").from("user_profiles")
-      .update(updates).eq("user_id", user.id)
-      .select("full_name, birth_date, username").single();
+    const { data: profile, error } = await admin.rpc("profile_settings_update", args);
     if (error || !profile) {
       console.error("Profile update failed:", error?.message ?? "Profile not found");
       return json({ error: "Не удалось сохранить данные профиля." }, 500, origin);
