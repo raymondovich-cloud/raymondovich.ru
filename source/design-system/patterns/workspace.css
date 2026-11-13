@@ -275,7 +275,7 @@
   border-radius: var(--ds-radius-2xl);
   background: var(--ds-surface-1);
   color: var(--ds-text-primary);
-  box-shadow: var(--ds-shadow-xl);
+  box-shadow: var(--ds-shadow-lg) var(--ds-shadow-color);
 }
 .ds-workspace__dialog::backdrop {
   background: rgb(0 0 0 / 64%);
