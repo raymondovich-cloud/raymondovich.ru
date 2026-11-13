@@ -238,13 +238,6 @@
   text-align: left;
 }
 
-.ds-workspace__profile-icon {
-  display: block;
-  width: 1.35rem;
-  height: 1.35rem;
-  flex: none;
-  color: var(--ds-text-secondary);
-}
 .ds-workspace__setting-label {
   color: var(--ds-text-primary);
   font-size: var(--ds-text-md);
