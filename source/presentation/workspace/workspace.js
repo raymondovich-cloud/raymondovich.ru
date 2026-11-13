@@ -409,7 +409,10 @@ if (error || !data.user) {
     suppressRouteTrail = false;
   });
 
-  buttons.forEach((button) => button.addEventListener("click", () => navigate(button.dataset.section)));
+  buttons.forEach((button) => button.addEventListener("click", () => {
+    routeTrail = [];
+    navigate(button.dataset.section);
+  }));
   window.addEventListener("hashchange", renderRoute);
 
   const initialRoute = window.location.hash.slice(1).replace(/^\/+|\/+$/g, "");
