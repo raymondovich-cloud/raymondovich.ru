@@ -12,18 +12,18 @@
   <link rel="stylesheet" href="source/design-system/foundations/foundations.css">
   <link rel="stylesheet" href="source/design-system/foundations/motion.css">
   <link rel="stylesheet" href="source/design-system/components/components.css">
-  <link rel="stylesheet" href="source/presentation/public/public.css">
+  <link rel="stylesheet" href="source/design-system/patterns/public-home.css">
 </head>
-<body class="public-page">
-  <header class="public-header">
-    <div class="public-header__bar ds-glass">
-      <a class="public-brand" href="/" aria-label="Raymondovich — главная">raymondovich<span>.</span></a>
-      <button class="ds-button ds-button--secondary" type="button">Авторизация</button>
-    </div>
+<body class="ds-public-home">
+  <header class="ds-public-home__header">
+    <a class="ds-public-home__brand" href="/" aria-label="Raymondovich — главная">raymondovich</a>
+    <button class="ds-button ds-button--secondary" type="button" disabled aria-disabled="true">
+      Авторизация
+    </button>
   </header>
 
-  <main class="public-main">
-    <h1 class="public-main__message">Сайт <span>в разработке</span></h1>
+  <main class="ds-public-home__main">
+    <h1 class="ds-public-home__message">Сайт в разработке</h1>
   </main>
 </body>
 </html>
