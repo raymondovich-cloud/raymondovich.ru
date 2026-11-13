@@ -132,6 +132,7 @@ if (error || !data.user) {
     } else if (field === "email") {
       heading.textContent = "Изменить Email";
       addField("Новый Email", "email", "email", "", "email").maxLength = 254;
+      addField("Текущий пароль", "current_password", "password", "", "current-password");
       const note = document.createElement("p");
       note.className = "ds-workspace__settings-description";
       note.textContent = "Для завершения изменения потребуется подтвердить адрес по ссылке из письма.";
@@ -295,14 +296,21 @@ if (error || !data.user) {
         })),
         createSettingRow("Логин", profile.username, () => {}, "Изменение недоступно"),
         createSettingRow("Пароль", "••••••••••", () => createEditorDialog("password", "", async (values) => {
-          const { error: updateError } = await supabase.auth.updateUser({
-            password: values.password,
-            current_password: values.current_password,
+          const { error: reauthError } = await supabase.auth.signInWithPassword({
+            email: data.user.email,
+            password: values.current_password,
           });
+          if (reauthError) throw new Error("Текущий пароль указан неверно.");
+          const { error: updateError } = await supabase.auth.updateUser({ password: values.password });
           if (updateError) throw updateError;
           showMessage("Пароль успешно изменён.");
         })),
         createSettingRow("Email", result.email || "Не указан", () => createEditorDialog("email", "", async (values) => {
+          const { error: reauthError } = await supabase.auth.signInWithPassword({
+            email: data.user.email,
+            password: values.current_password,
+          });
+          if (reauthError) throw new Error("Текущий пароль указан неверно.");
           const { error: updateError } = await supabase.auth.updateUser({ email: values.email.trim() });
           if (updateError) throw updateError;
           showMessage("Запрос на изменение Email отправлен. Подтвердите новый адрес по ссылке из письма.");
