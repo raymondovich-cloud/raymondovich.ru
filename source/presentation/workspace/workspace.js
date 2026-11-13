@@ -53,7 +53,7 @@ applyTheme(readTheme());
 
 const { data, error } = await supabase.auth.getUser();
 if (error || !data.user) {
-  window.location.replace("/auth.html");
+  window.location.replace("/?auth=login");
 } else {
   const buttons = [...document.querySelectorAll("[data-section]")];
   const title = document.querySelector("#workspace-title");
