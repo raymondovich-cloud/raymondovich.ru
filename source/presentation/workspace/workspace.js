@@ -162,6 +162,24 @@ if (error || !data.user) {
         () => navigate("profile/settings"),
       ),
     );
+
+    const syncCompactRowHeight = () => {
+      if (!content.contains(profileCard)) return;
+      const cardHeight = profileCard.getBoundingClientRect().height;
+      if (!cardHeight) return;
+      content.style.setProperty("--profile-compact-row-height", (cardHeight * 0.6) + "px");
+    };
+    syncCompactRowHeight();
+    if (typeof ResizeObserver !== "undefined") {
+      const profileCardObserver = new ResizeObserver(() => {
+        if (!content.contains(profileCard)) {
+          profileCardObserver.disconnect();
+          return;
+        }
+        syncCompactRowHeight();
+      });
+      profileCardObserver.observe(profileCard);
+    }
   }
 
   async function loadProfile() {
