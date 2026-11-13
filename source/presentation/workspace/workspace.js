@@ -136,7 +136,7 @@ if (error || !data.user) {
     controlCenterGroup.className = "ds-workspace__settings-group";
     controlCenterGroup.setAttribute("aria-label", "Control Center");
     controlCenterGroup.append(
-      createCompactSettingRow("Control Center", "Управление экосистемой", () => {}),
+      createCompactSettingRow("Control Center", "Управление экосистемой", () => {}, "shield-check"),
     );
     content.append(controlCenterGroup);
 
@@ -150,9 +150,9 @@ if (error || !data.user) {
     const developmentGroup = document.createElement("div");
     developmentGroup.className = "ds-workspace__settings-group";
     developmentGroup.append(
-      createCompactSettingRow("Проекты", "Ваши проекты", () => {}),
-      createCompactSettingRow("Идеи", "Задумки и предложения", () => {}),
-      createCompactSettingRow("Инструменты", "Вся экосистема", () => {}),
+      createCompactSettingRow("Проекты", "Ваши проекты", () => {}, "projects"),
+      createCompactSettingRow("Идеи", "Задумки и предложения", () => {}, "bulb"),
+      createCompactSettingRow("Инструменты", "Вся экосистема", () => {}, "sparkles"),
     );
     developmentSection.append(developmentHeading, developmentGroup);
     content.append(developmentSection);
@@ -162,13 +162,16 @@ if (error || !data.user) {
       "ds-button ds-button--secondary ds-workspace__action",
       () => navigate("profile/settings"),
     );
+    const settingsCopy = document.createElement("span");
+    settingsCopy.className = "ds-workspace__setting-copy";
     const settingsLabel = document.createElement("span");
     settingsLabel.className = "ds-workspace__setting-label";
     settingsLabel.textContent = "Настройки";
     const settingsDescription = document.createElement("span");
     settingsDescription.className = "ds-workspace__setting-value";
     settingsDescription.textContent = "Оформление, данные, конфиденциальность";
-    settingsButton.append(settingsLabel, settingsDescription);
+    settingsCopy.append(settingsLabel, settingsDescription);
+    settingsButton.append(createProfileIcon("settings"), settingsCopy);
     content.append(settingsButton);
 
     const syncCompactRowHeight = () => {
@@ -297,9 +300,35 @@ if (error || !data.user) {
     fields[0]?.focus();
   }
 
-  function createCompactSettingRow(label, value, onClick, hint = "") {
+  function createProfileIcon(name) {
+    const drawings = {
+      "shield-check": ["M12 3 19 6v5c0 4.5-2.9 8-7 10-4.1-2-7-5.5-7-10V6l7-3Z", "m8.5 12 2.2 2.2 4.8-5"],
+      projects: ["M4 4h16v16H4z", "M7 7h4v4H7z", "M13 7h4v4h-4z", "M7 13h4v4H7z", "M13 13h4v4h-4z"],
+      bulb: ["M9 18h6", "M10 21h4", "M8.4 14.7a6 6 0 1 1 7.2 0c-.9.6-1.4 1.4-1.5 2.3h-4.2c-.1-.9-.6-1.7-1.5-2.3Z"],
+      sparkles: ["m8 3 1.4 4.6L14 9l-4.6 1.4L8 15l-1.4-4.6L2 9l4.6-1.4L8 3Z", "m18 13 .9 2.6 2.6.9-2.6.9L18 20l-.9-2.6-2.6-.9 2.6-.9L18 13Z"],
+      settings: ["M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z", "M19.4 13.5a7.8 7.8 0 0 0 0-3l1.5-1.2-1.8-3.1-1.8.7a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8l-.3 2.4a7.8 7.8 0 0 0-2.6 1.5l-1.8-.7-1.8 3.1 1.5 1.2a7.8 7.8 0 0 0 0 3l-1.5 1.2 1.8 3.1 1.8-.7a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l1.8.7 1.8-3.1-1.5-1.2Z"],
+    };
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add("ds-workspace__profile-icon");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "1.6");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    for (const drawing of drawings[name] || []) {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", drawing);
+      svg.append(path);
+    }
+    return svg;
+  }
+
+  function createCompactSettingRow(label, value, onClick, iconName, hint = "") {
     const row = createSettingRow(label, value, onClick, hint);
     row.classList.add("ds-workspace__setting-row--compact");
+    if (iconName) row.prepend(createProfileIcon(iconName));
     return row;
   }
 
