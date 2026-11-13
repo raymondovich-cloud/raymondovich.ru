@@ -179,6 +179,16 @@
   font-size: var(--ds-text-xl);
   font-weight: 650;
 }
+
+.ds-workspace__profile-development {
+  display: grid;
+  gap: var(--ds-space-3);
+  width: min(100%, 32rem);
+}
+
+.ds-workspace__settings-group > .ds-workspace__setting-row:first-child {
+  border-top: 0;
+}
 .ds-workspace__settings-description {
   margin: 0;
   color: var(--ds-text-secondary);
