@@ -1,8 +1,11 @@
 import { supabase } from "../../infrastructure/supabase/client.js";
 import { getDefaultWorkspaceRoute, resolveWorkspaceRoute } from "../../application/workspace/resolve-workspace-route.js";
+import { createProfileSettingsUseCases } from "../../application/profile/profile-settings.js";
+import { profileSettingsGateway } from "../../infrastructure/supabase/profile-settings-gateway.js";
 
 const THEME_KEY = "raymondovich-theme";
 const root = document.documentElement;
+const profileSettings = createProfileSettingsUseCases(profileSettingsGateway);
 const SECTION_TITLES = {
   projects: "Проекты",
   ideas: "Идеи",
@@ -82,8 +85,7 @@ if (error || !data.user) {
   }
 
   async function loadProfile() {
-    const { data: result, error: requestError } = await supabase.functions.invoke("profile-update", { method: "GET" });
-    if (requestError) throw new Error(result?.error || requestError.message || "Не удалось загрузить профиль.");
+    const result = await profileSettings.load();
     if (!result?.profile) throw new Error("Сервис вернул неполные данные профиля.");
     return result;
   }
@@ -279,40 +281,32 @@ if (error || !data.user) {
       userGroup.replaceChildren(userHeading);
       userGroup.append(
         createSettingRow("ФИО", profile.full_name, () => createEditorDialog("full_name", profile.full_name, async (values) => {
-          const { data: updated, error: updateError } = await supabase.functions.invoke("profile-update", {
-            method: "PATCH", body: { full_name: values.full_name },
-          });
-          if (updateError || !updated?.profile) throw new Error(updated?.error || updateError?.message || "Не удалось сохранить ФИО.");
+          const updated = await profileSettings.updateDetails({ full_name: values.full_name });
+          if (!updated?.profile) throw new Error("Не удалось сохранить ФИО.");
           profile.full_name = updated.profile.full_name;
           await showSettings();
         })),
         createSettingRow("Дата рождения", profile.birth_date, () => createEditorDialog("birth_date", profile.birth_date, async (values) => {
-          const { data: updated, error: updateError } = await supabase.functions.invoke("profile-update", {
-            method: "PATCH", body: { birth_date: values.birth_date },
-          });
-          if (updateError || !updated?.profile) throw new Error(updated?.error || updateError?.message || "Не удалось сохранить дату рождения.");
+          const updated = await profileSettings.updateDetails({ birth_date: values.birth_date });
+          if (!updated?.profile) throw new Error("Не удалось сохранить дату рождения.");
           profile.birth_date = updated.profile.birth_date;
           await showSettings();
         })),
         createSettingRow("Логин", profile.username, () => {}, "Изменение недоступно"),
         createSettingRow("Пароль", "••••••••••", () => createEditorDialog("password", "", async (values) => {
-          const { error: reauthError } = await supabase.auth.signInWithPassword({
+          await profileSettings.changePassword({
             email: data.user.email,
-            password: values.current_password,
+            currentPassword: values.current_password,
+            newPassword: values.password,
           });
-          if (reauthError) throw new Error("Текущий пароль указан неверно.");
-          const { error: updateError } = await supabase.auth.updateUser({ password: values.password });
-          if (updateError) throw updateError;
           showMessage("Пароль успешно изменён.");
         })),
         createSettingRow("Email", result.email || "Не указан", () => createEditorDialog("email", "", async (values) => {
-          const { error: reauthError } = await supabase.auth.signInWithPassword({
+          await profileSettings.changeEmail({
             email: data.user.email,
-            password: values.current_password,
+            currentPassword: values.current_password,
+            newEmail: values.email,
           });
-          if (reauthError) throw new Error("Текущий пароль указан неверно.");
-          const { error: updateError } = await supabase.auth.updateUser({ email: values.email.trim() });
-          if (updateError) throw updateError;
           showMessage("Запрос на изменение Email отправлен. Подтвердите новый адрес по ссылке из письма.");
         })),
       );
