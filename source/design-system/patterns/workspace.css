@@ -1,0 +1,114 @@
+/* Raymondovich — first workspace shell. Uses the approved Design System tokens. */
+.ds-workspace {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse at 50% 34%, var(--ds-accent-glow), transparent 48%),
+    var(--ds-bg-canvas);
+}
+.ds-workspace__header {
+  display: flex;
+  width: min(100% - 2rem, var(--ds-content-max));
+  min-height: 4.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+  margin-inline: auto;
+  padding-top: max(var(--ds-space-3), env(safe-area-inset-top));
+}
+.ds-workspace__logout {
+  min-height: var(--ds-control-height-sm);
+  padding-inline: var(--ds-space-4);
+  font-size: var(--ds-text-sm);
+}
+.ds-workspace__main {
+  display: grid;
+  width: min(100% - 2rem, var(--ds-content-max));
+  flex: 1;
+  align-content: start;
+  margin-inline: auto;
+  padding-block: clamp(2rem, 7vh, 5rem);
+}
+.ds-workspace__view {
+  display: grid;
+  justify-items: start;
+  gap: var(--ds-space-4);
+}
+.ds-workspace__title {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 680;
+  line-height: var(--ds-leading-tight);
+  letter-spacing: var(--ds-tracking-tight);
+}
+.ds-workspace__placeholder {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-text-md);
+}
+.ds-workspace-nav {
+  position: fixed;
+  z-index: 30;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  display: grid;
+  width: min(calc(100% - 2rem), 42rem);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.25rem;
+  margin-inline: auto;
+  padding: 0.5rem;
+  border-radius: var(--ds-radius-2xl);
+}
+.ds-workspace-nav__item {
+  display: flex;
+  min-width: 0;
+  min-height: 3.75rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.2rem;
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-lg);
+  background: transparent;
+  color: var(--ds-text-tertiary);
+  font-size: clamp(0.62rem, 2.4vw, 0.75rem);
+  font-weight: 560;
+  line-height: 1.1;
+  cursor: pointer;
+  transition:
+    color var(--ds-motion-fast) var(--ds-ease-standard),
+    background-color var(--ds-motion-standard) var(--ds-ease-standard),
+    border-color var(--ds-motion-standard) var(--ds-ease-standard),
+    transform var(--ds-motion-fast) var(--ds-ease-spring);
+}
+.ds-workspace-nav__item svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ds-workspace-nav__item[aria-current="page"] {
+  border-color: var(--ds-border-accent);
+  background: var(--ds-accent-soft);
+  color: var(--ds-text-accent);
+}
+.ds-workspace-nav__item:active { transform: scale(0.96); }
+@media (min-width: 760px) {
+  .ds-workspace__header { min-height: 5.5rem; }
+  .ds-workspace-nav { bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+  .ds-workspace-nav__item { min-height: 4rem; font-size: var(--ds-text-sm); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .ds-workspace-nav { background: var(--ds-bg-elevated); }
+}
