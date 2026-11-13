@@ -30,7 +30,20 @@ function setMode(mode) {
 modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
 
 const { data: initialSession } = await supabase.auth.getSession();
-if (initialSession.session) window.location.replace("/app.html");
+function getPostAuthTarget() {
+  try {
+    const target = window.sessionStorage.getItem("raymondovich-auth-return");
+    if (target && /^\/#(?:projects|ideas|team|tools|profile(?:\/settings)?)$/.test(target)) {
+      window.sessionStorage.removeItem("raymondovich-auth-return");
+      return target;
+    }
+  } catch {
+    // Fall back to the default workspace route.
+  }
+  return "/#projects";
+}
+
+if (initialSession.session) window.location.replace(getPostAuthTarget());
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -57,7 +70,7 @@ loginForm.addEventListener("submit", async (event) => {
       }));
     }
     if (error) throw error;
-    window.location.replace("/app.html");
+    window.location.replace(getPostAuthTarget());
   } catch (error) {
     showStatus(error.message || "Не удалось выполнить вход.", "error");
   } finally {
