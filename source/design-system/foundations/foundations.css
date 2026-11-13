@@ -35,8 +35,14 @@ textarea {
   font: inherit;
 }
 
+/* Prevent iOS Safari double-tap zoom on interactive controls while
+   preserving pinch-to-zoom for accessibility. */
+a,
 button,
-[role="button"] {
+[role="button"],
+[role="tab"],
+[role="menuitem"] {
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
