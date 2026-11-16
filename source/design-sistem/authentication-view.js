@@ -1,4 +1,4 @@
-/* Version: 1.0.2 */
+/* Version: 1.1.2 */
 /* Updated: 2026-11-16 */
 
 const templates = {
@@ -117,4 +117,150 @@ export function setAuthenticationLoading(container, loading) {
   button.disabled = loading;
   button.textContent = loading ? "Подождите…" : button.dataset.defaultLabel || button.textContent;
   if (!button.dataset.defaultLabel && !loading) button.dataset.defaultLabel = button.textContent;
+}
+
+
+export function renderPublicProfileView(container, payload, error = "") {
+  container.innerHTML = "";
+
+  const page = document.createElement("section");
+  page.className = "public-profile-page";
+
+  const panel = document.createElement("article");
+  panel.className = "auth-panel public-profile-panel";
+
+  const heading = document.createElement("h1");
+  heading.className = "auth-heading";
+  heading.textContent = error ? "Профиль недоступен" : "Публичный профиль";
+
+  const description = document.createElement("p");
+  description.className = "auth-description";
+
+  if (error || !payload) {
+    description.textContent = error || "Не удалось загрузить публичный профиль.";
+    panel.append(heading, description);
+    page.append(panel);
+    container.append(page);
+    return;
+  }
+
+  const profile = payload.profile || payload.user || payload;
+  const fullName = profile.full_name || profile.name || profile.username || "Пользователь Raymondovich";
+  heading.textContent = fullName;
+
+  const identityRow = document.createElement("div");
+  identityRow.className = "public-profile-identity-row";
+  identityRow.append(heading);
+
+  if (String(profile.username || "").toLowerCase() === "raymondovich") {
+    const ownerBadge = document.createElement("span");
+    ownerBadge.className = "public-profile-owner-badge";
+    ownerBadge.setAttribute("role", "img");
+    ownerBadge.setAttribute("aria-label", "Владелец экосистемы");
+    ownerBadge.title = "Владелец экосистемы";
+    ownerBadge.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4.5 10.2 3.4 3.4 7.6-7.3"/></svg>';
+    identityRow.append(ownerBadge);
+  }
+
+  description.textContent = profile.username ? `@${profile.username}` : "Публичный профиль Raymondovich";
+  panel.append(identityRow, description);
+
+  if (typeof profile.about === "string" && profile.about.trim()) {
+    const aboutSection = document.createElement("section");
+    aboutSection.className = "public-profile-about-section";
+    aboutSection.setAttribute("aria-labelledby", "public-profile-about-title");
+
+    const aboutHeading = document.createElement("h2");
+    aboutHeading.id = "public-profile-about-title";
+    aboutHeading.textContent = "О себе";
+
+    const aboutText = document.createElement("p");
+    aboutText.className = "public-profile-about";
+    aboutText.textContent = profile.about.trim();
+
+    aboutSection.append(aboutHeading, aboutText);
+    panel.append(aboutSection);
+  }
+
+
+  const socials = document.createElement("nav");
+  socials.className = "public-profile-social-icons";
+  socials.setAttribute("aria-label", "Социальные сети");
+  const socialLinks = [
+    ["Telegram", "telegram_url", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 3-7.2 18-3.9-7.1L3 10.1 21 3Z"/><path d="m9.9 13.9 5.2-5.2"/></svg>'],
+    ["Instagram", "instagram_url", '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>'],
+    ["YouTube", "youtube_url", '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3V9Z"/></svg>'],
+  ];
+  for (const [label, key, icon] of socialLinks) {
+    const value = profile[key];
+    if (!value) continue;
+    try {
+      const url = new URL(value);
+      if (url.protocol !== "https:" && url.protocol !== "http:") continue;
+      const link = document.createElement("a");
+      link.href = url.href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.setAttribute("aria-label", label);
+      link.title = label;
+      link.innerHTML = icon;
+      socials.append(link);
+    } catch {
+      // Ignore malformed public profile links.
+    }
+  }
+
+
+
+  const projects = Array.isArray(payload.projects) ? payload.projects : Array.isArray(profile.projects) ? profile.projects : [];
+  if (projects.length) {
+    const priorityProject = projects[0];
+    const priorityHeadingRow = document.createElement("div");
+    priorityHeadingRow.className = "public-profile-priority-heading-row";
+
+    const projectHeading = document.createElement("h2");
+    projectHeading.className = "public-profile-projects-heading";
+    projectHeading.textContent = "Приоритетный проект:";
+
+    const priorityProjectName = document.createElement("h3");
+    priorityProjectName.className = "public-profile-priority-project-name";
+    priorityProjectName.textContent = priorityProject.name || "Проект";
+    priorityHeadingRow.append(projectHeading, priorityProjectName);
+    panel.append(priorityHeadingRow);
+
+    const prioritySubtitle = document.createElement("p");
+    prioritySubtitle.className = "public-profile-priority-project-subtitle";
+    prioritySubtitle.textContent = "Краткое описание проекта";
+    panel.append(prioritySubtitle);
+
+    if (priorityProject.description) {
+      const priorityDescription = document.createElement("p");
+      priorityDescription.className = "public-profile-priority-project-description";
+      priorityDescription.textContent = priorityProject.description;
+      panel.append(priorityDescription);
+    }
+
+    if (projects.length > 1) {
+      const list = document.createElement("div");
+      list.className = "public-profile-projects";
+      for (const project of projects.slice(1)) {
+        const item = document.createElement("article");
+        item.className = "public-profile-project";
+        const title = document.createElement("h3");
+        title.textContent = project.name || "Проект";
+        item.append(title);
+        if (project.description) {
+          const text = document.createElement("p");
+          text.textContent = project.description;
+          item.append(text);
+        }
+        list.append(item);
+      }
+      panel.append(list);
+    }
+  }
+  if (socials.childElementCount) panel.append(socials);
+
+  page.append(panel);
+  container.append(page);
 }
