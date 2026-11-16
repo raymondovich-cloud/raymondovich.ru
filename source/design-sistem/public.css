@@ -1,4 +1,4 @@
-/* Version: 1.2.0 */
+/* Version: 1.2.4 */
 /* Updated: 2026-11-16 */
 
 :root {
@@ -328,3 +328,38 @@ a:focus-visible {
 body[data-app-state="workspace"] .page-back,
 body[data-app-state="workspace"] .public-header-actions { display: none; }
 body[data-app-state="workspace"] .workspace-header-actions { display: flex; }
+
+/* Public profile header */
+body[data-page-type="public-profile"] .page-back,
+body[data-page-type="public-profile"] .public-header-actions {
+  display: none;
+}
+
+body[data-page-type="public-profile"] .site-header {
+  justify-content: center;
+}
+
+body[data-page-type="public-profile"] .header-identity {
+  justify-content: center;
+  width: 100%;
+}
+
+body[data-page-type="public-profile"] .brand {
+  justify-content: center;
+  text-align: center;
+}
+
+body[data-page-type="public-profile"] .brand::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--color-text-secondary);
+  font-size: .9em;
+  font-weight: 500;
+  transition: transform 180ms ease, color 180ms ease;
+}
+
+body[data-page-type="public-profile"] .brand:hover::after {
+  color: var(--color-accent);
+  transform: translate(2px, -2px);
+}
