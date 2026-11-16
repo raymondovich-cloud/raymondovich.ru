@@ -1,4 +1,4 @@
-/* Version: 1.7.0 */
+/* Version: 1.9.3 */
 /* Updated: 2026-11-16 */
 
 import { authClient } from "../../infrastructure/supabase/auth-client.js";
@@ -6,6 +6,7 @@ import { mountWorkspace } from "../workspace/workspace.js";
 import {
   renderAuthenticationView,
   renderAuthenticatedView,
+  renderPublicProfileView,
   setAuthenticationMessage,
   setAuthenticationLoading,
 } from "../../design-sistem/authentication-view.js";
@@ -18,7 +19,7 @@ const workspaceActions = document.querySelector("[data-workspace-actions]");
 
 if (root && pageMain) {
   const validModes = new Set(["login", "register", "forgot-password", "reset-password"]);
-  const workspaceRoutes = new Set(["projects/create", "projects", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+  const workspaceRoutes = new Set(["projects/create", "projects", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
   const isProjectDetailRoute = (route) => /^projects\/[0-9a-f-]{36}(?:\/(?:information|settings))?$/i.test(route);
   let currentMode = "login";
   let busy = false;
@@ -26,11 +27,27 @@ if (root && pageMain) {
   function setRoute(mode) {
     currentMode = mode;
     const isAuthRoute = validModes.has(mode);
+    const publicProfileMatch = mode.match(/^profile\/([a-z0-9][a-z0-9._-]{2,23})$/i);
+    const isPublicProfileRoute = Boolean(publicProfileMatch && !workspaceRoutes.has(mode));
     const isWorkspaceRoute = mode === "account" || workspaceRoutes.has(mode) || isProjectDetailRoute(mode);
-    root.hidden = !(isAuthRoute || isWorkspaceRoute);
-    if (statusPanel) statusPanel.hidden = isAuthRoute || isWorkspaceRoute;
+    root.hidden = !(isAuthRoute || isWorkspaceRoute || isPublicProfileRoute);
+    if (statusPanel) statusPanel.hidden = isAuthRoute || isWorkspaceRoute || isPublicProfileRoute;
     document.body.dataset.appState = isWorkspaceRoute ? "workspace" : "public";
+    document.body.dataset.pageType = isPublicProfileRoute ? "public-profile" : "";
+    updateBrandForRoute(isPublicProfileRoute);
     if (workspaceActions) workspaceActions.hidden = !isWorkspaceRoute;
+
+    if (isPublicProfileRoute) {
+      root.innerHTML = '<section class="public-profile-page"><div class="public-profile-loading">Загружаем публичный профиль…</div></section>';
+      authClient.getPublicProfile(publicProfileMatch[1]).then((payload) => {
+        const current = window.location.hash.replace(/^#/, "").split("?")[0];
+        if (current === mode) renderPublicProfileView(root, payload);
+      }).catch((error) => {
+        const current = window.location.hash.replace(/^#/, "").split("?")[0];
+        if (current === mode) renderPublicProfileView(root, null, error.message);
+      });
+      return;
+    }
 
     if (isWorkspaceRoute) {
       authClient.getUser().then(async (user) => {
@@ -54,6 +71,14 @@ if (root && pageMain) {
   }
 
   const brandLink = document.querySelector(".brand");
+  const brandLabel = brandLink?.querySelector("[data-brand-label]");
+
+  function updateBrandForRoute(isPublicProfileRoute) {
+    if (!brandLink || !brandLabel) return;
+    const label = isPublicProfileRoute ? "raymondovich digital ecosystem" : "raymondovich";
+    brandLabel.textContent = label;
+    brandLink.setAttribute("aria-label", isPublicProfileRoute ? label : "Raymondovich — главная");
+  }
   brandLink?.addEventListener("click", (event) => {
     if (document.body.dataset.appState !== "workspace") return;
     event.preventDefault();
@@ -212,6 +237,42 @@ if (root && pageMain) {
       busy = false;
       const currentSubmit = root.querySelector('[data-profile-settings-form] button[type="submit"]');
       if (currentSubmit) { currentSubmit.disabled = false; currentSubmit.textContent = "Сохранить изменения"; }
+    }
+  });
+
+  root.addEventListener("submit", async (event) => {
+    const publicProfileForm = event.target.closest("[data-public-profile-form]");
+    if (!publicProfileForm || busy) return;
+    event.preventDefault();
+    if (!publicProfileForm.reportValidity()) return;
+    const values = Object.fromEntries(new FormData(publicProfileForm).entries());
+    const projectIds = [...publicProfileForm.querySelectorAll('[name="showcase_project_ids"]:checked')].map((input) => input.value);
+    const feedback = publicProfileForm.querySelector("[data-public-profile-feedback]");
+    const submit = publicProfileForm.querySelector('button[type="submit"]');
+    busy = true;
+    if (submit) { submit.disabled = true; submit.textContent = "Сохранение…"; }
+    if (feedback) { feedback.textContent = ""; feedback.dataset.state = ""; }
+    try {
+      await authClient.updatePublicProfile({
+        public_profile_enabled: publicProfileForm.querySelector('[name="public_profile_enabled"]').checked,
+        about: String(values.about || "").trim(),
+        instagram_url: String(values.instagram_url || "").trim() || null,
+        youtube_url: String(values.youtube_url || "").trim() || null,
+        telegram_url: String(values.telegram_url || "").trim() || null,
+        showcase_project_ids: projectIds,
+      });
+      if (feedback) {
+        feedback.textContent = "Публичная информация сохранена.";
+        feedback.dataset.state = "success";
+      }
+    } catch (error) {
+      if (feedback) {
+        feedback.textContent = error.message || "Не удалось сохранить публичную информацию.";
+        feedback.dataset.state = "error";
+      }
+    } finally {
+      busy = false;
+      if (submit) { submit.disabled = false; submit.textContent = "Сохранить публичную информацию"; }
     }
   });
 
