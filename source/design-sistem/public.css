@@ -1,4 +1,4 @@
-/* Version: 1.0.0 */
+/* Version: 1.2.0 */
 /* Updated: 2026-11-16 */
 
 :root {
@@ -11,6 +11,12 @@
   --color-accent: #f47721;
   --color-accent-strong: #e96512;
   --color-focus: #f47721;
+  --color-accent-soft: rgb(244 119 33 / 12%);
+  --color-accent-wash: rgb(244 119 33 / 9%);
+  --color-accent-border: rgb(244 119 33 / 22%);
+  --color-accent-hover-border: rgb(244 119 33 / 45%);
+  --color-neutral-hover: rgb(127 127 127 / 8%);
+  --shadow-floating: 0 12px 40px rgb(0 0 0 / 14%);
   --gradient-brand: linear-gradient(120deg, #f47721 0%, #ff9a42 48%, #171717 100%);
   --shadow-surface: 0 24px 80px rgb(30 24 18 / 8%);
   --motion-standard: 220ms cubic-bezier(.2, .75, .25, 1);
@@ -31,6 +37,12 @@
   --color-accent: #ff8735;
   --color-accent-strong: #ff9a50;
   --color-focus: #ff8735;
+  --color-accent-soft: rgb(255 135 53 / 14%);
+  --color-accent-wash: rgb(255 135 53 / 10%);
+  --color-accent-border: rgb(255 135 53 / 25%);
+  --color-accent-hover-border: rgb(255 135 53 / 48%);
+  --color-neutral-hover: rgb(255 255 255 / 8%);
+  --shadow-floating: 0 12px 40px rgb(0 0 0 / 32%);
   --gradient-brand: linear-gradient(120deg, #ff8735 0%, #f47721 46%, #f4eee8 100%);
   --shadow-surface: 0 24px 90px rgb(0 0 0 / 28%);
 }
@@ -310,3 +322,9 @@ a:focus-visible {
     transition-duration: .01ms !important;
   }
 }
+
+
+.workspace-header-actions[hidden] { display: none; }
+body[data-app-state="workspace"] .page-back,
+body[data-app-state="workspace"] .public-header-actions { display: none; }
+body[data-app-state="workspace"] .workspace-header-actions { display: flex; }

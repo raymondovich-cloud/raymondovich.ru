@@ -1,4 +1,4 @@
-/* Version: 1.0.0 */
+/* Version: 1.1.0 */
 /* Updated: 2026-11-16 */
 
 const themeStorageKey = "raymondovich-theme";
@@ -31,6 +31,14 @@ const applyTheme = (theme) => {
 };
 
 applyTheme(getPreferredTheme());
+
+window.addEventListener("raymondovich:theme-change", (event) => {
+  const preference = event.detail?.preference;
+  applyTheme(preference === "system" ? getPreferredTheme() : preference);
+  document.querySelectorAll("[data-theme-option]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.themeOption === preference));
+  });
+});
 
 themeToggle?.addEventListener("click", () => {
   const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
