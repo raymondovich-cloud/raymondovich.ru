@@ -1,4 +1,4 @@
-/* Version: 1.3.5 */
+/* Version: 1.7.0 */
 /* Updated: 2026-11-16 */
 
 import { authClient } from "../../infrastructure/supabase/auth-client.js";
@@ -18,14 +18,15 @@ const workspaceActions = document.querySelector("[data-workspace-actions]");
 
 if (root && pageMain) {
   const validModes = new Set(["login", "register", "forgot-password", "reset-password"]);
-  const workspaceRoutes = new Set(["projects", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+  const workspaceRoutes = new Set(["projects/create", "projects", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+  const isProjectDetailRoute = (route) => /^projects\/[0-9a-f-]{36}(?:\/(?:information|settings))?$/i.test(route);
   let currentMode = "login";
   let busy = false;
 
   function setRoute(mode) {
     currentMode = mode;
     const isAuthRoute = validModes.has(mode);
-    const isWorkspaceRoute = mode === "account" || workspaceRoutes.has(mode);
+    const isWorkspaceRoute = mode === "account" || workspaceRoutes.has(mode) || isProjectDetailRoute(mode);
     root.hidden = !(isAuthRoute || isWorkspaceRoute);
     if (statusPanel) statusPanel.hidden = isAuthRoute || isWorkspaceRoute;
     document.body.dataset.appState = isWorkspaceRoute ? "workspace" : "public";
@@ -127,6 +128,65 @@ if (root && pageMain) {
       window.location.hash = "account";
     }
   }
+
+  root.addEventListener("change", (event) => {
+    if (event.target.matches('[name="project_type"]')) {
+      const group = root.querySelector("[data-project-components]");
+      if (!group) return;
+      const online = event.target.value === "online";
+      group.hidden = !online;
+      if (!online) group.querySelectorAll('input[type="checkbox"]').forEach((input) => { input.checked = false; });
+    }
+  });
+
+  root.addEventListener("submit", async (event) => {
+    const projectForm = event.target.closest("[data-project-create-form]");
+    if (!projectForm || busy) return;
+    event.preventDefault();
+    if (!projectForm.reportValidity()) return;
+
+    const values = Object.fromEntries(new FormData(projectForm).entries());
+    const componentCodes = [...projectForm.querySelectorAll('[name="component_codes"]:checked')].map((input) => input.value);
+    const feedback = projectForm.querySelector("[data-project-feedback]");
+    const submitButton = projectForm.querySelector('button[type="submit"]');
+    busy = true;
+    if (submitButton) { submitButton.disabled = true; submitButton.textContent = "Создание…"; }
+    if (feedback) { feedback.textContent = ""; feedback.dataset.state = ""; }
+
+    try {
+      const project = await authClient.createProject({
+        name: values.project_name,
+        description: values.project_description,
+        projectType: values.project_type,
+        componentCodes,
+      });
+      const panel = document.createElement("section");
+      panel.className = "project-create-success";
+      const heading = document.createElement("h2");
+      heading.textContent = "Проект создан";
+      const name = document.createElement("p");
+      name.textContent = project?.name || String(values.project_name).trim();
+      const detail = document.createElement("p");
+      detail.textContent = "Проект сохранён в Raymondovich. Вы назначены его владельцем.";
+      const identifier = document.createElement("small");
+      identifier.textContent = "ID проекта: " + (project?.id || "не получен");
+      const back = document.createElement("a");
+      back.className = "project-primary-button";
+      back.href = "#projects";
+      back.textContent = "Вернуться к проектам";
+      panel.append(heading, name, detail, identifier, back);
+      projectForm.replaceWith(panel);
+    } catch (error) {
+      if (feedback) {
+        feedback.textContent = normalizeError(error);
+        feedback.dataset.state = "error";
+      }
+    } finally {
+      busy = false;
+      const currentButton = root.querySelector('[data-project-create-form] button[type="submit"]');
+      if (currentButton) { currentButton.disabled = false; currentButton.textContent = "Создать проект"; }
+    }
+  });
 
   root.addEventListener("submit", async (event) => {
     const settingsForm = event.target.closest("[data-profile-settings-form]");

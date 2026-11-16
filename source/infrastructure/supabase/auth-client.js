@@ -1,4 +1,6 @@
-/* Version: 1.2.0 */
+import { createProjectApi } from "./project-api.js";
+
+/* Version: 1.7.0 */
 /* Updated: 2026-11-16 */
 
 const SUPABASE_URL = "https://yajybgdorhxebbigwjgi.supabase.co";
@@ -213,6 +215,41 @@ export const authClient = {
       window.localStorage.removeItem(SESSION_KEY);
       return null;
     }
+  },
+
+  async createProject(input) {
+    return createProjectApi({
+      getSession: () => this.getSession(),
+      request,
+    }).createProject(input);
+  },
+
+  async getProjects() {
+    return createProjectApi({
+      getSession: () => this.getSession(),
+      request,
+    }).getProjects();
+  },
+
+  async getProjectMembers(projectId) {
+    return createProjectApi({
+      getSession: () => this.getSession(),
+      request,
+    }).getProjectMembers(projectId);
+  },
+
+  async addProjectMember(input) {
+    return createProjectApi({
+      getSession: () => this.getSession(),
+      request,
+    }).addProjectMember(input);
+  },
+
+  async deleteProject(input) {
+    return createProjectApi({
+      getSession: () => this.getSession(),
+      request,
+    }).deleteProject(input);
   },
 
   async signOut() {

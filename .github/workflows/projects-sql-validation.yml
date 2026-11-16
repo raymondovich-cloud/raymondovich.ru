@@ -1,0 +1,113 @@
+# Version: 1.2.6
+# Updated: 2026-11-16
+# Validates Projects SQL and authenticated PostgREST RPC behavior against ephemeral PostgreSQL 17.11.
+name: Projects SQL validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/architecture/sql-drafts/projects-001-core-schema.sql"
+      - "docs/architecture/sql-drafts/projects-002-rpc-phase-1.sql"
+      - "supabase/migrations/20261116070000_projects_002_rpc_phase_1.sql"
+      - "supabase/migrations/20261116080000_projects_003_list_rpc.sql"
+      - "tests/sql/projects-list-rpc.test.sql"
+      - "tests/sql/projects-core-schema.test.sql"
+      - "tests/sql/projects-rpc-phase-1.test.sql"
+      - "tests/api/projects-postgrest-phase-1.test.py"
+      - ".github/workflows/projects-sql-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-validation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: projects_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d projects_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: projects_test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare minimal Supabase Auth compatibility fixture
+        run: |
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          create role anon nologin;
+          create role authenticated nologin;
+          create role authenticator login password 'postgres' noinherit;
+          grant anon, authenticated to authenticator;
+          grant usage on schema public to anon, authenticated;
+          create schema auth;
+          create table auth.users (
+            id uuid primary key
+          );
+          create or replace function auth.uid()
+          returns uuid language sql stable
+          as $auth_uid$
+            select coalesce(
+              nullif(current_setting('request.jwt.claim.sub', true), ''),
+              (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+            )::uuid
+          $auth_uid$;
+          grant usage on schema auth to anon, authenticated;
+          grant execute on function auth.uid() to anon, authenticated;
+          SQL
+
+      - name: Apply Projects core schema
+        run: psql -v ON_ERROR_STOP=1 -f docs/architecture/sql-drafts/projects-001-core-schema.sql
+
+      - name: Validate Projects core schema
+        run: psql -v ON_ERROR_STOP=1 -f tests/sql/projects-core-schema.test.sql
+
+      - name: Apply Projects RPC phase 1 migration
+        run: psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261116070000_projects_002_rpc_phase_1.sql
+
+      - name: Validate Projects RPC phase 1
+        run: psql -v ON_ERROR_STOP=1 -f tests/sql/projects-rpc-phase-1.test.sql
+
+      - name: Apply Projects list RPC migration
+        run: psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261116080000_projects_003_list_rpc.sql
+
+      - name: Validate Projects list RPC
+        run: psql -v ON_ERROR_STOP=1 -f tests/sql/projects-list-rpc.test.sql
+
+      - name: Start ephemeral PostgREST API
+        env:
+          PGRST_JWT_SECRET: raymondovich-ci-only-secret-at-least-32-bytes
+        run: |
+          docker run -d --name projects-postgrest --network host -e PGRST_DB_URI=postgres://authenticator:postgres@127.0.0.1:5432/projects_test -e PGRST_DB_SCHEMAS=public -e PGRST_DB_ANON_ROLE=anon -e PGRST_JWT_SECRET="$PGRST_JWT_SECRET" -e PGRST_LOG_LEVEL=info postgrest/postgrest:v14.17
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:3000/ >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --silent --fail http://127.0.0.1:3000/ >/dev/null
+
+      - name: Validate authenticated PostgREST RPC boundary
+        env:
+          PGRST_JWT_SECRET: raymondovich-ci-only-secret-at-least-32-bytes
+          POSTGREST_URL: http://127.0.0.1:3000
+        run: python3 tests/api/projects-postgrest-phase-1.test.py
+
+      - name: Show PostgREST logs on failure
+        if: failure()
+        run: docker logs projects-postgrest || true
