@@ -1,6 +1,6 @@
 import { createProjectApi } from "./project-api.js";
 
-/* Version: 1.7.0 */
+/* Version: 1.8.0 */
 /* Updated: 2026-11-16 */
 
 const SUPABASE_URL = "https://yajybgdorhxebbigwjgi.supabase.co";
@@ -200,6 +200,28 @@ export const authClient = {
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload.error || "Не удалось сохранить профиль.");
+    return payload;
+  },
+
+  async updatePublicProfile(profile) {
+    const session = await this.getSession();
+    if (!session) throw new Error("Сессия пользователя не найдена.");
+    const response = await fetch(`${EDGE_FUNCTIONS_URL}/profile-public-info`, {
+      method: "PATCH",
+      headers: { apikey: SUPABASE_PUBLIC_KEY, Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(profile),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Не удалось сохранить публичную информацию.");
+    return payload;
+  },
+
+  async getPublicProfile(username) {
+    const response = await fetch(`${EDGE_FUNCTIONS_URL}/public-profile?username=${encodeURIComponent(username)}`, {
+      headers: { apikey: SUPABASE_PUBLIC_KEY },
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Публичный профиль не найден.");
     return payload;
   },
 
