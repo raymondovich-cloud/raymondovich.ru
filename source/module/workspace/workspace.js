@@ -1,4 +1,4 @@
-/* Version: 2.0.0 */
+/* Version: 2.1.0 */
 /* Updated: 2026-11-16 */
 import { renderWorkspaceView } from "../../design-sistem/workspace-view.js";
 import { authClient } from "../../infrastructure/supabase/auth-client.js";
@@ -180,6 +180,32 @@ function installProjectDeleteActions(container) {
  });
 }
 
+function installPublicProfileActions(container) {
+ if (container.dataset.publicProfileActionsBound === "true") return;
+ container.dataset.publicProfileActionsBound = "true";
+ container.addEventListener("click", async (event) => {
+  const openButton = event.target.closest("[data-public-profile-open]");
+  if (openButton) { const dialog = container.querySelector("[data-public-profile-dialog]"); if (dialog && !dialog.open) dialog.showModal(); return; }
+  const closeButton = event.target.closest("[data-public-profile-close]");
+  if (closeButton) { const dialog = closeButton.closest("[data-public-profile-dialog]"); if (dialog?.open) dialog.close(); return; }
+  const dialog = event.target.closest("[data-public-profile-dialog]");
+  if (dialog && event.target === dialog) { dialog.close(); return; }
+  const shareButton = event.target.closest("[data-public-profile-share]");
+  if (!shareButton) return;
+  const username = shareButton.dataset.username;
+  if (!username) return;
+  const url = new URL("/#profile/" + encodeURIComponent(username), window.location.origin).toString();
+  const feedback = container.querySelector("[data-public-profile-share-feedback]");
+  shareButton.disabled = true;
+  try {
+   if (navigator.share) await navigator.share({ title: "Профиль в Raymondovich", text: "Мой публичный профиль в экосистеме Raymondovich", url });
+   else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); if (feedback) { feedback.textContent = "Ссылка скопирована."; feedback.dataset.state = "success"; } }
+   else if (feedback) { feedback.textContent = url; feedback.dataset.state = "success"; }
+  } catch (error) {
+   if (error?.name !== "AbortError" && feedback) { feedback.textContent = "Не удалось открыть меню отправки. Скопируйте ссылку выше."; feedback.dataset.state = "error"; }
+  } finally { shareButton.disabled = false; }
+ });
+}
 function currentRoute() {
  return window.location.hash.replace(/^#/, "").split("?")[0] || "home";
 }
@@ -192,20 +218,24 @@ export function mountWorkspace(container, user, section = "projects", profileDat
   user,
   section,
   profileData,
-  (section === "projects" || section.startsWith("projects/")) ? { status: "loading" } : null
+  (section === "projects" || section.startsWith("projects/") || section === "profile/settings/public-info") ? { status: "loading" } : null
  );
  installProfileScrollBehavior();
  installProjectRetry(container);
  installProjectMemberActions(container);
  installProjectDeleteActions(container);
+ installPublicProfileActions(container);
  syncProfileIdentityCard();
 
- if (section !== "projects" && !section.startsWith("projects/")) return;
+ const needsProjects = section === "projects" || section.startsWith("projects/") || section === "profile/settings/public-info";
+ if (!needsProjects) return;
 
  authClient.getProjects().then(async (payload) => {
   if (sequence !== workspaceMountSequence || currentRoute() !== section) return;
   const projects = Array.isArray(payload?.projects) ? payload.projects : [];
-  if (section.startsWith("projects/")) {
+  if (section === "profile/settings/public-info") {
+   renderWorkspaceView(container, user, section, profileData, { status: "ready", projects: projects.filter((project) => project.role === "owner" && project.status === "active") });
+  } else if (section.startsWith("projects/")) {
    const projectId = decodeURIComponent(section.split("/")[1]);
    const project = projects.find((item) => String(item.id) === projectId) || null;
    let membersData = { status: "ready", members: [], roles: [], can_invite: false };
