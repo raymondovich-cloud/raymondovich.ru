@@ -1,4 +1,4 @@
-/* Version: 3.3.9 */
+/* Version: 3.4.2 */
 /* Updated: 2026-11-16 */
 body[data-app-state="workspace"] { background: var(--color-page); }
 body[data-app-state="workspace"] .page-shell { min-height: 100svh; padding: max(18px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); }
@@ -714,3 +714,24 @@ body[data-app-state="workspace"] .workspace-mobile-nav { display: none; }
 .public-profile-about-section h2 { margin: 0; color: var(--color-text-muted); font-size: 12px; font-weight: 650; letter-spacing: .045em; }
 .public-profile-card > .auth-heading { margin: 0; color: var(--color-text-muted); font-size: 12px; font-weight: 650; letter-spacing: .045em; }
 .public-profile-about-section .public-profile-about { margin: 0; color: var(--color-text); font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+
+/* Compact share action positioned in the profile card corner */
+/* Version: 1.0.0 */
+/* Updated: 2026-11-16 */
+.profile-identity-card { padding-right: 62px; }
+.profile-share-icon-button { position: absolute; top: 14px; right: 14px; display: grid; width: 32px; height: 32px; place-items: center; margin: 0; border-radius: 50%; }
+.profile-share-icon-button svg { width: 17px; height: 17px; }
+@media (max-width: 560px) {
+ .profile-identity-card { padding-right: 56px; }
+ .profile-share-icon-button { top: 12px; right: 12px; width: 30px; height: 30px; }
+}
+
+
+/* Owner control-center shortcut in the profile identity card */
+/* Version: 1.0.0 */
+/* Updated: 2026-11-16 */
+.profile-control-icon-button { position: absolute; top: auto; right: 14px; bottom: 14px; display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--color-surface-border); border-radius: 50%; color: var(--color-text-muted); background: var(--color-page); text-decoration: none; transition: color var(--motion-standard), border-color var(--motion-standard), background-color var(--motion-standard), transform var(--motion-standard); }
+.profile-control-icon-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.profile-control-icon-button:hover { color: var(--color-accent); border-color: var(--color-accent-border); background: var(--color-accent-wash); transform: translateY(-1px); }
+.profile-control-icon-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+@media (max-width: 560px) { .profile-control-icon-button { top: auto; right: 12px; bottom: 12px; width: 30px; height: 30px; } }

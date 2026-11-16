@@ -1,4 +1,4 @@
-/* Version: 1.9.3 */
+/* Version: 1.9.5 */
 /* Updated: 2026-11-16 */
 
 import { authClient } from "../../infrastructure/supabase/auth-client.js";
@@ -19,7 +19,7 @@ const workspaceActions = document.querySelector("[data-workspace-actions]");
 
 if (root && pageMain) {
   const validModes = new Set(["login", "register", "forgot-password", "reset-password"]);
-  const workspaceRoutes = new Set(["projects/create", "projects", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+  const workspaceRoutes = new Set(["projects/create", "projects", "control-center", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
   const isProjectDetailRoute = (route) => /^projects\/[0-9a-f-]{36}(?:\/(?:information|settings))?$/i.test(route);
   let currentMode = "login";
   let busy = false;
@@ -282,6 +282,11 @@ if (root && pageMain) {
     event.preventDefault();
 
     const mode = form.dataset.mode;
+    if (mode === "register") {
+      showMessage("Регистрация в экосистеме отключена на время разработки.", "info");
+      return;
+    }
+
     const values = Object.fromEntries(new FormData(form).entries());
     const submitButton = form.querySelector(".auth-submit");
 
