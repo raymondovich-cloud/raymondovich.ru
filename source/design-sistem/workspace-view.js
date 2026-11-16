@@ -1,4 +1,4 @@
-/* Version: 3.15.1 */
+/* Version: 3.18.0 */
 /* Updated: 2026-11-16 */
 const sections = [
  { id: "projects", label: "Проекты" },
@@ -43,7 +43,10 @@ function profileMarkup(user, profileData) {
  return '<div class="profile-page">' +
   '<section class="profile-identity-card" aria-label="Карточка пользователя"><div class="profile-avatar" aria-hidden="true">' + escapeHtml(avatar) + '</div><div class="profile-identity-copy"><h2>' + escapeHtml(fullName) + '</h2>' +
   (username ? '<p class="profile-username">@' + escapeHtml(username) + '</p>' : '<p class="profile-username">Логин не указан</p>') +
-  '<span class="profile-status"><span class="profile-status-dot"></span>' + escapeHtml(accountStatus) + '</span></div></section>' +
+  '<span class="profile-status"><span class="profile-status-dot"></span>' + escapeHtml(accountStatus) + '</span></div>' +
+  (profile.public_profile_enabled === true ? '<button class="profile-share-icon-button" type="button" data-public-profile-open aria-label="Поделиться публичным профилем" title="Поделиться профилем"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.7 10.6 6.6-4.2m-6.6 7 6.6 4.2"></path></svg></button>' : '') +
+  '</section>' +
+  (profile.public_profile_enabled === true ? '<dialog class="public-profile-dialog" data-public-profile-dialog aria-labelledby="public-profile-dialog-title"><div class="public-profile-dialog-panel"><div class="settings-card-heading"><div><h2 id="public-profile-dialog-title">Публичная карточка</h2><p>Так профиль увидят другие пользователи.</p></div><button class="public-profile-dialog-close" type="button" data-public-profile-close aria-label="Закрыть">×</button></div><div class="public-profile-preview"><div class="profile-avatar">' + escapeHtml(avatar) + '</div><div><strong>' + escapeHtml(fullName) + '</strong><span>@' + escapeHtml(username) + '</span></div></div><div class="public-profile-preview-socials">' + [["Instagram", profile.instagram_url], ["YouTube", profile.youtube_url], ["Telegram", profile.telegram_url]].filter(([,url]) => typeof url === "string" && url.startsWith("https://")).map(([label,url]) => '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + label + '</a>').join("") + '</div><div class="public-profile-preview-projects">' + (Array.isArray(profile.showcase_projects) && profile.showcase_projects.length ? profile.showcase_projects.map((project) => '<article><strong>' + escapeHtml(project.name) + '</strong><p>' + escapeHtml(project.description || "Описание не добавлено") + '</p></article>').join("") : '<p>Пока нет проектов в публичной карточке.</p>') + '</div><p class="public-profile-share-url">' + escapeHtml(window.location.origin + '/#profile/' + encodeURIComponent(username)) + '</p><p class="settings-form-feedback" data-public-profile-share-feedback role="status" aria-live="polite"></p><div class="public-profile-dialog-actions"><button class="settings-secondary-button" type="button" data-public-profile-close>Закрыть</button><button class="settings-primary-button" type="button" data-public-profile-share data-username="' + escapeHtml(username) + '">Поделиться</button></div></div></dialog>' : '') +
   '<div class="profile-sections">' +
   (appMetadata.raymondovich_role === "owner" ? '<section class="profile-group profile-control-card"><div class="profile-control-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15V9m4 6V5m4 10v-4m4 4V7"></path></svg></div><div class="profile-row-copy"><h2>Центр управления</h2><p>Управление экосистемой Raymondovich.</p></div><span class="profile-access-label">Владелец</span></section>' : '') +
   '<a class="profile-group profile-link-card" href="#profile/active-projects"><span class="profile-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M8 4V2m8 2V2M3 10h18"></path></svg></span><span class="profile-row-copy"><strong>Действующие проекты</strong><small>Проекты, которые уже запущены и приносят доход.</small></span><span class="profile-chevron" aria-hidden="true">›</span></a>' +
@@ -53,7 +56,7 @@ function profileMarkup(user, profileData) {
   '<a class="profile-group profile-link-card" href="#profile/settings"><span class="profile-row-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"></circle><path d="M19.4 15a1.8 1.8 0 0 0 .9 2.1l.1.1-2.5 2.5-.1-.1a1.8 1.8 0 0 0-2.1-.9 1.8 1.8 0 0 0-1.2 1.7v.2h-3.6v-.2a1.8 1.8 0 0 0-1.2-1.7 1.8 1.8 0 0 0-2.1.9l-.1.1L5 17.2l.1-.1A1.8 1.8 0 0 0 6 15a1.8 1.8 0 0 0-1.7-1.2h-.2v-3.6h.2A1.8 1.8 0 0 0 6 9a1.8 1.8 0 0 0-.9-2.1L5 6.8l2.5-2.5.1.1a1.8 1.8 0 0 0 2.1.9A1.8 1.8 0 0 0 11 3.6v-.2h3.6v.2a1.8 1.8 0 0 0 1.2 1.7 1.8 1.8 0 0 0 2.1-.9l.1-.1 2.5 2.5-.1.1a1.8 1.8 0 0 0-.9 2.1 1.8 1.8 0 0 0 1.7 1.2h.2v3.6h-.2a1.8 1.8 0 0 0-1.8 1.2Z"></path></svg></span><span class="profile-row-copy"><strong>Настройки</strong><small>Данные профиля, оформление и аккаунт.</small></span><span class="profile-chevron" aria-hidden="true">›</span></a>' +
   '</div>';
 }
-function settingsMarkup(user, profileData, route) {
+function settingsMarkup(user, profileData, route, projectState = null) {
  const profile = profileData?.profile || profileData || {};
  const metadata = user?.user_metadata || {};
  const fullName = profile.full_name || metadata.full_name || metadata.name || "";
@@ -64,6 +67,7 @@ function settingsMarkup(user, profileData, route) {
  const labels = { system: "Как на устройстве", light: "Светлая", dark: "Тёмная" };
  const groups = [
   ["personal-data","Личные данные","ФИО и дата рождения"],
+  ["public-info","Публичная информация","Данные для публичной карточки и портфолио"],
   ["privacy","Конфиденциальность","Электронная почта и пароль"],
   ["appearance","Оформление","Тема интерфейса и иконки"],
   ["cryptography","Криптография","Управление криптографическими ключами"]
@@ -71,13 +75,32 @@ function settingsMarkup(user, profileData, route) {
  const groupRoute = route.split("/")[2] || "";
  if (!groupRoute) return '<div class="settings-group-list">' + groups.map(([id,name,description]) =>
   '<a class="settings-group-link" href="#profile/settings/' + id + '"><span class="settings-group-symbol" aria-hidden="true">' +
-  ({ "personal-data":"◉", privacy:"◇", appearance:"◐", cryptography:"⌘" }[id]) +
+  ({ "personal-data":"◉", "public-info":"↗", privacy:"◇", appearance:"◐", cryptography:"⌘" }[id]) +
   '</span><span class="settings-group-copy"><strong>' + name + '</strong><small>' + description + '</small></span><span class="settings-group-chevron" aria-hidden="true">›</span></a>'
  ).join("") + '</div><button class="profile-signout settings-signout" type="button" data-auth-signout>Выйти из аккаунта</button>';
  if (groupRoute === "personal-data") return '<section class="settings-card"><div class="settings-card-heading"><div><h2>Личные данные</h2><p>Основная информация вашего профиля.</p></div></div>' +
   '<form class="settings-form" data-profile-settings-form><label class="settings-field"><span>ФИО</span><input name="full_name" type="text" autocomplete="name" minlength="3" maxlength="160" required value="' + escapeHtml(fullName) + '"></label>' +
   '<label class="settings-field"><span>Дата рождения</span><input name="birth_date" type="date" autocomplete="bday" required value="' + escapeHtml(birthDate) + '"></label>' +
   '<div class="settings-form-feedback" data-settings-feedback role="status" aria-live="polite"></div><button class="settings-primary-button" type="submit">Сохранить изменения</button></form></section>';
+ if (groupRoute === "public-info") {
+  const username = profile.username || metadata.username || "";
+  const selectedIds = new Set((Array.isArray(profile.showcase_projects) ? profile.showcase_projects : []).map((project) => String(project.id)));
+  const ownedProjects = projectState?.status === "ready" && Array.isArray(projectState.projects) ? projectState.projects : [];
+  const projectOptions = ownedProjects.length
+   ? ownedProjects.map((project) => '<label class="public-project-option"><input type="checkbox" name="showcase_project_ids" value="' + escapeHtml(project.id) + '"' + (selectedIds.has(String(project.id)) ? ' checked' : '') + '><span><strong>' + escapeHtml(project.name) + '</strong><small>' + escapeHtml(project.description || "Описание не добавлено") + '</small></span></label>').join("")
+   : '<p class="settings-section-note">Пока нет собственных активных проектов для портфолио.</p>';
+  return '<section class="settings-card"><div class="settings-card-heading"><div><h2>Публичная информация</h2><p>Выберите, что увидят посетители вашей публичной карточки.</p></div></div>' +
+   '<form class="settings-form" data-public-profile-form>' +
+   '<label class="settings-field"><span>ФИО</span><input type="text" value="' + escapeHtml(fullName) + '" disabled><small>Изменяется в разделе «Личные данные».</small></label>' +
+   '<label class="settings-field"><span>Логин в экосистеме</span><input type="text" value="' + escapeHtml(username ? "@" + username : "Логин не указан") + '" disabled></label>' +
+   '<label class="settings-field"><span>О себе</span><textarea name="about" rows="3" maxlength="80" placeholder="Коротко расскажите о себе — до 80 символов">' + escapeHtml(profile.about || "") + '</textarea><small>Не более 80 символов.</small></label>' +
+   '<label class="settings-field"><span>Instagram</span><input name="instagram_url" type="url" inputmode="url" placeholder="https://instagram.com/username" value="' + escapeHtml(profile.instagram_url || "") + '"></label>' +
+   '<label class="settings-field"><span>YouTube</span><input name="youtube_url" type="url" inputmode="url" placeholder="https://youtube.com/@channel" value="' + escapeHtml(profile.youtube_url || "") + '"></label>' +
+   '<label class="settings-field"><span>Telegram</span><input name="telegram_url" type="url" inputmode="url" placeholder="https://t.me/username" value="' + escapeHtml(profile.telegram_url || "") + '"></label>' +
+   '<div class="public-projects-picker"><div class="public-projects-heading"><strong>Проекты в публичной карточке</strong><small>Отметьте только собственные проекты, которые хотите показать. Внутренний доступ к ним не открывается.</small></div>' + projectOptions + '</div>' +
+   '<label class="public-profile-switch"><input type="checkbox" name="public_profile_enabled"' + (profile.public_profile_enabled === true ? ' checked' : '') + '><span><strong>Публичный профиль включён</strong><small>Если выключить, карточка станет недоступна по публичной ссылке.</small></span></label>' +
+   '<div class="settings-form-feedback" data-public-profile-feedback role="status" aria-live="polite"></div><button class="settings-primary-button" type="submit">Сохранить публичную информацию</button></form></section>';
+ }
  if (groupRoute === "privacy") return '<section class="settings-card"><div class="settings-card-heading"><div><h2>Конфиденциальность</h2><p>Контактные данные и защита доступа к аккаунту.</p></div></div>' +
   '<div class="settings-security-list"><label class="settings-field"><span>Электронная почта</span><input type="email" value="' + escapeHtml(email) + '" disabled><small>Используется для входа и восстановления доступа.</small></label>' +
   '<div class="settings-security-action"><div><strong>Пароль</strong><p>Для смены пароля отправим ссылку на вашу электронную почту.</p></div><button class="settings-secondary-button" type="button" data-password-reset>Сменить пароль</button></div>' +
@@ -157,7 +180,7 @@ function projectMembersMarkup(state) {
 }
 
 export function renderWorkspaceView(container, user, activeSection, profileData, projectState = null) {
- const profileSubroutes = new Set(["profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+ const profileSubroutes = new Set(["profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
  const isProjectCreate = activeSection === "projects/create";
  const isProjectInformation = /^projects\/[0-9a-f-]{36}\/information$/i.test(activeSection);
  const isProjectSettings = /^projects\/[0-9a-f-]{36}\/settings$/i.test(activeSection);
@@ -166,7 +189,7 @@ export function renderWorkspaceView(container, user, activeSection, profileData,
  const isActiveProjects = activeSection === "profile/active-projects";
  const isEcosystemTools = activeSection === "profile/ecosystem-tools";
  const isSettings = activeSection.startsWith("profile/settings");
- const settingsTitles = { "profile/settings/personal-data": "Личные данные", "profile/settings/privacy": "Конфиденциальность", "profile/settings/appearance": "Оформление", "profile/settings/cryptography": "Криптография" };
+ const settingsTitles = { "profile/settings/personal-data": "Личные данные", "profile/settings/public-info": "Публичная информация", "profile/settings/privacy": "Конфиденциальность", "profile/settings/appearance": "Оформление", "profile/settings/cryptography": "Криптография" };
  const title = isProjectSettings ? "Настройки проекта" : isProjectDetail ? (projectState?.project?.name || "Проект") : isProjectCreate ? "Создание проекта" : isActiveProjects ? "Действующие проекты" : isEcosystemTools ? "Инструменты экосистемы" : isSettings ? (settingsTitles[activeSection] || "Настройки") : sections.find((section) => section.id === active).label;
  const isProjects = active === "projects";
  const subrouteContent = isActiveProjects
@@ -180,7 +203,7 @@ export function renderWorkspaceView(container, user, activeSection, profileData,
   : isProjectCreate
   ? projectCreateContent
   : isSettings
-  ? settingsMarkup(user, profileData, activeSection)
+  ? settingsMarkup(user, profileData, activeSection, projectState)
   : isActiveProjects || isEcosystemTools
   ? subrouteContent
   : active === "profile"
@@ -195,4 +218,31 @@ export function renderWorkspaceView(container, user, activeSection, profileData,
    (active === "profile" ? (isActiveProjects ? "Запущенные проекты, которые уже запущены и приносят доход." : isEcosystemTools ? "Полный каталог инструментов экосистемы Raymondovich." : isSettings ? (activeSection === "profile/settings" ? "Выберите группу настроек." : "Настройка параметров выбранной группы.") : "") : isProjectCreate ? "Укажите основную информацию о будущем проекте." : isProjects ? "" : "Рабочее пространство Raymondovich.") +
    '</p>') +
   '</div></header>') + content + '</section></div>' + workspaceNavigationMarkup(active);
+}
+
+export function renderPublicProfileView(container, payload, errorMessage = "") {
+ const profile = payload?.profile;
+ if (!profile) {
+  container.innerHTML = '<section class="public-profile-page"><div class="public-profile-error"><h1>Публичный профиль недоступен</h1><p>' + escapeHtml(errorMessage || "Пользователь отключил публичную карточку или ссылка неверна.") + '</p><a class="settings-primary-button" href="#register">Создать аккаунт</a></div></section>';
+  return;
+ }
+ const avatar = initials(profile.full_name, profile.username);
+ const socials = [
+  ["Telegram", profile.telegram_url],
+  ["Instagram", profile.instagram_url],
+  ["YouTube", profile.youtube_url]
+ ].filter(([, url]) => typeof url === "string" && url.startsWith("https://"));
+ const projects = Array.isArray(profile.projects) ? profile.projects : [];
+ container.innerHTML = '<section class="public-profile-page"><article class="public-profile-card"><header class="public-profile-heading"><div class="profile-avatar" aria-hidden="true">' + escapeHtml(avatar) + '</div><div><h1>' + escapeHtml(profile.full_name || "Пользователь Raymondovich") + '</h1><p>@' + escapeHtml(profile.username || "") + '</p></div></header>' +
+  (typeof profile.about === "string" && profile.about.trim() ? '<section class="public-profile-about-section" aria-labelledby="public-profile-about-title"><h2 id="public-profile-about-title">О себе</h2><p class="public-profile-about">' + escapeHtml(profile.about.trim()) + '</p></section>' : '') +
+  (projects.length ? '<section class="public-profile-projects"><h2>Проекты</h2>' + projects.map((project) => '<article class="public-profile-project-card"><h3>' + escapeHtml(project.name) + '</h3>' + (project.description ? '<p>' + escapeHtml(project.description) + '</p>' : '') + '</article>').join("") + '</section>' : '') +
+  (socials.length ? '<nav class="public-profile-social-icons" aria-label="Социальные сети">' + socials.map(([label,url]) => {
+   const icons = {
+    Telegram: '<path d="m21 3-7.2 18-4.1-7.1L3 10.2 21 3Z"/><path d="m9.7 13.9 5.1-5.1"/>',
+    Instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
+    YouTube: '<rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3V9Z"/>'
+   };
+   return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + label + '" title="' + label + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + icons[label] + '</svg></a>';
+  }).join("") + '</nav>' : '') +
+  '<footer class="public-profile-brand"><span>Дата регистрации</span><time datetime="' + escapeHtml(profile.registered_at || "") + '">' + escapeHtml(profile.registered_at ? new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric" }).format(new Date(profile.registered_at)) : "—") + '</time></footer></article></section>';
 }
