@@ -1,7 +1,9 @@
 import { createProjectApi } from "./project-api.js";
+import { createTeamApi } from "./team-api.js";
+import { createNotificationApi } from "./notification-api.js";
 
-/* Version: 1.8.0 */
-/* Updated: 2026-11-16 */
+/* Version: 1.16.0 */
+/* Updated: 2026-11-24 */
 
 const SUPABASE_URL = "https://yajybgdorhxebbigwjgi.supabase.co";
 const SUPABASE_PUBLIC_KEY = "sb_publishable_2d3FG3DEk49zKUdJDm3VrA_SAwLL1pp";
@@ -239,6 +241,60 @@ export const authClient = {
     }
   },
 
+  async createTeam(input) {
+    return createTeamApi({
+      getSession: () => this.getSession(),
+      request,
+    }).createTeam(input);
+  },
+
+  async archiveTeam(teamId) { return createTeamApi({ getSession: () => this.getSession(), request }).archiveTeam(teamId); },
+  async restoreTeam(teamId) { return createTeamApi({ getSession: () => this.getSession(), request }).restoreTeam(teamId); },
+  async permanentlyDeleteTeam(input) { return createTeamApi({ getSession: () => this.getSession(), request }).permanentlyDeleteTeam(input); },
+  async getArchivedTeams() { return createTeamApi({ getSession: () => this.getSession(), request }).getArchivedTeams(); },
+
+  async getTeams() {
+    return createTeamApi({
+      getSession: () => this.getSession(),
+      request,
+    }).getTeams();
+  },
+
+  async getTeam(teamId) {
+    return createTeamApi({
+      getSession: () => this.getSession(),
+      request,
+    }).getTeam(teamId);
+  },
+
+  async getTeamMembers(teamId) { return createTeamApi({ getSession: () => this.getSession(), request }).getTeamMembers(teamId); },
+  async inviteToTeam(input) { return createTeamApi({ getSession: () => this.getSession(), request }).inviteToTeam(input); },
+  async getTeamInvitations(id) { return createTeamApi({ getSession: () => this.getSession(), request }).getTeamInvitations(id); },
+  async cancelTeamInvitation(id) { return createTeamApi({ getSession: () => this.getSession(), request }).cancelTeamInvitation(id); },
+  async acceptTeamInvitation(id) { return createTeamApi({ getSession: () => this.getSession(), request }).acceptTeamInvitation(id); },
+  async declineTeamInvitation(id) { return createTeamApi({ getSession: () => this.getSession(), request }).declineTeamInvitation(id); },
+  async getNotifications() { return createNotificationApi({ getSession: () => this.getSession(), request }).list(); },
+  async markNotificationRead(id) { return createNotificationApi({ getSession: () => this.getSession(), request }).markRead(id); },
+  async getTelegramLinkStatus() { return createNotificationApi({ getSession: () => this.getSession(), request }).telegramLinkStatus(); },
+  async startTelegramLink() { return createNotificationApi({ getSession: () => this.getSession(), request }).telegramLinkStart(); },
+  async connectTelegramMiniApp(initData) {
+    const session = await this.getSession();
+    if (!session) throw new Error("Сессия пользователя не найдена. Войдите в аккаунт повторно.");
+    const response = await fetch(`${EDGE_FUNCTIONS_URL}/telegram-miniapp-link`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_PUBLIC_KEY,
+        Authorization: `Bearer ${session.access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ init_data: initData }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Не удалось подтвердить Telegram Mini App.");
+    return payload;
+  },
+  async unlinkTelegram() { return createNotificationApi({ getSession: () => this.getSession(), request }).telegramLinkUnlink(); },
+
   async createProject(input) {
     return createProjectApi({
       getSession: () => this.getSession(),
@@ -253,6 +309,9 @@ export const authClient = {
     }).getProjects();
   },
 
+  async getArchivedProjects() { return createProjectApi({ getSession: () => this.getSession(), request }).getArchivedProjects(); },
+  async restoreProject(projectId) { return createProjectApi({ getSession: () => this.getSession(), request }).restoreProject(projectId); },
+
   async getProjectMembers(projectId) {
     return createProjectApi({
       getSession: () => this.getSession(),
@@ -265,6 +324,10 @@ export const authClient = {
       getSession: () => this.getSession(),
       request,
     }).addProjectMember(input);
+  },
+
+  async permanentlyDeleteProject(input) {
+    return createProjectApi({ getSession: () => this.getSession(), request }).permanentlyDeleteProject(input);
   },
 
   async deleteProject(input) {

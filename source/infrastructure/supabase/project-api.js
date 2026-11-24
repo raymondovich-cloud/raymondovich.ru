@@ -1,5 +1,5 @@
-/* Version: 1.1.0 */
-/* Updated: 2026-11-16 */
+/* Version: 1.3.0 */
+/* Updated: 2026-11-24 */
 
 /**
  * Supabase RPC adapter for the Project domain.
@@ -34,6 +34,14 @@ export function createProjectApi({ getSession, request }) {
       return authenticatedRequest("/rest/v1/rpc/project_list", {});
     },
 
+    async getArchivedProjects() {
+      return authenticatedRequest("/rest/v1/rpc/project_archived_list", {});
+    },
+
+    async restoreProject(projectId) {
+      return authenticatedRequest("/rest/v1/rpc/project_restore", { p_project_id: projectId });
+    },
+
     async getProjectMembers(projectId) {
       return authenticatedRequest("/rest/v1/rpc/project_members_list", {
         p_project_id: projectId,
@@ -45,6 +53,20 @@ export function createProjectApi({ getSession, request }) {
         p_project_id: projectId,
         p_username: String(username || "").trim().toLowerCase(),
         p_role_id: roleId,
+      });
+    },
+
+    async permanentlyDeleteProject({ projectId, password }) {
+      const session = await getSession();
+      if (!session) throw new Error("Сессия пользователя не найдена. Войдите в аккаунт повторно.");
+      const user = await request("/auth/v1/user", { accessToken: session.access_token });
+      if (!user?.email) throw new Error("Не удалось определить электронную почту аккаунта.");
+      const verifiedSession = await request("/auth/v1/token?grant_type=password", {
+        method: "POST", body: { email: user.email, password: String(password || "") },
+      });
+      if (!verifiedSession?.access_token) throw new Error("Не удалось подтвердить пароль аккаунта.");
+      return request("/rest/v1/rpc/project_permanent_delete", {
+        method: "POST", accessToken: verifiedSession.access_token, body: { p_project_id: projectId },
       });
     },
 

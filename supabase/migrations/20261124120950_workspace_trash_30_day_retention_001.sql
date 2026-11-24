@@ -1,0 +1,2 @@
+-- No-op migration entry recorded during initial migration setup.
+-- The complete retention implementation is in 20261124120958_workspace_trash_30_day_retention_002.sql.

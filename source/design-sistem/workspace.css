@@ -1,5 +1,5 @@
-/* Version: 3.4.2 */
-/* Updated: 2026-11-16 */
+/* Version: 3.19.0 */
+/* Updated: 2026-11-24 */
 body[data-app-state="workspace"] { background: var(--color-page); }
 body[data-app-state="workspace"] .page-shell { min-height: 100svh; padding: max(18px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); }
 body[data-app-state="workspace"] .site-header { position: relative; z-index: 5; width: min(100%, 1600px); min-height: 54px; padding: 0 2px 14px; border-bottom: 1px solid var(--color-surface-border); }
@@ -47,6 +47,47 @@ body[data-app-state="workspace"] .page-main { display: block; width: min(100%, 1
  .workspace-mobile-nav .workspace-nav-icon svg { width: 19px; height: 19px; }
 }
 @media (prefers-reduced-motion: reduce) { .workspace-nav-link, .workspace-icon-button { transition: none; } }
+
+/* Team invitations and notification center */
+.team-invitations-card { display: grid; gap: 13px; margin-top: 18px; padding: 18px; border: 1px solid var(--color-surface-border); border-radius: 20px; background: var(--color-surface); box-shadow: var(--shadow-surface); }
+.team-invite-form { display: grid; gap: 13px; padding-top: 15px; border-top: 1px solid var(--color-surface-border); }
+.team-invite-form .settings-field textarea { box-sizing: border-box; width: 100%; min-height: 76px; padding: 12px 14px; border: 1px solid var(--color-surface-border); border-radius: 13px; color: var(--color-text); background: var(--color-page); font: inherit; font-size: 14px; resize: vertical; }
+.team-invite-form .settings-field select { min-height: 46px; padding: 0 12px; border: 1px solid var(--color-surface-border); border-radius: 13px; color: var(--color-text); background: var(--color-page); font: inherit; font-size: 14px; }
+.team-invitation-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-surface-border); }
+.team-invitation-row > div { display: grid; min-width: 0; gap: 5px; }
+.team-invitation-row strong { overflow-wrap: anywhere; font-size: 13px; }
+.team-invitation-row small { color: var(--color-text-muted); font-size: 11px; }
+.team-invitation-cancel { min-height: 34px; padding: 0 10px; border: 1px solid var(--color-surface-border); border-radius: 10px; color: var(--color-text-muted); background: transparent; font: inherit; font-size: 11px; font-weight: 600; cursor: pointer; }
+.team-invitation-cancel:disabled { opacity: .5; cursor: wait; }
+.notification-center-dialog { width: min(560px, calc(100vw - 28px)); max-width: 560px; max-height: min(78svh, 760px); padding: 0; overflow: hidden; border: 1px solid var(--color-surface-border); border-radius: 24px; color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-floating); }
+.notification-center-dialog::backdrop { background: rgb(0 0 0 / 42%); backdrop-filter: blur(5px); }
+.notification-center-panel { display: grid; max-height: min(78svh, 760px); grid-template-rows: auto minmax(0, 1fr); }
+.notification-center-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 21px 22px 16px; border-bottom: 1px solid var(--color-surface-border); }
+.notification-center-heading h2 { margin: 0; font-size: 19px; font-weight: 680; letter-spacing: -.035em; }
+.notification-center-heading p { margin: 5px 0 0; color: var(--color-text-muted); font-size: 12px; }
+.notification-center-list { display: grid; gap: 10px; padding: 14px; overflow: auto; overscroll-behavior: contain; }
+.notification-center-muted { margin: 10px; color: var(--color-text-muted); font-size: 13px; }
+.notification-center-empty { display: grid; min-height: 180px; align-content: center; justify-items: center; padding: 20px; text-align: center; }
+.notification-center-empty strong { font-size: 14px; }
+.notification-center-empty p { max-width: 330px; margin: 7px 0 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.55; }
+.notification-card { display: grid; gap: 13px; padding: 15px; border: 1px solid var(--color-surface-border); border-radius: 17px; background: var(--color-page); }
+.notification-card.is-unread { border-color: var(--color-accent-border); background: var(--color-accent-wash); }
+.notification-card-topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.notification-card-topline strong { font-size: 13px; font-weight: 670; }
+.notification-card-topline time { flex: 0 0 auto; color: var(--color-text-muted); font-size: 10px; }
+.notification-card-copy p { margin: 7px 0 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.55; }
+.notification-card-copy blockquote { margin: 10px 0 0; padding: 9px 11px; border-left: 2px solid var(--color-accent); border-radius: 0 9px 9px 0; color: var(--color-text); background: var(--color-surface); font-size: 12px; line-height: 1.5; }
+.notification-card-copy small { display: block; margin-top: 9px; color: var(--color-text-muted); font-size: 11px; }
+.notification-card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.notification-card-actions:has([data-notification-action]) { flex-wrap: nowrap; align-items: stretch; }
+.notification-card-actions [data-notification-action] { box-sizing: border-box; flex: 1 1 0; width: 0; min-width: 0; padding-inline: 8px; text-align: center; }
+.notification-card-actions .settings-primary-button, .notification-card-actions .settings-secondary-button { min-height: 38px; }
+.notification-card-actions .settings-primary-button { padding-inline: 14px; }
+.notification-card-actions .settings-secondary-button { padding-inline: 12px; }
+.notification-unread-badge { position: absolute; top: -5px; right: -5px; display: grid; min-width: 18px; height: 18px; place-items: center; padding: 0 4px; border: 2px solid var(--color-page); border-radius: 999px; color: #fff; background: var(--color-accent); font-size: 9px; font-weight: 700; }
+[data-workspace-notifications] { position: relative; }
+@media (max-width: 560px) { .notification-center-dialog { width: calc(100vw - 20px); max-height: 84svh; border-radius: 20px; } .notification-center-panel { max-height: 84svh; } .notification-center-heading { padding: 18px 17px 14px; } .notification-center-list { padding: 10px; } .team-invitations-card { padding: 14px; } .team-invitation-row { align-items: flex-start; } }
+@media (prefers-reduced-motion: reduce) { .notification-center-dialog { scroll-behavior: auto; } }
 
 /* Profile screen */
 .profile-page { width: min(100%, 760px); margin: 0 auto; }
@@ -354,11 +395,9 @@ body[data-app-state="workspace"] .workspace-mobile-nav { display: none; }
 
 /* Projects workspace */
 .projects-overview { width: min(100%, 1040px); margin: 0 auto; }
-.projects-toolbar { display: flex; align-items: flex-start; padding: 26px 28px; border: 1px solid var(--color-surface-border); border-radius: 24px; background: var(--color-surface); box-shadow: var(--shadow-surface); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-.projects-toolbar-content { width: 100%; }
-.projects-toolbar-topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.projects-overview-intro { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
 .projects-toolbar-heading { min-width: 0; }
-.projects-toolbar-heading h2 { margin: 9px 0 0; font-size: clamp(19px, 2.5vw, 24px); letter-spacing: -.04em; }
+.projects-overview-intro h2 { margin: 0; font-size: 18px; font-weight: 670; letter-spacing: -.035em; }
 .projects-eyebrow, .project-create-kicker { color: var(--color-accent); font-size: 10px; font-weight: 750; letter-spacing: .13em; }
 .projects-toolbar p { max-width: 580px; margin: 8px 0 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.6; }
 .project-primary-button, .project-secondary-button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; border: 1px solid transparent; border-radius: 14px; font: inherit; font-size: 13px; font-weight: 650; text-decoration: none; white-space: nowrap; cursor: pointer; transition: transform var(--motion-standard), background-color var(--motion-standard), border-color var(--motion-standard); }
@@ -397,7 +436,7 @@ body[data-app-state="workspace"] .workspace-mobile-nav { display: none; }
 .project-secondary-button { border-color: var(--color-surface-border); color: var(--color-text); background: var(--color-surface); }
 .project-prototype-note { margin: -7px 0 0; color: var(--color-text-muted); font-size: 11px; line-height: 1.5; text-align: right; }
 @media (max-width: 760px) {
- .projects-toolbar { padding: 21px 19px; }
+
  .projects-empty-state { min-height: 260px; padding: 42px 20px; }
  .project-create-panel { border-radius: 21px; }
  .project-create-actions { display: grid; grid-template-columns: 1fr 1fr; }
@@ -715,23 +754,169 @@ body[data-app-state="workspace"] .workspace-mobile-nav { display: none; }
 .public-profile-card > .auth-heading { margin: 0; color: var(--color-text-muted); font-size: 12px; font-weight: 650; letter-spacing: .045em; }
 .public-profile-about-section .public-profile-about { margin: 0; color: var(--color-text); font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
 
-/* Compact share action positioned in the profile card corner */
-/* Version: 1.0.0 */
-/* Updated: 2026-11-16 */
-.profile-identity-card { padding-right: 62px; }
-.profile-share-icon-button { position: absolute; top: 14px; right: 14px; display: grid; width: 32px; height: 32px; place-items: center; margin: 0; border-radius: 50%; }
+/* Profile identity card actions: Telegram, owner control center and public share */
+/* Version: 1.1.0 */
+/* Updated: 2026-11-24 */
+.profile-identity-card { padding-right: 136px; }
+.profile-telegram-icon-button, .profile-share-icon-button, .profile-control-icon-button { position: absolute; top: auto; bottom: 14px; display: grid; width: 32px; height: 32px; place-items: center; margin: 0; border: 1px solid var(--color-surface-border); border-radius: 50%; color: var(--color-text-muted); background: var(--color-page); text-decoration: none; cursor: pointer; transition: color var(--motion-standard), border-color var(--motion-standard), background-color var(--motion-standard), transform var(--motion-standard); }
+.profile-telegram-icon-button { right: 94px; }
+.profile-control-icon-button { right: 54px; }
+.profile-share-icon-button { right: 14px; }
+.profile-identity-card:not(:has(.profile-control-icon-button)) .profile-telegram-icon-button { right: 54px; }
+.profile-identity-card:not(:has(.profile-control-icon-button)) { padding-right: 96px; }
+.profile-telegram-icon-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .profile-share-icon-button svg { width: 17px; height: 17px; }
+.profile-control-icon-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.profile-telegram-icon-button:hover, .profile-share-icon-button:hover, .profile-control-icon-button:hover { color: var(--color-accent); border-color: var(--color-accent-border); background: var(--color-accent-wash); transform: translateY(-1px); }
+.profile-telegram-icon-button:focus-visible, .profile-share-icon-button:focus-visible, .profile-control-icon-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.profile-telegram-icon-button:disabled { cursor: wait; opacity: .65; }
+.profile-telegram-status, .profile-telegram-feedback { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.profile-telegram-retry { margin-left: 6px; border: 0; color: var(--color-accent); background: transparent; font: inherit; cursor: pointer; }
 @media (max-width: 560px) {
- .profile-identity-card { padding-right: 56px; }
- .profile-share-icon-button { top: 12px; right: 12px; width: 30px; height: 30px; }
+ .profile-identity-card { padding-right: 124px; }
+ .profile-telegram-icon-button, .profile-share-icon-button, .profile-control-icon-button { bottom: 12px; width: 30px; height: 30px; }
+ .profile-telegram-icon-button { right: 88px; }
+ .profile-control-icon-button { right: 50px; }
+ .profile-share-icon-button { right: 12px; }
+ .profile-identity-card:not(:has(.profile-control-icon-button)) .profile-telegram-icon-button { right: 50px; }
+ .profile-identity-card:not(:has(.profile-control-icon-button)) { padding-right: 88px; }
 }
 
 
-/* Owner control-center shortcut in the profile identity card */
+/* Team workspace */
 /* Version: 1.0.0 */
-/* Updated: 2026-11-16 */
-.profile-control-icon-button { position: absolute; top: auto; right: 14px; bottom: 14px; display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--color-surface-border); border-radius: 50%; color: var(--color-text-muted); background: var(--color-page); text-decoration: none; transition: color var(--motion-standard), border-color var(--motion-standard), background-color var(--motion-standard), transform var(--motion-standard); }
-.profile-control-icon-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.profile-control-icon-button:hover { color: var(--color-accent); border-color: var(--color-accent-border); background: var(--color-accent-wash); transform: translateY(-1px); }
-.profile-control-icon-button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
-@media (max-width: 560px) { .profile-control-icon-button { top: auto; right: 12px; bottom: 12px; width: 30px; height: 30px; } }
+/* Updated: 2026-11-24 */
+.team-workspace { width: min(100%, 820px); margin: 0 auto; }
+.team-workspace-intro { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+.team-workspace-intro h2 { margin: 0; font-size: 18px; font-weight: 670; letter-spacing: -.035em; }
+.team-workspace-intro p { margin: 6px 0 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.5; }
+.team-list { display: grid; gap: 10px; }
+.team-list-card { display: flex; min-width: 0; min-height: 82px; align-items: center; gap: 14px; padding: 15px 17px; border: 1px solid var(--color-surface-border); border-radius: 19px; color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-surface); text-decoration: none; transition: border-color var(--motion-standard), transform var(--motion-standard); }
+.team-list-card:hover { border-color: var(--color-accent-hover-border); transform: translateY(-1px); }
+.team-list-avatar { display: grid; width: 46px; height: 46px; flex: 0 0 46px; place-items: center; border: 1px solid var(--color-accent-border); border-radius: 15px; color: var(--color-accent); background: var(--color-accent-wash); font-size: 15px; font-weight: 700; }
+.team-list-copy { min-width: 0; flex: 1; }
+.team-list-copy strong, .team-list-copy small { display: block; overflow-wrap: anywhere; }
+.team-list-copy strong { font-size: 14px; font-weight: 650; }
+.team-list-copy small { margin-top: 5px; color: var(--color-text-muted); font-size: 11px; line-height: 1.45; }
+.team-state-card, .team-detail-panel { padding: 24px; border: 1px solid var(--color-surface-border); border-radius: 22px; background: var(--color-surface); box-shadow: var(--shadow-surface); }
+.team-state-card { text-align: center; }
+.team-state-card h2 { margin: 0; font-size: 17px; }
+.team-state-card p, .team-detail-panel > p { color: var(--color-text-muted); font-size: 13px; line-height: 1.6; }
+.team-detail-panel { width: min(100%, 760px); margin: 0 auto; }
+.team-detail-heading { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 14px; }
+.team-detail-heading h2 { min-width: 0; flex: 1 1 auto; margin: 0; overflow-wrap: anywhere; font-size: clamp(24px, 4vw, 34px); letter-spacing: -.05em; }
+.team-settings-heading { justify-content: flex-start; }
+.team-settings-heading p { margin: 6px 0 0; color: var(--color-text-muted); font-size: 12px; }
+.team-panel-topline { display: flex; justify-content: space-between; gap: 12px; color: var(--color-text-muted); font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+.team-role-badge { padding: 6px 9px; border: 1px solid var(--color-accent-border); border-radius: 999px; color: var(--color-accent); background: var(--color-accent-wash); letter-spacing: 0; }
+.team-detail-panel > h2 { margin: 24px 0 8px; font-size: clamp(25px, 4vw, 34px); letter-spacing: -.05em; }
+.team-detail-panel dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 22px 0; }
+.team-detail-panel dl div { padding: 13px; border: 1px solid var(--color-surface-border); border-radius: 14px; }
+.team-detail-panel dt { color: var(--color-text-muted); font-size: 11px; }
+.team-detail-panel dd { margin: 6px 0 0; font-size: 13px; font-weight: 620; }
+.team-feature-note { padding: 13px; border-radius: 14px; background: var(--color-neutral-hover); }
+.team-create-dialog { width: min(92vw, 480px); max-width: 480px; padding: 0; border: 1px solid var(--color-surface-border); border-radius: 24px; color: var(--color-text); background: var(--color-surface); box-shadow: var(--shadow-floating); }
+.team-create-dialog::backdrop { background: rgb(0 0 0 / 42%); backdrop-filter: blur(5px); }
+.team-create-dialog-panel { padding: 22px; }
+.team-create-dialog textarea { box-sizing: border-box; width: 100%; min-height: 88px; padding: 12px 14px; border: 1px solid var(--color-surface-border); border-radius: 13px; color: var(--color-text); background: var(--color-page); font: inherit; font-size: 14px; resize: vertical; }
+.team-create-dialog textarea:focus { outline: 2px solid var(--color-accent-wash); border-color: var(--color-accent); }
+.team-create-actions { display: flex; justify-content: flex-end; gap: 9px; }
+.team-create-actions > * { flex: 1; }
+@media (max-width: 560px) {
+ .team-workspace-intro { align-items: center; flex-direction: row; }
+ .team-workspace-intro > .projects-create-button { width: 42px; min-width: 42px; }
+ .team-list-card { padding: 13px; }
+ .team-detail-panel { padding: 19px; }
+ .team-detail-heading h2 { font-size: clamp(22px, 6vw, 30px); }
+ .team-detail-panel dl { grid-template-columns: 1fr; }
+ .team-create-dialog-panel { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .team-list-card { transition: none; } }
+
+
+/* Team member list */
+/* Version: 1.0.0 */
+/* Updated: 2026-11-24 */
+.team-members-card { display: grid; gap: 13px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-surface-border); }
+.team-members-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.team-members-heading h3 { margin: 0; font-size: 16px; }
+.team-members-heading p, .team-members-muted { margin: 5px 0 0; color: var(--color-text-muted); font-size: 11px; }
+.team-members-list { display: grid; gap: 4px; }
+.team-member-row { display: flex; min-width: 0; align-items: center; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--color-surface-border); }
+.team-member-avatar { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 13px; color: var(--color-accent); background: var(--color-accent-wash); font-size: 12px; font-weight: 750; }
+.team-member-copy { display: grid; min-width: 0; flex: 1; gap: 3px; }
+.team-member-copy strong { overflow: hidden; color: var(--color-text); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.team-member-copy small { color: var(--color-text-muted); font-size: 11px; }
+.team-member-role { margin-left: auto; padding: 6px 9px; border-radius: 9px; color: var(--color-text-muted); background: var(--color-page); font-size: 10px; white-space: nowrap; }
+.team-members-error { display: grid; justify-items: start; gap: 8px; }
+.team-members-error p { margin: 0; color: var(--color-text-muted); font-size: 12px; }
+@media (max-width: 420px) { .team-member-row { gap: 8px; } .team-member-role { padding: 5px 7px; font-size: 9px; } }
+
+/* Team invitation dialog */
+.team-panel-actions { display: flex; align-items: center; gap: 10px; }
+.team-panel-actions .projects-create-button { width: 42px; min-width: 42px; min-height: 42px; }
+.team-invite-dialog { max-height: min(86svh, 760px); overflow-y: auto; }
+.team-invite-dialog .team-invite-form { padding-top: 18px; border-top: 0; }
+
+.team-panel-topline { align-items: center; }
+
+/* Version: 3.16.0 */
+/* Updated: 2026-11-24 */
+
+/* Unified workspace trash */
+.trash-page { display: grid; gap: 24px; }
+.trash-category { display: grid; gap: 12px; }
+.trash-category-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.trash-category-heading h2 { margin: 0; font-size: 18px; font-weight: 670; letter-spacing: -.03em; }
+.trash-category-heading > span { display: grid; min-width: 26px; height: 26px; place-items: center; padding: 0 7px; border: 1px solid var(--color-surface-border); border-radius: 999px; color: var(--color-text-muted); font-size: 11px; }
+.trash-item-list { display: grid; gap: 10px; }
+.trash-item-card { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 16px; padding: 17px; border: 1px solid var(--color-surface-border); border-radius: 18px; background: var(--color-surface); box-shadow: var(--shadow-surface); }
+.trash-item-copy { min-width: 0; }
+.trash-item-copy h3 { margin: 6px 0 0; overflow-wrap: anywhere; font-size: 15px; font-weight: 650; }
+.trash-item-copy p { margin: 5px 0 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.5; }
+.trash-item-copy time { display: block; margin-top: 8px; color: var(--color-text-muted); font-size: 11px; }
+.trash-restore-button { flex: 0 0 auto; min-height: 40px; }
+.trash-empty-note, .trash-retention-note { margin: 0; color: var(--color-text-muted); font-size: 12px; line-height: 1.6; }
+.trash-retention-note { padding-top: 14px; border-top: 1px solid var(--color-surface-border); }
+@media (max-width: 560px) { .trash-item-card { align-items: flex-start; flex-direction: column; gap: 13px; padding: 14px; } .trash-restore-button { width: 100%; } }
+
+
+/* Permanent deletion actions in the unified trash */
+/* Version: 1.0.0 */
+/* Updated: 2026-11-24 */
+.trash-item-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.trash-delete-button { min-height: 40px; }
+.trash-delete-dialog { width: min(92vw, 480px); max-width: 480px; max-height: min(88svh, 760px); overflow-y: auto; }
+.trash-delete-dialog .project-delete-dialog-panel { padding: 22px; }
+.trash-delete-dialog [data-trash-delete-description] { line-height: 1.55; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+ .trash-item-actions { width: 100%; flex-direction: column; }
+ .trash-item-actions > button { width: 100%; }
+ .trash-delete-dialog .project-delete-dialog-panel { padding: 18px; }
+}
+
+
+/* Trash category tabs — aligned with workspace navigation */
+.trash-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.trash-tab { display: flex; min-width: 0; min-height: 46px; align-items: center; justify-content: center; gap: 9px; padding: 0 13px; border: 0; border-radius: 14px; background: transparent; color: var(--color-text-muted); font-size: 14px; font-weight: 570; text-decoration: none; cursor: pointer; transition: color var(--motion-standard), background-color var(--motion-standard); }
+.trash-tab:hover { color: var(--color-text); background: var(--color-neutral-hover); }
+.trash-tab.is-active { background: var(--color-accent-soft); color: var(--color-text); box-shadow: none; }
+.trash-tab .workspace-nav-icon { flex: 0 0 20px; }
+.trash-tab .workspace-nav-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.trash-tab.is-active .workspace-nav-icon { color: var(--color-accent); }
+.trash-tab-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trash-tab-count { display: inline-grid; min-width: 20px; height: 20px; place-items: center; padding: 0 5px; border-radius: 999px; background: var(--color-neutral-hover); color: var(--color-text-muted); font-size: 10px; }
+.trash-tab.is-active .trash-tab-count { background: var(--color-accent); color: var(--color-accent-contrast, #fff); }
+.trash-tab-panel { min-width: 0; }
+.trash-category-empty { min-height: 210px; align-content: center; }
+.trash-tab-placeholder { display: grid; min-height: 230px; justify-items: center; align-content: center; padding: 24px; border: 1px dashed var(--color-surface-border); border-radius: 20px; text-align: center; }
+.trash-tab-placeholder .projects-empty-symbol { margin-bottom: 12px; }
+.trash-tab-placeholder h3 { margin: 0; font-size: 16px; }
+.trash-tab-placeholder p { max-width: 420px; margin: 8px 0 0; color: var(--color-text-muted); font-size: 13px; line-height: 1.6; }
+@media (max-width: 420px) { .trash-tab { gap: 5px; padding-inline: 5px; font-size: 12px; } }
+
+.trash-tab-panel[hidden] { display: none; }
+
+
+/* Trash retention countdown */
+.trash-countdown { margin: 7px 0 0; color: var(--color-accent); font-size: 12px; font-weight: 620; line-height: 1.45; }

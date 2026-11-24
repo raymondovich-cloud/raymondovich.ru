@@ -1,5 +1,5 @@
-/* Version: 1.9.5 */
-/* Updated: 2026-11-16 */
+/* Version: 1.13.0 */
+/* Updated: 2026-11-24 */
 
 import { authClient } from "../../infrastructure/supabase/auth-client.js";
 import { mountWorkspace } from "../workspace/workspace.js";
@@ -19,8 +19,9 @@ const workspaceActions = document.querySelector("[data-workspace-actions]");
 
 if (root && pageMain) {
   const validModes = new Set(["login", "register", "forgot-password", "reset-password"]);
-  const workspaceRoutes = new Set(["projects/create", "projects", "control-center", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography"]);
+  const workspaceRoutes = new Set(["projects/create", "projects", "control-center", "ideas", "team", "tools", "profile", "profile/active-projects", "profile/ecosystem-tools", "profile/settings", "profile/settings/personal-data", "profile/settings/public-info", "profile/settings/privacy", "profile/settings/appearance", "profile/settings/cryptography", "profile/settings/telegram", "trash"]);
   const isProjectDetailRoute = (route) => /^projects\/[0-9a-f-]{36}(?:\/(?:information|settings))?$/i.test(route);
+  const isTeamDetailRoute = (route) => /^team\/[0-9a-f-]{36}(?:\/(?:information|settings))?$/i.test(route);
   let currentMode = "login";
   let busy = false;
 
@@ -29,7 +30,7 @@ if (root && pageMain) {
     const isAuthRoute = validModes.has(mode);
     const publicProfileMatch = mode.match(/^profile\/([a-z0-9][a-z0-9._-]{2,23})$/i);
     const isPublicProfileRoute = Boolean(publicProfileMatch && !workspaceRoutes.has(mode));
-    const isWorkspaceRoute = mode === "account" || workspaceRoutes.has(mode) || isProjectDetailRoute(mode);
+    const isWorkspaceRoute = mode === "account" || workspaceRoutes.has(mode) || isProjectDetailRoute(mode) || isTeamDetailRoute(mode);
     root.hidden = !(isAuthRoute || isWorkspaceRoute || isPublicProfileRoute);
     if (statusPanel) statusPanel.hidden = isAuthRoute || isWorkspaceRoute || isPublicProfileRoute;
     document.body.dataset.appState = isWorkspaceRoute ? "workspace" : "public";
